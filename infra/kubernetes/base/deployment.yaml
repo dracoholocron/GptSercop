@@ -1,0 +1,47 @@
+# En producción: usar imagen etiquetada por versión (ej. ghcr.io/OWNER/sercop-api:v0.1.0), no latest.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sercop-api
+  labels:
+    app: sercop-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sercop-api
+  template:
+    metadata:
+      labels:
+        app: sercop-api
+    spec:
+      containers:
+        - name: api
+          image: sercop-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3080
+          envFrom:
+            - configMapRef:
+                name: sercop-api-config
+            - secretRef:
+                name: sercop-api-secret
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3080
+            initialDelaySeconds: 5
+            periodSeconds: 5

@@ -1,0 +1,29 @@
+# Ingress de ejemplo. Ajustar host, TLS y anotaciones según el proveedor (GKE/EKS/AKS).
+# Requiere un Ingress Controller instalado (nginx-ingress, GKE Ingress, ALB, etc.).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sercop-api
+  labels:
+    app: sercop-api
+  # Anotaciones por proveedor (descomentar las que apliquen):
+  # GKE: annotations: { kubernetes.io/ingress.class: "gce" }
+  # EKS/ALB: annotations: { kubernetes.io/ingress.class: "alb", alb.ingress.kubernetes.io/scheme: "internet-facing" }
+  # AKS/nginx: annotations: { kubernetes.io/ingress.class: "nginx" }
+  # TLS (cert-manager): cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.sercop.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sercop-api
+                port:
+                  number: 3080
+  # tls:
+  #   - hosts: [api.sercop.example.com]
+  #     secretName: sercop-api-tls

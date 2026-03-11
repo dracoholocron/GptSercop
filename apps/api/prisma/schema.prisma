@@ -1,0 +1,156 @@
+// SERCOP V2 – Modelo unificado (Docs/03_technical_specs, Docs/expanded_foundation/database)
+// Relaciones: Entity -> ProcurementPlan -> Tender -> Bid | Contract; audit_log, documents
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Entity {
+  id               String            @id @default(uuid())
+  name             String
+  code             String?           @unique
+  legalName        String?
+  organizationType String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  procurementPlans ProcurementPlan[]
+  users            User[]
+}
+
+model User {
+  id             String   @id @default(uuid())
+  organizationId String?
+  email          String   @unique
+  fullName       String
+  status         String
+  createdAt      DateTime @default(now())
+  organization   Entity?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+}
+
+model Provider {
+  id         String    @id @default(uuid())
+  name       String
+  identifier String?   // RUC
+  legalName  String?
+  tradeName  String?
+  status     String    @default("active")
+  province   String?
+  canton     String?
+  address    String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  bids       Bid[]
+  contracts  Contract[]
+}
+
+model ProcurementPlan {
+  id          String    @id @default(uuid())
+  entityId    String
+  year        Int
+  status      String    @default("draft")
+  versionNo   Int       @default(1)
+  totalAmount Decimal   @default(0) @db.Decimal(18, 2)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  entity      Entity    @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  tenders     Tender[]
+}
+
+model Tender {
+  id                 String    @id @default(uuid())
+  procurementPlanId  String
+  code               String?   @unique
+  title              String
+  description        String?
+  status             String    @default("draft")
+  procurementMethod  String?   @default("open")
+  estimatedAmount    Decimal?  @db.Decimal(18, 2)
+  publishedAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  procurementPlan    ProcurementPlan @relation(fields: [procurementPlanId], references: [id], onDelete: Cascade)
+  bids               Bid[]
+  evaluations        Evaluation[] @relation("TenderEvaluations")
+  contract           Contract?
+}
+
+model Bid {
+  id          String       @id @default(uuid())
+  tenderId    String
+  providerId  String
+  amount      Decimal?     @db.Decimal(18, 2)
+  status      String       @default("submitted")
+  submittedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  tender      Tender       @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  provider    Provider     @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  evaluations Evaluation[] @relation("BidEvaluations")
+}
+
+model Evaluation {
+  id             String   @id @default(uuid())
+  tenderId       String
+  bidId          String
+  technicalScore Decimal? @db.Decimal(10, 2)
+  financialScore Decimal? @db.Decimal(10, 2)
+  totalScore     Decimal? @db.Decimal(10, 2)
+  status         String
+  tender         Tender   @relation("TenderEvaluations", fields: [tenderId], references: [id], onDelete: Cascade)
+  bid            Bid      @relation("BidEvaluations", fields: [bidId], references: [id], onDelete: Cascade)
+}
+
+model Contract {
+  id         String    @id @default(uuid())
+  tenderId   String    @unique
+  providerId String
+  contractNo String?   @unique
+  status     String    @default("draft")
+  amount     Decimal?  @db.Decimal(18, 2)
+  signedAt   DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  tender     Tender    @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  provider  Provider  @relation(fields: [providerId], references: [id], onDelete: Restrict)
+}
+
+model Document {
+  id           String   @id @default(uuid())
+  ownerType    String
+  ownerId      String
+  documentType String
+  fileName     String
+  storageKey   String
+  isPublic     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String?
+  payload    Json?
+  occurredAt DateTime @default(now())
+}
+
+// Fase 4b: RAG – chunks de normativa/manuales para búsqueda full-text (index_plan: date, jurisdiction, version)
+model RagChunk {
+  id            String    @id @default(uuid())
+  title         String
+  content       String
+  source        String    // normativa | manuales | resoluciones | guias | faq
+  documentType  String
+  url           String?
+  date          DateTime? // fecha del documento
+  jurisdiction  String?   // ámbito jurisdiccional
+  version       String?   // versión del documento
+  createdAt     DateTime  @default(now())
+}
