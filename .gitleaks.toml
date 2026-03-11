@@ -1,0 +1,13 @@
+# Gitleaks config – exclusiones para reducir falsos positivos
+# https://github.com/gitleaks/gitleaks
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''package-lock\.json$''',
+  '''\.lock$''',
+  '''node_modules/''',
+  '''\.next/'''
+]
