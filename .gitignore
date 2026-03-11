@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build / output
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# Logs and temp
+*.log
+npm-debug.log*
+tmp/
+temp/
+.cache/
+
+# Playwright / E2E
+test-results/
+playwright-report/
+.playwright/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Kubernetes secrets (nunca commitear)
+infra/kubernetes/**/secret.yaml
+
+# Optional: keep zips out of repo if you prefer (uncomment to ignore)
+# *.zip
+# sercop_consolidado_generado_chat/
+# sercop_v2_master_pack/
+# sercop_v2_technical_specs/
