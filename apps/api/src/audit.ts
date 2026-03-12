@@ -8,6 +8,7 @@ export async function audit(params: {
   entityId?: string;
   actorId?: string;
   payload?: AuditPayload;
+  contractingEntityId?: string;
 }): Promise<void> {
   try {
     await prisma.auditLog.create({
@@ -17,6 +18,7 @@ export async function audit(params: {
         entityId: params.entityId ?? null,
         actorId: params.actorId ?? null,
         payload: (params.payload ?? undefined) as object | undefined,
+        contractingEntityId: params.contractingEntityId ?? null,
       },
     });
   } catch (e) {

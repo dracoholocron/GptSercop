@@ -13,6 +13,8 @@
     "dev:supplier-portal": "npm run dev --workspace=supplier-portal",
     "dev:entity-portal": "npm run dev --workspace=entity-portal",
     "dev:admin": "npm run dev --workspace=sercop-admin",
+    "dev:portales": "concurrently -n admin,supplier,entity -c blue,magenta,green \"npm run dev:admin\" \"npm run dev:supplier-portal\" \"npm run dev:entity-portal\"",
+    "start:all": "node scripts/start-all.js",
     "build": "npm run build --workspaces --if-present",
     "start": "npm run start --workspace=api",
     "docker:up": "docker compose up -d",
@@ -29,16 +31,23 @@
     "test:integration": "npm run test:integration --workspace=api",
     "test:security": "npm run test:security --workspace=api",
     "test:e2e": "playwright test",
+    "test:e2e:battery": "playwright test e2e/battery --project=chromium",
+    "test:e2e:battery:full": "npm run db:seed && npm run test:e2e:battery",
     "test:e2e:ui": "playwright test --ui",
     "evidence": "playwright test e2e/evidence.spec.ts --config=playwright.evidence.config.ts",
+    "evidence:full": "playwright test e2e/evidence.spec.ts --timeout=60000",
     "ports:kill": "node scripts/kill-ports.js",
     "audit": "npm audit --workspaces"
   },
   "engines": {
     "node": ">=20"
   },
+  "dependencies": {
+    "lucide-react": "^0.460.0"
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
-    "@playwright/test": "^1.58.2"
+    "@playwright/test": "^1.58.2",
+    "concurrently": "^9.1.0"
   }
 }

@@ -1,12 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { AppHeader, AppFooter } from '@sercop/design-system';
+import { AppHeader, AppFooter, SercopLogo } from '@sercop/design-system';
 
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Inicio', href: '/' },
   { id: 'procesos', label: 'Buscar Procesos', href: '/procesos' },
+  { id: 'denuncias', label: 'Denuncias', href: '/denuncias' },
   { id: 'normativa', label: 'Normativa', href: '/normativa' },
+  { id: 'principios', label: 'Principios', href: '/principios' },
+  { id: 'licitacion-plazos', label: 'Plazos y requisitos – Licitación', href: '/licitacion-plazos' },
+  { id: 'modelos-pliegos', label: 'Modelos de pliegos', href: '/modelos-pliegos' },
+  { id: 'notificaciones', label: 'Notificaciones', href: '/notificaciones' },
+  { id: 'certificacion', label: 'Certificación', href: '/certificacion' },
   { id: 'cifras', label: 'Contratación en Cifras', href: '/cifras' },
   { id: 'servicios', label: 'Servicios', href: '/servicios' },
   { id: 'enlaces', label: 'Enlaces', href: '/enlaces' },
@@ -23,7 +29,8 @@ export function PublicShell({ children, activeId }: { children: React.ReactNode;
     <div className="flex min-h-screen flex-col">
       <a href="#main" className="skip-link">Saltar al contenido</a>
       <AppHeader
-        title="SERCOP – Portal público"
+        title="Portal público"
+        logo={<SercopLogo variant="compact" />}
         navItems={NAV_ITEMS}
         activeId={activeId}
         LinkComponent={Link as React.ComponentType<{ href: string; className?: string; children: React.ReactNode }>}

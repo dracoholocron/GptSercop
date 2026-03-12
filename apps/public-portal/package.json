@@ -10,6 +10,7 @@
   "dependencies": {
     "@sercop/api-client": "*",
     "@sercop/design-system": "*",
+    "lucide-react": "^0.460.0",
     "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
