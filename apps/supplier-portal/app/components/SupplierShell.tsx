@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AppHeader, AppFooter } from '@sercop/design-system';
+import { AppHeader, AppFooter, SercopLogo } from '@sercop/design-system';
 import { isLoggedIn, logout } from '../lib/auth';
 
 const NAV_ITEMS = [
@@ -28,7 +28,8 @@ export function SupplierShell({ children, activeId }: { children: React.ReactNod
     <div className="flex min-h-screen flex-col">
       <a href="#main" className="skip-link">Saltar al contenido</a>
       <AppHeader
-        title="SERCOP – Portal proveedores"
+        title="Portal proveedores"
+        logo={<SercopLogo variant="compact" />}
         navItems={NAV_ITEMS}
         activeId={activeId}
         rightContent={

@@ -13,18 +13,18 @@ export interface AppFooterProps {
 
 export function AppFooter({ links = [], copyright, className = '' }: AppFooterProps) {
   return (
-    <footer className={`border-t border-gray-200 bg-white py-6 ${className}`}>
+    <footer className={`border-t border-neutral-200 bg-white py-6 ${className}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {links.length > 0 && (
           <div className="mb-4 flex flex-wrap gap-4">
             {links.map((link) => (
-              <a key={link.href} href={link.href} className="text-sm text-gray-600 hover:text-blue-600">
+              <a key={link.href} href={link.href} className="text-sm text-text-secondary hover:text-primary">
                 {link.label}
               </a>
             ))}
           </div>
         )}
-        {copyright && <p className="text-sm text-gray-500">{copyright}</p>}
+        {copyright && <p className="text-sm text-text-secondary">{copyright}</p>}
       </div>
     </footer>
   );

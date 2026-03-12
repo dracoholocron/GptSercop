@@ -16,7 +16,12 @@ test.describe('Portal público', () => {
   test('procesos carga y tiene filtros', async ({ page }) => {
     const res = await page.goto('/procesos');
     expect(res?.status()).toBe(200);
-    await expect(page.getByRole('button', { name: /Buscar/i })).toBeVisible({ timeout: 15000 });
+    // el botón está dentro de <details>; abrir "Filtros" si está colapsado
+    const buscar = page.getByRole('button', { name: /Buscar/i });
+    if (!(await buscar.isVisible().catch(() => false))) {
+      await page.getByText('Filtros', { exact: true }).first().click().catch(() => {});
+    }
+    await expect(buscar).toBeVisible({ timeout: 15000 });
   });
 
   test('normativa tiene búsqueda', async ({ page }) => {

@@ -17,8 +17,9 @@ npm run dev
 - Health: `GET http://localhost:3080/health` (DB + Redis si REDIS_URL); Ready: `GET /ready`
 - Tenders: `GET/POST/PUT http://localhost:3080/api/v1/tenders`
 - Providers: `GET/POST/PUT http://localhost:3080/api/v1/providers`
-- Documentos (Fase 4): `POST /api/v1/documents/upload` (multipart: ownerType, ownerId, documentType, file); `GET /api/v1/documents?ownerType=&ownerId=`; `GET /api/v1/documents/:id` (incluye downloadUrl si S3 configurado)
+- Documentos (Fase 4): `POST /api/v1/documents/upload` (multipart); wizard ofertas: `POST /api/v1/documents/presign` + commit (20 MB por archivo, 100 MB total por oferta; 413 si excede). Firma y OTP: endpoints bajo `/api/v1/offers/:id/sign/*` y `otp/*` son **simulación (stub)**; en producción se integrará proveedor de firma electrónica y envío real SMS/email.
 - Analítica: `GET /api/v1/analytics/dashboard` (protegido; conteos tenders, providers, contracts, documents)
+- CPC: `GET /api/v1/cpc/suggestions?q=&limit=` (stub; en producción integrar con servicio SRI/correlacionador para validar actividades del proveedor)
 - RAG: `GET /api/v1/rag/search?q=...`; `POST /api/v1/rag/ask` (body: `{ question }`)
 
 ## Base de datos

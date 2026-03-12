@@ -9,14 +9,16 @@ Carpetas de evidencia por fase del plan de implementación. Cada subcarpeta pued
 | 3 | [fase3](fase3/) | Entity: /reportes |
 | 4 | [fase4](fase4/) | OpenAPI: /documentation, /openapi.json |
 | 5 | [fase5](fase5/) | TanStack Query en admin |
+| 6 | [fase6](fase6/) | Supplier: SIE (MVP) – pantalla y flujo base |
+| 7 | [fase7](fase7/) | Admin/Entity: revisión de ofertas + aclaraciones (MVP) |
 
 ## Cómo capturar evidencia
 
-1. **Automático**: Con la API en 3080 en marcha, ejecutar (el script levanta el admin si no está):
+1. **Automático**: Con los portales y la API en marcha (ver `scripts/start-all.js`), ejecutar:
    ```bash
-   npx playwright test e2e/evidence.spec.ts --config=playwright.evidence.config.ts
+   npx playwright test e2e/evidence.spec.ts
    ```
-   O desde raíz: `npm run evidence` (requiere admin en 3004). Con la config anterior se guardan capturas en `fase2/` (admin: login, usuarios, normativa) y `fase4/` (API: documentación).
+   Guarda capturas en `Docs/evidencia/fase2/`, `fase4/`, `fase6/`, `fase7/`.
 2. **Manual**: Navegar a cada pantalla y guardar capturas en la carpeta correspondiente (ej. `fase2/usuarios-listado.png`).
 3. Opcional: E2E con screenshots en fallo (`npx playwright test` guarda en `test-results/`).
 

@@ -1,20 +1,25 @@
 /**
- * Design tokens – SERCOP V2
+ * Design tokens – SERCOP V2 (paleta vanguardia)
  * Colores, espaciado, tipografía, breakpoints
  */
 export const colors = {
-  primary: '#0d47a1',
-  primaryHover: '#1565c0',
-  primaryLight: '#e3f2fd',
-  success: '#2e7d32',
-  error: '#c62828',
-  warning: '#f9a825',
+  primary: '#0A66C2',
+  primaryHover: '#0052A3',
+  primaryLight: '#E8F4FD',
+  accent: '#059669',
+  accentHover: '#047857',
+  backgroundHero: '#F0F7FF',
+  textPrimary: '#1A1A1A',
+  textSecondary: '#525252',
+  success: '#059669',
+  error: '#DC2626',
+  warning: '#f59e0b',
   neutral50: '#fafafa',
   neutral100: '#f5f5f5',
-  neutral200: '#eeeeee',
+  neutral200: '#E5E7EB',
   neutral500: '#9e9e9e',
   neutral700: '#616161',
-  neutral900: '#212121',
+  neutral900: '#1A1A1A',
 } as const;
 
 export const spacing = {

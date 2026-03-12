@@ -64,7 +64,8 @@ export default function PacPage() {
             {showCreate && (
               <Card title="Nuevo PAC" className="mb-4">
                 <form onSubmit={handleCreate} className="space-y-4">
-                  <select value={entityId} onChange={(e) => setEntityId(e.target.value)} className="rounded border p-2">
+                  <label htmlFor="pac-entity-select" className="block text-sm font-medium">Entidad</label>
+                  <select id="pac-entity-select" value={entityId} onChange={(e) => setEntityId(e.target.value)} className="rounded border p-2">
                     <option value="">{currentEntityId ? 'Usar entidad actual' : 'Seleccione entidad'}</option>
                     {entities.map((e) => (
                       <option key={e.id} value={e.id}>{e.name}</option>
