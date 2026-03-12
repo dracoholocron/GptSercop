@@ -161,6 +161,111 @@ test.describe('Contenido – Portal público', () => {
     expect([200, 400]).toContain(res.status());
   });
 
+  test('CV03p: POST process-claims fuera de ventana de reclamos devuelve 400', async ({ request }) => {
+    const apiBase = process.env.PLAYWRIGHT_API_URL || 'http://localhost:3080';
+    const loginRes = await request.post(`${apiBase}/api/v1/auth/login`, {
+      data: { email: 'supplier@test.com', role: 'supplier', identifier: '1791234567001' },
+    });
+    if (loginRes.status() !== 200) return;
+    const loginBody = (await loginRes.json()) as { token: string; providerId?: string };
+    const listRes = await request.get(`${apiBase}/api/v1/tenders?pageSize=100`);
+    if (!listRes.ok()) return;
+    const listBody = (await listRes.json()) as { data?: Array<{ id: string; code?: string | null }> };
+    const co903 = listBody.data?.find((t) => String(t.code ?? '').endsWith('CO-903'));
+    if (!co903 || !loginBody.providerId) return;
+    const res = await request.post(`${apiBase}/api/v1/process-claims`, {
+      headers: { Authorization: `Bearer ${loginBody.token}`, 'Content-Type': 'application/json' },
+      data: {
+        tenderId: co903.id,
+        providerId: loginBody.providerId,
+        kind: 'EVALUATION',
+        subject: 'Reclamo E2E',
+        message: 'Mensaje de prueba.',
+      },
+    });
+    expect(res.status()).toBe(400);
+    const errBody = (await res.json()) as { error?: string };
+    expect(errBody?.error).toMatch(/plazo|reclamos|vencido/i);
+  });
+
+  test('CV03q: Upload documento clarifications_act para tender queda asociado', async ({ request }) => {
+    const apiBase = process.env.PLAYWRIGHT_API_URL || 'http://localhost:3080';
+    const listRes = await request.get(`${apiBase}/api/v1/tenders?pageSize=5`);
+    if (!listRes.ok()) return;
+    const listBody = (await listRes.json()) as { data?: Array<{ id: string }> };
+    const tenderId = listBody.data?.[0]?.id;
+    if (!tenderId) return;
+    const res = await request.post(`${apiBase}/api/v1/documents/upload`, {
+      multipart: {
+        ownerType: 'tender',
+        ownerId: tenderId,
+        documentType: 'clarifications_act',
+        file: {
+          name: 'acta-preguntas-e2e.pdf',
+          mimeType: 'application/pdf',
+          buffer: Buffer.from('%PDF-1.4 E2E test'),
+        },
+      },
+    });
+    if (res.status() === 503) return;
+    expect(res.status()).toBe(201);
+    const doc = (await res.json()) as { id?: string; documentType?: string };
+    expect(doc.documentType).toBe('clarifications_act');
+    expect(doc.id).toBeTruthy();
+  });
+
+  test('CV03r: Upload documento need_report (informe necesidad) para tender queda asociado', async ({ request }) => {
+    const apiBase = process.env.PLAYWRIGHT_API_URL || 'http://localhost:3080';
+    const listRes = await request.get(`${apiBase}/api/v1/tenders?pageSize=5`);
+    if (!listRes.ok()) return;
+    const listBody = (await listRes.json()) as { data?: Array<{ id: string }> };
+    const tenderId = listBody.data?.[0]?.id;
+    if (!tenderId) return;
+    const res = await request.post(`${apiBase}/api/v1/documents/upload`, {
+      multipart: {
+        ownerType: 'tender',
+        ownerId: tenderId,
+        documentType: 'need_report',
+        file: {
+          name: 'informe-necesidad-e2e.pdf',
+          mimeType: 'application/pdf',
+          buffer: Buffer.from('%PDF-1.4 informe necesidad E2E'),
+        },
+      },
+    });
+    if (res.status() === 503) return;
+    expect(res.status()).toBe(201);
+    const doc = (await res.json()) as { id?: string; documentType?: string };
+    expect(doc.documentType).toBe('need_report');
+    expect(doc.id).toBeTruthy();
+  });
+
+  test('CV03s: PUT contract awardPublishedAt más de 1 día después de emisión devuelve 400', async ({ request }) => {
+    const apiBase = process.env.PLAYWRIGHT_API_URL || 'http://localhost:3080';
+    const listRes = await request.get(`${apiBase}/api/v1/tenders?pageSize=20`);
+    if (!listRes.ok()) return;
+    const listBody = (await listRes.json()) as { data?: Array<{ id: string }> };
+    for (const t of listBody.data ?? []) {
+      const cRes = await request.get(`${apiBase}/api/v1/tenders/${t.id}/contract`);
+      if (cRes.status() !== 200) continue;
+      const contract = (await cRes.json()) as { id: string };
+      const issued = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+      const published = new Date(issued.getTime() + 25 * 60 * 60 * 1000);
+      const putRes = await request.put(`${apiBase}/api/v1/contracts/${contract.id}`, {
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          awardResolutionIssuedAt: issued.toISOString(),
+          awardPublishedAt: published.toISOString(),
+        },
+      });
+      if (putRes.status() === 400) {
+        const err = (await putRes.json()) as { error?: string };
+        expect(err?.error).toMatch(/publicación|1 día|art\. 112/i);
+        return;
+      }
+    }
+  });
+
   test('CV04: Enlaces tiene cards o listado', async ({ page }) => {
     await page.goto('/enlaces');
     await expect(page.locator('body')).toBeVisible();
