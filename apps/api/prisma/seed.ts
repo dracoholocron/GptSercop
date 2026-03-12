@@ -84,6 +84,13 @@ async function main() {
     });
     console.log('  Proveedor con existencia legal y patrimonio (pruebas licitación)');
   }
+  if (providers[1]) {
+    await prisma.provider.update({
+      where: { id: providers[1].id },
+      data: { isCompliantSRI: false },
+    });
+    console.log('  Proveedor con isCompliantSRI false (E2E autoinvitación rechazada)');
+  }
 
   // PAC y procesos de contratación (códigos tipo SERCOP: ENTIDAD-AÑO-CO-NNN)
   let tenderCount = 0;
@@ -227,6 +234,65 @@ async function main() {
       });
       tenderCount++;
       console.log('  Licitación pendiente apertura (MEC-CO-902)');
+    }
+
+    // Licitación con apertura antigua – ventana de reclamos vencida (E2E claim window)
+    const licitacionCode3 = `${entity.code}-${year}-CO-903`;
+    if (entity.code === 'MEC' && !(await prisma.tender.findFirst({ where: { code: licitacionCode3 } }))) {
+      const now = new Date();
+      const bidsDeadlineOld = new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000);
+      const bidsOpenedOld = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
+      await prisma.tender.create({
+        data: {
+          procurementPlanId: plan.id,
+          code: licitacionCode3,
+          title: 'Licitación – ventana reclamos vencida (E2E)',
+          description: 'Proceso con apertura hace 10 días; plazo reclamos 3 días ya venció.',
+          status: 'published',
+          procurementMethod: 'open',
+          processType: 'licitacion',
+          regime: 'ordinario',
+          estimatedAmount: 60000,
+          referenceBudgetAmount: 60000,
+          bidsDeadlineAt: bidsDeadlineOld,
+          bidsOpenedAt: bidsOpenedOld,
+          claimWindowDays: 3,
+          responsibleType: 'delegate',
+          electronicSignatureRequired: true,
+          publishedAt: new Date(now.getTime() - 20 * 24 * 60 * 60 * 1000),
+        },
+      });
+      tenderCount++;
+      console.log('  Licitación ventana reclamos vencida (MEC-CO-903)');
+    }
+
+    // Licitación >500k para E2E validación patrimonio (proveedor sin patrimonio debe recibir 400)
+    const licitacionCode4 = `${entity.code}-${year}-CO-904`;
+    if (entity.code === 'MEC' && !(await prisma.tender.findFirst({ where: { code: licitacionCode4 } }))) {
+      const now = new Date();
+      const qDeadline = new Date(now.getTime() + 12 * 24 * 60 * 60 * 1000);
+      const bDeadline = new Date(now.getTime() + 20 * 24 * 60 * 60 * 1000);
+      await prisma.tender.create({
+        data: {
+          procurementPlanId: plan.id,
+          code: licitacionCode4,
+          title: 'Licitación >500k – E2E patrimonio',
+          description: 'Proceso presupuesto referencial 600000 para prueba validación patrimonio.',
+          status: 'published',
+          procurementMethod: 'open',
+          processType: 'licitacion',
+          regime: 'ordinario',
+          estimatedAmount: 600000,
+          referenceBudgetAmount: 600000,
+          questionsDeadlineAt: qDeadline,
+          bidsDeadlineAt: bDeadline,
+          responsibleType: 'commission',
+          electronicSignatureRequired: true,
+          publishedAt: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+        },
+      });
+      tenderCount++;
+      console.log('  Licitación >500k patrimonio (MEC-CO-904)');
     }
   }
   console.log(`  PAC y ${tenderCount} procesos de contratación (códigos SERCOP)`);

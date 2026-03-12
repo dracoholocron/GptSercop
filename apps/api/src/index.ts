@@ -106,6 +106,9 @@ function getMinDaysBids(amount: number): number {
   if (amount > 10_000) return 2;
   return 0;
 }
+function calendarDaysBetween(d1: Date, d2: Date): number {
+  return Math.floor((d2.getTime() - d1.getTime()) / (24 * 60 * 60 * 1000));
+}
 
 app.get<{
   Querystring: {
@@ -223,7 +226,7 @@ app.get<{ Querystring: { identifier?: string } }>('/api/v1/providers', async (re
     const providers = await prisma.provider.findMany({
       where,
       orderBy: { name: 'asc' },
-      select: { id: true, name: true, identifier: true, status: true, legalName: true, tradeName: true, province: true, canton: true, address: true },
+      select: { id: true, name: true, identifier: true, status: true, legalName: true, tradeName: true, province: true, canton: true, address: true, isCompliantSRI: true, isCompliantIESS: true },
     });
     return { data: providers };
   } catch (e) {
@@ -291,6 +294,8 @@ type ProviderUpdateBody = {
   registrationStep?: number; registrationData?: Record<string, unknown>; activityCodes?: string[];
   legalEstablishmentDate?: string | null;
   patrimonyAmount?: number | null;
+  isCompliantSRI?: boolean | null;
+  isCompliantIESS?: boolean | null;
 };
 app.put<{ Params: { id: string }; Body: ProviderUpdateBody }>('/api/v1/providers/:id', async (req, reply) => {
   const { id } = req.params;
@@ -318,6 +323,8 @@ app.put<{ Params: { id: string }; Body: ProviderUpdateBody }>('/api/v1/providers
   }
   if (body.patrimonyAmount !== undefined)
     data.patrimonyAmount = typeof body.patrimonyAmount === 'number' && Number.isFinite(body.patrimonyAmount) ? body.patrimonyAmount : body.patrimonyAmount === null ? null : undefined;
+  if (body.isCompliantSRI !== undefined) data.isCompliantSRI = typeof body.isCompliantSRI === 'boolean' ? body.isCompliantSRI : body.isCompliantSRI === null ? null : undefined;
+  if (body.isCompliantIESS !== undefined) data.isCompliantIESS = typeof body.isCompliantIESS === 'boolean' ? body.isCompliantIESS : body.isCompliantIESS === null ? null : undefined;
   if (Object.keys(data).length === 0) return reply.status(400).send({ error: 'Ningún campo válido para actualizar' });
   try {
     const provider = await prisma.provider.update({ where: { id }, data });
@@ -413,6 +420,28 @@ app.post<{ Body: TenderBody }>('/api/v1/tenders', async (req, reply) => {
       const minAward = new Date(scoringDeadlineAt.getTime() + 3 * 24 * 60 * 60 * 1000);
       if (awardResolutionDeadlineAt < minAward)
         return reply.status(400).send({ error: 'La fecha límite de resolución de adjudicación debe ser al menos 3 días después del fin de calificación (scoringDeadlineAt)' });
+    }
+    if (processType === 'licitacion' && refBudget != null && Number.isFinite(refBudget) && refBudget > 0) {
+      const now = new Date();
+      const qDeadline = parseDate(body?.questionsDeadlineAt);
+      const bDeadline = parseDate(body?.bidsDeadlineAt);
+      if (qDeadline) {
+        const minQ = getMinDaysQuestions(refBudget);
+        if (minQ > 0 && calendarDaysBetween(now, qDeadline) < minQ)
+          return reply.status(400).send({ error: `El plazo entre publicación y límite de preguntas no puede ser menor a ${minQ} días para el monto indicado (art. 91 Reglamento)` });
+      }
+      if (qDeadline && bDeadline) {
+        const minB = getMinDaysBids(refBudget);
+        if (minB > 0 && calendarDaysBetween(qDeadline, bDeadline) < minB)
+          return reply.status(400).send({ error: `El plazo entre límite de preguntas y límite de ofertas no puede ser menor a ${minB} días para el monto indicado (art. 96 Reglamento)` });
+      }
+    }
+    const convReq = parseDate(body?.convalidationRequestDeadlineAt);
+    const convResp = parseDate(body?.convalidationResponseDeadlineAt);
+    if (convReq && convResp) {
+      const daysConv = calendarDaysBetween(convReq, convResp);
+      if (daysConv < 2 || daysConv > 5)
+        return reply.status(400).send({ error: 'El plazo de convalidación de errores debe ser entre 2 y 5 días (art. 100 Reglamento)' });
     }
     const tender = await prisma.tender.create({
       data: {
@@ -578,7 +607,22 @@ app.put<{ Params: { id: string }; Body: TenderUpdateBody }>('/api/v1/tenders/:id
     data.responsibleType = (body.responsibleType === 'commission' || body.responsibleType === 'delegate' || body.responsibleType === null) ? body.responsibleType : undefined;
   if (typeof body.electronicSignatureRequired === 'boolean') data.electronicSignatureRequired = body.electronicSignatureRequired;
   if (Object.keys(data).length === 0) return reply.status(400).send({ error: 'Ningún campo válido para actualizar' });
-  const existing = await prisma.tender.findUnique({ where: { id }, select: { scoringDeadlineAt: true, awardResolutionDeadlineAt: true } });
+  const existing = await prisma.tender.findUnique({
+    where: { id },
+    select: {
+      scoringDeadlineAt: true,
+      awardResolutionDeadlineAt: true,
+      processType: true,
+      referenceBudgetAmount: true,
+      estimatedAmount: true,
+      publishedAt: true,
+      createdAt: true,
+      questionsDeadlineAt: true,
+      bidsDeadlineAt: true,
+      convalidationRequestDeadlineAt: true,
+      convalidationResponseDeadlineAt: true,
+    },
+  });
   if (existing) {
     const effScoring = data.scoringDeadlineAt !== undefined ? data.scoringDeadlineAt : existing.scoringDeadlineAt;
     const effAward = data.awardResolutionDeadlineAt !== undefined ? data.awardResolutionDeadlineAt : existing.awardResolutionDeadlineAt;
@@ -586,6 +630,34 @@ app.put<{ Params: { id: string }; Body: TenderUpdateBody }>('/api/v1/tenders/:id
       const minAward = new Date(effScoring.getTime() + 3 * 24 * 60 * 60 * 1000);
       if (effAward < minAward)
         return reply.status(400).send({ error: 'La fecha límite de resolución de adjudicación debe ser al menos 3 días después del fin de calificación (scoringDeadlineAt)' });
+    }
+    const effProcessType = data.processType !== undefined ? data.processType : existing.processType;
+    const effRefBudget = data.referenceBudgetAmount !== undefined ? data.referenceBudgetAmount : (existing.referenceBudgetAmount != null ? Number(existing.referenceBudgetAmount) : null);
+    const effEstAmount = data.estimatedAmount !== undefined ? data.estimatedAmount : (existing.estimatedAmount != null ? Number(existing.estimatedAmount) : null);
+    const refAmount = effRefBudget ?? effEstAmount;
+    if (effProcessType === 'licitacion' && refAmount != null && Number.isFinite(refAmount) && refAmount > 0) {
+      const effPublishedAt = data.publishedAt !== undefined ? data.publishedAt : existing.publishedAt;
+      const effCreatedAt = existing.createdAt;
+      const startQuestions = effPublishedAt ?? effCreatedAt;
+      const effQ = data.questionsDeadlineAt !== undefined ? data.questionsDeadlineAt : existing.questionsDeadlineAt;
+      const effB = data.bidsDeadlineAt !== undefined ? data.bidsDeadlineAt : existing.bidsDeadlineAt;
+      if (effQ && startQuestions) {
+        const minQ = getMinDaysQuestions(refAmount);
+        if (minQ > 0 && calendarDaysBetween(startQuestions, effQ) < minQ)
+          return reply.status(400).send({ error: `El plazo entre publicación y límite de preguntas no puede ser menor a ${minQ} días para el monto indicado (art. 91 Reglamento)` });
+      }
+      if (effQ && effB) {
+        const minB = getMinDaysBids(refAmount);
+        if (minB > 0 && calendarDaysBetween(effQ, effB) < minB)
+          return reply.status(400).send({ error: `El plazo entre límite de preguntas y límite de ofertas no puede ser menor a ${minB} días para el monto indicado (art. 96 Reglamento)` });
+      }
+    }
+    const effConvReq = data.convalidationRequestDeadlineAt !== undefined ? data.convalidationRequestDeadlineAt : existing.convalidationRequestDeadlineAt;
+    const effConvResp = data.convalidationResponseDeadlineAt !== undefined ? data.convalidationResponseDeadlineAt : existing.convalidationResponseDeadlineAt;
+    if (effConvReq && effConvResp) {
+      const daysConv = calendarDaysBetween(effConvReq, effConvResp);
+      if (daysConv < 2 || daysConv > 5)
+        return reply.status(400).send({ error: 'El plazo de convalidación de errores debe ser entre 2 y 5 días (art. 100 Reglamento)' });
     }
   }
   const updatePayload: Prisma.TenderUpdateInput = {
@@ -818,8 +890,13 @@ app.post<{ Params: { id: string }; Body: BidBody }>('/api/v1/tenders/:id/bids', 
       select: { bidsDeadlineAt: true, referenceBudgetAmount: true, estimatedAmount: true },
     });
     if (!tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
-    const provider = await prisma.provider.findUnique({ where: { id: providerId }, select: { id: true, legalEstablishmentDate: true } });
+    const provider = await prisma.provider.findUnique({
+      where: { id: providerId },
+      select: { id: true, legalEstablishmentDate: true, patrimonyAmount: true, isCompliantSRI: true, isCompliantIESS: true },
+    });
     if (!provider) return reply.status(400).send({ error: 'Proveedor no encontrado' });
+    if (provider.isCompliantSRI === false || provider.isCompliantIESS === false)
+      return reply.status(400).send({ error: 'El proveedor no se encuentra al día en obligaciones tributarias o laborales; no puede recibir invitación ni autoinvitarse hasta regularizar.' });
     const refAmount = tender.referenceBudgetAmount != null ? Number(tender.referenceBudgetAmount) : tender.estimatedAmount != null ? Number(tender.estimatedAmount) : null;
     if (refAmount != null && refAmount > 500_000 && provider.legalEstablishmentDate) {
       const threeYearsAgo = new Date();
@@ -829,10 +906,16 @@ app.post<{ Params: { id: string }; Body: BidBody }>('/api/v1/tenders/:id/bids', 
     }
     if (refAmount != null && refAmount > 500_000 && !provider.legalEstablishmentDate)
       return reply.status(400).send({ error: 'Para procesos con presupuesto superior a $500.000 se requiere registrar la fecha de constitución (existencia legal) del proveedor' });
+    if (refAmount != null && refAmount > 500_000) {
+      const patrimony = provider.patrimonyAmount != null ? Number(provider.patrimonyAmount) : null;
+      if (patrimony == null || patrimony < refAmount)
+        return reply.status(400).send({ error: 'Para procesos con presupuesto referencial superior a $500.000 se requiere acreditar patrimonio igual o superior al presupuesto referencial (art. 93 Reglamento)' });
+    }
     const invitationType = (body?.invitationType === 'invited' || body?.invitationType === 'self_invited') ? body.invitationType : undefined;
     if (invitationType === 'self_invited' && tender.bidsDeadlineAt && new Date() > tender.bidsDeadlineAt)
       return reply.status(400).send({ error: 'Autoinvitación no permitida después del cierre de ofertas (bidsDeadlineAt)' });
     const declareNoInability = body?.declareNoInability === true;
+    // Art. 95 Reglamento: una vez presentada la oferta se prohíbe el retiro o desistimiento; no se expone endpoint de retiro.
     const bid = await prisma.bid.create({
       data: {
         tenderId,
@@ -938,7 +1021,7 @@ app.patch<{ Params: { id: string }; Body: ConvalidationBody }>('/api/v1/bids/:id
   }
 });
 
-// POST /api/v1/bids/:id/verify-rup – verificación RUP por etapa (apertura, adjudicación, contrato)
+// POST /api/v1/bids/:id/verify-rup – verificación RUP por etapa (apertura, adjudicación, contrato). Art. 26 Reglamento: en apertura, adjudicación y suscripción del contrato la entidad debe verificar que el proveedor esté habilitado; para personas jurídicas debe verificarse también la habilitación de socios, partícipes o accionistas.
 type VerifyRupBody = { stage: 'opening' | 'award' | 'contract' };
 app.post<{ Params: { id: string }; Body: VerifyRupBody }>('/api/v1/bids/:id/verify-rup', async (req, reply) => {
   const bidId = req.params.id;
@@ -985,6 +1068,7 @@ type ContractBody = {
   administratorName?: string;
   administratorEmail?: string;
   disputeDeadlineDays?: number;
+  awardResolutionIssuedAt?: string | null;
   awardPublishedAt?: string | null;
 };
 app.post<{ Params: { id: string }; Body: ContractBody }>('/api/v1/tenders/:id/contract', async (req, reply) => {
@@ -1003,12 +1087,22 @@ app.post<{ Params: { id: string }; Body: ContractBody }>('/api/v1/tenders/:id/co
       typeof body?.disputeDeadlineDays === 'number' && Number.isInteger(body.disputeDeadlineDays) && body.disputeDeadlineDays > 0
         ? body.disputeDeadlineDays
         : undefined;
+    let awardResolutionIssuedAt: Date | undefined;
+    if (body?.awardResolutionIssuedAt != null && typeof body.awardResolutionIssuedAt === 'string' && body.awardResolutionIssuedAt.trim()) {
+      const d = new Date(body.awardResolutionIssuedAt.trim());
+      if (Number.isFinite(d.getTime())) awardResolutionIssuedAt = d;
+    }
     let awardPublishedAt: Date | undefined;
     if (body?.awardPublishedAt != null) {
       if (typeof body.awardPublishedAt === 'string' && body.awardPublishedAt.trim()) {
         const d = new Date(body.awardPublishedAt.trim());
         if (Number.isFinite(d.getTime())) awardPublishedAt = d;
       }
+    }
+    if (awardPublishedAt && awardResolutionIssuedAt) {
+      const maxPublish = new Date(awardResolutionIssuedAt.getTime() + 24 * 60 * 60 * 1000);
+      if (awardPublishedAt.getTime() > maxPublish.getTime())
+        return reply.status(400).send({ error: 'La publicación de la resolución de adjudicación debe realizarse a más tardar 1 día después de su emisión (art. 112 Reglamento)' });
     }
     const contract = await prisma.contract.create({
       data: {
@@ -1025,6 +1119,7 @@ app.post<{ Params: { id: string }; Body: ContractBody }>('/api/v1/tenders/:id/co
             ? body.administratorEmail.trim()
             : undefined,
         disputeDeadlineDays,
+        awardResolutionIssuedAt: awardResolutionIssuedAt ?? undefined,
         awardPublishedAt: awardPublishedAt ?? undefined,
       },
     });
@@ -1049,6 +1144,7 @@ type ContractUpdateBody = {
   suspensionCause?: string;
   disputeDeadlineDays?: number | null;
   resultReportDocumentId?: string | null;
+  awardResolutionIssuedAt?: string | null;
   awardPublishedAt?: string | null;
 };
 
@@ -1057,7 +1153,7 @@ app.put<{ Params: { id: string }; Body: ContractUpdateBody }>('/api/v1/contracts
   const { id } = req.params;
   const body = (req.body as ContractUpdateBody) || {};
   try {
-    const existing = await prisma.contract.findUnique({ where: { id }, select: { administratorDesignatedAt: true } });
+    const existing = await prisma.contract.findUnique({ where: { id }, select: { administratorDesignatedAt: true, awardResolutionIssuedAt: true, awardPublishedAt: true } });
     if (!existing) return reply.status(404).send({ error: 'Contrato no encontrado' });
     const data: Prisma.ContractUpdateInput = {};
     if (typeof body.status === 'string' && body.status.trim()) data.status = body.status.trim();
@@ -1094,11 +1190,28 @@ app.put<{ Params: { id: string }; Body: ContractUpdateBody }>('/api/v1/contracts
     const docId = typeof body.resultReportDocumentId === 'string' ? body.resultReportDocumentId.trim() || null : undefined;
     if (docId !== undefined)
       (data as Record<string, unknown>).resultReportDocument = docId ? { connect: { id: docId } } : { disconnect: true };
+    if (body.awardResolutionIssuedAt !== undefined) {
+      if (body.awardResolutionIssuedAt === null) (data as Prisma.ContractUpdateInput).awardResolutionIssuedAt = null;
+      else if (typeof body.awardResolutionIssuedAt === 'string' && body.awardResolutionIssuedAt.trim()) {
+        const d = new Date(body.awardResolutionIssuedAt.trim());
+        if (Number.isFinite(d.getTime())) (data as Prisma.ContractUpdateInput).awardResolutionIssuedAt = d;
+      }
+    }
     if (body.awardPublishedAt !== undefined) {
       if (body.awardPublishedAt === null) (data as Prisma.ContractUpdateInput).awardPublishedAt = null;
       else if (typeof body.awardPublishedAt === 'string' && body.awardPublishedAt.trim()) {
         const d = new Date(body.awardPublishedAt.trim());
-        if (Number.isFinite(d.getTime())) (data as Prisma.ContractUpdateInput).awardPublishedAt = d;
+        if (Number.isFinite(d.getTime())) {
+          const issuedStr = body.awardResolutionIssuedAt != null && typeof body.awardResolutionIssuedAt === 'string' && body.awardResolutionIssuedAt.trim()
+            ? new Date(body.awardResolutionIssuedAt.trim())
+            : existing.awardResolutionIssuedAt;
+          if (issuedStr && Number.isFinite(issuedStr.getTime())) {
+            const maxPublish = new Date(issuedStr.getTime() + 24 * 60 * 60 * 1000);
+            if (d.getTime() > maxPublish.getTime())
+              return reply.status(400).send({ error: 'La publicación de la resolución de adjudicación debe realizarse a más tardar 1 día después de su emisión (art. 112 Reglamento)' });
+          }
+          (data as Prisma.ContractUpdateInput).awardPublishedAt = d;
+        }
       }
     }
     if (Object.keys(data).length === 0) return reply.status(400).send({ error: 'Ningún campo válido para actualizar' });
@@ -1159,7 +1272,7 @@ app.post('/api/v1/documents/upload', async (req, reply) => {
     const parts = req.parts();
     let ownerType = '';
     let ownerId = '';
-    // documentType: attachment (default), bid_opening_act (acta apertura ofertas), scoring_act, scoring_report (actas/informes calificación)
+    // documentType: attachment (default), bid_opening_act (acta apertura), clarifications_act (acta preguntas y aclaraciones), scoring_act (acta calificación), scoring_report (informe calificación/recomendación), need_report (informe de necesidad), budget_availability_certificate (cert. disponibilidad presupuestaria), tender_start_resolution (resolución de inicio)
     let documentType = 'attachment';
     let isPublic = false;
     let fileData: { stream: NodeJS.ReadableStream; filename: string; mimetype: string } | null = null;
@@ -1834,6 +1947,9 @@ app.post<{ Params: { id: string }; Body: OfferSubmitBody }>('/api/v1/offers/:id/
       const tender = await prisma.tender.findUnique({ where: { id: draft.tenderId }, select: { bidsDeadlineAt: true } });
       if (tender?.bidsDeadlineAt && new Date() > tender.bidsDeadlineAt)
         return reply.status(400).send({ error: 'Autoinvitación no permitida después del cierre de ofertas (bidsDeadlineAt)' });
+      const prov = await prisma.provider.findUnique({ where: { id: draft.providerId }, select: { isCompliantSRI: true, isCompliantIESS: true } });
+      if (prov && (prov.isCompliantSRI === false || prov.isCompliantIESS === false))
+        return reply.status(400).send({ error: 'El proveedor no se encuentra al día en obligaciones tributarias o laborales; no puede recibir invitación ni autoinvitarse hasta regularizar.' });
     }
 
     const docs = await prisma.offerDocument.findMany({ where: { draftId }, select: { hash: true, storageKey: true, sizeBytes: true } });
@@ -1867,6 +1983,27 @@ app.post<{ Params: { id: string }; Body: OfferSubmitBody }>('/api/v1/offers/:id/
           },
         });
       } else {
+        const tenderForBid = await prisma.tender.findUnique({
+          where: { id: draft.tenderId },
+          select: { referenceBudgetAmount: true, estimatedAmount: true },
+        });
+        const providerForBid = await prisma.provider.findUnique({
+          where: { id: draft.providerId },
+          select: { legalEstablishmentDate: true, patrimonyAmount: true },
+        });
+        const refAmt = tenderForBid?.referenceBudgetAmount != null ? Number(tenderForBid.referenceBudgetAmount) : tenderForBid?.estimatedAmount != null ? Number(tenderForBid.estimatedAmount) : null;
+        if (refAmt != null && refAmt > 500_000 && providerForBid) {
+          if (providerForBid.legalEstablishmentDate) {
+            const threeYearsAgo = new Date();
+            threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+            if (providerForBid.legalEstablishmentDate > threeYearsAgo)
+              return reply.status(400).send({ error: 'Para procesos con presupuesto superior a $500.000, la persona jurídica debe tener al menos 3 años de existencia legal desde la fecha de constitución' });
+          } else
+            return reply.status(400).send({ error: 'Para procesos con presupuesto superior a $500.000 se requiere registrar la fecha de constitución (existencia legal) del proveedor' });
+          const patrimony = providerForBid.patrimonyAmount != null ? Number(providerForBid.patrimonyAmount) : null;
+          if (patrimony == null || patrimony < refAmt)
+            return reply.status(400).send({ error: 'Para procesos con presupuesto referencial superior a $500.000 se requiere acreditar patrimonio igual o superior al presupuesto referencial (art. 93 Reglamento)' });
+        }
         await prisma.bid.create({
           data: {
             tenderId: draft.tenderId,
@@ -2198,8 +2335,18 @@ app.post<{ Body: ProcessClaimBody }>('/api/v1/process-claims', async (req, reply
   if (!tenderId || !providerId || !kind || !subject || !message)
     return reply.status(400).send({ error: 'tenderId, providerId, kind, subject y message son obligatorios' });
   try {
-    const tender = await prisma.tender.findUnique({ where: { id: tenderId } });
+    const tender = await prisma.tender.findUnique({
+      where: { id: tenderId },
+      select: { id: true, claimWindowDays: true, bidsOpenedAt: true, bidsDeadlineAt: true },
+    });
     if (!tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
+    const windowDays = tender.claimWindowDays ?? 3;
+    const finEtapa = tender.bidsOpenedAt ?? tender.bidsDeadlineAt ?? null;
+    if (finEtapa) {
+      const finVentana = new Date(finEtapa.getTime() + windowDays * 24 * 60 * 60 * 1000);
+      if (new Date() > finVentana)
+        return reply.status(400).send({ error: `El plazo para presentar reclamos (${windowDays} días desde el cierre de la etapa) ha vencido.` });
+    }
     const provider = await prisma.provider.findUnique({ where: { id: providerId } });
     if (!provider) return reply.status(400).send({ error: 'Proveedor no encontrado' });
     const claim = await prisma.processClaim.create({

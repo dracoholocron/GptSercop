@@ -50,6 +50,8 @@ model Provider {
   registrationData        Json?      // datos por paso del registro RUP
   legalEstablishmentDate  DateTime?  // existencia legal (art. 73.1: 3 años si monto > 500.000)
   patrimonyAmount         Decimal?   @db.Decimal(18, 2) // verificación SRI/stub
+  isCompliantSRI          Boolean?   // al día obligaciones tributarias (null = no verificado)
+  isCompliantIESS         Boolean?   // al día obligaciones laborales IESS (null = no verificado)
   createdAt               DateTime   @default(now())
   updatedAt               DateTime   @updatedAt
   bids                    Bid[]
@@ -183,7 +185,8 @@ model Contract {
   suspensionCause        String?            // causal de suspensión
   disputeDeadlineDays     Int?              // plazo controversias (días); debe coincidir con TDR
   resultReportDocumentId  String?
-  awardPublishedAt        DateTime?         // publicación resolución adjudicación (máx. 1 día)
+  awardResolutionIssuedAt DateTime?         // fecha emisión resolución de adjudicación (art. 112)
+  awardPublishedAt        DateTime?         // publicación en portal (término máx. 1 día desde emisión)
   createdAt               DateTime          @default(now())
   updatedAt               DateTime          @updatedAt
   tender                  Tender            @relation(fields: [tenderId], references: [id], onDelete: Cascade)

@@ -27,6 +27,11 @@ export default function EditarProcesoPage() {
   const [contingencyUploading, setContingencyUploading] = useState(false);
   const [openingActFile, setOpeningActFile] = useState<File | null>(null);
   const [openingActUploading, setOpeningActUploading] = useState(false);
+  const [clarificationsActFile, setClarificationsActFile] = useState<File | null>(null);
+  const [clarificationsActUploading, setClarificationsActUploading] = useState(false);
+  const [prepDocFile, setPrepDocFile] = useState<File | null>(null);
+  const [prepDocType, setPrepDocType] = useState<'need_report' | 'budget_availability_certificate' | 'tender_start_resolution'>('need_report');
+  const [prepDocUploading, setPrepDocUploading] = useState(false);
   const [openingBids, setOpeningBids] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -119,6 +124,46 @@ export default function EditarProcesoPage() {
     }
   };
 
+  const handleUploadClarificationsAct = async () => {
+    if (!clarificationsActFile) return;
+    setError('');
+    setClarificationsActUploading(true);
+    try {
+      await uploadDocument({
+        ownerType: 'tender',
+        ownerId: id,
+        documentType: 'clarifications_act',
+        file: clarificationsActFile,
+      });
+      setClarificationsActFile(null);
+      load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al subir acta de preguntas y aclaraciones');
+    } finally {
+      setClarificationsActUploading(false);
+    }
+  };
+
+  const handleUploadPrepDoc = async () => {
+    if (!prepDocFile) return;
+    setError('');
+    setPrepDocUploading(true);
+    try {
+      await uploadDocument({
+        ownerType: 'tender',
+        ownerId: id,
+        documentType: prepDocType,
+        file: prepDocFile,
+      });
+      setPrepDocFile(null);
+      load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al subir documento');
+    } finally {
+      setPrepDocUploading(false);
+    }
+  };
+
   const handleUploadContingency = async () => {
     if (!contingencyFile) return;
     setError('');
@@ -176,6 +221,29 @@ export default function EditarProcesoPage() {
               </form>
             </Card>
 
+            <Card title="Documentos fase preparatoria" className="mt-4">
+              <p className="mb-2 text-sm text-text-secondary">Informe de necesidad, certificación de disponibilidad presupuestaria y resolución de inicio (opcionales).</p>
+              <div className="space-y-3">
+                <label htmlFor="editar-prep-doc-type" className="block text-sm font-medium text-text-secondary">Tipo de documento</label>
+                <select id="editar-prep-doc-type" value={prepDocType} onChange={(e) => setPrepDocType(e.target.value as typeof prepDocType)} className="w-full max-w-xs rounded border border-neutral-300 px-3 py-2 text-sm">
+                  <option value="need_report">Informe de necesidad</option>
+                  <option value="budget_availability_certificate">Certificación disponibilidad presupuestaria</option>
+                  <option value="tender_start_resolution">Resolución de inicio</option>
+                </select>
+                <div className="flex flex-wrap items-end gap-2">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => setPrepDocFile(e.target.files?.[0] ?? null)}
+                    className="text-sm"
+                  />
+                  <Button variant="secondary" size="sm" onClick={handleUploadPrepDoc} disabled={!prepDocFile || prepDocUploading}>
+                    {prepDocUploading ? 'Subiendo…' : 'Subir documento'}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
             {canOpenBids && (
               <Card title="Apertura de ofertas" className="mt-4">
                 <p className="mb-2 text-sm text-text-secondary">El acto de apertura debe realizarse al menos 1 hora después del límite de entrega. Opcionalmente suba el acta y registre la apertura.</p>
@@ -193,6 +261,21 @@ export default function EditarProcesoPage() {
                 </div>
               </Card>
             )}
+
+            <Card title="Acta de preguntas y aclaraciones" className="mt-4">
+              <p className="mb-2 text-sm text-text-secondary">Subir el acta correspondiente a la etapa de preguntas, respuestas y aclaraciones del proceso.</p>
+              <div className="flex flex-wrap items-end gap-2">
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => setClarificationsActFile(e.target.files?.[0] ?? null)}
+                  className="text-sm"
+                />
+                <Button variant="secondary" size="sm" onClick={handleUploadClarificationsAct} disabled={!clarificationsActFile || clarificationsActUploading}>
+                  {clarificationsActUploading ? 'Subiendo…' : 'Subir acta de preguntas y aclaraciones'}
+                </Button>
+              </div>
+            </Card>
 
             <Card title="Liberación por no producción nacional" className="mt-4">
               <p className="mb-2 text-sm text-text-secondary">Cuando no exista producción nacional puede solicitar autorización para importación.</p>
