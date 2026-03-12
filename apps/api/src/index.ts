@@ -33,11 +33,22 @@ app.addHook('onSend', async (_request, reply) => {
   reply.header('X-Frame-Options', 'DENY');
 });
 
-// Login (Fase 2): emite JWT para pruebas; en producción usar IdP OIDC
-type LoginBody = { email: string; role?: string; identifier?: string; entityId?: string };
+// Login (Fase 2): emite JWT para pruebas; en producción usar IdP OIDC.
+// Inspirado en portal legacy: puede recibir email o combinación RUC/usuario/password,
+// pero por ahora solo se usa email + role (+ identifier/entityId como stub).
+type LoginBody = {
+  email?: string;
+  role?: string;
+  identifier?: string; // RUC proveedor/entidad (legacy: txtRUCRecordatorio)
+  username?: string; // legacy: txtLogin (no usado aún para lookup)
+  password?: string; // legacy: txtPassword (no persistido en este MVP)
+  entityId?: string;
+};
 app.post<{ Body: LoginBody }>('/api/v1/auth/login', async (req, reply) => {
   const body = req.body as LoginBody;
   const email = typeof body?.email === 'string' ? body.email.trim() : '';
+  // Para mantener compatibilidad y simplicidad, seguimos usando email como subject principal.
+  // En una iteración futura se podría permitir login por RUC+usuario sin email.
   if (!email) return reply.status(400).send({ error: 'email es obligatorio' });
   if (!hasJwtSecret()) return reply.status(503).send({ error: 'Auth no configurado (JWT_SECRET)' });
   const allowedRoles = ['supplier', 'entity', 'admin'] as const;
@@ -57,6 +68,89 @@ app.post<{ Body: LoginBody }>('/api/v1/auth/login', async (req, reply) => {
   }
   const token = sign({ sub: email, role });
   return reply.send({ token, expiresIn: 86400, providerId: providerId ?? null, entityId: entityId ?? null });
+});
+
+// Recuperación de contraseña (MVP inspirado en EP/ReseteoContraseniaProveedor.cpe).
+// No persiste contraseñas en este MVP; genera respuesta stub para pruebas.
+type ResetRequestBody = { identifier?: string; email?: string; birthDate?: string };
+app.post<{ Body: ResetRequestBody }>('/api/v1/auth/reset-request', async (req, reply) => {
+  const body = req.body as ResetRequestBody;
+  const identifier = typeof body?.identifier === 'string' ? body.identifier.trim() : '';
+  const email = typeof body?.email === 'string' ? body.email.trim() : '';
+  if (!identifier && !email)
+    return reply.status(400).send({ error: 'Debe proporcionar al menos RUC/identificador o correo electrónico' });
+  // En una implementación completa se validaría contra Provider/User y se enviaría correo con token.
+  return reply.status(200).send({ ok: true, message: 'Si los datos corresponden a una cuenta, se enviará un enlace de recuperación.' });
+});
+
+type ResetConfirmBody = { token: string; newPassword: string };
+app.post<{ Body: ResetConfirmBody }>('/api/v1/auth/reset-confirm', async (req, reply) => {
+  const body = req.body as ResetConfirmBody;
+  const token = typeof body?.token === 'string' ? body.token.trim() : '';
+  const newPassword = typeof body?.newPassword === 'string' ? body.newPassword : '';
+  if (!token || !newPassword)
+    return reply.status(400).send({ error: 'token y newPassword son obligatorios' });
+  if (newPassword.length < 8)
+    return reply.status(400).send({ error: 'La nueva contraseña debe tener al menos 8 caracteres' });
+  // En una implementación completa se verificaría el token, se localizaría el usuario y se actualizaría el hash.
+  return reply.status(200).send({ ok: true });
+});
+
+// RUP – Registro proveedor (wizard FO/RPE 1–8): API de borrador por pasos.
+type RupRegistrationStepBody = {
+  step: number;
+  data: Record<string, unknown>;
+};
+
+// Obtiene el borrador de registro RUP para el proveedor autenticado (supplier).
+app.get('/api/v1/rup/registration', async (req, reply) => {
+  const user = req.user;
+  if (!user || user.role !== 'supplier') return reply.status(401).send({ error: 'Solo proveedores autenticados pueden acceder a su registro RUP' });
+  // En este MVP usamos email como sub; en una iteración siguiente se podría enlazar a providerId almacenado en claims.
+  const email = user.sub;
+  const provider = await prisma.provider.findFirst({
+    where: { identifier: email },
+    select: { id: true, registrationStep: true, registrationData: true },
+  });
+  // Si aún no existe un registro, devolver un borrador vacío.
+  if (!provider) return reply.status(200).send({ data: { registrationStep: 0, registrationData: null } });
+  return reply.status(200).send({ data: provider });
+});
+
+// Actualiza el borrador de registro RUP para un paso específico.
+app.patch<{ Body: RupRegistrationStepBody }>('/api/v1/rup/registration', async (req, reply) => {
+  const user = req.user;
+  if (!user || user.role !== 'supplier') return reply.status(401).send({ error: 'Solo proveedores autenticados pueden actualizar su registro RUP' });
+  const body = req.body as RupRegistrationStepBody;
+  const step = typeof body?.step === 'number' ? body.step : NaN;
+  if (!Number.isInteger(step) || step < 1 || step > 8)
+    return reply.status(400).send({ error: 'step debe estar entre 1 y 8' });
+  const data = body?.data && typeof body.data === 'object' ? body.data : {};
+  const email = user.sub;
+  // En este MVP usamos identifier=email como stub para localizar el proveedor.
+  let provider = await prisma.provider.findFirst({ where: { identifier: email } });
+  if (!provider) {
+    provider = await prisma.provider.create({
+      data: {
+        name: email,
+        identifier: email,
+        status: 'active',
+        registrationStep: step,
+        registrationData: data as Prisma.InputJsonValue,
+      },
+    });
+    return reply.status(200).send({ data: provider });
+  }
+  const nextStep = Math.max(provider.registrationStep ?? 0, step);
+  const updated = await prisma.provider.update({
+    where: { id: provider.id },
+    data: {
+      registrationStep: nextStep,
+      registrationData: data as Prisma.InputJsonValue,
+    },
+    select: { id: true, registrationStep: true, registrationData: true },
+  });
+  return reply.status(200).send({ data: updated });
 });
 
 // Health check (Fase 4: DB + Redis)
@@ -177,6 +271,7 @@ app.get<{
           territoryPreference: true,
           minimumQuotes: true,
           marketStudyDocumentId: true,
+          apuDocumentId: true,
           liberationRequestedAt: true,
           liberationApprovedAt: true,
           liberationDocumentId: true,
@@ -364,6 +459,7 @@ type TenderBody = {
   claimWindowDays?: number;
   minimumQuotes?: number;
   marketStudyDocumentId?: string | null;
+  apuDocumentId?: string | null;
   liberationDocumentId?: string | null;
   contingencyPlanDocumentId?: string | null;
   referenceBudgetAmount?: number | null;
@@ -396,6 +492,7 @@ app.post<{ Body: TenderBody }>('/api/v1/tenders', async (req, reply) => {
       minimumQuotes = body.minimumQuotes;
     }
     const marketStudyDocumentId = typeof body?.marketStudyDocumentId === 'string' ? body.marketStudyDocumentId.trim() || null : body?.marketStudyDocumentId === null ? null : undefined;
+    const apuDocumentId = typeof body?.apuDocumentId === 'string' ? body.apuDocumentId.trim() || null : body?.apuDocumentId === null ? null : undefined;
     const liberationDocumentId = typeof body?.liberationDocumentId === 'string' ? body.liberationDocumentId.trim() || null : body?.liberationDocumentId === null ? null : undefined;
     const contingencyPlanDocumentId = typeof body?.contingencyPlanDocumentId === 'string' ? body.contingencyPlanDocumentId.trim() || null : body?.contingencyPlanDocumentId === null ? null : undefined;
     const tp = typeof body?.territoryPreference === 'string' ? body.territoryPreference.trim().toLowerCase() : '';
@@ -405,6 +502,10 @@ app.post<{ Body: TenderBody }>('/api/v1/tenders', async (req, reply) => {
     const processType = typeof body?.processType === 'string' ? body.processType.trim() : '';
     if (processType === 'licitacion' && refBudget != null && refBudget <= 10_000)
       return reply.status(400).send({ error: 'Licitación bienes y servicios requiere presupuesto referencial superior a $10.000' });
+    if (processType === 'licitacion_obras' && refBudget != null && refBudget <= 10_000)
+      return reply.status(400).send({ error: 'Licitación de obras requiere presupuesto referencial superior a $10.000' });
+    if (processType === 'sie' && refBudget != null && refBudget < 10_000)
+      return reply.status(400).send({ error: 'Subasta inversa electrónica requiere presupuesto referencial mayor o igual a $10.000' });
     const responsibleType = (body?.responsibleType === 'commission' || body?.responsibleType === 'delegate') ? body.responsibleType : null;
     if (refBudget != null && refBudget >= 100_000 && responsibleType === 'delegate')
       return reply.status(400).send({ error: 'Para montos >= $100.000 debe designarse comisión técnica (responsibleType: commission)' });
@@ -421,7 +522,7 @@ app.post<{ Body: TenderBody }>('/api/v1/tenders', async (req, reply) => {
       if (awardResolutionDeadlineAt < minAward)
         return reply.status(400).send({ error: 'La fecha límite de resolución de adjudicación debe ser al menos 3 días después del fin de calificación (scoringDeadlineAt)' });
     }
-    if (processType === 'licitacion' && refBudget != null && Number.isFinite(refBudget) && refBudget > 0) {
+    if ((processType === 'licitacion' || processType === 'licitacion_obras') && refBudget != null && Number.isFinite(refBudget) && refBudget > 0) {
       const now = new Date();
       const qDeadline = parseDate(body?.questionsDeadlineAt);
       const bDeadline = parseDate(body?.bidsDeadlineAt);
@@ -462,6 +563,7 @@ app.post<{ Body: TenderBody }>('/api/v1/tenders', async (req, reply) => {
             : undefined,
         minimumQuotes,
         marketStudyDocumentId: marketStudyDocumentId !== undefined ? marketStudyDocumentId : undefined,
+        apuDocumentId: apuDocumentId !== undefined ? apuDocumentId : undefined,
         liberationDocumentId: liberationDocumentId !== undefined ? liberationDocumentId : undefined,
         contingencyPlanDocumentId: contingencyPlanDocumentId !== undefined ? contingencyPlanDocumentId : undefined,
         referenceBudgetAmount: refBudget != null ? refBudget : undefined,
@@ -500,6 +602,7 @@ type TenderUpdateBody = {
   claimWindowDays?: number;
   minimumQuotes?: number | null;
   marketStudyDocumentId?: string | null;
+   apuDocumentId?: string | null;
   liberationDocumentId?: string | null;
   contingencyPlanDocumentId?: string | null;
   referenceBudgetAmount?: number | null;
@@ -537,6 +640,7 @@ app.put<{ Params: { id: string }; Body: TenderUpdateBody }>('/api/v1/tenders/:id
     claimWindowDays?: number;
     minimumQuotes?: number | null;
     marketStudyDocumentId?: string | null;
+    apuDocumentId?: string | null;
     liberationDocumentId?: string | null;
     contingencyPlanDocumentId?: string | null;
     referenceBudgetAmount?: number | null;
@@ -584,6 +688,8 @@ app.put<{ Params: { id: string }; Body: TenderUpdateBody }>('/api/v1/tenders/:id
   }
   if (body.marketStudyDocumentId !== undefined)
     data.marketStudyDocumentId = typeof body.marketStudyDocumentId === 'string' ? body.marketStudyDocumentId.trim() || null : null;
+  if (body.apuDocumentId !== undefined)
+    data.apuDocumentId = typeof body.apuDocumentId === 'string' ? body.apuDocumentId.trim() || null : null;
   if (body.liberationDocumentId !== undefined)
     data.liberationDocumentId = typeof body.liberationDocumentId === 'string' ? body.liberationDocumentId.trim() || null : null;
   if (body.contingencyPlanDocumentId !== undefined)
@@ -635,7 +741,7 @@ app.put<{ Params: { id: string }; Body: TenderUpdateBody }>('/api/v1/tenders/:id
     const effRefBudget = data.referenceBudgetAmount !== undefined ? data.referenceBudgetAmount : (existing.referenceBudgetAmount != null ? Number(existing.referenceBudgetAmount) : null);
     const effEstAmount = data.estimatedAmount !== undefined ? data.estimatedAmount : (existing.estimatedAmount != null ? Number(existing.estimatedAmount) : null);
     const refAmount = effRefBudget ?? effEstAmount;
-    if (effProcessType === 'licitacion' && refAmount != null && Number.isFinite(refAmount) && refAmount > 0) {
+    if ((effProcessType === 'licitacion' || effProcessType === 'licitacion_obras') && refAmount != null && Number.isFinite(refAmount) && refAmount > 0) {
       const effPublishedAt = data.publishedAt !== undefined ? data.publishedAt : existing.publishedAt;
       const effCreatedAt = existing.createdAt;
       const startQuestions = effPublishedAt ?? effCreatedAt;
@@ -652,6 +758,8 @@ app.put<{ Params: { id: string }; Body: TenderUpdateBody }>('/api/v1/tenders/:id
           return reply.status(400).send({ error: `El plazo entre límite de preguntas y límite de ofertas no puede ser menor a ${minB} días para el monto indicado (art. 96 Reglamento)` });
       }
     }
+    if (effProcessType === 'sie' && refAmount != null && Number.isFinite(refAmount) && refAmount < 10_000)
+      return reply.status(400).send({ error: 'Subasta inversa electrónica requiere presupuesto referencial mayor o igual a $10.000' });
     const effConvReq = data.convalidationRequestDeadlineAt !== undefined ? data.convalidationRequestDeadlineAt : existing.convalidationRequestDeadlineAt;
     const effConvResp = data.convalidationResponseDeadlineAt !== undefined ? data.convalidationResponseDeadlineAt : existing.convalidationResponseDeadlineAt;
     if (effConvReq && effConvResp) {
@@ -673,6 +781,7 @@ app.put<{ Params: { id: string }; Body: TenderUpdateBody }>('/api/v1/tenders/:id
     ...(data.claimWindowDays !== undefined && { claimWindowDays: data.claimWindowDays }),
     ...(data.minimumQuotes !== undefined && { minimumQuotes: data.minimumQuotes }),
     ...(data.marketStudyDocumentId !== undefined && { marketStudyDocumentId: data.marketStudyDocumentId }),
+    ...(data.apuDocumentId !== undefined && { apuDocumentId: data.apuDocumentId }),
     ...(data.liberationDocumentId !== undefined && { liberationDocumentId: data.liberationDocumentId }),
     ...(data.contingencyPlanDocumentId !== undefined && { contingencyPlanDocumentId: data.contingencyPlanDocumentId }),
     ...(data.referenceBudgetAmount !== undefined && { referenceBudgetAmount: data.referenceBudgetAmount }),
@@ -1272,7 +1381,7 @@ app.post('/api/v1/documents/upload', async (req, reply) => {
     const parts = req.parts();
     let ownerType = '';
     let ownerId = '';
-    // documentType: attachment (default), bid_opening_act (acta apertura), clarifications_act (acta preguntas y aclaraciones), scoring_act (acta calificación), scoring_report (informe calificación/recomendación), need_report (informe de necesidad), budget_availability_certificate (cert. disponibilidad presupuestaria), tender_start_resolution (resolución de inicio)
+    // documentType: attachment (default), bid_opening_act (acta apertura), clarifications_act (acta preguntas y aclaraciones), scoring_act (acta calificación), scoring_report (informe calificación/recomendación), need_report (informe de necesidad), budget_availability_certificate (cert. disponibilidad presupuestaria), tender_start_resolution (resolución de inicio), apu (análisis de precios unitarios para obras)
     let documentType = 'attachment';
     let isPublic = false;
     let fileData: { stream: NodeJS.ReadableStream; filename: string; mimetype: string } | null = null;
@@ -2027,17 +2136,34 @@ app.post<{ Params: { id: string }; Body: OfferSubmitBody }>('/api/v1/offers/:id/
 
 // -----------------------------
 // SIE – Subasta Inversa (MVP)
+// Normativa (transcript "Subasta Inversa Electrónica", art. 10 Reglamento):
+// - SIE aplica a bienes y servicios estandarizados (valor por dinero).
+// - Calificación cumple/no cumple; no se exige experiencia ni patrimonio.
+// - Oferta económica inicial debe coincidir con la declaración BAE (validación cruzada futura).
+// - Puja: duración 15–60 min; si no hay al menos 2 oferentes, reprogramación una sola vez 24 h;
+//   en reprogramación la postura debe ser inferior a la mínima de la puja inicial.
+// - Negociación: rebaja mínima 5% del presupuesto referencial.
+// - RUP: verificar habilitación en apertura, adjudicación y suscripción del contrato (y socios si PJ).
 // -----------------------------
+const SIE_BIDDING_DURATION_MIN = 15;
+const SIE_BIDDING_DURATION_MAX = 60;
+const SIE_BIDDING_DURATION_DEFAULT = 30;
+
 async function getOrCreateAuction(tenderId: string) {
   const existing = await prisma.auction.findUnique({ where: { tenderId } });
   if (existing) return existing;
+  const now = Date.now();
+  const initialEndsAt = new Date(now + 10 * 60 * 1000); // ventana inicial (stub)
+  const durationMin = SIE_BIDDING_DURATION_DEFAULT;
+  const biddingEndsAt = new Date(initialEndsAt.getTime() + durationMin * 60 * 1000);
   return prisma.auction.create({
     data: {
       tenderId,
       status: 'INITIAL_WINDOW_OPEN',
       currentRound: 1,
-      initialEndsAt: new Date(Date.now() + 10 * 60 * 1000), // 10 min (stub)
-      biddingEndsAt: new Date(Date.now() + 20 * 60 * 1000), // 20 min (stub)
+      initialEndsAt,
+      biddingEndsAt,
+      biddingDurationMinutes: durationMin,
     },
   });
 }
@@ -2144,6 +2270,16 @@ app.post<{ Params: { tenderId: string }; Body: SieBidBody }>('/api/v1/sie/:tende
     // transición stub: permitir negociación si ya hubo pujas
     if (!['NEGOTIATION', 'BIDDING', 'BIDDING_CLOSED'].includes(auction.status)) {
       return reply.status(409).send({ error: 'Subasta no está en negociación' });
+    }
+    const tender = await prisma.tender.findUnique({
+      where: { id: auction.tenderId },
+      select: { referenceBudgetAmount: true, estimatedAmount: true },
+    });
+    const refAmount = tender?.referenceBudgetAmount != null ? Number(tender.referenceBudgetAmount) : tender?.estimatedAmount != null ? Number(tender.estimatedAmount) : null;
+    if (refAmount != null && Number.isFinite(refAmount) && refAmount > 0) {
+      const maxAllowed = refAmount * 0.95;
+      if (amount > maxAllowed)
+        return reply.status(400).send({ error: 'La oferta de negociación debe ser al menos 5% inferior al presupuesto referencial' });
     }
     const best = await prisma.auctionBid.findFirst({ where: { auctionId: auction.id }, orderBy: { amount: 'asc' } });
     if (best && amount >= Number(best.amount)) return reply.status(422).send({ error: 'La oferta final debe mejorar (ser menor) que la mejor oferta' });
@@ -2855,7 +2991,19 @@ app.get<{ Params: { id: string } }>('/api/v1/tenders/:id/evaluations', async (re
   }
 });
 
-type EvaluationBody = { bidId: string; technicalScore?: number; financialScore?: number; baeScore?: number; nationalPartScore?: number; totalScore?: number; status?: string };
+type EvaluationBody = {
+  bidId: string;
+  technicalScore?: number;
+  financialScore?: number;
+  baeScore?: number;
+  nationalPartScore?: number;
+  experienceGeneralScore?: number;
+  experienceSpecificScore?: number;
+  subcontractingScore?: number;
+  otherParamsScore?: number;
+  totalScore?: number;
+  status?: string;
+};
 app.post<{ Params: { id: string }; Body: EvaluationBody }>('/api/v1/tenders/:id/evaluations', async (req, reply) => {
   const tenderId = req.params.id;
   const body = req.body as EvaluationBody;
@@ -2872,6 +3020,10 @@ app.post<{ Params: { id: string }; Body: EvaluationBody }>('/api/v1/tenders/:id/
         financialScore: body?.financialScore,
         baeScore: body?.baeScore,
         nationalPartScore: body?.nationalPartScore,
+        experienceGeneralScore: body?.experienceGeneralScore,
+        experienceSpecificScore: body?.experienceSpecificScore,
+        subcontractingScore: body?.subcontractingScore,
+        otherParamsScore: body?.otherParamsScore,
         totalScore: body?.totalScore,
         status: body?.status || 'pending',
       },

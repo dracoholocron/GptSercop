@@ -93,6 +93,7 @@ model Tender {
   territoryPreference     String?   // ninguna | amazonia | galapagos (preferencia territorial)
   minimumQuotes           Int?      // ínfima cuantía: mínimo de cotizaciones (ej. 3)
   marketStudyDocumentId   String?   // documento de estudio de mercado (opcional)
+  apuDocumentId           String?   // documento de análisis de precios unitarios (licitación de obras)
   liberationRequestedAt   DateTime? // solicitud liberación importación (no producción nacional)
   liberationApprovedAt    DateTime? // aprobación liberación (SERCOP/admin)
   liberationDocumentId    String?   // documento sustento solicitud/aprobación liberación
@@ -145,6 +146,7 @@ model Bid {
   invitationType             String?   // invited | self_invited (autoinvitación)
   status                     String    @default("submitted") // submitted | failed_awardee | etc.
   submittedAt                DateTime?
+  subcontractingPercentage   Decimal?  @db.Decimal(5, 2) // porcentaje de subcontratación declarado (obras)
   createdAt                  DateTime  @default(now())
   updatedAt                  DateTime  @updatedAt
   tender                     Tender    @relation(fields: [tenderId], references: [id], onDelete: Cascade)
@@ -160,6 +162,10 @@ model Evaluation {
   financialScore       Decimal? @db.Decimal(10, 2)
   baeScore             Decimal? @db.Decimal(10, 2) // puntaje BAE (Valor Agregado Ecuatoriano)
   nationalPartScore    Decimal? @db.Decimal(10, 2) // puntaje participación nacional
+  experienceGeneralScore  Decimal? @db.Decimal(10, 2) // experiencia general (obras)
+  experienceSpecificScore Decimal? @db.Decimal(10, 2) // experiencia específica (obras)
+  subcontractingScore     Decimal? @db.Decimal(10, 2) // subcontratación 15–30% (obras)
+  otherParamsScore        Decimal? @db.Decimal(10, 2) // otros parámetros (máx. 1 pt)
   totalScore           Decimal? @db.Decimal(10, 2)
   status               String
   tender               Tender   @relation("TenderEvaluations", fields: [tenderId], references: [id], onDelete: Cascade)
@@ -280,18 +286,22 @@ model SignSession {
 }
 
 // Subasta Inversa Electrónica (SIE) – modelo mínimo para MVP
+// Duración puja normativa 15–60 min; reprogramación una vez 24 h (postura < mínima inicial).
 model Auction {
-  id           String   @id @default(uuid())
-  tenderId     String   @unique
-  status       String   @default("ELIGIBLE_CHECK") // ver diagrama SIE del plan
-  currency     String   @default("USD")
-  startAmount  Decimal? @db.Decimal(18, 2)
-  currentRound Int      @default(1)
-  initialEndsAt DateTime?
-  biddingEndsAt DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  bids         AuctionBid[]
+  id                    String    @id @default(uuid())
+  tenderId              String    @unique
+  status                String    @default("ELIGIBLE_CHECK") // ver diagrama SIE del plan
+  currency              String    @default("USD")
+  startAmount           Decimal?  @db.Decimal(18, 2)
+  currentRound          Int       @default(1)
+  initialEndsAt         DateTime?
+  biddingEndsAt         DateTime?
+  biddingDurationMinutes Int?     // 15–60 normativa; null = usar default
+  rescheduledAt         DateTime? // fecha de reprogramación (una sola vez 24 h)
+  biddingRescheduled    Boolean   @default(false) // true si ya se reprogramó
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  bids                  AuctionBid[]
 }
 
 model AuctionBid {

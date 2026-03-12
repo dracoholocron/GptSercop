@@ -1,0 +1,2676 @@
+0:25
+Muy buenos días con todos del Servicio Nacional de Contratación Pública. Les damos la más cordial bienvenida a este
+0:32
+seminario del día de hoy, subas inercia electrónica. Nuestra facilitadora del es la ingeniera Coraca, quien nos va a dar
+0:38
+información referente a este tema. Merita, muy buenos días, bienvenida.
+0:44
+Hola, Anita, ¿cómo estás? Muy buenos días. Muy buenos días con todos los participantes. Por favor, me confirma si es que el audio es alto y claro.
+0:54
+Eh, yo te escucho por favor nuestros estimados participantes, si nos pueden confirmar.
+1:00
+Sí, no te están confirmando. Muchas gracias. Sí, perfecto. Bien, ya. Perfecto. Si es
+1:06
+que existe alguna inconsistencia, por favor, les vamos a a rogar a los participantes que nos avisen si es que
+1:12
+existe alguna inestabilidad en la red. Voy a estar pendiente del chat. Bien,
+1:17
+eh, reiterando la bienvenida, les agradezco una vez más por el tiempo invertido en esta capacitación. Siempre
+1:23
+es importante tener claro que nuestro conocimiento tiene que ir eh
+1:29
+consolidándose, ¿no?, día a día con nuestros cambios normativos. Eh hoy en día tenemos las reformas, tenemos la
+1:34
+transitoria y efectivamente eso afectado también a ese procedimiento de contratación que es muy común, es la
+1:41
+subasta inversa electrónica. No ha habido cambios en herramienta como tal, pero sí en la elaboración de los
+1:48
+documentos. Tenemos que aprender eh a a tomar la decisión de cuándo aplicar una
+1:54
+subasa inversa electrónica o cuándo aplicar una licitación. Sabemos que los
+1:59
+dos procesos en este momento se van a hacer lo más los más comunes, bueno, sin tomar en cuenta eh la ínfima cuantía,
+2:04
+¿no? Hablando en herramienta como tal. E bueno, la subasa inversa electrónica es
+2:10
+un proceso que no tenemos que determinar por el precio. Recordándoles nuevamente
+2:16
+que cada procedimiento de contratación, cada objeto de contratación es diferente. No podemos nosotros visionar
+2:23
+o determinar ciertos parámetros para todos los procesos de contratación, porque el análisis lo tenemos que hacer
+2:29
+en base al con base al conocimiento y efectivamente al objeto de la contratación. Vamos a ver un ejemplo de
+2:36
+cómo aplicar el valor por dinero, qué es lo que tenemos que ver. Sin embargo, el la semana anterior hubo un seminario de
+2:42
+exclusivamente de valor por dinero, en donde nuestra compañera nos indicó, ¿no?, qué es el valor por dinero. Nos
+2:48
+habló del del precio, del valor, del valor incremental, etcétera, que es el
+2:53
+cambio que ha habido en este procedimiento de contratación. Y de ahí se mantiene eh la puja, se mantiene la
+2:59
+negociación, todo su flujo normal. Bien, empecemos.
+3:04
+Sabemos que nosotros como dirección de capacitación siempre tenemos un objetivo y efectivamente el día de hoy es capacitarles a ustedes e indicarles la
+3:12
+normativa y la correcta aplicación del procedimiento, en este caso de la subasta inversa electrónica.
+3:18
+Recordemos, déjenme cerrar estas pantallas.
+3:24
+Ya. Recordemos que en primer lugar la clasificación de una subasta inversa electrónica en donde se encuentra enmarcada. Acorde al artículo 10 del
+3:32
+Reglamento a la Ley Orgánica del Sistema Nacional de Contratación Pública, nos mencionan que es un procedimiento
+3:38
+dinámico. Ojo con esto, no se encuentra enmarcado dentro del procedimiento común, sino es un procedimiento
+3:44
+dinámico. Sí. Y los procedimientos dinámicos se encuentran la subasa inversa electrónica y el catálogo
+3:50
+electrónico. El monto que tenemos que observar que tiene que ser mayor o igual a $10,000, ya no es a 72 y etcétera,
+3:58
+¿no? ¿Verdad? Ahora es $10,000. He armado aquí un flujograma para que
+4:05
+ustedes más determinen, ¿no?, cómo yo puedo e verificar qué proceso de
+4:10
+contratación acorde al presupuesto referencial que me entregan a mí, yo puedo determinar qué proceso realizar.
+4:18
+¿Cómo nace este flujograma? Inicia. Sí, tenemos la necesidad. Recordemos que
+4:23
+siempre la necesidad viene de la entidad contratando. Siempre el área requirente es quien levanta la documentación
+4:29
+correspondiente mencionando es el bien, el servicio, la obra, la
+4:34
+consultoría que necesita adquirir. Al ser una subasta inversa electrónica nos vamos a enmarcar en bienes y servicios
+4:42
+estandarizados. Vamos a ver el concepto un poquito más adelante. Regresando a este flujograma, nace la necesidad de la
+4:48
+entidad contratante, mi pregunta es aquí. Si es que este bien o este servicio se encuentra en catálogo
+4:55
+electrónico, si es que se encuentra en catálogo electrónico, simplemente
+5:00
+adquiero por catálogo electrónico y se termina el flujo. Así de simple.
+5:05
+Lógicamente, yo tengo que verificar si las especificaciones, eh, todas las características de mi bien
+5:11
+o mi servicio se encuentran en catálogo electrónico y va a satisfacer mi necesidad como entidad contratante. Si
+5:18
+es que existe alguna modificación, algo adicional que en catálogo electrónico no
+5:23
+se encuentre determinado y eso me impulsa que yo deba solicitar una autorización de código CPC al CERCOP,
+5:30
+pues también lo puedo hacer siempre y cuando se encuentre motivado. Ya, ¿qué sucede si es que esta necesidad no se
+5:38
+encuentra en catálogo electrónico? De manera inmediata voy a observar el presupuesto referencial y nuevamente me
+5:45
+planteo la pregunta. El presupuesto referencial es menor o igual a $10,000.
+5:51
+Si es que mi respuesta es afirmativa, realizo una ínfima cuantía.
+5:58
+Si es que es superior a $10,000, aplico una subasta inversa electrónica o
+6:04
+una licitación. Ya, hasta aquí estamos sumamente claros. cómo yo tengo que aplicar y verificar
+6:10
+qué procedimiento de contratación realizaría en este caso. Ahora,
+6:18
+ahora enfocándonos en la subasta, recordemos que yo mencionaba al inicio
+6:24
+de bienes y servicios estandarizados. Dentro de la normativa, dentro del reglamento, eh tenemos el artículo 6 de
+6:31
+las definiciones, en donde nos enmarca claramente los bienes. ¿Qué es un bien?
+6:37
+un bien simplemente. A ver, Anita, no sé si le podemos aceptar, por favor, a las personas que
+6:43
+están ingresando. Me salta una alerta de de ingreso frecuente.
+6:49
+Sí, solo una persona la tengo ya en este momento en la espera. Gracias, Anita. Bien, a ver, dentro de
+6:57
+las definiciones que nos indica de manera clara el reglamento, nos menciona
+7:02
+que los bienes simplemente son cosas corporales e incorporales de naturaleza,
+7:07
+muebles o inmuebles, que son necesarias para que la entidad contratante desarrolle sus actividades.
+7:14
+nos adiciona dentro de este concepto que se entenderá que cuando en el contrato
+7:20
+implica fabricación, manufactura o producción, usted como entidad
+7:25
+contratante va a considerar que va a adquirir bienes. De manera puntual nos
+7:31
+menciona el concepto. ¿Qué más nos indican aquí? Que se incluye también dentro de la
+7:36
+contratación de bienes a los arrendamientos mercantiles con opción de compra. también es un bien. Entonces, en
+7:45
+con base a este concepto, usted tiene que determinar en el momento que esté estableciendo el tipo de de compra, si
+7:52
+es que es un bien o un servicio. Es muy importante tener en cuenta esos conceptos porque en el sistema en la
+7:59
+actualidad existen procesos de contratación con el tipo de compra, eh servicio y existe una especificación
+8:06
+técnica. Entonces, ¿por qué no tenemos aterrizado totalmente el concepto? ¿Qué nos qué nos
+8:12
+menciona la normativa en relación a los servicios? Que son prestaciones de hacer, es decir, eh que consisten en el
+8:18
+desarrollo de una actividad o una labor labor temporal que realiza un proveedor para atender una necesidad de la entidad
+8:24
+contratante, pudiendo estar sujeta a resultados para determinar tal prestación. Y lo nuevo de eso son los
+8:32
+bienes y servicios estandarizados. ¿Qué nosotros vamos a verificar esta parte?
+8:38
+si es que lo que yo voy a comprar, el bien o el servicio se encuentra estandarizado. Si es que es así,
+8:44
+efectivamente, realizo mi análisis correspondiente y aplico una subasta inversa electrónica. ¿Qué nos menciona
+8:50
+en relación a los bienes y servicios estandarizados? que estas de Kim eh tienen diferentes diseños o
+8:58
+características descriptivas, pero tienen características técnicas uniformes, patrones de desempeño de
+9:04
+calidad similar y lo que permite con eso es que la adquisición en condiciones
+9:10
+sean estandarizadas y homogéneas. Por ejemplo, eh podemos mencionar e con un ejemplo
+9:19
+que vamos a analizar en este en este webinar, las impresoras. Las impresoras. Tengo algunos
+9:26
+dispositivos médicos, puedo tener los ecgrafos, eh computadores, etcétera.
+9:31
+¿Sí? ¿Por qué motivo? Si es que yo tomo el ejemplo de un ecógrafo, por ejemplo, en el ámbito de salud, puedo tener
+9:38
+varias marcas, ¿no? Pero yo lo puedo mantener estandarizado, ¿sí? con las características correspondientes. Por
+9:44
+ejemplo, en el en los modos de imagen puedo tener eh los transductores
+9:50
+compatibles, las frecuencias que tienen las ondas, la resolución. En el tema de impresoras, puedo
+9:57
+verificar, sin embargo, cuántas hojas imprime por minuto, la resolución, etcétera. Sí, yo los puedo verificar,
+10:04
+puedo determinarles, puedo establecer condiciones homogéneas.
+10:10
+Tenemos que tener claro este concepto de bienes y servicios estandarizados para nosotros visionar en nuestro análisis
+10:16
+que tenemos que realizar dentro del informe de la de necesidad y el estudio de mercado bajo la figura de valor por
+10:22
+dinero. Ahora, para recordar un poco eh con estos cambios que hemos tenido en
+10:29
+nuestra normativa con estas reformas, sí no no se ha modificado la aplicación
+10:35
+como tal. Se mantiene que usted como entidad contratante en una subasa inversa electrónica tiene que elaborar
+10:40
+los pliegos en el MFC, teniendo en cuenta que la versión actual es la 1.15.0
+10:46
+y los proveedores del Estado de igual manera para una subasa inversa electrónica tienen la obligación de
+10:52
+elaborar su oferta dentro de este mismo aplicativo y la versión para ellos es 1.8.2.
+11:02
+Ahora analicemos el un poco dentro de de este proceso de contratación por fases.
+11:08
+Sí, sabemos que tenemos preparatoria, precontractual y la contractual. La
+11:14
+relevante en todo procedimiento de contratación, como siempre hemos mencionado, es la preparatoria. ¿Por qué
+11:19
+motivo? Porque aquí nace la contratación, nace la necesidad, tenemos que establecer todos los requisitos. ya
+11:25
+determinamos si es que eh poseemos anticipos para poder otorgar al al proveedor o no. Todas las reglas del
+11:33
+juego o todas la las determinaciones eh técnicas, financieras, legales, las
+11:40
+establecemos en esta fase preparatoria. Ustedes saben que aquí en esta en esta
+11:46
+etapa eh aparte del informe de necesidad, tenemos algunas certificaciones que emitir, ¿no?
+11:52
+Certificación PAC, certificación PAP dependiendo de la entidad contratante,
+11:57
+la EPOA, tenemos certificación presupuestaria, etcétera. Sí,
+12:03
+dentro de este de esta etapa tenemos un documento que es el estudio del mercado,
+12:10
+¿sí? que nos permite determinar el presupuesto referencial. Sabemos que el estudio de mercado es un instrumento
+12:17
+para esta determinación cuando hablamos de bienes y servicios. Cuando hablamos
+12:23
+de obras visionamos a los APUS y cuando tenemos consultoría, eh costos directos
+12:30
+e indirectos. En nuestra reforma, el estudio de mercado se incorporó, ¿sí? En el eh
+12:37
+hubieron algunas algunas reformas, alguna modificación y también se menciona sobre la verificación del el
+12:45
+análisis del del valor por dinero. Vamos a analizar cada una de ellas. Para
+12:50
+ustedes ya se les va a ser conocido estos pasos, ¿no? La primera que nos indica, especificaciones técnicas o
+12:55
+términos de referencia. En caso de que la contratación incluya bienes o servicios, deberá establecer el monto
+13:01
+que corresponde a cada uno con el fin de definir correctamente el objeto de contratación y seleccionar el tipo de
+13:07
+procedimiento ICPC. Esto ustedes lo han venido aplicando ya
+13:13
+desde hace un tiempo atrás porque sin especificaciones, sin estudios, sin términos de referencia, no sabemos exactamente qué es lo que vamos a
+13:19
+comprar. Eh, también lo tienen claro, ¿no? Que si es que en mi procedimiento de
+13:24
+contratación,
+13:45
+¿me escuchas?
+13:52
+Sí, vamos a revisar, por favor. Ya nos dimos eh evidenciemos que sea de moderita. Ya lo vamos a revisar, por
+13:58
+favor, si nos da un minuto.
+14:08
+¿Me escuchas? Sí, tenemos una intermcia con el
+14:14
+internet, por favor. Un minuto para poder avisar.
+14:21
+Sí, muchas gracias. Digimos que tiene una intermitencia con el internet. Por favor, si nos dan un minuto lo revisamos.
+14:40
+Eh, me invita. Se parece que se congeló nuevamente la imagen esta contratación, la instalación y lo y
+14:48
+le coloco únicamente como eh la adquisición de los bienes y dentro de la
+14:53
+información. A ver, voy a proceder a apagar la cámara para que no me consuma
+15:01
+y no tener esta inestabilidad.
+15:07
+Bien, lo único que eh voy a lograr que como entidad contratante el contratista, el
+15:14
+que salió adjudicado, venga y entregue las cámaras de manera física y las deje
+15:19
+en bodega. Pero mi interés como entidad contratante es que se instale, salvo que
+15:25
+dentro de la entidad tome la decisión de que eh la instalación no va a realizar internamente el personal, sería otro
+15:31
+caso, ¿no? Pero la mayoría de las entidades contratantes, ¿qué qué eh colocan dentro de su procedimiento de
+15:38
+contratación? La adquisición de las cámaras con su respectiva instalación.
+15:43
+Entonces, en este caso usted tiene que verificar como el porcentaje de las cámaras alcanzaba un 70% en nuestro
+15:49
+ejemplo que colocamos, yo voy a establecer como un bien a este porcentaje y le voy a colocar el 70% y
+15:56
+el 30% del servicio determinado. Ya eso yo lo tengo que mencionar dentro de este
+16:02
+documento de la especificación técnica. Como yo estoy levantando este proceso como un bien, porque existe el mayor
+16:08
+porcentaje del presupuesto para un bien, establezco una especificación técnica.
+16:13
+Si es que voy a realizar un servicio, lógicamente ustedes saben que estoy hablando de un término de referencia.
+16:19
+Ahora, el siguiente paso también lo hemos venido haciendo, analizar adjudicaciones similares de la entidad
+16:25
+contratante. Ojo con esto, que no se trata únicamente de realizar las capturas de la pantalla de los procesos
+16:31
+que yo eh he obtenido en la búsqueda. Colocamos en el proceso de contratación, voy a voy a mencionar un ejemplo de
+16:38
+licencias de eh de Microsoft o licencias, sí, licencias tecnológicas.
+16:46
+Yo puedo buscar como licencias, puedo buscar como software, etcétera, pero no
+16:51
+implica que únicamente voy a hacer la captura de la pantalla. Aquí nos indica eh nos menciona de manera clara
+16:58
+analizar. Conlleva este análisis a que usted tiene que indicar realizar un mini informe en
+17:07
+el que se señale, a ver, yo realicé de tal fecha a tal fecha y obtuve cinco procesos. dentro de esos procesos de
+17:14
+contratación, si bien es cierto menciona el objeto de contratación, licencias, puede ser adquisición de de cámaras,
+17:20
+etcétera, y eh señala que existe una cantidad X,
+17:26
+en el otro proceso existe otra cantidad X y no es igual a la que yo necesito.
+17:34
+¿Por qué motivo es importante la calidad? Porque hablamos de la economía
+17:39
+escala que ya mencionamos en el tercer punto. No es lo mismo que yo adquiera quizás eh
+17:46
+unas 10 cámaras, ¿sí?, de seguridad versus unas 100 cámaras, porque el
+17:52
+proveedor sí va a tener también un descuento por el volumen que va a tener en esa
+17:59
+contratación. Entonces ahí es en donde yo tengo que analizar en el punto número dos, si es que yo contrato 20 cámaras y
+18:07
+me encuentro con un procedimiento de contratación que he adquirido 100 cámaras, lógicamente no lo voy a poder
+18:14
+considerar porque eh ese valor es sobre también el volumen como tal. La
+18:20
+contratación, el contrato que se firmó en ese proceso es sobre el volumen, teniendo en cuenta el precio económico.
+18:27
+En relación a especificación, especificaciones técnicas, de igual manera tengo que analizar, hacer un
+18:32
+cuadro comparativo. Es sobre todo se menciona aquello, ¿no? para que cuando tengan su verificación
+18:40
+con los entes de control, usted pueda justificar si es que se descarga un proceso de contratación, un estudio de mercado de
+18:47
+cualquier entidad contratante, va a verificar que en su mayoría simplemente existen capturas de pantalla.
+18:54
+señalan, ¿no? Punto número dos, adjudicaciones similares indican el periodo en el que han buscado, las palabras que han buscado y blo las las
+19:02
+capturas de pantalla, pero no hay un análisis, entonces no estamos cumpliendo con este punto de analizar, de
+19:08
+justificar por qué no consideramos. Con la cantidad simplemente, como he mencionado, podemos perfectamente
+19:15
+justificar. Y continúo con el tercer punto que nos menciona que podrá
+19:21
+realizar eh un análisis de la contratación a desarrollarse, teniendo
+19:26
+en cuenta la ubicación geográfica y y economía de escala. Antes de contratar,
+19:32
+nosotros como entidad contratante debemos evaluar y estudiar el proceso de contratación. ¿Qué implica esto? que
+19:38
+vamos a revisar qué es lo que vamos a contratar, cómo se va a contratar y qué
+19:44
+se necesita específicamente, qué necesidad voy a cubrir con esa
+19:50
+contratación, ¿no? Simplemente eh sabemos y tenemos claro, ¿no?, que la contratación pública es un medio para
+19:56
+cumplir nuestros fines institucionales, nuestros objetivos institucionales. Pero
+20:02
+eso conlleva ese cumplimiento, no es únicamente lo que se encuentra determinado
+20:07
+en un en un papel de manera específica. Nuestra labor como servidores públicos es analizar y verificar qué impacto va a
+20:16
+tener en nuestra institución en la contratación, el el procedimiento de contratación para cumplir un objetivo
+20:23
+fijo. Sí, porque recordemos como he mencionado, la contratación pública es un medio y quiénes son los usuarios
+20:29
+finales son ustedes. ¿Sí? Bien. Ahora, eh, ¿qué más nos indica en este punto?
+20:37
+que tenemos que tener en cuenta la ubicación geográfica y la escala y la economía a escala, ya que pueden afectar
+20:45
+eh la contratación, ¿no?, los costos por la logística. Quizás no es lo mismo eh
+20:51
+trasladar o los proveedores que participan tal vez en diferentes ciudades. Existirán proveedores de la
+20:57
+zona en Quito que no les va a costar absolutamente nada el el transporte, la
+21:04
+logística de entregar un bien a la entidad contratante dentro de la misma localidad. Pero, ¿qué sucede si es que
+21:11
+resulta ganador un proveedor de Loja? lógicamente va a
+21:17
+tener impacto dentro de sus costos, dentro de la logística. Entonces, ese análisis también lo tenemos que realizar
+21:23
+y por ese motivo es que nosotros eh bueno, se incluye dentro de la normativa, ¿sí?, este análisis que debe
+21:29
+mencionar ubicación geográfica y la economía escala. Economía escala que hace referencia a comprar en grandes
+21:36
+cantidades puede reducir el costo por unidad. Como mencionaba anteriormente,
+21:42
+un proveedor quizás va a tener más un poco más de descuento con su proveedor también al adquirir eh un gran volumen
+21:50
+de X bien. No puedo comparar 100 cámaras que va a tener el mismo costo que unas
+21:55
+cinco cámaras. Entonces hablamos ya de una economía a escala. Sí.
+22:02
+Eh, de ser el caso, sí lo tenemos que atraer también a valores eh de precios locales e importados, dependiendo todo
+22:08
+depende de la naturaleza del proceso y de los contratos que usted encuentre dentro del portal de compras públicas,
+22:14
+si es que efectivamente amerita la inflación nacional correspondiente. Y la
+22:19
+última, el último punto que mencionamos aquí es lo que ustedes también conocemos, es procurarán contar con al
+22:26
+menos tres proformas. Recordemos que nosotros hablamos siempre de la concurrencia, siempre necesitamos tener
+22:32
+más proveedores para realizar, para tener mayor eh verificación y poder establecer, en este caso, el presupuesto
+22:39
+referencial, ¿sí? Más apegado a la realidad del mercado. Estas profformas
+22:45
+eh se pueden obtener a través de la herramienta de las necesidades de contratación. Ustedes conocen
+22:52
+perfectamente eh por el uso de las ínfimas es mandatorio. Se eh se mantiene
+22:58
+la mantenemos mejor dicho la posición de que usted utilice la herramienta que hacer coble facilita para que pueda,
+23:06
+me parece que no me están escuchando. Sí, ya para que ustedes puedan obtener esasformas como tal. Estas profformas
+23:12
+que deberán contener fecha de emisión, plazo de ejecución y tiempo de vigencia.
+23:19
+recordando, ¿no?, que para est llegar a este estudio de mercado, nosotros ya tenemos que tener de manera clara
+23:24
+establecido el los estudios, los estudios actualizados, ¿sí? Y completos
+23:29
+para poder llegar a una contratación clara. Ahora, ¿qué tenemos por acá? El análisis del
+23:37
+mejor valor por dinero. ¿A qué hacemos referencia? A este a este punto, ¿sí?
+23:46
+nos indica la normativa exactamente en el 49.1 del reglamento nos menciona que
+23:52
+usted como entidad contratante deberá determinar en primera instancia bienes y servicios estandarizados teniendo en
+23:59
+cuenta la frecuencia de la entidad que usted como entidad contratante adquiere ese bien o ese servicio en los últimos 5
+24:06
+años. hablamos de nuevas palabras, ¿no? Nuevo léxico que tenemos aquí de uniformidad,
+24:12
+de universalidad y facilidad de descripción. ¿A qué hacemos referencia?
+24:19
+Cuando hablamos de uniformidad, todos tienen las mismas especificaciones.
+24:24
+Si es que yo voy a adquirir cámaras de seguridad, efectivamente en el mercado yo me encuentro marcas por doquier,
+24:32
+mismas especificaciones, por supuesto que también las tengo. Entonces ahí hablamos de un bien o un servicio
+24:40
+estandarizado. Al referirnos de universalidad, sí se produce y se usa
+24:45
+comúnmente, no son exclusivos. Aquí no hablamos de que existe un producto eh un
+24:50
+producto exclusivo que únicamente cierto proveedor lo fabrica o cierto proveedor
+24:57
+lo distribuye. Sí, hablamos de un uso común como tal. Las cámaras de seguridad
+25:02
+son de uso común, por supuesto, lo utilizan tanto en el público, tanto en el privado, es para uso eh comercial,
+25:10
+para uso familiar, etcétera. Entonces, sí existe. Si es que yo como servidor
+25:16
+público debo realizar este análisis, pues efectivamente tengo que enmarcarme en estos dos puntos principales y
+25:22
+analizar en la forma en la que lo estamos haciendo en este momento. El último punto, ¿qué nos indica?
+25:29
+Descripción. Sí. facilidad de descripción que se puede especificar de manera clara cómo son. Eh, y los
+25:36
+proveedores lógicamente tienen sus fichas, sus fichas técnicas de cada producto. Entonces, yo lo puedo
+25:42
+establecer de manera clara. Al mencionar estos tres puntos de uniformidad,
+25:48
+universalidad y facilidad de descripción, estoy hablando de un bien o un servicio estandarizado. Además de
+25:56
+esto, yo tengo que verificar que dentro de mi entidad contratante eh la frecuencia con la cual yo he adquirido
+26:02
+esto. Cámaras, obviamente quizás yo luego eh por la vida útil puedo
+26:07
+cambiarlo cada 3 años, cada 4 años, etcétera. Pero, ¿qué es lo que adquiero de manera común cada año? Servicio de
+26:14
+mantenimiento vehicular, eh hablando para suministros de oficina, hojas de
+26:19
+papel bon, clips, esferos, eh lápices, etcétera. Esa es una frecuencia, ¿no?
+26:25
+Verdad, anual que yo tengo que realizar. Entonces, todo ese análisis que yo ejecuto en ese proceso de contratación,
+26:33
+tengo que establecer en primera instancia bien esos servicios estandarizados. Si es que es así, efectivamente, eh voy a verificar, ¿no?,
+26:40
+el siguiente punto, que exista un mercado competitivo de proveedores o contratistas. Ojo que esto estamos
+26:47
+analizando para determinar una subasta inversa electrónica, porque existe el otro proceso de licitación que yo puedo
+26:54
+eh determinar que existen especificaciones que son exclusivas y
+26:59
+lógicamente voy a mencionar que no existe tanto no existe un mercado competitivo dentro de la zona y lo puedo
+27:06
+lanzar por licitación, pero al referirnos a una subasta inversa electrónica siempre voy a considerar y a
+27:12
+tomar en cuenta que tengo que establecer si es que bien un servicio estandarizado si es que existe mercado competitivo de
+27:19
+proveedores o contratistas. Tomando en cuenta el ejemplo que mencionamos antes de la cámara, yo establezco mis
+27:26
+especificaciones e indico de manera clara, ¿no?, que eh y verifico en el
+27:31
+mercado también y acorde a mi expertiz, ¿no? Yo ya conozco que existen varios
+27:36
+proveedores, varias marcas, entonces sí existe un mercado competitivo. ¿Qué más nos menciona? que la evaluación
+27:42
+de la contratación debe considerar riesgos y atributos más allá del precio.
+27:49
+En este punto se enmarca una licitación de de contratación pública. ¿Por qué
+27:54
+motivo? Porque ya existe un riesgo. Yo voy a determinar que efectivamente no
+27:59
+son universales los que yo voy a contratar. Ya. Ya necesita un plus
+28:05
+adicional a mi contratación. Aquí vamos a analizar el proceso de
+28:11
+contratación. ¿Cuándo determinar? Al inicio mencionamos, ¿no?, armamos también un flujograma e indicamos que eh
+28:20
+cuando nace la necesidad de la contratación, yo puedo aplicar eh catálogo electrónico, infima cuantía, su
+28:26
+base licitación. En esta presentación ya aterrizamos un poquito más únicamente el
+28:31
+proceso de subasta inversa electrónica y licitación. ¿Cómo partimos?
+28:36
+con la evaluación del procedimiento de contratación. Yo tengo mis especificaciones técnicas
+28:41
+de manera clara, tengo mis estudios correspondientes y me hago la pregunta,
+28:48
+¿el precio más bajo y el mercado competitivo y ningún otro atributo
+28:53
+adicional representa el mejor valor por dinero? Si es que mi respuesta es sí,
+29:01
+yo voy a aplicar una subasa inversa electrónica. Si es que mi respuesta es no, voy a aplicar una licitación.
+29:09
+En esta pregunta se enmarca el rol del servidor público técnico en contratación
+29:15
+pública, porque aquí tiene que mencionar, aquí toma la decisión si es que aplico una subasta o aplico una
+29:21
+licitación. ¿Y cómo determino esta pregunta? Analicemos justo la la
+29:26
+preguntita que tenemos aquí. El precio más bajo. A ver, tengo un precio más bajo, tengo un mercado
+29:33
+competitivo. Sí, si es que hablamos del tema de cámaras, tengo un mercado competitivo.
+29:38
+Por supuesto, si es que dentro de mi análisis yo realizo eh y verifico que no
+29:43
+necesito un atributo adicional, ¿sí? Entonces voy a aplicar una subasa
+29:49
+inversa electrónica. Veamos con un ejemplo. A ver, e
+29:57
+veamos mejor con el siguiente ejemplo que yo tengo aquí. Ya con ese planteamiento del problema. Yo como
+30:02
+entidad contratante voy a realizar una adquisición de una impresora. La impresora e la necesidad del área
+30:08
+requirente es la dirección de atención al usuario. Ellos me mencionan y me indican, ¿no?, que necesitamos una
+30:14
+impresora eh porque necesitamos imprimir los formularios para realizar los reseteos de las contraseñas. eh
+30:21
+diferentes funciones. El proceso se levanta, ¿sí? Teniendo en cuenta que puede ser una láser o una
+30:28
+multifuncional. Lo cierto que necesitan imprimir, necesitan realizar eh obtener
+30:34
+copias y escanear para los trámites correspondientes. Establecen con un formato de impresión A4, que es la hoja
+30:42
+común, ¿no? En el color me mencionan, puede ser blanco y y negro, puede ser
+30:49
+con opción de copias a color e impresión a color. Aquí vamos a hacer un paréntesis justo
+30:56
+en el color, porque si es que yo puedo mencionar, yo coloco blanco o negro,
+31:03
+¿estoy o no estoy tal vez estableciendo una especificación eh muy restringida? ¿Qué opinan ustedes?
+31:11
+o estaría bien únicamente con este color de al mencionar blanco y negro o blanco
+31:17
+o negro o yo puedo colocar gama de grises e o
+31:23
+perdón, gama de colores oscuros o puedo colocar gama de colores claros, etcétera. ¿Qué opinan ustedes en este
+31:31
+punto? A ver, ya les voy a leer a todos los que
+31:37
+se encuentran en el en el chat. Ya, ya. Vamos a ver un ejemplo, mi estima.
+31:51
+Ya vamos a responder a ver, miren, en el momento que yo establezco dentro de un
+31:57
+proceso de contratación y mi análisis ya visionado, ¿no? con este principio de valor por dinero.
+32:04
+Yo como entidad contratante no gano mucho si es que el proveedor me brinda, me me entrega una impresora blanca o me
+32:12
+entrega eh un una impresora de color negro, de color gris, porque a mí lo que
+32:17
+me interesa es la impresión. Me interesa, ¿no verdad? Que el escáner se lo tenga una buena resolución para que
+32:24
+se pueda subir las incidencias, pueda realizar las gestiones correspondientes. ¿Sí? Ahora, yo no podría colocar, no es
+32:31
+una buena práctica que se realice, como yo le he mencionado, lo he puesto lógicamente de manera de manera
+32:38
+consciente para conocer su análisis. ¿Sí? ¿Por qué motivo? Porque yo no puedo
+32:44
+mencionar un color fijo, ya que eso no me va a dar un plus para mi contratación. Me entreguen el color que
+32:50
+me entregan. A mí me lo que lo que eh es de mi de mi interés es el producto que
+32:56
+yo voy a obtener ahora. Así es que efectivamente eh me indican, ¿no?, que necesitamos un color oscuro. Perfecto.
+33:02
+Yo puedo poner que necesito eh una gama de color oscuros. Entonces, dentro de
+33:08
+eso ya se marca el negro, el gris, el plomo, etcétera. Si es que necesito un color más claro, de esa manera yo tengo
+33:14
+que ir enfocando la contratación pública. No puedo poner de manera clara blanco o negro porque quizás eh para un
+33:19
+proveedor del Estado en sus importaciones la impresora no le vino de un color específico, sino vino de otro.
+33:26
+Entonces ahí estoy yo restringiendo ya la contratación pública. Sí. Y teniendo en cuenta que un color no me va a a dar
+33:34
+un plus para lo que yo necesito. Sí. Y ni siquiera los funcionarios, los servidores públicos, créanme que se van
+33:40
+a fijar en el color. Lo único que me van a mencionar es sí, está perfecta la resolución, está correcto la impresión,
+33:46
+es lo que necesitamos, es el servicio, es la necesidad y por ende va a satisfacer. ¿Sí? Ese no es el objeto
+33:53
+como tal. ¿Qué es lo que yo busco ahora? A ver, ¿qué más tenemos? Aquí tengo una
+33:59
+conectividad, ¿sí? Et y compatibilidad con red eh Wi-Fi, ¿sí? Eh, nos indican
+34:05
+un sistema operativo de manera clara, sí, se encuentra aquí Windows, Mac y Linux, pero no me encieran, no me
+34:12
+enmarcan en un único sistema operativo, entonces me dan opciones. Pero, ¿por qué
+34:17
+eh por qué llego a este punto? Porque previamente mi área requirente ya analizó y verificó que efectivamente
+34:25
+necesito establecer este especificación técnica de esta manera. En relación a la
+34:30
+capacidad del manejo de papel, me menciona aquí, ¿no? Bandeja principal mínima de 250 hojas. ¿Qué sucede si es
+34:37
+que existe un proveedor que me dice, "Pero yo no tengo 250 de una bandeja de 250 hojas, si no tengo de 350?"
+34:46
+Otro dirá, "Yo tengo de 200, eh, quizás de 100, etcétera." Sí, este punto
+34:54
+tampoco me va a brindar un plus para lo que yo necesito. Entonces, me pueden
+35:00
+entregar a mí hasta de 200, de 100. Sí, el objetivo, como he mencionado, es el
+35:05
+producto final, es el objeto por el cual yo voy a adquirir la computadora. Es la necesidad que voy a satisfacer a los
+35:11
+servidores públicos de esta dirección enmarcada dentro de la necesidad como tal. Ya. Ciclo de trabajo mensual,
+35:18
+mínimo 5,000 páginas, es algo parecido al punto que vimos anteriormente. Impresión duplex automática, doble cara.
+35:26
+Sí, tengo que justificar. Y efectivamente eh si es que yo menciono doble car y me da un plus con versus una
+35:34
+impresora que solamente me imprime a una cara, por supuesto, es cuestión de tiempo porque yo envío tal vez un
+35:40
+documento imprimir de 10 hojas ambas caras, ¿verdad? Estoy optimizando el papel como tal. Si es que yo eh comparo
+35:48
+con una impresora que me imprime a una sola cara, lógicamente es más consumo de papel, eh voy a
+35:56
+necesitar más insumos a futuro, etcétera. Entonces, esto si es una característica que yo puedo mencionar
+36:04
+como un atributo eh dentro de el del bien que yo voy a adquirir. ¿Ya?
+36:09
+Entonces, de esa forma siempre veamos eh siempre planteemos, mejor dicho, las especificaciones técnicas. verifiquemos
+36:15
+que no estemos cerrando mucha la contratación pública. Ahora,
+36:21
+al mencionar este caso, sí, al analizar el tema del valor por dinero, el
+36:27
+análisis técnico que tenemos que realizar aquí en nuestra capacitación de la semana anterior de valor por dinero,
+36:32
+hablábamos del análisis que tiene que realizar o el rol que tiene que hacer el analista técnico
+36:38
+en relación al enfoque del conocimiento, en relación al a la expertiz que mantiene esta persona, a los requisitos
+36:45
+del del procedimiento de contratación como tal y al riesgo que existe al no
+36:51
+tener un conocimiento aterrizado sobre esto de aquí. Ahora,
+36:57
+¿qué mencionamos en relación al enfoque del conocimiento, al enfoque del que debe tener esta persona, es identificar
+37:05
+la necesidad que tiene. Ese va a ser nuestro eh nuestro foco, ¿sí? la
+37:10
+necesidad que tiene y los indicadores de desempeño que vamos a a lograr al
+37:16
+adquirir este bien, este producto. Ya, considerando, ¿no?, la velocidad,
+37:22
+para el ejemplo que vimos anteriormente, la durabilidad de los consumibles. Eh, sin embargo, ya estamos analizando
+37:28
+también la eficiencia energética, la impresión duplex con la que analizamos,
+37:33
+facilidad de operación o mantenimiento, porque no me sirve de nada si es que yo tengo un proceso de contratación.
+37:40
+eh por las impresoras y adjudico al más económico, pero sin considerar todo este
+37:47
+análisis de manera previa. Yo lo único que voy a lograr aquí es más consumo,
+37:54
+más existen más mantenimientos, eh más inversión a futuro, ¿sí? y no que quizás
+38:00
+va a salir un poco más caro que invertir en un producto que me pueda brindar que
+38:06
+reduzcan los riesgos, ¿no? Que eh tal vez los mantenimientos de esta impresora no sea anual eh no sea perdón eh
+38:13
+trimestral o semestral, sino sea de manera anual, ¿sí? O exista tal vez un mantenimiento que se pueda realizar
+38:19
+internamente por el personal de la entidad contratante, que también es viable. Nosotros en casa, ¿cómo
+38:24
+realizamos los mantenimientos de la impresora? existen dentro de las opciones, ¿no? Limpiar cabezales, eh, me
+38:31
+parece que también verificar los patrones, etcétera. Lo mismo puede suceder dentro de una entidad
+38:36
+contratante que no necesitamos que realizar el pago de un valor adicional
+38:42
+por un mantenimiento que lo podemos quizás hacer nosotros directamente. Entonces, toda esa parte tiene que conocer el el técnico, tiene que
+38:50
+realizar un enfoque, ¿sí?, de lo que yo voy a lograr con esta adquisición. Ahora
+38:57
+tenemos que tener en cuenta siempre, ¿no?, que no siempre comprar lo más barato. A ver, comprar lo más barato no
+39:04
+siempre es lo más conveniente. Cuando hablamos de e
+39:09
+de optimización del gasto público, en la contratación pública tradicional, nos
+39:14
+hemos enfocado en comprar lo más económico, lo más barato. Pero ustedes háganse un análisis de que quizás años
+39:22
+atrás estuvieron a cargo de un proceso de contratación, cuántos, hablando de bienes, ¿no?, y de impresoras,
+39:28
+computadores, etcétera, cuántos mantenimientos realizaron hasta la fecha, ¿sí? Versus si es que hubiesen
+39:35
+podido adquirir otro bien con un mantenimiento más prolongrado o tal vez
+39:40
+con más años de garantía, etcétera. Ninguno de nosotros hemos llegado a esa
+39:46
+magnitud. Ninguno de nosotros hemos llegado a a analizar, a verificar, ¿sí?
+39:53
+¿Qué es lo que sucedió con ese proceso de contratación? En nuestra contratación pública tradicional, lo único que
+39:58
+hacemos es perfecto, compramos, nos entregó el producto, yo como administrador del contrato firmé todas
+40:04
+las actas correspondientes, entregué las garantías, realicé el proceso para el pago del del contratista y listo, me
+40:11
+olvidé del producto que yo compré. Lo mismo sucede con los toners. Sí.
+40:16
+Ahora, cuando mencionamos, sí, mencionamos al rol del experto
+40:23
+técnico dentro de este procedimiento de contratación, muchos de ustedes quizás me van a indicar, pero yo no conozco,
+40:29
+pero yo no sé. Recordemos que una de nuestras labores que como servidores públicos es tener una capacitación
+40:35
+frecuente. Sí. no solamente en el ámbito administrativo de derecho administrativo, como le estamos eh
+40:41
+determinando, sino en el tema técnico. Sí, yo tengo que buscar hoy en día existen diferentes eh opciones para
+40:48
+capacitarnos, verificar eh fichas, etcétera, y conocer un poco más del
+40:54
+objeto de la contratación que quizás me entregaron a mi cargo. Ahora, este rol técnico define requisitos funcionales y
+41:01
+de rendimiento. Sí, evalúa, ¿no? verifica la eficiencia, la calidad, costos operativos, realiza cuadros
+41:08
+comparativos para determinar si es que efectivamente existe eh un mercado competitivo dentro de la contratación
+41:14
+pública en relación a ese bien o ese servicio. La naturaleza de los requisitos. Siempre
+41:22
+necesitamos eh nuestro objetivo y necesitamos que el mercado conozca cuál
+41:27
+es nuestra función. No es solamente comprar una impresora por comprar y listo. Nosotros lo que necesitamos es eh
+41:35
+refiriéndonos al ejemplo que colocamos anteriormente, una impresora que ofrezca una impresión confiable, sea eficiente,
+41:41
+eh su alta durabilidad de los consumibles, su impresión dúplex que mantenemos todavía, su velocidad en
+41:47
+imprimir varias hojas por minuto, el bajo costo de operación durante su ciclo
+41:53
+de vida. Eso es lo que tenemos que realizar. Ustedes cuando eh tenemos que visionar de la misma forma como cuando
+42:01
+compramos un carro para nuestra casa. Nosotros ahí sí preguntamos en la casa comercial absolutamente todo. ¿Cuánto
+42:08
+consume, eh cada qué tiempo son los mantenimientos, etcétera? Indagamos,
+42:13
+¿no? Verdad, y preguntamos a diferentes fuentes, diferentes visiones para
+42:19
+aterrizar correctamente. ¿Por qué? Porque en ese caso es dinero de nosotros. Pero cuando hablamos de una
+42:25
+contratación pública, lo único que hacemos es cumplir con las especificaciones técnicas, sin
+42:30
+mencionar, sin indicarles al mercado qué es lo que yo necesito. No es comprar por
+42:36
+comprar un bien y listo, tenga su bien y pare de contar. Analizo si es que esto
+42:41
+me va a cumplir mi necesidad real. A eso yo quiero llegar. Ya, el riesgo del
+42:47
+conocimiento, lo que suceden eh hoy en día, procesos cancelados, procesos en
+42:53
+estado desierto. ¿Por qué motivo? Porque no conocemos, no eh no
+43:00
+realizamos un documento de unas especificaciones técnicas o términos de referencia de manera clara. Por lo
+43:07
+tanto, no definimos los criterios de desempeño, ¿sí? no determinamos de manera clara qué es lo que yo necesito.
+43:15
+Y dentro de mi análisis eh mencionando si es que con esa compra yo subsano, yo
+43:22
+yo eh voy a cumplir, voy a satisfacer la necesidad de los servidores públicos que
+43:28
+me solicitaron aquella aquella contratación. El rol del del servidor público técnico
+43:37
+es principal porque sin esta información, sin este análisis,
+43:42
+lógicamente no estamos yendo a cumplir nuestro principio del valor por dinero.
+43:48
+Ya he mencionado inicialmente todas las contrataciones son diferentes. Usted en nuestra normativa no va a encontrar cómo
+43:55
+realizar este análisis de valor por dinero para adquisición de tuberías, para adquisición de cámaras, para
+44:00
+adquisición de impresoras, para mantenimientos, etcétera. No va a encontrar porque imagínese, son miles de
+44:07
+objetos de contratación, son miles de necesidades que tiene cada institución pública. Entonces usted debe tener las
+44:14
+bases, debe tener los cimientos para comenzar a analizar, porque solamente es
+44:21
+un análisis aquí lo que estamos realizando, no es eh no se está solicitando que efectivamente usted
+44:27
+salga del tema de contratación pública, sino analice la necesidad,
+44:33
+eh analice el ciclo de vida, el bajo costo que puede tener la operación de
+44:39
+este bien o ese servicio durante todo su ciclo de Sí, con la expertiz que efectivamente usted ya lleva eh
+44:45
+realizando contratación pública algún tiempo dentro de su entidad contratante. Bien, una vez que tenemos este enfoque
+44:53
+dentro de la contratación pública, vamos a verificar cuándo seleccionamos un procedimiento de contratación. Para
+45:00
+direccionarnos a una subasa inversa electrónica, en primer lugar, tengo que verificar si mis bienes o servicios son
+45:06
+estandarizados. ¿Sí? Y recordemos que aquí tenemos que verificar si es que son uniformes, son universales y los
+45:12
+requisitos eh los tenemos bajo unas fichas para establecerlas. Punto número
+45:17
+uno. Punto número dos, existe en el mercado una competencia, existe un mercado eh competitivo. Sí, si es que yo
+45:26
+voy a adquirir eh computadoras, obviamente voy a tener HP, voy a tener
+45:32
+Dell, voy a tener Lenovo, voy a tener etcétera, que tienen las mismas características. Si es que voy a comprar
+45:38
+de igual manera las impresoras, tengo las mismas características, lo
+45:43
+único que cambia es la marca. Voy a tener HP, voy a tener Samsung, voy a tener Zerox, eh Lexmart, etcétera.
+45:51
+Entonces, hasta ahí yo tengo ya un mercado competitivo estandarizado
+45:57
+también. ¿Por qué? Porque son las mismas características que puede tener HP versus eh Samsung, hablando del tema de
+46:05
+impresoras o Lexart. son las mismas características. Lo único que yo me
+46:10
+marco es en la marca y en el modelo. Es lo único que en algunos casos cambia. Quizás eh Lexmar va a ser un poco más
+46:18
+amplia su carcasa. Sí, versus que HP lo va a ser
+46:24
+un poco más reducido por el tema del transporte, pero si internamente analizamos sus fichas correspondientes,
+46:30
+vamos a llegar a determinar que son estandarizados. Y ese análisis, ¿quién lo realiza? No lo realiza CERCOP. no lo
+46:36
+realiza Contraloría, no lo realiza eh otro ente de control, sino lo realiza
+46:42
+directamente la entidad contratante. Es el técnico que tiene que determinar y levantar su informe el por qué eh se
+46:49
+menciona que este bien o este servicio es estandarizado, el por qué eh determina y verifica que existe un
+46:56
+mercado, una competencia entre proveedores para este bien. Sí. Y existen especificaciones mínimas claras
+47:03
+y medibles. Al determinar claras y medibles, refiriéndonos a computadoras,
+47:08
+por ejemplo, yo ya puedo mencionar que si quiero una RAM de entre ocho a entre 6 a 8 GB, puedo mencionar que tal vez
+47:16
+tengo e un disco un disco duro sólido de 1 tera o 2 teras, etcétera. Sí.
+47:24
+Entonces, yo puedo establecer especificaciones mínimas y al mencionar que existe el mercado, lo único que voy
+47:31
+a verificar es el precio. Entonces, como tres,
+47:37
+vamos a visionar que tenemos tres ofertas. Como yo establecí el proceso de contratación, bajo esta figura tengo e
+47:44
+estándar, competencia del mercado y establecí especificaciones mínimas, claras y medes. No tengo ningún plus,
+47:51
+¿no? ¿Verdad? Regresemos un poco acá. Aquí bajo estas mismas condiciones, yo tengo a tres proveedores del Estado. Sí.
+47:59
+El uno me establecerá como no no puedo mencionar marcas. Sí me mencionará, ¿no?, que él va a participar eh
+48:07
+eh con el va a entregar, mejor dicho, va a ofertar una impresora marca HP que cumple con
+48:14
+las mismas especificaciones. Sí. El otro quizás mencionara un Alexmar
+48:20
+y el otro proveedor va a mencionar que voy a entregarle un
+48:25
+eh un una marca, se me fue las marcas de las impresoras.
+48:31
+A ver, una marca Samsung, pongámosla. Sí, tengo tres proveedores.
+48:37
+La única diferencia de estos proveedores son las cosas pequeñitas que acabamos de mencionar. El color quizás no tiene
+48:44
+blanco negro, no tiene grises, pero recordemos que no me afecta mi función, ¿sí? No me afecta a la necesidad que yo
+48:50
+tengo como entidad contratante. Claro está que yo puedo poner, ¿no?, como he mencionado, gama de grises porque quizás
+48:57
+si es que yo no le encierro un poquito, no tanto como acabamos de mencionar, quizás un proveedor me va a traer un
+49:03
+color rosado, un color morado. Sí. Y si y si casi no lo he visto, pero todo
+49:10
+puede pasar en este caso. Ahora, en la parte de la capacidad del manejo de papel, yo puedo obtener, ¿no?, una
+49:17
+bandeja que el proveedor me diga, son yo le entrego una impresora de 250 hojas,
+49:23
+otro de 200 hojas, otros de 300 hojas. Yo comienzo a analizar y menciono, no es
+49:29
+un plus, como indicamos anteriormente. Entonces, cuando yo ya verifico que tengo especificaciones de manera clara,
+49:36
+sí, yo ya tengo establecido eh lo que yo necesito y en el mercado
+49:42
+observo que existen las mismas características, pero de diferentes marcas, de diferentes proveedores. Lo
+49:49
+único que yo voy a publicar el proceso de contratación pública de la subas inversa electrónica es por el precio,
+49:56
+porque todos me van a dar lo mismo, absolutamente todos. Entonces, la
+50:02
+competencia que tiene que verificar aquí es por el precio. Participa el proveedor
+50:08
+uno, el proveedor dos y el proveedor tres. Me ofrecen lo mismo. Perfecto. Los califico porque me ofrecieron las mismas
+50:16
+especificaciones técnicas que yo necesito. Ninguno tiene un plus adicional. Entonces, en este caso yo voy
+50:22
+a verificar que como todos me ofrecen lo mismo, el único condicional, el único
+50:27
+parámetro para eh corralizar la contratación bajo su base inversa electrónica es el precio. Y como sabemos
+50:35
+que en una subbasa inversa electrónica el precio va hacia la baja, ¿no? Ya.
+50:41
+Entonces, aquí los los tres proveedores calificados que me ofertaron estos bienes o servicios estandarizados que se
+50:47
+encuentran bajo una competencia en el mercado y que cumplieron con las especificaciones mínimas que la entidad
+50:53
+contratante estableció, yo voy a calificarles para que en la siguiente
+50:59
+etapa, en la siguiente fase de este proceso de contratación, realicen la
+51:04
+respectiva puja y con eso determinamos al ganador bajo la figura del precio.
+51:12
+¿Qué sucede? Como eh observamos en el último punto, ¿no? Exclusión de atributos complejos o subjetivos.
+51:20
+En este caso no se encuentra con una X. ¿Por qué? Porque dentro de este proceso de contratación no estoy solicitando que
+51:28
+la impresora tenga un plus adicional, no estoy mencionando que por poco me imprimen en 3D eh, si es que la entidad
+51:35
+contratante lo necesitar. Yo lo que necesito aquí es simplemente que me cumplan esos tres parámetros. ¿Qué
+51:41
+sucede si es que existe un atributo adicional? Y aquí en vez de x está un visto bueno porque yo establecí que
+51:48
+necesito algo adicional de lo que se encuentra eh en el mercado. Por tal
+51:54
+motivo ya no aplicaría una subasta inversa electrónica, sino aplicaría una licitación en donde este proceso de
+52:00
+licitación primero va a cumplir la etapa de cumple y no cumple y luego va al puntaje, en donde en el puntaje la
+52:07
+entidad contratante deberá realizar el proporcional, ¿no?, otorgar el puntaje correspondiente a ese plus que está
+52:14
+entregando el proveedor del Estado. Pero cuando visionamos bajo la figura de su base inversa electrónica es únicamente
+52:21
+por el precio, porque existe, como menciono, proveedores que me entreguen el mismo bien. Sí, el mismo bien.
+52:29
+Entonces, el único parámetro para determinar al ganador sería el costo en
+52:34
+este caso. Pero para llegar a ese análisis tuve que realizar ya todo lo mencionado de manera lo que mencionamos
+52:41
+anteriormente, si el valor por dinero, tenemos que verificar el estudio de mercado, verificar informes de
+52:48
+necesidad, las especificaciones técnicas, absolutamente todo. Si es que yo no realizo aquello,
+52:55
+¿cómo llego a que yo voy a aplicar una subase inversa electrónica? Porque perfectamente, si es que yo no
+53:00
+establezco estandarizados, competencia, puedo hablar de una licitación. Entonces, esto es el enfoque que
+53:07
+nosotros tenemos que realizar. Ya. Bien. Ahora, ¿qué nos menciona la
+53:14
+normativa en relación a esta subasta inversa electrónica? Como ya conocemos y han existido algunas reformas,
+53:22
+no se puede contratar bajo este proceso de contratación obras civiles, no se puede agrupar ítems o productos de
+53:29
+distintas eh características para restringir la participación de proveedores. Es decir, yo no puedo
+53:35
+comprar impresoras en el mismo proceso de contratación y le puedo incluir eh
+53:41
+tal vez sillas, sí, porque son productos diferentes. No puedo realizar aquello.
+53:49
+¿Qué más tenemos aquí? Las vinculaciones detectadas dentro de este proceso de contratación efectivamente serán por
+53:55
+parte de la entidad contratante y serán notificadas al o también puede realizar
+54:01
+CCOP, ¿sí? Para que puedan ser notificadas a los entes de control.
+54:07
+Sabemos que el proceso de contratación de la subasa inversa electrónica puede ser suspendido de forma temporal en los
+54:13
+procedimient en alguna fase, ¿no?, que se realiza un control respectivo.
+54:19
+En este momento eh en la actualidad, como ustedes conocen, cuando se realiza la suspensión de un proceso de
+54:25
+contratación, cuando posterior a la calificación la entidad contratante califica solamente
+54:31
+un proveedor, teniendo tal vez cinco proveedores más o proveedores más. Sí.
+54:36
+Entonces, ¿cuál es la alerta que nace ahí del por qué no cumplieron todos los proveedores? ¿Qué es lo que sucedió ahí
+54:43
+en esa parte y por qué calificamos solamente a uno? Entonces, esa es la justificación que la entidad contratante
+54:49
+debe enviar directamente al CERCOP para eh que sea levantado el proceso de
+54:55
+contratación. Y la cuantía sabemos que en la actualidad sí para estos esta
+55:00
+subasa inversa electrónica es igual o superior a $10,000. Cuando hablamos de
+55:05
+bienes y servicios estandarizados, el primer foco que usted tiene que
+55:11
+realizar es, ¿es estizado el bien o el servicio? Sí. Perfecto. Vamos a
+55:16
+verificar el siguiente mercado competitivo. Si es que cumplimos con las tres puntos, los tres puntos del mercado
+55:22
+competitivo, el servicio estandarizado, ¿sí? Y las especificaciones técnicas, yo
+55:29
+visiono este proceso de contratación a una subasta inversa electrónica. Si es que no es estandarizado, lógicamente no
+55:35
+está cumpliendo el eh los parámetros, ¿sí?, de eh universalidad, de
+55:43
+uniformidad, etcétera, y por ende contratar por una subasa inversa electrónica. Entonces, en ese sentido,
+55:49
+yo tengo que visionar el proceso de contratación. Antes era simplemente hablábamos de la palabra normalizados y
+55:54
+no normalizados, ¿no recuerdan? Entonces, simplemente ustedes decían, es normalizado, subasta, no normalizado,
+56:00
+menor cuantía, licitación, etcétera. Sí. Hoy en día hablamos de la palabra estandarizados, bienes y servicios
+56:06
+estandarizados, mercado competitivo, especificaciones técnicas, subasta inversa electrónica. si es que yo tengo
+56:12
+otro eh eh no existe una estandarización y por ende tengo que acudir a establecer nuevos eh
+56:20
+parámetros, nuevos atributos, me visiono hacia la licitación. Recordando que en
+56:26
+el transcurso de esta semana tenemos otro webinar enfocado a la licitación como tal de bienes, servicios y
+56:31
+posterior a esto a la licitación de obras. Sí, de igual manera nos vamos a enfocar eh de cómo analizar para llegar
+56:40
+a una licitación como tal. Ya. Bien, ¿qué más nos indican aquí? Que la
+56:47
+calificación de las personas de las ofertas, perdón, será realizada por el responsable designado por la máxima
+56:53
+autoridad de la entidad contratante o por la comisión técnica. Aquí se va a aplicar, se mantiene el principio de
+56:59
+objetividad, es decir, que no se va a solicitar experiencias como tales eh ni
+57:05
+los ni patrimonios, sino se va a enfocar al objeto de la contratación que usted va a adquirir. En este proceso existe
+57:12
+puja. ¿Qué significa la puja? Que es la oferta eh económica del mejor postor
+57:19
+tiene que igualarse al 5%. ¿Qué sucede si es que no se iguala al 5%?
+57:24
+Posterior a la puja va a venir una negociación en donde se establecerá negociar al menos al 5%. Si es que de
+57:31
+manera eh vamos a ver posterior a esto un flujo para que recordemos un poco las
+57:38
+etapas de este procedimiento de contratación. Ya. A ver, al inicio
+57:44
+hablábamos de la concurrencia, ¿no? Porque es muy importante tener varias ofertas para yo poder verificar eh la
+57:51
+que me cumple. Aunque si es que hablamos de una subasa inversa electrónica y ya determinamos que yo me enfoco dentro de
+58:00
+la dentro del de la del mercado competitivo y dentro de bienes y
+58:05
+servicios estandarizados, voy a tener quizás algunos proveedores que me cumplan porque me van a brindar el mismo
+58:12
+bien o el mismo servicio bajo las especificaciones técnicas que yo planteé. si es que no existe mucha eh
+58:21
+acogida sobre este proceso de contratación, como escuchado en algunos casos, ¿qué es lo que yo tengo que hacer? En primera instancia,
+58:29
+analizar qué es lo que estoy solicitando y verificar si es que no estoy cerrando yo a mi proceso de contratación. Muchas
+58:36
+consultas ingresan acá al al CERCOP, sin embargo está por capacitación nos indican en un proceso eh hablando de
+58:43
+manera general, ¿no? En los procesos de contratación yo publico las necesidades
+58:48
+eh y no tengo proforas. No existen Proformas, entonces, ¿qué hago? Lógicamente, si es que no
+58:54
+existenas, no existen interés por parte de los proveedores, no va a existir la contratación pública. Si es que no
+59:00
+existe la otra parte que me pueda que le pueda vender al Estado, no puedo hablar de una contratación pública. Entonces
+59:06
+ahí como eh técnico, como persona, servidor público, técnico de una entidad
+59:11
+contratante, tengo que regresar a ver los documentos que yo elaboré y las
+59:17
+especificaciones técnicas con todos los requisitos que yo estoy estableciendo para verificar si es que no estoy
+59:23
+cerrando yo el mercado en relación a mi proceso de contratación. Ya, en virtud
+59:29
+de ello, eh al mencionar la concurrencia, tenemos que hablar sobre la aplicación de las condiciones de
+59:35
+participación equitativa y colocar exactamente requisitos
+59:41
+no eh exclusivos para una persona. Sí, los pliegos contendrán claramente los
+59:47
+requisitos mínimos que usted deba eh deba analizar y que cada proveedor del
+59:54
+Estado deba lógicamente cumplir. No se deberá exigir documentos adicionales que puedan limitar la participación. Justo
+1:00:01
+aquí es en donde me enfocaba hace un momento. Usted tiene que regresar a ver toda esa esos documentos, esos
+1:00:07
+requisitos que está requiriendo dentro de un proceso de contratación. ¿Sí?
+1:00:12
+A ver, y dentro de este proceso de contratación, recordemos que nuestra
+1:00:17
+comisión técnica es muy importante. Sí. el profesional que quién presidirá, lógicamente será el presidente de esta
+1:00:25
+comisión. La entidad, la máxima autoridad de la entidad contratante es quien designará a esta persona para que
+1:00:31
+cumpla esta función. Existirá un titular del área requirente encargado también como miembro y un profesional afín al
+1:00:39
+objeto de la contratación pública. Ahora son los puntos más relevantes que
+1:00:46
+que he visto que tenemos que analizar nosotros en la fase preparatoria, perdón, teniendo en cuenta que la
+1:00:52
+preparatoria es el la etapa en la que nosotros tenemos que analizar de manera
+1:00:58
+consciente, técnica y legal todo nuestro objeto de contratación. Ahora,
+1:01:04
+visionando a la parte precontractual, las etapas. inicia con la publicación.
+1:01:10
+Tenemos nuestra etapa límite de preguntas, etapa límite de respuestas
+1:01:16
+en la entrega límite de entrega de ofertas que es la declaración del BAE. Y ya les voy a explicar por qué se
+1:01:22
+encuentra de otro color. Tenemos la fecha límite para solicitar la convalidación,
+1:01:28
+respuesta de la convalidación, la calificación, oferta económica inicial, negociación o
+1:01:37
+fecha. de inicio de la puja, fecha final de la puja y fecha estimada de la
+1:01:43
+adjudicación. ¿Por qué motivos se encuentran en colores diferentes estas etapas? Si es
+1:01:50
+que aquí dentro de este webinar se encuentran proveedores del Estado, prestemos mucha atención porque si es
+1:01:55
+que nosotros ya enviamos, ¿no?, toda la oferta a través del portal de compras públicas a través del botoncito que se
+1:02:01
+llama declaración by se envía nuestro archivo punto ushai. La entidad
+1:02:06
+contratante va a analizar, va a verificar y determinará si es que existe errores de forma para solicitar una
+1:02:13
+convalidación. de ser así, eh visionándonos en esa parte, ¿no? Eh, que
+1:02:19
+existen los tres proveedores que nos entregan las impresoras. Eh, como todos cumplen las especificaciones técnicas,
+1:02:26
+este proceso de contratación únicamente se va a ir por el precio.
+1:02:32
+Sí, porque todos cumplen, se encuentran enmarcado en una especificación técnica como tal. En la etapa de calificación,
+1:02:40
+como entidad contratante, yo procedo a calificarles a los tres proveedores, tomando el ejemplo anterior.
+1:02:48
+El siguiente el la siguiente etapa es el envío de la oferta económica inicial. Si
+1:02:53
+es que en esta fecha límite de calificación yo califiqué a los tres, pues los tres que estén interesados
+1:02:59
+tendrán que ingresar el valor de la oferta económica inicial para dar inicio a la puja en la fecha correspondiente.
+1:03:07
+¿Qué sucede si es que en la entrega de las ofertas en el color tomate existe
+1:03:12
+una sola oferta? Eh, la oferta me envía, determino la
+1:03:17
+convalidación, eh, realizo la calificación correspondiente, ¿sí? Y efectivamente
+1:03:24
+voy a activarle, voy a calificarle para que esta persona pueda participar en la
+1:03:30
+negociación. Con esta negociación, ¿qué a qué quiero
+1:03:35
+llegar? A que los proveedores del Estado, hacia el proceso de contratación
+1:03:41
+visione a una puja o una negociación, tiene la obligación de enviar esta
+1:03:47
+oferta económica inicial. Aquí, como vemos en este casillero, dentro del proceso de contratación eh en
+1:03:54
+el SOC directamente usted tiene que observar el campo que mencione como fecha de inicio de la puja. Ya antes de
+1:04:04
+esa fecha tiene que enviar la oferta económica inicial, ya que si es que no se procede a enviar, no podrá realizar
+1:04:11
+la negociación y por ende o por ende tampoco va a poder realizar la etapa de la puja. Esto es como la
+1:04:19
+puerta para que se vaya a realizar cualquiera de estas dos vías, negociación o puja. Y cuando sucede
+1:04:24
+esto, a veces eh por desconocimiento de los proveedores, de los oferentes, perdón, que están que enviaron la eh su
+1:04:31
+interés dentro de este proceso de contratación, no envía. Sí. Entonces, se
+1:04:37
+comunican con la entidad contratante, la entidad contratante eh solicita la apertura a CERCOV. CCK no da paso porque
+1:04:44
+se cumplió todo el flujo correspondiente, simplemente que el oferente no observó y cuando sucede esto
+1:04:52
+no se procede a reversar una etapa para que pueda enviar la oferta económica
+1:04:57
+inicial. Entonces debemos tener muchísimo cuidado en ese sentido. Sí.
+1:05:04
+Bien, ya tengo aquí algunas preguntas en
+1:05:10
+procedo a terminar la presentación y damos un lectura aquello. Ya,
+1:05:18
+ya. Ojo con esto. Algo tengamos siempre claro y ratifico lo que mencioné
+1:05:24
+anteriormente. En la normativa no se va a establecer
+1:05:29
+objetos de contratación como tal. No se va a mencionar. A ver, impresoras,
+1:05:35
+eh impresoras, sillas, mesas, etcétera,
+1:05:40
+compre por subasta, servicios de mantenimiento, etcétera, compre por licitación. Lo único que se está eh se
+1:05:48
+encuentra de manera clara establecida es que si es una obra haga licitación, pero objetos puntuales como tal no se
+1:05:55
+menciona. Ese análisis es el que tiene que hacer usted como parte de la entidad contratante, ¿ya? El CCOV efectivamente
+1:06:03
+bajo los canales de atención al usuario le podrán guiar, le podrán mencionar eh
+1:06:09
+los parámetros que debe analizar para aplicar una subasta, para aplicar una licitación, como lo acabamos de hacer en
+1:06:15
+este momento, pero no le vamos a decir usted realiza una subasta porque esa función, ese análisis lo tiene que hacer
+1:06:20
+directamente usted. Ya. Bien. A ver,
+1:06:27
+ahora pasando rápidamente una etapa de preguntas y respuestas, vamos a ir un poquito rápido porque veo que tengo algunas preguntas y me gustaría eh
+1:06:34
+solventar absolutamente todas. Ahora, en esta etapa de preguntas tenemos, ¿no?, nuestro tiempo correspondiente que que
+1:06:40
+debemos e seleccionarlo dentro del aplicativo MFC para dar cumplimiento a
+1:06:47
+la correspondiente etapa. ¿Qué es lo que buscamos en esta etapa de preguntas y respuestas? que
+1:06:53
+todo lo que se estableció dentro del de las especificaciones técnicas del pliego
+1:06:58
+o de los términos de referencia, etcétera, del proceso se encuentren claros para que los proveedores del
+1:07:04
+Estado participantes verifiquen todas las condiciones y determinen su participación o no. Recordemos, ¿no?,
+1:07:12
+que eh si es que un proveedor me realiza una pregunta, sí, yo tengo que
+1:07:18
+contestar. Ya no puedo mencionar, remítase a los pliegos, porque si es que un proveedor pregunta es porque no
+1:07:24
+entiende, es porque tal vez se encuentran unas palabras técnicas que quizás ellos no conocen y para asegurar
+1:07:30
+su participación y y enviar todos los los documentos de manera claro,
+1:07:35
+lógicamente establecen la pregunta. ¿Ya? Entonces, yo como entidad contratante
+1:07:41
+puedo, tengo la obligación, mejor dicho, de responder, puedo hacer aclaraciones,
+1:07:46
+por supuesto, siempre y cuando no me modifique eh la sustancia del proceso de contratación, no altere el objeto de
+1:07:53
+contratación y por ende no altere tampoco el presupuesto referencial. Las aclaraciones usted las tiene que
+1:07:59
+publicar directamente en el proceso de contratación. Algo importante aquí, eh,
+1:08:04
+el sistema lanza un mensaje de alerta cuando usted no responde una pregunta,
+1:08:10
+si es que tiene tal vez cuatro preguntas que le hicieron los proveedores. De las cuatro preguntas resulta que tres
+1:08:17
+respondió y una no. Entonces, cuando termina la etapa, el sistema automáticamente le eh emite emite un
+1:08:24
+mensaje de incumplimiento. Sí. Y lógicamente sugiere cancelar el procedimiento de contratación. o a su
+1:08:31
+vez también se han dado casos en los que usted responde de manera general como
+1:08:37
+una aclaración. Entonces, el sistema identifica que no existe una respuesta para cada pregunta
+1:08:44
+y también nos emite este mensaje de sugerencia de cancelación del proceso.
+1:08:50
+¿A qué quiero llegar con eso? Es que usted si es que encuentra cuatro preguntas, pues debe haber en el portal
+1:08:56
+cuatro respuestas. Si es que necesita hacer una aclaración, pues habrá otra intervención dentro del del de la misma
+1:09:03
+fase en donde usted coloque aclaración, ¿ya? Y de esa manera, respondiendo de
+1:09:08
+manera correcta, no vamos a tener problemas con el funcionamiento del sistema. Bien, al hablar de presentación
+1:09:17
+de ofertas, al ser una subasta inversa electrónica, estas esta información,
+1:09:22
+absolutamente todo esta oferta tiene que ser publicada a través del portal de compras públicas y dentro de la fecha
+1:09:29
+correspondiente. Sí, la presentación de ofertas, como he
+1:09:34
+mencionado, deberá estar en el portal de compras públicas de manera independiente. No debe existir
+1:09:40
+vinculación con otras ofertas. Es decir, no voy a tener el
+1:09:45
+mismo los mismos socios, ¿no? Los mismos socios dentro de una empresa, hablando de una participación como persona
+1:09:52
+jurídica, no voy a tener mayoritarios dentro de una empresa y de la otra, etcétera. A eso nos referimos con la
+1:09:59
+vinculación como tal. Si es que usted detecta una vinculación, las ofertas quedarán inhabilitadas y deberá
+1:10:06
+notificar al ente de control. puede notificar al CERCOP efectivamente que es el inmediato y posterior a eso se
+1:10:12
+notificará a Contraloría, fiscalía, dependiendo de la vinculación que se menciona.
+1:10:18
+Las aperturas de ofertas sabemos que se realizará una una hora después del límite establecido para su recepción.
+1:10:23
+Ojo con eso que hablamos de apertura, no hablamos de calificación. Aquí existe una confusión en algunos casos. dice,
+1:10:30
+"Pero tengo una hora solamente para abrir." No, aquí yo lo que tengo que levantar es el auto administrativo en
+1:10:35
+donde se mencione cuántas ofertas fueron ingresados en el portal y por y cuáles son los proveedores, cuántas partes de
+1:10:41
+losi ingresamos, eh la hora en la que se ingresó. Es una constancia simplemente
+1:10:47
+de las ofertas que se está eh verificando en el portal de compras públicas. Una vez que termina aquello,
+1:10:54
+efectivamente damos paso a la revisión, que es la integridad de las ofertas, en donde vamos a verificar la integridad de
+1:11:00
+la documentación. Y con eso identificamos si es que existen errores eh susceptibles de convalidación, es
+1:11:07
+decir, errores de forma que no me cambie mi objeto de contratación ni el valor ofertado por parte del proveedor. Si es
+1:11:13
+que amerito una convalidación de errores, pues procedo a notificar por el portal. La normativa nos indica de
+1:11:19
+manera clara que yo lo tengo que hacer por el portal. dentro de las de las eh de las fechas correspondientes,
+1:11:26
+al mencionar las convalidaciones de errores y al hablar de esa palabrita que nos indica errores de fondo, que nos
+1:11:33
+indica que no implican modificación alguna en el contenido sustancial de la oferta. Sí. Eh, yo puedo convalidar
+1:11:40
+cuando tengo errores tipográficos, defoliados, certificaciones de documentos sobre capacidades legales
+1:11:45
+técnicas. Eh, no existe una claridad dentro de la información, existen contradicciones, eh cualquier error en
+1:11:53
+el llenado de la de los formularios como tal. Sin embargo, se eh se mantiene, ¿no?, la convalidación de que si tenemos
+1:12:00
+la firma de en un aplicativo, ¿sí? diferente al oficial, puedo convalidar
+1:12:07
+sin ningún inconveniente. Sí, el objetivo no es eliminar, no es descalificar a los proveedores por cosas
+1:12:14
+eh vanas, por cosas sencillas. Sí, si es que yo puedo comprobar, yo tengo alguna duda, pues realizo una convalidación de
+1:12:22
+errores para solventar esta duda. Pero si es que existe ya una verificación
+1:12:27
+adicional, eh tal vez que necesito que me cambie un valor ofertad, ya lógicamente eso ya no es viable.
+1:12:34
+Entonces tenemos que enfocarnos al error de forma para aplicar una convalidación
+1:12:40
+de errores. Además, la convalidación de errores que nos indica eh nos establece en la
+1:12:47
+normativa cuando no son convalidables, cuando la la cuando existe dentro de la
+1:12:52
+oferta una documentación que no haga referencia a la misma. Se han dado casos, ¿no? Todos somos humanos y
+1:12:58
+podemos cerrar. Se han dado casos en los que eh se comunican diferentes proveedores del estado y mencionan que
+1:13:04
+han enviado información, que han anexado información adicional, ¿sí? E o en
+1:13:11
+reemplazo simplemente de lo que nos les solicitan de otra oferta que estaban participando en dos entidades y no se
+1:13:18
+han dado cuenta que la una documentación de la de la otra entidad no correspondía. Sí. Entonces, existe una
+1:13:25
+confusión y para esto la normativa es clara. Sí, no podemos eh convalidar
+1:13:32
+porque no tenemos la constancia, no existe la veracidad en la documentación que está presentando un oferente sobre
+1:13:39
+el objeto de la contratación en el cual está participando. Ya. Por eso es que como proveedores del Estado debemos
+1:13:45
+tener bastante cuidado en toda la documentación que vamos a publicar en el proceso y lo debemos hacer de manera
+1:13:50
+oportuna porque si lo hacemos a minutos a la entrega de la oferta final, lógicamente va a tener estos errores de
+1:13:56
+que no verifiqué, que se envió eh documentación que no se que no es acorde al proceso de
+1:14:03
+contratación en el cual estoy participando. ¿Qué más nos menciona? El incumplimiento
+1:14:09
+de requerimientos técnicos de la oferta también es un motivo por la convalidación. Y cuando existen errores
+1:14:14
+convalidables, cuando usted determina e identifica que no que los errores encontrados no son errores de forma,
+1:14:22
+efectivamente no aplica una convalidación, sino simplemente es un rechazo de la oferta de manera
+1:14:28
+inmediata. Otro punto en este sentido, cuando yo como entidad contratante determino e y
+1:14:37
+verifico, ¿no?, que la convalidación, realizamos la convalidación, pero el proveedor del Estado no cumplió o
+1:14:44
+cumplió, pero no envió toda la documentación que yo solicité, no está subsanando la convalidación. También es
+1:14:51
+un motivo para descalificación. ¿Sí? ¿Por qué hago esta mención e al final?
+1:14:58
+Porque e se han dado caso, sí, todo es de la vida real, que los proveedores
+1:15:03
+dicen al apuro, no, tal vez no no observaron rápidamente la el proceso de contratación y no observaron que se les
+1:15:09
+envió a convalidar cierto documento y mencionan que solamente para cumplir suba el mismo documento. Lógicamente, si
+1:15:17
+es que enviamos a convalidar es porque este documento no subsanó, no cumplió
+1:15:22
+con la veracidad del rol que cumplía este papel, ¿no? este documento, este
+1:15:28
+requisito como tal y por ese motivo es que se envió a realizar la convalidación. Ahora
+1:15:35
+vamos a hablar de la prohibición que tiene la entidad contratante para solicitar la convalidación de errores.
+1:15:41
+Sabemos que eh toda la documentación se establece en la fase preparatoria. Sin
+1:15:46
+embargo, usted como entidad contratante, así en la fase precontractual, observe
+1:15:52
+que eh le hace falta algún documento que solicítale a todos los proveedores y a través de una convalidación necesita
+1:15:59
+solicitarle, eso se encuentra prohibido. Usted como entidad contratante durante esta etapa de convalidación no puede
+1:16:06
+solicitar a los oferentes que incluya ningún documento adicional que no se
+1:16:11
+estableció en el pliego comunal. Sí. Y las entidades contratantes, lógicamente,
+1:16:16
+no nos indican que no podrán eh formular aclaraciones, modificaciones o nuevos
+1:16:22
+requerimientos respecto de las condiciones establecidas en el pliego. Solicitar algo adicional que no está
+1:16:29
+establecido en el pliego, en la convalidación de errores no es vía. Eh, quizás en algún momento una entidad
+1:16:37
+contratante lo realizó y efectivamente la eh procedió a realizarse una alerta
+1:16:43
+de esto. El proceso se declaró de cierto porque no es viable, ya que estaban eh no estaban en las mismas condiciones de
+1:16:48
+los proveedores iniciales porque observaron, ¿no?, que no, que faltaba cierta información. Entonces, cuando
+1:16:55
+usted necesite y observe esto, lo más sano y lamentablemente es declarar de
+1:17:00
+cierto el proceso de contratación. Y para evitar esta declaratoria de desierto, ¿qué es lo que tiene que hacer? Es invertir más tiempo en la fase
+1:17:07
+preparatoria. La preparatoria en donde establece todos los requisitos. Ahí usted tiene que invertir más tiempo para
+1:17:14
+evitar estas observaciones y evitar eh solicitar información adicional en esta
+1:17:19
+etapa. ya de la eh metodología que aplicamos en esta subasa inversa electrónica y
+1:17:26
+regresando nuevamente al tema del del valor por dinero o regresando al tema de la verificación de bienes y servicios
+1:17:33
+estándar, este proceso de contratación únicamente lo que eh aplica es una
+1:17:39
+metodología cumple o no cumple. ¿Por qué motivo? Porque recordemos en el ejemplo
+1:17:44
+planteado anteriormente que teníamos tres tres oferentes y los tres oferentes
+1:17:49
+están eh ofertando las impresoras. Me indican que tienen las mismas
+1:17:55
+impresoras con las mismas características. Entonces, lógicamente, los tres me van a cumplir, salvo que uno
+1:18:01
+me mencione que no es eh no me cumple eh las tres funciones que yo necesita,
+1:18:07
+impresión, escaneado y copia. y solamente me indica, no, solamente me imprime. Lógicamente ahí si esta persona
+1:18:13
+le voy a descalificar porque no está cumpliendo con toda la parte técnica que
+1:18:19
+yo necesito. Sí, ahí sí, pero si es que todos cumplimos, todos califican y
+1:18:24
+efectivamente vamos por el precio. Vamos a adjudicar por el precio porque ya sabemos y tenemos ya un estándar de en
+1:18:33
+las especificaciones técnicas para este día. ¿Cuál es el objetivo de esta
+1:18:38
+metodología? Sí. En primer lugar, la entidad contratante si a través de su personal, de su comisión técnica o del
+1:18:43
+delegado va a levantar los informes y las actas que tendrán todos los
+1:18:49
+sustentos jurídicos, técnicos y comerciales. Aquí también regresamos a ver al aparte del cuadro comparativo que
+1:18:56
+yo debería armar en mi en mi calificación en donde voy a determinar eh todos los oferentes lo que me están
+1:19:03
+ofertando. Sí, yo voy a regresar a observar mi estudio de mercado y y mis
+1:19:08
+especificaciones técnicas porque eso tiene que ir de la mano. No significa que todo lo eh lo actuado en la fase
+1:19:16
+preparatoria no tiene eh no tiene injerencia en esta fase, tiene en su
+1:19:22
+totalidad. Por ese motivo es que todo el equipo que trabaja en un procedimiento de contratación, área requiere el gestor
+1:19:29
+de contratación pública, el administrador de contratación pública, la máxima actualidad somos un solo equipo. Sí que tenemos que solventar
+1:19:37
+alguna duda en este caso de la etapa de calificación si es que yo eh necesito
+1:19:42
+alguna alguna revisión técnica por parte del área requirente, pues obviamente
+1:19:48
+tengo que apoyarle. Sí. El objetivo de esta metodología y de este proceso de contratación de la
+1:19:53
+subasta inversa electrónica es que de eh se debe procurar que existan dos ofertas, ¿sí? Calificadas porque el
+1:20:01
+objetivo en nuestra vía es el precio, ¿no? Y para que se pueda realizar el precio, necesitamos que se ejecute una
+1:20:08
+puja. Y una puja se puede ejecutar entre dos o más personas, no puede haber entre una sola.
+1:20:14
+La puja en este caso eh se va a realizar en nuestro ejemplo, sí, se van a
+1:20:20
+realizar entre los tres proveedores del Estado. Si es que vamos a al otro escenario de los tres que me presentaron
+1:20:27
+la oferta, si es que yo descalifiqué a uno de ellos porque eh no me ofertaba
+1:20:33
+las especificaciones técnicas que yo necesito, lógicamente no cumple, así que no le no puedo mencionar que él se
+1:20:39
+alineó a mis requisitos mínimos, entonces es descalificado. Únicamente los dos proveedores irían a esta etapa
+1:20:47
+de evaluación y por ende participarían en la puja como tal.
+1:20:53
+La verificación en las reformas se eh adiciona una etapa más en la que
+1:20:59
+nosotros tenemos que verificar. Antes de la última reforma, sí se
+1:21:05
+mencionaba, ¿no?, que la entidad contratante tiene que verificar al proveedor del Estado su habilitación en
+1:21:12
+el RUP exclusivamente en la apertura y en la suscripción del contrato, en la
+1:21:17
+apertura de ofertas y la suscripción del contrato. Hoy en día ya se nos ya menciona que sea también en la etapa de
+1:21:24
+adjudicación. Entonces, ya vamos en tres fases, tres etapas. Tenemos que verificar la habilitación en la apertura
+1:21:31
+de ofertas. en la adjudicación y en la suscripción del contrato.
+1:21:38
+Únicamente en estas etapas. Esta verificación de las inhabilidades
+1:21:43
+también es aplicable para los socios cuando el proveedor está participando bajo la figura jurídica. Si es que está
+1:21:50
+participando en un consorcio, lógicamente se verificará la inhabilidad
+1:21:55
+de los partícipes. Es muy puntual lo que nos menciona el artículo 18 del reglamento, que no se
+1:22:02
+podrán descalificar las ofertas por encontrarse inhabilitado el proveedor en
+1:22:07
+días distintos a los que se detallar. Es decir, si es que, por ejemplo, a usted le indican en está verificando en la
+1:22:13
+etapa de preguntas y respuestas y le descalifica en en la etapa correspondiente, no es viable porque la
+1:22:19
+normativa solamente nos menciona verifique la habilitación en apertura de ofertas, adjudicación y suscripción del
+1:22:26
+contrato. Una vez que se califica, se verifica, recordemos, ¿no?, que se mencionaba la oferta económica inicial.
+1:22:34
+Esas ofertas obligan a que la oferente cumpla con las condiciones técnicas y económicas para participar en la puja.
+1:22:40
+Si no existe el envío de la oferta económica inicial, el oferente calificado no podrá participar en la
+1:22:47
+puja como tal, no se podrá reversar. Y ahora, ¿cuál es el valor que usted tiene que enviar? Es el mismo valor que envía
+1:22:55
+en la oferta económica e en la oferta en la declaración del B. Ese valor que
+1:23:01
+colocó usted en el formulario en la oferta punhai es la misma que tiene que
+1:23:06
+colocar acá. Si es que no coloca de manera eh exacta, el sistema no permite
+1:23:12
+guardar la oferta económica inicial. ¿Ya? Bien.
+1:23:17
+¿Qué sucede cuando yo puedo rechazar las ofertas como tal? Eh, son motivos de
+1:23:22
+rechazo de o descalificación de las ofertas cuando no se haya convalidado. Sí, usted solicitó alguna aclaración.
+1:23:30
+Ya. Eh, y lógicamente eh no existe una
+1:23:35
+documentación adicional que el proveedor que el oferente, perdón, haya enviado
+1:23:41
+para subsanar este esta observación. ¿Sí? Entonces, verifica, analiza que se
+1:23:47
+envía del mismo documento, no cumple y es descalificación. Como ya mencionamos, cuando existen
+1:23:52
+errores no convalidables, cuando existe documentación dentro de la oferta que no haga referencia absolutamente nada a la
+1:23:59
+en la que está participando o cuando no cumple requisitos mínimos de la oferta.
+1:24:05
+El incumplimiento de cualquiera de esos mínimos eh de estos requisitos mínimos determinados por la entidad contratante
+1:24:11
+bajo esta metodología de cumple y no cumple. Aquí eh se encontraría el
+1:24:17
+análisis que usted tiene que realizar como comisión técnica o delegado de la entidad contratante y verificar todas
+1:24:23
+las especificaciones de la impresora que utilizamos como un caso de ejemplo para este webinar.
+1:24:29
+Usted determinará aquí si es que cumple. Regresemos un poquito.
+1:24:35
+A ver, aquí.
+1:24:41
+Caramba. Aquí usted va a verificar, ¿no? La
+1:24:47
+impresora que me oferta tiene impresión, copia y escaneado. Okay. Participa. Si
+1:24:52
+es que hay un proveedor, como menciona el proveedor dos, por ejemplo, que no me brinda, solamente me indica que no es
+1:24:57
+multifuncional, lo único que me hace es monotar esta impresora es imprimir nada
+1:25:04
+más. Entonces, no está cumpliendo con uno de los requisitos técnicos. Lamentablemente en ese punto le voy a
+1:25:09
+colocar como X que no califica. que no cumple con la especificación y de esa forma al tener estos estas
+1:25:17
+especificaciones técnicas, ¿sí? Básicas, yo voy poniendo, no, él cumple o no
+1:25:22
+cumple, está habilitado, cumple o no cumple. Usted hemos verificado también las las actas de calificación que suben
+1:25:29
+las entidades contratantes. Tenemos en eh solicitan, verifican el RU, etcétera,
+1:25:37
+toda la información que nos permita calificar a este proveedor del Estado bajo la figura. técnica que acabamos de
+1:25:43
+mencionar. Entonces, como uno de los proveedores yo ya le coloqué como no cumple, lógicamente no va a pasar a la
+1:25:49
+siguiente etapa porque no me está ofertando lo que yo necesito, esta multifuncional, sino solamente
+1:25:55
+mono monotarea, que sería imprimir y nada más. Y para subsanar para mi
+1:26:00
+necesidad de la entidad contratante, yo no necesito una monotaria porque yo necesito escanear y necesito sacar
+1:26:06
+copias. Si es que yo le solicito y la pruebo a esta a esta persona, puede que en la puja resulte ganadora
+1:26:14
+y me va a entregar lógicamente no la multifuncional que yo necesito, sino me va a entregar esta impresora básica que
+1:26:21
+no va a subsanar, no va a satisfacer la necesidad del personal de atención al usuario, que es eh cumplir las tres
+1:26:27
+acciones, ¿no? Para cumplir lógicamente sus funciones como servidores públicas de dicharia. Bien, a ver.
+1:26:38
+Ahora hablemos un poco rápidamente de la puja. Sí, recordemos que esta puja
+1:26:46
+eh todos los participantes calificados y habilitados deberán presentar su oferta económica inicial. Y regresando un
+1:26:52
+poquito hasta los exámenes de operador, hay una pregunta sobre esto. ¿Qué haría usted si es que eh no envió la oferta
+1:26:59
+económica inicial? solicita la entidad buscar eh habilitar, solicita eh no o
+1:27:06
+participa en la puja sin ningún problema. Entonces, aquí estamos aclarando aquello que los proveedores no
+1:27:11
+podrán participar si es que no se envió la oferta económica inicial dentro del
+1:27:17
+tiempo correspondiente. La puja es hacia la baja. Sí, esta puja lo realizamos
+1:27:23
+directamente en el SOSE, la duración de 15 a 60 minutos y se reprogramará la puja por una sola vez en 24 horas. Aquí
+1:27:30
+también vamos a hacer un análisis en la siguiente eh diapositiva sobre esta reprogramación porque existió una
+1:27:36
+reforma sobre ello. En la negociación es porque tenemos una sola oferta técnica
+1:27:41
+calificada. Ya en este caso se puede dar porque existió una sola oferta o porque
+1:27:48
+una sola oferta fue calificada. Cuando existe una sola oferta y no existieron más ofertas enviadas, pues a las 24
+1:27:55
+horas o 48 horas se levanta eh la la suspensión. Pero cuando existieron más
+1:28:01
+ofertas eh calificadas y solo una de ellas fue, perdón, varias ofertas
+1:28:06
+ingresadas y solo una de ellas fue calificada, entonces ahí sí solicita el
+1:28:12
+la justificación del por qué eh solamente esta oferta cumplió. ¿Qué sucedió con el resto? En este caso de la
+1:28:19
+subasa inversa electrónica, recordemos, ¿no?, que son bienes y servicios estandarizados. usted tendrá que
+1:28:24
+justificar de manera clara por qué no cumplió si es que califica a una sola oferente eh teniendo varias ofertas más,
+1:28:32
+teniendo en cuenta que usted como entidad contratante determinó este proceso bajo la figura de
+1:28:39
+su base inversa electrónica y llegamos al objetivo que es lo único que se eh
+1:28:44
+que vamos a determinar como prioridad lógicamente es el precio, porque los bienes y servicios son estandarizados.
+1:28:51
+Aquí la justificación será un poco más complicada si es que usted descalifica los oferentes sin tener un peso legal y
+1:28:59
+técnico. Ya, ojo con esta parte de aquí. Tenemos que determinar y verificar de
+1:29:05
+manera clara en la fase preparatoria cuando yo aplico un procedimiento de subasta inversa electrónica. La sesión
+1:29:11
+de negociación lógicamente se va a realizar entre la entidad contratante y el proveedor. El objeto de la
+1:29:17
+negociación será mejorar la oferta económica del oferente calificado. Aquí
+1:29:22
+recordemos el 5%. Se ejecutará en un término no mayor a 5 días desde la fecha que se estableció
+1:29:30
+para eh realizar la puja. Y el la rebaja, ¿no?, de la oferta económica
+1:29:36
+será al menos el 5% del presupuesto referencial. Ahora, regresando un poco a
+1:29:42
+la puja y a su reprogramación, ¿qué nos indica la normativa correspondiente?
+1:29:48
+En primera instancia, que la puja debe darse entre al menos dos oferentes. De no contarse con este número de eh de
+1:29:54
+oferentes, sí, que puedan presentar posturas a la baja, se reprogramará por
+1:29:59
+una sola vez en las 24 horas siguientes. decir que si yo tenía programada la puja
+1:30:05
+para hoy 9 de la mañana y de los oferentes calificados no procedieron a
+1:30:10
+realizar el la puja efectivamente las acciones correspondientes de enviar las
+1:30:16
+posturas, el sistema identifica que no existió una ejecución de una etapa de la
+1:30:21
+puja o si es que uno de los dos proveedores uno puja, uno empieza a enviar las posturas a la baja. Sí, no
+1:30:29
+existe una competencia electrónica en este caso porque solamente un un
+1:30:35
+oferente calificado está enviando sus posturas, pero no existe la contraparte. Entonces el sistema también en ese caso
+1:30:41
+determina que no existe la acción de la puja correspondiente. Y cuando se dan en
+1:30:47
+estos casos, sí, miremos aquí en este ejemplo, tenemos aquí a tres proveedores
+1:30:52
+calificados. de los tres proveedores en el momento de la puja, lógicamente el
+1:30:58
+dos y el tres no han enviado sus posturas, únicamente el proveedor uno le envía. Ustedes pueden observar que
+1:31:04
+tenemos aquí todo su recorrido, ¿no?, de la puja correspondiente. En estos casos no existe una ejecución
+1:31:13
+de puja como tal. No se ha brindado, no se ha dado porque los otros dos proveedores calificados no han enviado,
+1:31:19
+no ha habido una competencia. Si es que quizás el proveedor eh dos envió una o dos posturas, lógicamente el sistema no
+1:31:26
+va a reprogramar. En estos casos sí procede a la reprogramación. Ahora,
+1:31:32
+lo reformado en esta parte y lo
+1:31:37
+incrementado en este punto es que nos menciona que si el proveedor ingresó una o más
+1:31:44
+posturas durante la puja inicial, como vemos el caso, en la reprogramación automática, la postura deberá ser
+1:31:51
+inferior a la postura más baja ingresada en la postura inicial. ¿Qué quiere decir esto? que el proveedor de manera inicial
+1:31:59
+envió este valor $869,000. Sí, 930.
+1:32:06
+Dentro de la etapa de la puja comenzó a pujar, comenzó a enviar sus posturas y colocó el siguiente valor $859,930.
+1:32:15
+envió el siguiente valor, $839,930, pensando que efectivamente los otros
+1:32:21
+proveedores también están enviando sus posturas y finaliza en $579,000.
+1:32:28
+En este valor termina la puja, como el sistema de manera inmediata al finalizar
+1:32:34
+la puja identifica si es que se va a reprogramar o no al siguiente día, ¿sí?
+1:32:40
+porque se reprograma por 24 horas si es que la puja se realizaba el día de hoy 9 de la mañana, pues se reprogramará para
+1:32:46
+el día de mañana a la misma hora. En ese sentido, el proveedor para ingresar la
+1:32:54
+postura en la reprogramación de la puja ya no va a mencionar al $69,930,
+1:33:02
+sino tiene que partir del último valor enviado de $579,000.
+1:33:08
+Eso es lo que nos menciona hoy en día las reformas a la Ley Orgánica del Sistema Nacional de Contratación Pública
+1:33:15
+en concordancia con su respectivo reglamento. Esto se menciona para los proveedores
+1:33:20
+que vayan que se encuentren dentro de esta sala de webinar y para los que vayan a o estén participando en una puja
+1:33:27
+y se encuentren con este escenario. Siempre tendrán que enviar un valor inferior al último que enviaron dentro
+1:33:35
+de la etapa de la etapa de la puja principal. Sí. Bien. Ahora, en relación
+1:33:42
+a la adjudicación, sabemos que son los tres días término, ¿sí? Los tres días términos contados desde que se realiza
+1:33:48
+eh la finalización de la puja o de la negociación. Esto lo tiene que hacer directamente en el portal de compras
+1:33:54
+públicas, ¿ya? Y el proveedor, el oferente, perdón, o el adjudicatario tendrá que estar en constante revisión
+1:34:00
+de toda la documentación mencionada. si es que eh la entidad contratante tendrá
+1:34:05
+un término máximo de 30 días para realizar la respectiva adjudicación. Sí.
+1:34:12
+Y lo que tendrá que realizar si es que eh no lo realiza en 3 días, sino tal vez
+1:34:17
+lo hacen en 15 días, tendrá que simplemente informar al CERCOP los motivos, las razones por las cuales no
+1:34:24
+cumplió los 3 días mencionados anteriormente y con esa notificación puede continuar con el proceso de
+1:34:30
+contratación. Ya. Bien, en la contractual existen dos puntos, dos
+1:34:36
+puntos sumamente claros que el contrato sabemos que tiene que tener, ¿no? En
+1:34:42
+primer lugar, las multas, la cláusula, perdón, de las multas correspondientes. Sí, indicando de manera clara, esto es
+1:34:50
+para todo proceso de contratación, pero más nos enfocamos en la subasta. ¿Por qué? Porque es el proceso más común.
+1:34:57
+Eh, entonces tenemos que establecer las cláusulas puntuales por las multas. en donde mencionemos los motivos por los
+1:35:03
+cuales procedemos a multarle para tener de manera clara el panorama. Sí, tenemos
+1:35:09
+que establecer garantías. El administrador del contrato tendrá que verificar los plazos, si es que son
+1:35:14
+entregas parciales, tendrá que verificar su entrega correspondiente, cumplir con el proceso y el debido proceso de las eh
+1:35:21
+que tiene que realizar el eh para solicitar sí que se entregue los
+1:35:28
+bienes o los servicios en el plazo correspondiente, porque el administrador del contrato, cuando hablemos ya en una
+1:35:33
+capacitación exclusivamente para esta persona, vamos a hablar de las atribuciones que tiene y que se regula
+1:35:39
+en el reglamento. la tramitación de responsabilidad de pagos que tiene eh la entidad
+1:35:45
+contratante dentro de este procedimiento de dentro de cualquier procedimiento de contratación, lógicamente tiene que
+1:35:51
+llegar hasta el la verificación del valor económico en la cuenta bancaria
+1:35:57
+del proveedor. ¿Ya? Bien, en ese sentido, de manera eh
+1:36:04
+gráfica, hemos mencionado sobre el funcionamiento de la subasa inversa electrónica, que en la mayoría de
+1:36:09
+ustedes lo conocían, ¿no? Verdad lo nuevo y lo que nos enfocamos es en el análisis del valor por dinero. Como he
+1:36:16
+mencionado y ratifico una vez más, no todos los objetos de contratación son
+1:36:21
+diferentes. Quizás ustedes me van a indicar aquí, "¿Y cómo hago para tuberías y cómo hago para servicios?" Efectivamente, lo que se menciona es el
+1:36:29
+el cimiento para que usted verifique si es que el costo el costo que tiene que
+1:36:36
+va a traer su la adquisición de este bien o este servicio va a ser eh va a
+1:36:41
+cumplir con un ciclo de vida como tal. Y además yo tengo que verificar, sí, si es
+1:36:47
+que va a adquirir la va a subsanar la necesidad, cómo lo voy a hacer, para qué
+1:36:52
+lo voy a hacer y al final voy a medir, porque recordemos que dentro de una fase de contratación tenemos la etapa de
+1:36:57
+evaluación y no significa que la evaluación va a realizar únicamente los entes de control cuando el proceso ya se
+1:37:03
+encuentra eh finalizado. Sí, la entidad contratante también lo puede hacer. Usted puede medir sus resultados y eso
+1:37:10
+es lo que buscamos con todos estos principios. Usted tiene que determinar si es que con la adquisición de las impresoras que vamos a realizar o las
+1:37:17
+cámaras que vamos a realizar cumplimos nuestro objetivo institucional. ¿Sí?
+1:37:22
+Bien, con esto vamos a dar paso a las a las preguntitas.
+1:37:27
+Veamos si es que avanzamos. Eh, son algunas
+1:37:33
+hay algunas que me parece que ya he ido solventando en el transcurso del webinar.
+1:37:40
+Aita, ¿te parece? Así es que mientras tú vas revisando las preguntas ponemos en este momento la encuesta para que
+1:37:46
+nuestros amigos participantes nos puedan ayudar de a ver.
+1:37:52
+Listo, por favor, nos indica qué pasaría si como entidad contratante tengo presupuesto de $9,000.
+1:37:58
+Por ejemplo, al momento de publicar la necesidad, solo un proveedor se ajusta al presupuesto
+1:38:04
+y dos o tres más proveedores sobrepasan la ínfima cuantía. ¿Cómo procede? Ya,
+1:38:10
+Anita, antes de pasar, Anita, tal vez nos querías comentar algo porque veo que ya me refleja la la encuesta.
+1:38:16
+Esto te estaba indicando que para poner la encuesta mientras la
+1:38:22
+eh las preguntas de tus participantes para que nos puedan ayuda de Nando. A ver, entonces en este caso ustedes ya
+1:38:27
+pueden observar la encuesta. Sí, la encuesta que siempre hacemos en todos los webinar, ¿no? Esa se encuentra se va
+1:38:32
+eh va a estar activa mientras yo doy respuesta a sus preguntas.
+1:38:39
+A ver, aquí me indican, veamos si es que
+1:38:44
+nos menciona,
+1:38:49
+a ver, ¿qué pasaría si una entidad contratante tiene como presupuesto 9,000?
+1:38:55
+Se ajusta el presupuesto, dos o tres más proveedores sobrepasan la ínfima cuantía. ¿Cómo procedo? Ya. A ver, a
+1:39:01
+ver, mi estimado, mi estimado Christopher, usted se supone que cuando va a realizar
+1:39:08
+e una publicación de de necesidad bajo la figura de infima cuantías es que ya
+1:39:14
+se enfocó en ese proceso, no conoce todavía, no sabe que su presupuesto es $9,000.
+1:39:20
+Sí, porque recién en el momento de subir la necesidad
+1:39:26
+y y receptar las formas. Sí, realizamos nuestro estudio de mercado y ahí recién
+1:39:33
+establecemos, si es que eh optamos por la por el eh por establecer, mejor dicho, el valor del presupuesto. Ahora,
+1:39:42
+eh algo adicional en este sentido, si es que usted puede, sucede este caso, ¿no?
+1:39:49
+lo que puede direccionar es regresar a ver a otro proceso de contratación porque efectivamente ya por infima no lo
+1:39:54
+podría hacer por el monto y el presupuesto que usted le otorgaron de $9,000 tendría que inyectarle más
+1:40:00
+presupuesto porque acorde al mercado no es correcto los $9,000. Quizás en su momento los $9,000 le otorgaron eh
+1:40:07
+teniendo en cuenta, no sé, contrataciones anteriores quizás de 3 años, 4 años anteriores, que lógicamente
+1:40:14
+ya no van a estar apegados al mercado. Este es un caso muy particular porque no he escuchado la
+1:40:20
+verdad que usted ya tenga un presupuesto referencial y luego sube la publicación y resulta que le ofertan más proveedores
+1:40:27
+y se supone que esta entrega de Proformas es justo para determinar recién el presupuesto. Pero bueno, a
+1:40:33
+ver. Veamos.
+1:40:43
+Ya. Andrés dice, "Si el objeto de contratación tiene un 50% bien y un 50%. ¿Cómo se puede elegir usted?" En ese
+1:40:50
+caso, cuando yo tengo 50 50, tengo que analizar y verificar exactamente el impacto que tiene esta contratación. Por
+1:40:56
+lo general, nunca se va a dar un 5050. Sí, pero si es que se da en su caso
+1:41:01
+puntualmente sí tendría que analizar eh obtener un parámetro adicional, sí, por
+1:41:08
+el mismo para obtener más que sea un 51% sobre un 49%. Porque regresando al
+1:41:14
+ejemplo de las cámaras que yo mencionaba, la cámara como tal, el bien como tal,
+1:41:20
+por lo general nunca se va se va a igualar a un porcentaje de instalación de un servicio. Sí. Entonces, caso en
+1:41:28
+estos casos puntuales por lo general no vamos a tener, pero si es que se da, entonces la entidad contratante deberá
+1:41:33
+verificar efectivamente eh el incremento, ¿sí? inyectar en un porcentaje de un bien o un servicio para
+1:41:40
+determinar uno de ellos porque no podemos no podemos subir un proceso de contratación por los dos seleccionando,
+1:41:45
+¿no?, en la herramienta los dos tipos de compra, bien y servicio.
+1:41:51
+A ver, mi estimado Pedrito, dice, "Si en un estudio de mercado las entidades suben capturas de pantalla de procesos anteriores similares, en otras formas
+1:41:58
+actuales, ¿se puede hacer algún reclamo, hay alguna sanción?" O sea, lo puede realizar. Efectivamente, se puede
+1:42:03
+realizar como un no un reclamo, sino como una denuncia. para que observe el debido proceso correspondiente por una
+1:42:09
+entidad contratante. No buscamos sancionar a nadie, por eso es que yo me eh me atreví a realizar a realizar las
+1:42:17
+aclaraciones en ese estudio de mercado que una entidad contratante no debería colocar solamente las capturas, sino
+1:42:22
+debería realizar el análisis justo por lo que acabo de leer en este momento. Y de esa forma, con el análisis correspondiente
+1:42:28
+usted tendrá cómo subsanar aquel aquel incumplimiento, ¿no? aquella observancia
+1:42:34
+que se realiza en este documento como tal.
+1:42:45
+A ver, dice Henry, "¿Qué pasa si consigo un artículo de mucho?" Imagino que se refiere al catálogo. Ahí tendría que
+1:42:51
+notificarle al Acercop, ¿sí? a esa verificación adjuntando todas las
+1:42:56
+proformas y efectivamente usted lo podría comprar, pero con la justificación correspondiente.
+1:43:09
+A ver, mi estimado Edwin, dice, eh, buen día. Para cumplir con el numeral uno del estudio de mercado establece que se debe
+1:43:16
+establecer el monto. Si aún no podemos definir en ese numeral, aunque los montos, ¿cómo se procede? Pero por
+1:43:22
+porcentaje, mi estimado Edwin, claro que monto económico no podemos realizarlo porque estamos en una fase precontractual, pero sí lo podemos
+1:43:29
+establecer por un porcentaje más o menos, o sea, de un porcentaje de impacto dentro de esta contratación.
+1:43:37
+A ver,
+1:43:44
+a ver, mi estimada Alejandra, existe una contradicción en el tema de las reglas de participación, ya que el 731 no hace
+1:43:49
+distinción en los procedimientos. únicamente, excepto el régimen de los numerales dos y tres. Y a ver, ¿dónde
+1:43:56
+está el principio de selección objetiva? Se mantiene y en ese sentido la supuesta se
+1:44:01
+debe garantizar ese criterio y ahí entramos en lo que dispone el 130. Exacto, es correcto. Claro que en el 73.3 es correcto lo que menciona
+1:44:08
+Alejandra. eh nos habla de manera general en todos los procesos de contratación, pero en el 130 ya nos
+1:44:14
+aterriza, ya nos habla sobre específicamente sobre un procedimiento de contratación en donde yo tengo que
+1:44:19
+observar y mantener todavía la selección objetiva. Y recordemos que también en la herramienta como tal en el MFC no me
+1:44:26
+permite ya ingresar la experiencia, por ejemplo. Entonces, yo me tengo que acoger a lo que nos menciona el artículo
+1:44:31
+130. E mi estimada Miriam,
+1:44:41
+para los procesos de régimen especial también se debe realizar la búsqueda en la herramienta de necesidad de la contratación para el estudio de mercado.
+1:44:48
+Ya. Regimen especial, recordemos que es eh uno de los procedimientos de
+1:44:53
+contratación eh que nos permiten realizar una invitación directa. Sí. Ya, pero sí para
+1:45:01
+realizar el estudio de mercado y conocer y conocer el presupuesto referencial es
+1:45:06
+una buena práctica que utilicemos estas herramientas. Todas las herramientas que CERCOV elabora para ustedes como entidad
+1:45:13
+contratante y para proveedores, efectivamente se sugiere y se mantiene que usted debe utilizarlo porque siempre
+1:45:21
+eh si es que usted justifica, no viene contraloría donde usted le solicita cómo obtuvo este valor, de dónde obtuvo las
+1:45:28
+proformas. Entonces usted simplemente menciona que ha dado cumplimiento a lo que se lo que nos indica CERCOP en la
+1:45:34
+normativa y nos facilita la herramienta de las necesidades de contratación. He publicado dicha herramienta para obtener
+1:45:39
+las proformas y lo puedo hacer sin ningún problema. Claro que no nos exhorta, es muy diferente, pero sí es
+1:45:45
+una buena práctica que podría optar.
+1:45:51
+Mi estimada Dianita dice, eh, en los procesos de ínfima cuenta, ¿plica valor por dinero? Sí, aplica en los
+1:45:57
+procedimientos valor por dinero. Claro que los objetos de contratación, ojo con esto, que el valor por dinero no
+1:46:04
+determinamos por procedimiento de contratación, no no indicamos, no, a ver, mejor por dinero aplica en ínfima y
+1:46:10
+licitación, etcétera, si no es por el tipo de compra, es por el objeto de la
+1:46:16
+contratación que aplicamos valor por dinero. Si es que nosotros realizamos una contratación tal vez de, vamos a la
+1:46:23
+misma impresora, de dos impresoras, ya que el valor no excede ni siquiera a los $,000, voy a aplicar una ínfima cuantía.
+1:46:32
+Tengo que analizar el principio del valor por dinero. Estableco mis especificaciones técnicas y compro.
+1:46:38
+Puedo realizar tal vez un servicio de mantenimiento de $3,000. Sí, puedo
+1:46:43
+aplicar el mejor valor por dinero, por supuesto, porque tengo que verificar del mantenimiento de servicio vehicular qué
+1:46:50
+va a suceder con todos los los repuestos que yo que se desechan, ¿no? Voy a
+1:46:56
+verificar también si es que se cumple con mi objetivo, con mi necesidad como tal. Voy a verificar si es que los
+1:47:02
+proveedores que me ofertan tienen un plus. Todo, ¿sí? O sea, yo puedo aplicar valor por dinero, ojo con esto, no por
+1:47:08
+procedimiento de contratación, sino por objeto de contratación, que es muy diferente. Sí.
+1:47:15
+Ah, y ¿por qué menciono esto? Porque quizás ustedes me van a indicar, eh, pero quizás la entidad contratante X
+1:47:22
+no aplicó valor por dinero y es el mismo objeto de contratación, ¿ya? Y no y es
+1:47:28
+el mismo tipo de el tipo de de procedimiento. Sí. Y se han dado los
+1:47:33
+casos en los que se ha escuchado que dice, "Tú aplicaste ínfima, pero tenías que aplicar valor por dinero, pero nunca
+1:47:40
+regresaron a ver el objeto de la contratación, que es muy diferente." Sí. Bien, ya con eso también eh
+1:47:48
+respondemos a mi estimada de Aligia.
+1:47:57
+Mi teléfono está cargando. A ver, ¿qué más tenemos aquí para registrar? Mi estimada Glad dice, "Para
+1:48:03
+registrar el CPC en el PAC. Este me indica si es su basta o licitación, no me permite hacer ningún análisis, pero
+1:48:10
+recordemos, mi estimada Gladis, que no es por el CPC, sino usted tiene que hacer por el objeto de la contratación.
+1:48:15
+Claro que el objeto de la contratación está ligado al CPC como tal. Ahora
+1:48:21
+usted cuando realiza esta este levantamiento, bueno, el área requirente, ¿no? En las especificaciones
+1:48:28
+técnicas en donde ya tiene que analizar el valor por dinero, recordemos que podemos reformar el PAC. ¿Sí? Entonces,
+1:48:34
+si es que observamos que el CPC lógicamente eh tiene que modificarse o tiene que modificarse el proceso de
+1:48:40
+contratación, lo podemos hacer, ¿no? Está el PAC no le eh sí le permite realizar las reformas correspondientes a
+1:48:46
+través de una resolución motivada o no sé, tal vez si su enfoque se visionaba a algo adicional. Si es que es así, me
+1:48:53
+podría aclarar más abajito. Ya.
+1:49:01
+A ver, ¿qué más tenemos?
+1:49:12
+Ya, mi estimada Ronald dice, "Si mi análisis determina que un bien o un servicio no estandarizado solo debe ser
+1:49:17
+contratado en función a su precio, puedo lanzar una subasta inversa de bienes o servicios." No, no,
+1:49:25
+no. Es que en nuestra normativa efectivamente hablamos solamente de bienes y servicios estandarizados. Si es
+1:49:30
+que usted determina que no es estandarizado, lógicamente ya no aplicaría una subasa inversa electrónica. Y su justificación, ¿cuál
+1:49:36
+sería? Que no existe un mercado competitivo, no existe uniformidad, no existe eh no
+1:49:43
+existe eh una descripción precisa y expresa de sus requisitos dentro de su
+1:49:51
+bien a contratar. ¿Ya? Entonces ahí visionamos que usted necesita tal vez
+1:49:56
+anexarle algunos atributos adicionales para que este proceso de contratación eh no sea una subasta inversa electrónica,
+1:50:03
+sino una licitación como tal. Siempre tenemos que tener en cuenta que para una subasa inversa electrónica tienen que
+1:50:09
+ser bienes servicios estandarizados y tiene que tener un mercado competitivo. Mercado competitivo y las descripciones
+1:50:16
+correspondientes, lógicamente de manera puntual.
+1:50:21
+Mi estimada Mónica
+1:50:27
+dice, "Se podría optar porque la impresora trabaje con tipo de papel
+1:50:34
+reciclado." Claro, es que por ejemplo, a ver, esto se puede eh no no hay mayor ingerencia
+1:50:41
+en esto porque cuando nosotros vamos a una papelería nos ofrecen, ¿no? El mismo papel. Lo único que cambia es el color,
+1:50:47
+es el color eh cafecito, es el reciclado versus el color blanco, pero en gramaje
+1:50:53
+es lo mismo, en tamaño es el mismo, es A4. Entonces yo podría utilizarlo sin
+1:50:58
+ningún inconveniente, más bien este caso sería cuando yo voy a comprar hojas de
+1:51:04
+papel bon. Ahí yo podría considerar el papel reciclado como tal, pero la
+1:51:09
+impresora no identifica cuando es un papel reciclado o cuando es un papel e normal fabricado, o sea, con papel
+1:51:16
+normal. Sí, ya esto ya respondimos,
+1:51:27
+¿ya? ¿no? En las características que nosotros colocamos dentro de la del ejemplo, yo le coloqué precisamente que
+1:51:33
+el color no de la impresión, sino el color del del bien como tal, sea blanco o negro, justo por el ejercicio que
+1:51:39
+ustedes que con ustedes realicé. Ya,
+1:51:51
+estimada Malena, esa es una pregunta que existe frecuentemente en todos los
+1:51:56
+sentidos. Si la herramienta de necesidades de contratación para solicitar proforas no se presenta ninguna se puede solicitar
+1:52:01
+particularmente, lo que tenemos que realizar es verificar nuevamente nuestra documentación que no se encuentre eh
+1:52:08
+cerrada, que sea que no est eh que no solicitemos documentación, ¿sí? Eh que
+1:52:14
+no puedan cumplir los proveedores, ¿sí? Lo que buscamos es la concurrencia en todos los procedimientos de contratación
+1:52:20
+y con esas correcciones, con lo que tengamos que hacer, lógicamente subimos nuevamente el portal de compras
+1:52:26
+públicas. ¿Por qué motivo? Porque si es que usted solicita particularmente, como menciona, estoy dando a entender de que
+1:52:33
+sí existen personas interesadas en participar en este proceso, pero simplemente no quieren enviar la Profora
+1:52:40
+a través de la herramienta, porque si es que no existiera, entonces, ¿a quién va a enviar más bien? Siempre tenemos que e
+1:52:49
+que difundir el uso de la herramienta para transparentar la contratación.
+1:52:57
+José Fernando, muchas veces la adquisición de los bienes, los precios que dan el proveedor son precios bajos
+1:53:02
+porque el equipo es realmente malo. Un buen equipo que durará años, obvio que brindará alivio y no y no gastos por
+1:53:09
+garantía. Exactamente. Entonces, a veces lo barato lógicamente no resulta más
+1:53:15
+costoso, no es lo más conveniente. Así es. A veces, pero también tampoco tenemos que tener el pensamiento, ¿no?,
+1:53:21
+de que lo más caro es lo más bueno, ¿no? Sino que tenemos que realizar el análisis correspondiente. O sea, hay
+1:53:27
+casos y casos. Hay casos en las que usted va a encontrar un un buen eh un
+1:53:33
+buen bien, ¿sí?, en un precio módico o o va a ser bajo y me va a resultar más
+1:53:39
+caro los mantenimientos o al revés. O sea, hay casos y casos en este caso. Entonces, lo que tenemos que realizar
+1:53:45
+simplemente es el rol del experto técnico en verificar aquella aquel
+1:53:51
+cumplimiento de los requisitos. Es muy acertado lo que nos indica mi estimado José Fernando.
+1:54:03
+Ya aquí nos indica Mari, bueno, es es una consulta de manera general, no precisamente de las subas inversa
+1:54:09
+electrónica. Para realizar la adquisición de de un vehículo es factible requerir el servicio en el
+1:54:15
+mismo en el mismo proceso. A ver, eh un vehículo al estar dentro de la
+1:54:22
+vigencia tecnológica efectivamente ya no incluye dentro del mantenimiento. Tiene que ser un procedimiento de contratación
+1:54:27
+exactamente por el bien como tal y otro proceso de contratación por sus mantenimientos.
+1:54:36
+Ya. Ahora,
+1:54:42
+sí, mi estimado eh Daniel, nunca es lo más conveniente compre lo más barato,
+1:54:48
+pero es lo que indica la ley. Y hablando de lo que nos indica la ley, hablando, la coordinación no me permite adquirir
+1:54:54
+un el mejor, bien, según mi experiencia, sino solamente el más barato.
+1:55:00
+Ya. A ver, pero recordemos es muy acertado lo que me indicaba también arriba José Fernando. José Fernando, me
+1:55:07
+parece que y Daniel, la ley no nos indica, pero exactamente no nos habla de un menor precio, sino de un mejor costo,
+1:55:15
+de un mejor precio, ¿no? Verdad, pero que eso tiene que ver con la calidad. Entonces, esa es la contratación pública
+1:55:20
+tradicional que nosotros mencionamos cuando hablamos de la subasa inversa electrónica es porque yo ya pasé y al
+1:55:27
+referíme, ¿no?, al precio más bajo dentro de la subas inversas electrónicas. ¿Por qué? Porque yo ya
+1:55:32
+analicé que existen proveedores que me van a brindar el mismo bien. Entonces, yo ya tengo estandarizado mis
+1:55:39
+características. Entonces, lo único que yo voy a determinar es comprar un eh comprar este bien en base con base,
+1:55:46
+perdón, al precio, nada más. Sí, no sé si por esa vía era el comentario.
+1:55:59
+[Música] A ver, mi estimada Inés, si compro medicinas o bienes estratégicos de salud
+1:56:06
+y la norma de salud me pide que deben presentar registros sanitarios más ciertos requisitos. Ahí, ¿cómo se hace
+1:56:12
+si la subaste es por especificaciones y precio más bajo? Es justo lo que acabamos de mencionar, es que si usted
+1:56:18
+ya se encuentra dentro de la ficha correspondiente, eh, y lógicamente tenemos ya requisitos expresos y
+1:56:24
+verificamos en el tema, a ver, voy a poner un ejemplo aquí. Yo voy a comprar paracetamol.
+1:56:29
+Paraetamol yo ya establezco mi mi ficha técnica, ¿no?, verdad. Y tengo algunas
+1:56:35
+casas comerciales que me van a ofertar para Cetamol. aplico una suba, por supuesto, porque eh paraol tengo mi
+1:56:42
+ficha correspondiente, pero me van a dar eh no sé, algunas casas Farma,
+1:56:49
+Farmabrá, me parece que es una, etcétera, algunas casas comerciales. Sí. Entonces, en ese sentido, yo ya
+1:56:55
+establezco todo, verifico que existe mercado comercial, mercado competitivo y voy a realizar una subasa inversa
+1:57:02
+electrónica para considerar el precio más bajo, porque todos me van a dar las mismas especificaciones. El filtro que
+1:57:09
+tiene que hacer usted en este sentido es verificar que lo presentado, lo en la
+1:57:15
+oferta, lógicamente cumpla con lo que usted estableció dentro de la etapa preparatoria. Eso es lo que tenemos que
+1:57:21
+hacer.
+1:57:26
+A ver, veamos qué más tenemos por aquí.
+1:57:34
+Estimada, el análisis del valor por dinero se establece en el informe de necesidad. Sí, mi estimada
+1:57:40
+Ligia. Ya, esto ya lo solventamos.
+1:57:46
+Ya, aquí solamente para eh ratificar nuevamente una consulta sobre el pack. Yo lo puedo modificar. Recordemos que lo
+1:57:53
+puedo e a ver, usted tiene un un pack que publicó hasta el 15 de enero del
+1:57:58
+2025, ¿verdad? Con todos estos cambios normativos que ha habido y todo eso, eh
+1:58:03
+llegamos a la conclusión de que un proceso lógicamente se tiene que eh realizar a través de una subasa inversa
+1:58:09
+electrónica. Como usted ya definió toda ese análisis dentro de la fase preparatoria, podemos solicitar a
+1:58:15
+nuestro departamento de compras públicas la reforma del PAC. lo podemos realizar sin ningún problema porque el proceso
+1:58:21
+todavía no está publicado en el portal de compras públicas. Sí, ahí podemos modificar el tipo de procedimiento de
+1:58:29
+contratación y la motivación lo tenemos sumamente claro, tu informe como tal y la normativa que establece ya por monto,
+1:58:38
+etcétera.
+1:58:45
+Ya. E y aquí ya hablamos de esto.
+1:59:02
+Ya. A ver, a ver. Creo que hay una confusión aquí según lo que lo que puedo verificar aquí. A ver, en este proceso
+1:59:08
+de contratación usted no o sea, usted eh como ya estableció, ¿no?,
+1:59:14
+características puntuales, estandarizó un bien o un servicio como
+1:59:20
+tal, entonces tenemos que regresar a ver al precio más bajo. Vamos a hacerlo más simple. Usted tiene un celular, usted
+1:59:29
+necesita adquirir un celular eh marca Samsung, el A35.
+1:59:36
+Voy a inventarle como este yo ya yo establezco no especificaciones, no voy a establecer lógicamente en la marca como
+1:59:43
+tal, pero sí puede establecer las características del modelo, absolutamente todo. Ya me va a entregar
+1:59:49
+el mismo modelo, quizás va a tener la marca Samsung, voy a a tener en Motorola, voy a tener quizás en otro eh
+1:59:57
+me parece que hay Huawei. Me voy a inventar ese eh en ese teléfono esas
+2:00:04
+esas características. Ya usted lo que necesita que tenga eh tenga de
+2:00:09
+resolución 5 eh megapíxeles, ciertas características. Ya envía el proceso de
+2:00:16
+contratación, usted estableció, ya estandarizó estas especificaciones técnicas y verifica que en el mercado sí
+2:00:24
+le puede vender tal vez la la tienda Celmanía, le puede vender la tienda eh
+2:00:31
+Telefone Manía, etcétera. Existen varios proveedores que le pueden dar ese teléfono como tal.
+2:00:38
+Entonces, si es que yo ya establezco unas especificaciones técnicas puntuales
+2:00:43
+y verifico que tengo varios proveedores en el mercado que me puedan vender este teléfono, ¿qué es lo que regreso a ver
+2:00:50
+ahí? Entonces, es el precio más bajo. Porque quizás
+2:00:56
+Selmanía me dice, "Sí, yo tengo este teléfono, cumple con tus características en $100."
+2:01:01
+El Fon Manía me dice, "Yo tengo el teléfono que tú necesitas en $98.
+2:01:08
+Perfect. los dos eh visionando una subasta inversa electrónica, ¿no? Estos
+2:01:13
+dos proveedores envían la oferta como cumplen con la calificación porque
+2:01:19
+recordemos que el precio yo no califico en una subbasa inversa electrónica, yo
+2:01:24
+no observo el precio en esa parte, sino que observo las especificaciones, el
+2:01:30
+cumplimiento. Yo verifico todo que vaya acorde a lo que yo necesito. Y cómo cumplen, porque
+2:01:38
+yo ya establecí especificaciones técnicas y los dos me cumplen los, o sea, los dos eh
+2:01:46
+califican, ¿sí? Cumpliendo todo lo que yo necesito, paso y les califico a los
+2:01:52
+proveedores para que vayan a una puja, en donde en la puja a través del precio
+2:01:59
+más bajo se establece al ganador. Pero yo ya pasé el filtro de
+2:02:04
+cumplimiento. ¿Qué sucedió si es que existe un proveedor tres y me dice, "No, yo no tengo estas características, pero
+2:02:10
+tengo eh de alguna con alguna modificación." Sí, usted verificará y determinará, no
+2:02:16
+no me no necesito este este requisito, porque tal vez este proveedor me daba como una carcasa que me ponía el
+2:02:25
+la pantalla para que se antiesía, algo así, etcétera, pero a mí lo que me interesa es el funcionamiento como tal,
+2:02:31
+no me interesa el plus, ¿no? ¿Verdad? En ese caso de la subas inversa electrónica, en ese sentido, ahí sí yo
+2:02:40
+regreso a ver al precio, pero cuando yo ya estandaricé el bien o el servicio que
+2:02:46
+yo necesito, o sea, no confundamos de que lo único que voy a ver es el precio, porque usted no determina el precio,
+2:02:51
+sino usted lo que establece es el procedimiento de contratación. Usted lo como entidad contratante lo que determina es si es que es estandarizado
+2:02:58
+este bien o ese servicio, si es que cumple todos los requisitos que acabamos de verificar en la en la en la parte
+2:03:05
+inicial, ¿no? Verdad es que usted verifica que es uniforme, que es universal y tiene una facilidad de
+2:03:12
+descripción, eso es lo que tiene que verificar usted. Esa es su función como tal, porque ese va a ser su sustento
+2:03:18
+legal, su justificación. Si es que más tarde viene eh Contraloría y le indican, a ver, esta contratación de las
+2:03:24
+impresoras o de los celulares o de las cámaras, ¿por qué realizó por una subasa inversa electrónica? ¿Cuál es su
+2:03:30
+justificación? Usted no tiene que mencionar, ah, es que fue por el precio, ese es al final. Entonces, su
+2:03:36
+justificación, ¿cuál va cuál va a ser? A ver, yo observé lo que nos indicaba el artículo 49.1, donde nos menciona sobre
+2:03:43
+los bienes estandarizados. El bien que yo contraté aquí es uniforme por tal motivo, tiene las mismas
+2:03:48
+características. En el mercado existe universalidad, por supuesto, porque es
+2:03:54
+de uso común. Cualquier proveedor me pueden me pueden eh vender. Existe mercado, eh competencia de mercado, por
+2:04:02
+supuesto. Existe también. Facilidad de descripción. Sí, yo tengo todo estandarizado, está todo. Entonces, lo
+2:04:08
+único que regreso a ver en ese sentido es al costo como tal. Entonces me ofrecen el mismo celular y a través de
+2:04:16
+la puja, lógicamente, los proveedores van a enviar sus posturas. y determinarán al precio más
+2:04:23
+conveniente. En ese sentido va enfocado a la subasa inversa electrónica. No enfoquémonos, como ustedes mencionan en
+2:04:30
+los chat que verifico, seguimos viendo el precio más bajo porque ustedes no ven el precio más bajo. Al referirnos en esa
+2:04:36
+parte seguimos viendo el precio más bajo, entendemos que usted como entidad contratante califica al proveedor que
+2:04:43
+nos vende eh más baratito, cuando no es así, porque los proveedores usted en la
+2:04:49
+subasta verifica y califica la las especificaciones técnicas. Si usted no nos indica, a ver, este proveedor ofertó
+2:04:56
+$, le voy a dar un puntaje adicional o le pongo cumple. Eso no observamos. Entonces esa visión es la que tenemos
+2:05:03
+que empezar a cambiar. A ver, e mi estimado Andrés, no se debe colocar
+2:05:10
+marcas dentro de las especificaciones. No se debe colocar. Lógicamente hay una excepción, ¿sí? cuando compramos
+2:05:17
+repuestos y accesorios, cuando es software, pero usted tiene que justificar de manera clara por qué yo eh
+2:05:23
+coloco una marca puntual. Quizás es porque eh cierto dispositivo, cierta
+2:05:29
+persona necesita que todos sus repuestos sean originales y yo tengo que tener un informe de respaldo. Es preferible que
+2:05:37
+sea un informe de respaldo de la marca. Si es que yo tengo esta documentación que justifica colocar una marca en una
+2:05:43
+especificación técnica, no hay ningún problema. Pero si no tengo motivación, justificación, es muy riesgoso colocar
+2:05:49
+una marca.
+2:05:59
+Ya aquí nos indican, eh, mi estimado Jorge, podría ser un ejemplo con un servicio. A ver, pongamos un servicio
+2:06:04
+básico, un servicio de limpieza, ¿ya? un servicio de limpieza hospitalario que no se encuentra en catálogo, porque
+2:06:10
+recordemos que lo que está en catálogo compramos en catálogo. Este servicio de limpieza hospitalario eh yo lo puedo
+2:06:17
+establecer, ¿sí?, como un bien o un servicio estandarizado si es que tengo las mismas especificaciones. Es decir,
+2:06:24
+yo necesito eh mi necesidad es limpiar siempre eh quirófanos,
+2:06:31
+salas de emergencia y ciertos departamentos más. Ya es universal, se
+2:06:39
+produce comúnmente, o sea, este servicio por lo general se realiza siempre, ¿no? Verdad saben cómo limpiar de manera un
+2:06:46
+poquito más profesional utilizando los productos lo pueden hacer, no es exclusivo, no es raro, no es fuera de la
+2:06:53
+de la contratación pública. Puedo especificar claramente las la que yo
+2:06:59
+necesito limpiar y lo que van a utilizar. Por supuesto, desde que yo establezco 1 m², yo ya estoy dando una
+2:07:06
+estandarización a este servicio. Yo puedo mencionar que, a ver, el la sala
+2:07:11
+de la sala de emergencia tiene una dimensión de cuánto, de x m y obviamente
+2:07:20
+la persona tendrá que limpiar cierta eh cierto lugar del piso con cierto producto al ser etcétera, paredes,
+2:07:28
+etcétera, porque es una limpieza hospitalaria. Entonces, necesitamos y en los quirófanos también se utilice ciertos productos que no afecten al al
+2:07:34
+ambiente, que no afecten a las personas, etcétera. Yo lo puedo establecer de manera específica. Sí, siempre tenemos
+2:07:41
+que observar. Ese es simplemente un ejemplo. Entonces, usted para establecer este bien o un servicio, verifique
+2:07:47
+siempre si es que es uniforme, es universal y tiene una facilidad de descripción. Esos tres son los tres
+2:07:54
+parámetros que se tendría que visionar, que utilizar para determinar si es que
+2:07:59
+es un bien o un servicio estandarizado. Si es que cumplen los tres, estamos hablando del estándar como tal. Ya,
+2:08:08
+lógic como he mencionado, ¿no? O sea, yo no le eh a futuro no se va a hablar de objetos de contratación puntuales porque
+2:08:15
+este análisis que acabamos de mencionar con ustedes nace de la entidad contratante, tiene que realizar
+2:08:21
+exactamente el analista, el asistente, el especialista de contratación pública, que es el técnico en esta en este
+2:08:27
+sentido, para que proceda a establecerse es que un bien o un servicio es estandarizado. Observando los parámetros
+2:08:33
+mencionados.
+2:08:39
+A ver, ¿y cómo serían las subastaas sobre los otros parámetros de calificación resueltos por la entidad contratante? ¿En qué sentido no entiende
+2:08:45
+esa parte? Porque no es no es mandatorio. O sea, si es que usted, mi estimado Necker, solicita, tendrá que
+2:08:52
+justificarlo y pondrá como no cumple. No, no existe mayor impacto en este
+2:08:58
+punto. Ejemplo de bienes en el que incluye
+2:09:04
+servicio. Las cámaras, las cámaras que vinimos haciendo un ejemplo, ¿no? Las cámaras con su respectiva instalación.
+2:09:10
+Así es que yo no coloco que necesito que me instalen las cámaras, lo único que el contratista viene y me entrega, me dice,
+2:09:16
+"Tenga, aquí están sus 100 cámaras en las cajitas, fírmenme el acta y hasta luego." Pero si es que yo necesito que
+2:09:23
+me instale, lógicamente el el contratista me indicará que va a venir con su personal cierto día a colocar las
+2:09:29
+cámaras para que el administrador del contrato, posterior a ello eh observe su
+2:09:35
+eh verifique, ¿no?, Verifique el cumplimiento acorde al contrato.
+2:09:41
+Estimada Elizabeth, en una licitación sí puede existir un solo oferente, por supuesto, puede existir un solo oferente. En subasta también puede
+2:09:47
+existir un solo oferente. Y nos vamos al tema de la negociación. Sí, todo depende del del lo que nos oferte, ¿sí? y
+2:09:55
+obviamente de lo del cumplimiento que tenga este proveedor, este oferente
+2:10:00
+dentro del de los requisitos que nosotros necesitamos para este proceso.
+2:10:13
+Ya, mi estimado eh Leo dice, "Si es que no tengo tres proformas, es que no nos exhorta, nos indica
+2:10:18
+procurará." Ojo con la normativa en el estudio de mercado que nos indica procurará. No nos exhorta que yo tenga
+2:10:24
+tres proformas. Cuando hablamos de procurará, es decir, eh, ¿qué nos quiere decir? Que se intentará, ¿no?, tener
+2:10:32
+tres proformas como tal, pero si es que tengo una o tengo dos, no hay ningún inconveniente. Pero si tengo más, qué
+2:10:37
+bueno. Mi estimada Ariana, ¿hay un monto máximo
+2:10:42
+para aplicar una subasa? No, el monto es no es máximo.
+2:10:49
+A ver, no, no existe montos máximos, solamente existe un valor piso, ¿sí? Que es mayor o igual a $10,000.
+2:11:08
+Ya, mi estimado Near dice, "¿Qué pasa si en un estudio entra una ploforma para el estudio de mercado? No existe ningún
+2:11:14
+inconveniente. Lógicamente, si es que existe un interesado, usted verificará si es que cumple o no cumple, si es que
+2:11:20
+es viable utilizar esa única profora para el estudio de mercado, porque puede que envíe una una proforma, pero no
+2:11:26
+cumpla con lo que usted necesita. Entonces, no me serviría para hacer el estudio de mercado. ¿Qué es lo que tendría que hacer? Nuevamente eh
+2:11:33
+analizar, reanalizar mi documentación, publicar en el proceso, en la
+2:11:39
+herramienta como tal y solicitar las proformas. Ya, pero si es que esta única profora sí cumple, es sería parte del
+2:11:46
+estudio de mercado.
+2:11:56
+Mi estimado Alberto, nos indica si el valor por dinero eh que forma parte del estudio de mercado es de aplicación inmediata, debemos esperar algún
+2:12:02
+instructivo por parte del SERCO. Estamos en transición con ellos. A ver, ese valor por dinero, como se mencionaba, es
+2:12:08
+en base al es con base al objeto de contratación que cada uno de ustedes utilizan en el proceso de contratación.
+2:12:13
+Ahora, en el instructivo, sí, efectivamente se está trabajando en aquello. Eh, no tenemos por el momento,
+2:12:19
+sí, un instructivo expreso de de esto, pero ustedes lo tienen que ya hacer parte de sus contrataciones estudio de
+2:12:26
+mercado con base a lo que hemos venido analizando la semana anterior con la capacitación de este principio y lo que
+2:12:35
+veremos en esta semana con su base inversa electrónica y licitación.
+2:12:46
+A ver, dice, ¿quién es la responsable de la etapa preparatoria? ¿Puede indicar? A ver, en la etapa preparatoria, yo les
+2:12:52
+llamo unos actores, ¿no? A ver, dentro de la preparatoria se encuentra la el área requirente
+2:12:58
+en el en la etapa de precontractual, gestor de contratación pública y en la
+2:13:05
+contractual se encuentra el administrador del contrato. En la preparatoria, si podemos observar el
+2:13:10
+artículo 41, donde inicia nuestra etapa preparatoria que hablamos que hacemos referencia al área requirente.
+2:13:23
+A ver, dice, eh, mi estimado Daniel, "Deberían establecer los porcentajes máximos de reducción de oferta
+2:13:31
+para la etapa de puja, ya que el estudio de mercado se hace con un precio, pero al momento de la puja los proveedores se
+2:13:37
+llegan a bajar hasta $3,000." Traduce. Pero a ver, usted los procesos que tiene
+2:13:43
+que observar, mi estimado, mi estimado Daniel, para el estudio de mercado son los procesos que se encuentran
+2:13:51
+eh ya adjudicados como tal. Sí. Sin embargo, siempre se recomienda que observe los procesos de contratación
+2:13:58
+que se encuentran en estado finalizado eh y en recepción,
+2:14:03
+¿sí? Hasta en ejecución del contrato. ¿Por qué? Porque si es que observamos
+2:14:09
+únicamente los adjudicados, recordemos que pueden existir procesos también que se declaren desierto cuando el proceso
+2:14:15
+está en el estado eh eh adjudicado al registro de contrato.
+2:14:21
+Entonces, lógicamente, no llegamos a una suscripción del contrato. Entonces, cuando usted eleva el estudio
+2:14:28
+de mercado es con procesos en estado finalizado, en estado en recepción y en estado ejecución del contrato.
+2:14:39
+Eh eh. Veamos qué más tenemos aquí.
+2:14:45
+¿Me escuchas? Ya, mi estimada Sandrita, la herramienta ya está habilitada para registrar la sesión de negociación posterior a la
+2:14:51
+puja, siempre y cuando no se haya bajado. Ya esta parte expresamente la herramienta no se encuentra habilitada.
+2:14:57
+Lo que usted tiene que realizar es cuando se de estos casos eh enviar expresamente la petición directamente
+2:15:03
+acercó para que la dirección de atención al usuario a través de tecnología proceda con esta modificación. Y de esa
+2:15:10
+manera estamos dando cumplimiento a la normativa.
+2:15:25
+Ya, miren, aquí hay un caso que con ustedes vamos a analizar. Tenemos unos 5 o 7 minutitos para
+2:15:34
+terminar con esto. Hay un caso muy puntual y como yo mencionaba con ustedes, no vamos nosotros a realizar eh
+2:15:40
+el instructivo en el que se menciona aplique su basa o aplique licitación en con base a algún objeto de contratación.
+2:15:47
+Aquí tenemos un contrato de un transporte escolar. Sí, no podemos mencionarle a usted directamente por
+2:15:54
+300,000. las indican aplique su base o aplique licitación si es que usted todavía no ha realizado su análisis.
+2:16:02
+Ya, si es que usted me invita a mí y yo le indico, a ver, yo realizaría una subasta inversa electrónica y le voy a
+2:16:08
+justificar por qué. Porque si mi interesa es únicamente transportar, sí,
+2:16:14
+ciertas rutas, ¿ya? Entonces, yo lo que voy a observar es, en primer lugar las
+2:16:20
+rutas, distancias, voy a observar e los vehículos que se encuentren en
+2:16:25
+óptimas condiciones, que tengan la capacidad que yo necesito. Sí. Y yo le
+2:16:31
+encierro y yo le enmarco en un bien, perdón, en un servicio estandarizado,
+2:16:36
+mientras que quizás la visión de sus compañeros o la suya me indique, no,
+2:16:41
+para mí es una licitación. El motivo, el por qué es porque yo necesito algo adicional, necesito quizás eh un seguro
+2:16:50
+un seguro de de transporte para cada niño por cualquier eh situación que se
+2:16:56
+pueda presentar en las vijas, ¿ya? etcétera. Entonces, usted tiene que analizar si es que se encuentra dentro
+2:17:03
+del marco estandarizado o yo necesito adicional adicionar eh un servicio, un
+2:17:10
+plus a esa contratación para determinarlo como una licitación y verificar lógicamente eh una subasta si
+2:17:17
+es que ese servicio pueden ofrecer algunas cooperativas. O sea, por eso le digo, yo lo haría como subasta, pero usted puede que tenga la visión como
+2:17:24
+licitación. Entonces, el análisis que usted va a realizar y va a elevar es tomando en cuenta la necesidad que tiene
+2:17:31
+la entidad contratante. Aquí simplemente nos indica transporte escolar, pero hay que verificar exactamente cuántos niños
+2:17:36
+son, de qué edad son, etcétera, si es que necesitan es una ruta larga, corta,
+2:17:42
+el carretero malo, que menos indica. O sea, todo eso debemos contemplar para mencionar si es que es una subas una
+2:17:48
+licitación. Bien,
+2:17:54
+Mairita, ¿me escuchas?
+2:18:01
+Mairita. Ya, aquí estamos con esto. La mayoría de procesos de subasta y
+2:18:08
+pujas al momento de realizar. A ver, ya aquí eso ya aclaramos. Estas preguntitas que ya aclaramos de manera
+2:18:16
+general las estamos pasando porque todavía tenemos algunas.
+2:18:29
+Ya, Dianita dice, "Cuando se realiza la respuesta a cada pregunta, se sube el acta para cada una de ellas. Sin
+2:18:34
+embargo, hay recomendaciones de Contraloría que indica que se suba la información repetida."
+2:18:40
+Que indica que se sube la información repetida. ¿Cómo puedo justificar esta recomendación?
+2:18:46
+A ver, al hacer una recomendación usted la puede subir, o sea, el problema es la contestación, la contestación como tal.
+2:18:52
+De ahí puede subir una sola acta sin ningún inconveniente. Sí, pero no, o sea, no es repetida
+2:18:59
+porque existiría el cumplimiento directamente a cada institución. Quizás la Contraloría, bueno, aquí en este caso
+2:19:06
+está sugiriendo simplemente, pero usted tiene que motivar y mencionar que se está dando cumplimiento y la respuesta
+2:19:12
+apegado a la normativa y apegado a un documento. Sí, con la justificación eh
+2:19:17
+correspondiente. ¿Qué pasó?
+2:19:40
+Bien, a ver. Eh, ya eso estamos aquí.
+2:19:54
+Ya recordemos que eh también el análisis de que usted realiza sobre un error de
+2:19:59
+forma, ¿sí? Eh directamente lo tiene que establecer si es que no se modifica el sustento. O
+2:20:06
+sea, me refiero aquí porque hay algunas preguntas de que este es convalidable o no es convalidable. Sí. Entonces tiene
+2:20:11
+que en el en la normativa, como vimos, nosotros tenemos unas puntuales, son las casas más comunes, pero en su marcha, en
+2:20:18
+su experiencia, usted va a encontrarse con algunas circunstancias que van a surgir la la duda si es que es
+2:20:25
+convalidable o no. En ese sentido, tenemos que visionarnos eh sobre el concepto de un error de forma. Si es que
+2:20:32
+ese error de forma em cambia, no cambia o modifica la sustancia de la oferta
+2:20:37
+como tal. Si es que no cambia, lógicamente usted tiene duda con valida. Si nos indica simplemente la normativa, tiene alguna duda convalido. Hago una
+2:20:44
+convalidación siempre y cuando no cambie absolutamente el ofertado.
+2:20:51
+Richard dice, "Actualmente para sacar un proceso de subasta ya sacarla con la misma experiencia." Ya, eso ya lo hablamos hace un momento. No se mantiene
+2:20:58
+la subjetividad. la objetividad.
+2:21:13
+Ya,
+2:21:19
+ya. Esa es una pregunta muy muy buena. Miren, dice Mónica, nos indica que sobre el plazo, sobre la modificación del
+2:21:25
+plazo de ejecución. A ver, recordemos que el plazo de ejecución y eh que es parte de la de la fase preparatoria en
+2:21:32
+donde usted determina, ¿no?, que se cumplirá en cierto tiempo el objeto de la contratación, viene directamente, es
+2:21:39
+decidido directamente por la entidad contratante porque usted ya analizó el tiempo correspondiente y considerable
+2:21:45
+para la entrega de ese bien, servicio, obra o consultoría. Sí, no tendría por
+2:21:50
+qué un proveedor solicitar o obligar tal vez la modificación de este plazo porque usted lo tiene ya motivado, ya
+2:21:57
+justificado este plazo, entonces no sería viable.
+2:22:05
+A ver, ¿qué más tenemos por aquí?
+2:22:15
+La oferta ya está suspendida. Ya. A ver. Bueno, aquí hay algunas
+2:22:20
+preguntas sobre lo que ya hemos analizado. Ojo con esto. Queremos eh recalcar que no significa el el valor el
+2:22:29
+principio del valor por dinero, que es el precio más bajo. No es así. Por eso es que yo aclaré hace un momento, sin
+2:22:35
+embargo, con el ejemplo, de que no hablamos del precio más bajo en la subasta de inversa electrónica. Para llegar a eso cumplimos unos requisitos
+2:22:42
+adicionales. Aquello viene porque ya observo como cuatro mensajes que se menciona el valor por dinero es igual al
+2:22:49
+precio más bajo, ¿no es así? Sí tenemos que verificar, tenemos que llegar a ese
+2:22:55
+análisis que como entidades contratantes y como técnicos tenemos que verificar bien esos servicios estandarizados,
+2:23:01
+tenemos que verificar eh la sostenibilidad, tenemos que verificar también el costo, el costo, el ciclo de
+2:23:07
+vida de este proceso de contratación. Sí. [Música]
+2:23:16
+Ya. A ver qué más tenemos por aquí.
+2:23:22
+Sin embargo, les invito nuevamente a verificar, eh, porque aquí me encuentro otra vez con otra con la misma pregunta
+2:23:28
+del del valor por dinero. Entonces, les invito a verificar, ¿no?, que el valor
+2:23:33
+por dinero no es el precio más bajo. Tenemos un webinar que se dictó el día viernes, me parece que ya se encuentra
+2:23:40
+en nuestro portal de YouTube Cercop Capacita, para que lo puedan observar y
+2:23:45
+determinar que efectivamente no es valor por dinero igual al precio más bajo.
+2:23:58
+Aquí ya tengo esto.
+2:24:04
+Ya Sarita nos indica e si es que para determinar el presupuesto referencial debemos verificar el promedio de las
+2:24:10
+proformas. Expresamente no existe una norma. No nos indica la norma que diga que nos menciona, verifique el precio
+2:24:16
+más alto, el precio más bajo, obtenga la proforma, sino que efectivamente si es que usted lo determina de esa manera lo
+2:24:22
+podría hacer porque no hay normativa expresa que le impida tampoco aquello.
+2:24:36
+Ya. A ver, esta es una pregunta que ya verificamos. Si se aplica para ínfima
+2:24:41
+también, ojo con esto nuevamente. No es por proceso de contratación, sino es por
+2:24:47
+objeto de contratación. Es por el bien, es por el servicio, por la obra, por la consultoría que usted va a realizar el
+2:24:53
+valor por dinero.
+2:25:04
+Ya. A ver, creo que ya tenemos todo aclarado aquí.
+2:25:17
+Anita, creo que ya vamos finalizando porque están las preguntas, ya hemos respondido todo. Y hay algunas que no
+2:25:24
+son reiterativas en relación a las anteriores. Voy a finalizar en este momento la encuesta. Les agradecemos
+2:25:29
+mucho a las personas que nos ayudaron llegando a la misma y también les invitamos a los seminarios que vamos a
+2:25:35
+dar el día de mañana y el día jueves. Eh, por favor, ustedes puedan revisar los enlaces en nuestro en nuestra
+2:25:41
+plataforma institucional y servicios en capacitación y certificación, oferta de seminarios en
+2:25:47
+Eso sería todo para el día de hoy. Listo, Anita, muchísimas gracias. Gracias a todas por su participación y
+2:25:53
+que tengan un excelente día. Muchísimas gracias. También los participantes recuerden por favor eh
+2:26:00
+revisar nuestro cronograma que se encuentra en el portal institucional. Tenemos eh algunas de las consultas que
+2:26:07
+nos están realizando eh también capacitaciones para la siguiente semana. Les agradecemos por haber participado el
+2:26:13
+día de hoy y los esperamos en los siguientes seminarios. Muy buenos días. Muchas gracias.
