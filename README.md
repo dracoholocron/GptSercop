@@ -26,6 +26,26 @@ gptSercop/
 
 ## Arranque rápido
 
+### Opción 1 – Script unificado (recomendado)
+
+Levanta Docker (infra + API + gateway + portal público) y los tres portales en desarrollo (admin, proveedores, entidad) en una sola terminal:
+
+```bash
+npm install
+npm run start:all
+```
+
+La primera vez, crea esquema y datos de prueba en otra terminal (con los contenedores ya arriba):
+
+```bash
+# PowerShell
+$env:DATABASE_URL="postgresql://sercop:sercop@localhost:5432/sercop"; npm run db:setup
+```
+
+Luego podrás usar: **API** 3080, **Gateway** 8080, **Portal público** 3005 (Docker), **Admin** 3004, **Proveedores** 3002, **Entidad** 3003.
+
+### Opción 2 – Paso a paso
+
 ```bash
 # Instalar dependencias
 npm install
@@ -40,6 +60,8 @@ npm run db:setup
 # Smoke test (comprueba /health, /api/v1/tenders, /api/v1/pac)
 npm run smoke
 ```
+
+Solo portales (con Docker/API ya levantados): `npm run dev:portales` (admin + supplier + entity en una terminal).
 
 Tras cambios en el schema (p. ej. Fase 1): `npm run db:generate` y `npm run db:push` (o `db:setup` para push + seed).
 

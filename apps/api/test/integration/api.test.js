@@ -96,6 +96,144 @@ test('POST /api/v1/auth/login returns token when JWT configured', async () => {
   assert.ok(data.token);
 });
 
+async function getSupplierTokenAndProviderId() {
+  // Crear proveedor y luego login con identifier para obtener providerId
+  const identifier = '9999999999999';
+  let headers = { 'Content-Type': 'application/json' };
+  let res = await fetch(`${baseUrl}/api/v1/providers`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ name: 'Proveedor Oferta Wizard Test', identifier }),
+  });
+  if (res.status === 401) {
+    const token = await getToken();
+    if (!token) return { token: null, providerId: null };
+    headers = { ...headers, Authorization: `Bearer ${token}` };
+    res = await fetch(`${baseUrl}/api/v1/providers`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ name: 'Proveedor Oferta Wizard Test', identifier }),
+    });
+  }
+  // 201 o 400 si ya existe (unique); en ambos casos seguimos
+
+  const login = await fetch(`${baseUrl}/api/v1/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'supplier@test.com', role: 'supplier', identifier }),
+  });
+  if (login.status === 503) return { token: null, providerId: null };
+  assert.strictEqual(login.status, 200);
+  const data = await login.json();
+  return { token: data.token, providerId: data.providerId };
+}
+
+test('Offer wizard flow (draft → validate → sign → otp → submit) works', async () => {
+  const { token, providerId } = await getSupplierTokenAndProviderId();
+  if (!token || !providerId) return;
+  const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+
+  // Si el API desplegado aún no tiene estas rutas, skip (404)
+  const probe = await fetch(`${baseUrl}/api/v1/processes/proc-test-1/offer-form-config`, { headers });
+  if (probe.status === 404) return;
+
+  // Create draft
+  const createRes = await fetch(`${baseUrl}/api/v1/offers/drafts`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ processId: 'proc-test-1', tenderId: null, providerId, modality: 'LICITACION' }),
+  });
+  if (createRes.status === 404) return;
+  if (!createRes.ok) throw new Error(`${createRes.status} ${await createRes.text()}`);
+  const draft = await createRes.json();
+  assert.ok(draft.id);
+
+  // Patch draft with contact + economic
+  const patched = await fetchOk(`${baseUrl}/api/v1/offers/drafts/${draft.id}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({
+      stepData: {
+        contact: { email: 'contact@test.com' },
+        economic: {
+          mode: 'ITEMS',
+          items: [
+            { description: 'Item A', quantity: 2, unitPrice: 5.25 },
+          ],
+        },
+      },
+    }),
+  });
+  assert.strictEqual(patched.id, draft.id);
+
+  // Validate
+  const validated = await fetchOk(`${baseUrl}/api/v1/offers/${draft.id}/validate`, { method: 'POST', headers });
+  assert.ok(validated.ok);
+
+  // Sign stub
+  const signStart = await fetchOk(`${baseUrl}/api/v1/offers/${draft.id}/sign/start`, { method: 'POST', headers, body: '{}' });
+  assert.ok(signStart.signSessionId);
+  const signComplete = await fetchOk(`${baseUrl}/api/v1/offers/${draft.id}/sign/complete`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ signSessionId: signStart.signSessionId, action: 'CONFIRM' }),
+  });
+  assert.strictEqual(signComplete.status, 'COMPLETED');
+
+  // OTP stub (dev returns debugCode when NODE_ENV=development; tests tolerate missing)
+  const otpSend = await fetchOk(`${baseUrl}/api/v1/offers/${draft.id}/otp/send`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ channel: 'EMAIL', destination: 'contact@test.com' }),
+  });
+  assert.ok(otpSend.otpSessionId);
+  if (!otpSend.debugCode) return; // en entornos no-dev no podemos validar código sin canal real
+  const otpVerify = await fetchOk(`${baseUrl}/api/v1/offers/${draft.id}/otp/verify`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ otpSessionId: otpSend.otpSessionId, code: otpSend.debugCode }),
+  });
+  assert.strictEqual(otpVerify.status, 'VERIFIED');
+
+  // Submit
+  const submit = await fetchOk(`${baseUrl}/api/v1/offers/${draft.id}/submit`, { method: 'POST', headers });
+  assert.strictEqual(submit.status, 'SUBMITTED');
+  assert.ok(submit.receipt?.folio);
+  assert.ok(submit.receipt?.manifestHash);
+});
+
+test('SIE status and initial bid (MVP)', async () => {
+  const { token, providerId } = await getSupplierTokenAndProviderId();
+  if (!token || !providerId) return;
+  const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+
+  const tenderId = 'sie-test-1';
+  const statusRes = await fetch(`${baseUrl}/api/v1/sie/${tenderId}/status?providerId=${encodeURIComponent(providerId)}`, { headers });
+  if (statusRes.status === 404) return;
+  if (!statusRes.ok) throw new Error(`${statusRes.status} ${await statusRes.text()}`);
+  const status = await statusRes.json();
+  assert.ok(status.auction);
+  assert.strictEqual(status.auction.tenderId, tenderId);
+
+  const initialRes = await fetch(`${baseUrl}/api/v1/sie/${tenderId}/initial`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ providerId, amount: 99.5 }),
+  });
+  if (initialRes.status === 404) return;
+  assert.strictEqual(initialRes.status, 201);
+  const initialBody = await initialRes.json();
+  assert.ok(initialBody.ok);
+  assert.ok(initialBody.bidId);
+
+  const status2Res = await fetch(`${baseUrl}/api/v1/sie/${tenderId}/status?providerId=${encodeURIComponent(providerId)}`, { headers });
+  assert.strictEqual(status2Res.status, 200);
+  const status2 = await status2Res.json();
+  assert.ok(status2.myLastBid);
+  assert.strictEqual(status2.myLastBid.amount, 99.5);
+  assert.strictEqual(status2.myLastBid.kind, 'INITIAL');
+});
+
 test('POST protected route without token returns 401 when auth on, or 201/400 when auth off', async () => {
   const res = await fetch(`${baseUrl}/api/v1/pac`, {
     method: 'POST',

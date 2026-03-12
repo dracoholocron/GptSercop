@@ -2,13 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AppHeader, AppFooter } from '@sercop/design-system';
+import { AppHeader, AppFooter, SercopLogo } from '@sercop/design-system';
 import { isLoggedIn, logout } from '../lib/auth';
 
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Inicio', href: '/' },
   { id: 'pac', label: 'PAC', href: '/pac' },
   { id: 'procesos', label: 'Procesos', href: '/procesos' },
+  { id: 'catalogos', label: 'Catálogos', href: '/catalogos' },
+  { id: 'ordenes-compra', label: 'Órdenes de compra', href: '/ordenes-compra' },
+  { id: 'rendicion-cuentas', label: 'Rendición de cuentas', href: '/rendicion-cuentas' },
   { id: 'reportes', label: 'Reportes', href: '/reportes' },
   { id: 'documentos', label: 'Documentos', href: '/documentos' },
 ];
@@ -26,7 +29,8 @@ export function EntityShell({ children, activeId }: { children: React.ReactNode;
     <div className="flex min-h-screen flex-col">
       <a href="#main" className="skip-link">Saltar al contenido</a>
       <AppHeader
-        title="SERCOP – Portal entidad"
+        title="Portal entidad"
+        logo={<SercopLogo variant="compact" />}
         navItems={NAV_ITEMS}
         activeId={activeId}
         rightContent={

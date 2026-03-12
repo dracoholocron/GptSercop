@@ -2,12 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AppHeader, AppFooter } from '@sercop/design-system';
+import { AppHeader, AppFooter, SercopLogo } from '@sercop/design-system';
 import { isLoggedIn, logout } from '../lib/auth';
 
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Dashboard', href: '/' },
+  { id: 'procesos', label: 'Procesos', href: '/procesos' },
   { id: 'entidades', label: 'Entidades', href: '/entidades' },
+  { id: 'denuncias', label: 'Denuncias', href: '/denuncias' },
+  { id: 'reclamos', label: 'Reclamos', href: '/reclamos' },
   { id: 'usuarios', label: 'Usuarios', href: '/usuarios' },
   { id: 'auditoria', label: 'Auditoría', href: '/auditoria' },
   { id: 'parametros', label: 'Parámetros', href: '/parametros' },
@@ -27,7 +30,8 @@ export function AdminShell({ children, activeId }: { children: React.ReactNode; 
     <div className="flex min-h-screen flex-col">
       <a href="#main" className="skip-link">Saltar al contenido</a>
       <AppHeader
-        title="SERCOP – Admin"
+        title="Admin"
+        logo={<SercopLogo variant="compact" />}
         navItems={NAV_ITEMS}
         activeId={activeId}
         rightContent={

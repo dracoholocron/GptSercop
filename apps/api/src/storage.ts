@@ -70,6 +70,16 @@ export async function getDownloadUrl(key: string, expiresInSeconds = 3600): Prom
   return getSignedUrl(c, cmd, { expiresIn: expiresInSeconds });
 }
 
+export async function getUploadUrl(
+  key: string,
+  contentType: string,
+  expiresInSeconds = 600
+): Promise<string> {
+  const c = getClient();
+  const cmd = new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType });
+  return getSignedUrl(c, cmd, { expiresIn: expiresInSeconds });
+}
+
 export function getBucket(): string {
   return bucket;
 }

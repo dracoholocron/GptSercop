@@ -26,9 +26,17 @@ export default function ProcesosPage() {
             {tenders.map((t) => (
               <Card key={String(t.id)} title={String(t.title)}>
                 <p className="text-sm text-gray-600 line-clamp-2">{String(t.description || '—')}</p>
-                <Link href={`/procesos/${t.id}/oferta`} className="mt-2 inline-block">
-                  <Button size="sm">Presentar oferta</Button>
-                </Link>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Link href={`/procesos/${t.id}`} className="inline-block">
+                    <Button size="sm" variant="outline">Ver detalle</Button>
+                  </Link>
+                  <Link href={`/procesos/${t.id}/oferta`} className="inline-block">
+                    <Button size="sm">Presentar oferta</Button>
+                  </Link>
+                  <Link href={`/procesos/${t.id}/sie`} className="inline-block">
+                    <Button size="sm" variant="outline">SIE (MVP)</Button>
+                  </Link>
+                </div>
               </Card>
             ))}
           </div>

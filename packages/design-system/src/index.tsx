@@ -17,4 +17,7 @@ export { Breadcrumb } from './Breadcrumb';
 export { Toast } from './Toast';
 export { AppHeader } from './AppHeader';
 export { AppFooter } from './AppFooter';
+export { SercopLogo } from './SercopLogo';
+export { EmptyState } from './EmptyState';
+export * from './icons';
 export * from './tokens';

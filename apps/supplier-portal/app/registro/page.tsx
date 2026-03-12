@@ -1,14 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, Button, Input } from '@sercop/design-system';
-import { api, setBaseUrl, setToken } from '@sercop/api-client';
-import { setProviderId } from '../lib/auth';
+import { api, setBaseUrl, setToken, type Provider } from '@sercop/api-client';
+import { setProviderId, getToken, getProviderId } from '../lib/auth';
 import { SupplierShell } from '../components/SupplierShell';
 import Link from 'next/link';
 
-// Usar '' para same-origin (Next.js rewrites proxy /api -> backend)
 setBaseUrl(process.env.NEXT_PUBLIC_API_URL || '');
 
 export default function RegistroPage() {
@@ -16,6 +15,34 @@ export default function RegistroPage() {
   const [form, setForm] = useState({ name: '', identifier: '', legalName: '', tradeName: '', province: '', canton: '', address: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [provider, setProvider] = useState<Provider | null>(null);
+  const [step, setStep] = useState(0);
+  const [cpcSearch, setCpcSearch] = useState('');
+  const [cpcSuggestions, setCpcSuggestions] = useState<Array<{ code: string; description: string }>>([]);
+  const [activityCodes, setActivityCodes] = useState<string[]>([]);
+  const [savingStep, setSavingStep] = useState(false);
+  const [savingCpc, setSavingCpc] = useState(false);
+
+  useEffect(() => {
+    const t = getToken();
+    const pid = getProviderId();
+    if (t && pid) {
+      setToken(t);
+      api.getProvider(pid).then((p) => {
+        setProvider(p);
+        setStep(p.registrationStep ?? 0);
+        setActivityCodes(p.activityCodes ?? []);
+      }).catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!cpcSearch.trim()) { setCpcSuggestions([]); return; }
+    const t = setTimeout(() => {
+      api.getCpcSuggestions({ q: cpcSearch, limit: 10 }).then((r) => setCpcSuggestions(r.data || [])).catch(() => setCpcSuggestions([]));
+    }, 300);
+    return () => clearTimeout(t);
+  }, [cpcSearch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +92,66 @@ export default function RegistroPage() {
             ¿Ya tiene cuenta? <Link href="/login" className="text-blue-600 hover:underline">Iniciar sesión</Link>
           </p>
         </Card>
+
+        {provider && (
+          <Card title="Completar registro RUP (pasos 8+6)" variant="outline" className="mt-6">
+            <p className="mb-4 text-sm text-text-secondary">Paso actual del registro: {step} de 14. Códigos CPC de actividad.</p>
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-end gap-2">
+                <label className="w-full sm:w-auto">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">Avanzar a paso</span>
+                  <input
+                    type="number"
+                    min={0}
+                    max={14}
+                    value={step}
+                    onChange={(e) => setStep(Math.max(0, Math.min(14, parseInt(e.target.value, 10) || 0)))}
+                    className="w-20 rounded border border-neutral-300 px-2 py-1"
+                  />
+                </label>
+                <Button size="sm" disabled={savingStep} onClick={async () => {
+                  setSavingStep(true);
+                  try {
+                    await api.updateProvider(provider.id, { registrationStep: step });
+                    setProvider(await api.getProvider(provider.id));
+                  } finally { setSavingStep(false); }
+                }}>Guardar paso</Button>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1">Códigos CPC (actividad)</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {activityCodes.map((code) => (
+                    <span key={code} className="inline-flex items-center rounded bg-neutral-100 px-2 py-0.5 text-sm">
+                      {code}
+                      <button type="button" className="ml-1 text-neutral-500 hover:text-red-600" onClick={() => setActivityCodes((a) => a.filter((c) => c !== code))}>×</button>
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input placeholder="Buscar CPC..." value={cpcSearch} onChange={(e) => setCpcSearch(e.target.value)} className="flex-1" />
+                </div>
+                {cpcSuggestions.length > 0 && (
+                  <ul className="mt-1 rounded border border-neutral-200 bg-white py-1 text-sm">
+                    {cpcSuggestions.map((s) => (
+                      <li key={s.code}>
+                        <button type="button" className="w-full px-3 py-1 text-left hover:bg-neutral-50" onClick={() => { setActivityCodes((a) => a.includes(s.code) ? a : [...a, s.code]); setCpcSearch(''); setCpcSuggestions([]); }}>
+                          {s.code} – {s.description}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <Button size="sm" className="mt-2" disabled={savingCpc} onClick={async () => {
+                  setSavingCpc(true);
+                  try {
+                    await api.updateProvider(provider.id, { activityCodes });
+                    setProvider(await api.getProvider(provider.id));
+                  } finally { setSavingCpc(false); }
+                }}>Guardar códigos CPC</Button>
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     </SupplierShell>
   );
