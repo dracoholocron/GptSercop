@@ -453,6 +453,88 @@ model CatalogItem {
 
   catalog     Catalog  @relation(fields: [catalogId], references: [id], onDelete: Cascade)
   tender      Tender?  @relation(fields: [tenderId], references: [id], onDelete: SetNull)
+  cpcNode     CpcNode? @relation(fields: [cpcCode], references: [code], onDelete: SetNull)
+
+  @@index([cpcCode])
+}
+
+// Snapshot/carga del catálogo CPC (trazabilidad de importaciones)
+model CpcSnapshot {
+  id               String   @id @default(uuid())
+  source           String   @default("sercop")
+  loadedAt         DateTime @default(now())
+  requestsCount    Int?
+  visitedCount     Int?
+  queueRemaining   Int?
+  errorsCount      Int?
+  status           String   @default("completed") // completed | partial | failed
+  notes            String?
+
+  edges            CpcEdge[]
+  rawRows          CpcNodeRaw[]
+
+  @@index([loadedAt])
+  @@index([source])
+}
+
+// Nodo canónico CPC (un código único)
+model CpcNode {
+  id               String   @id @default(uuid())
+  code             String   @unique
+  name             String
+  levelNum         Int?
+  nodeType         Int?     // 1 expandible, 2 detalle
+  isLeaf           Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  parentEdges      CpcEdge[] @relation("CpcEdgeParent")
+  childEdges       CpcEdge[] @relation("CpcEdgeChild")
+  rawRows          CpcNodeRaw[]
+  catalogItems     CatalogItem[]
+
+  @@index([levelNum])
+  @@index([nodeType])
+}
+
+// Relación jerárquica padre -> hijo por snapshot
+model CpcEdge {
+  id               String      @id @default(uuid())
+  snapshotId       String
+  parentNodeId     String?
+  childNodeId      String
+  createdAt        DateTime    @default(now())
+
+  snapshot         CpcSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  parentNode       CpcNode?    @relation("CpcEdgeParent", fields: [parentNodeId], references: [id], onDelete: SetNull)
+  childNode        CpcNode     @relation("CpcEdgeChild", fields: [childNodeId], references: [id], onDelete: Cascade)
+
+  @@unique([snapshotId, parentNodeId, childNodeId])
+  @@index([parentNodeId])
+  @@index([childNodeId])
+}
+
+// Staging/auditoría: fila cruda recibida desde la fuente
+model CpcNodeRaw {
+  id               String      @id @default(uuid())
+  snapshotId       String
+  nodeId           String?
+  code             String
+  parentCode       String?
+  levelNum         Int?
+  nodeType         Int?
+  description      String?
+  idProducto       String?
+  descProducto     String?
+  rawJson          Json?
+  createdAt        DateTime    @default(now())
+
+  snapshot         CpcSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  node             CpcNode?    @relation(fields: [nodeId], references: [id], onDelete: SetNull)
+
+  @@index([snapshotId])
+  @@index([code])
+  @@index([parentCode])
 }
 
 // Orden de compra (referencia a catálogo o proceso)
