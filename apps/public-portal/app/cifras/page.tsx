@@ -95,6 +95,24 @@ export default function CifrasPage() {
       return;
     }
 
+    if (metric === 'providers') {
+      api
+        .getProviders()
+        .then((res) => setDetailData({ data: res.data, total: res.data.length, page, pageSize: res.data.length || pageSize }))
+        .catch(() => setDetailData(null))
+        .finally(() => setDetailLoading(false));
+      return;
+    }
+
+    if (metric === 'contracts') {
+      api
+        .getContractsPublic({ page, pageSize })
+        .then((res) => setDetailData(res))
+        .catch(() => setDetailData(null))
+        .finally(() => setDetailLoading(false));
+      return;
+    }
+
     api
       .getAnalyticsPublicDetail({ metric, page, pageSize })
       .then(setDetailData)

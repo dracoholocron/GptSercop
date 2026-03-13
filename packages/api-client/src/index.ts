@@ -890,6 +890,21 @@ export const api = {
     if (params?.method) q.set('method', params.method);
     return request(`/api/v1/analytics/public/charts${q.toString() ? `?${q}` : ''}`);
   },
+  async getContractsPublic(params?: { page?: number; pageSize?: number }): Promise<{ data: Array<Record<string, unknown>>; total: number; page: number; pageSize: number }> {
+    const q = new URLSearchParams();
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.pageSize != null) q.set('pageSize', String(params.pageSize));
+    const qs = q.toString();
+    return request(`/api/v1/contracts/public${qs ? `?${qs}` : ''}`);
+  },
+  async getContractsAdmin(params?: { status?: string; page?: number; pageSize?: number }): Promise<{ data: Array<Record<string, unknown>>; total: number; page: number; pageSize: number }> {
+    const q = new URLSearchParams();
+    if (params?.status) q.set('status', params.status);
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.pageSize != null) q.set('pageSize', String(params.pageSize));
+    const qs = q.toString();
+    return request(`/api/v1/contracts${qs ? `?${qs}` : ''}`);
+  },
   async getAudit(params?: { limit?: number; offset?: number; action?: string; entityType?: string; contractingEntityId?: string }): Promise<{ data: unknown[]; total: number }> {
     const q = new URLSearchParams();
     if (params?.limit != null) q.set('limit', String(params.limit));

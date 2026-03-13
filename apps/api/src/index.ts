@@ -1428,6 +1428,77 @@ app.post<{ Params: { id: string }; Body: ContractBody }>('/api/v1/tenders/:id/co
   }
 });
 
+// Listado de contratos adjudicados (público – portal cifras)
+app.get<{ Querystring: { page?: string; pageSize?: string } }>('/api/v1/contracts/public', async (req, reply) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page || '1', 10) || 1);
+    const pageSize = Math.min(50, Math.max(5, parseInt(req.query.pageSize || '20', 10) || 20));
+    const skip = (page - 1) * pageSize;
+    const where = { signedAt: { not: null } as { not: null } };
+
+    const [data, total] = await Promise.all([
+      prisma.contract.findMany({
+        where,
+        orderBy: { signedAt: 'desc' },
+        skip,
+        take: pageSize,
+        select: {
+          id: true,
+          status: true,
+          amount: true,
+          signedAt: true,
+          tender: { select: { id: true, title: true } },
+          provider: { select: { id: true, name: true, identifier: true } },
+        },
+      }),
+      prisma.contract.count({ where }),
+    ]);
+    return { data, total, page, pageSize };
+  } catch (e) {
+    req.log.error(e);
+    return reply.status(500).send({ error: 'Error al listar contratos adjudicados' });
+  }
+});
+
+// Listado de contratos (admin / entidad – panel de control)
+app.get<{ Querystring: { status?: string; page?: string; pageSize?: string } }>('/api/v1/contracts', async (req, reply) => {
+  try {
+    if (!req.user || (req.user.role !== 'admin' && req.user.role !== 'entity')) {
+      return reply.status(403).send({ error: 'Forbidden' });
+    }
+    const q = req.query;
+    const where: Prisma.ContractWhereInput = {};
+    if (typeof q.status === 'string' && q.status.trim()) where.status = q.status.trim();
+
+    const page = Math.max(1, parseInt(q.page || '1', 10) || 1);
+    const pageSize = Math.min(50, Math.max(5, parseInt(q.pageSize || '20', 10) || 20));
+    const skip = (page - 1) * pageSize;
+
+    const [data, total] = await Promise.all([
+      prisma.contract.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: pageSize,
+        select: {
+          id: true,
+          status: true,
+          amount: true,
+          signedAt: true,
+          contractNo: true,
+          tender: { select: { id: true, title: true } },
+          provider: { select: { id: true, name: true, identifier: true } },
+        },
+      }),
+      prisma.contract.count({ where }),
+    ]);
+    return { data, total, page, pageSize };
+  } catch (e) {
+    req.log.error(e);
+    return reply.status(500).send({ error: 'Error al listar contratos' });
+  }
+});
+
 type ContractUpdateBody = {
   status?: string;
   amount?: number;

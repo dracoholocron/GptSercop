@@ -22,6 +22,7 @@ const PUBLIC_ROUTES: Array<{ method: string; path: RegExp }> = [
   { method: 'GET', path: /^\/api\/v1\/pac\/[^/]+$/ },
   { method: 'GET', path: /^\/api\/v1\/providers$/ },
   { method: 'GET', path: /^\/api\/v1\/providers\/[^/]+$/ },
+  { method: 'GET', path: /^\/api\/v1\/contracts\/public$/ },
   { method: 'POST', path: /^\/api\/v1\/auth\/login$/ },
   { method: 'GET', path: /^\/api\/v1\/rag\/search$/ },
   { method: 'POST', path: /^\/api\/v1\/rag\/ask$/ },

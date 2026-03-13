@@ -45,6 +45,25 @@ export default function AdminDashboardPage() {
       return;
     }
 
+    if (metric === 'providers') {
+      api
+        .getProviders()
+        .then((res) => setDetailData({ data: res.data, total: res.data.length, page, pageSize: res.data.length || pageSize }))
+        .catch(() => setDetailData(null))
+        .finally(() => setDetailLoading(false));
+      return;
+    }
+
+    if (metric === 'contracts') {
+      // Usar el mismo listado público de contratos adjudicados que en el portal ciudadano
+      api
+        .getContractsPublic({ page, pageSize })
+        .then((res) => setDetailData(res))
+        .catch(() => setDetailData(null))
+        .finally(() => setDetailLoading(false));
+      return;
+    }
+
     api
       .getAnalyticsPublicDetail({ metric, page, pageSize })
       .then(setDetailData)
