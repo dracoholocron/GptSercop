@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, Button, Input, Select, type SelectOption, EmptyState, Skeleton, X } from '@sercop/design-system';
+import { Card, Button, Input, Select, type SelectOption, EmptyState, Skeleton, X, Badge } from '@sercop/design-system';
 import { api, setBaseUrl, type Tender } from '@sercop/api-client';
 import Link from 'next/link';
 import { PublicShell } from '../components/PublicShell';
@@ -55,6 +55,7 @@ export default function ProcesosPage() {
   const [minAmount, setMinAmount] = useState('');
   const [maxAmount, setMaxAmount] = useState('');
   const [territoryPreference, setTerritoryPreference] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   const fetchTenders = (nextPage?: number) => {
     const p = nextPage ?? page;
@@ -121,6 +122,37 @@ export default function ProcesosPage() {
     fetchTenders(1);
   };
 
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
+  const handleExport = () => {
+    const params = new URLSearchParams();
+    params.set('format', 'csv');
+    if (method) params.set('method', method);
+    if (processType) params.set('processType', processType);
+    if (regime) params.set('regime', regime);
+    if (territoryPreference) params.set('territoryPreference', territoryPreference);
+    if (entityId) params.set('entityId', entityId);
+    if (year) params.set('year', year);
+    if (minAmount) params.set('minAmount', minAmount);
+    if (maxAmount) params.set('maxAmount', maxAmount);
+    setExporting(true);
+    fetch(`${apiBase}/api/v1/tenders/export?${params.toString()}`)
+      .then((r) => {
+        if (!r.ok) throw new Error('Error al exportar');
+        return r.text();
+      })
+      .then((csv) => {
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'procesos.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch(() => {})
+      .finally(() => setExporting(false));
+  };
+
   return (
     <PublicShell activeId="procesos">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -160,9 +192,14 @@ export default function ProcesosPage() {
           </div>
         )}
 
-        <h2 className="mb-4 text-lg font-semibold text-text-primary">
-          {loading ? 'Resultados' : `${total} proceso${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`}
-        </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+          <h2 className="text-lg font-semibold text-text-primary">
+            {loading ? 'Resultados' : `${total} proceso${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`}
+          </h2>
+          <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting || loading}>
+            {exporting ? 'Exportando…' : 'Exportar CSV'}
+          </Button>
+        </div>
         {loading ? (
           <div className="grid gap-4 md:grid-cols-2">
             {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -179,24 +216,35 @@ export default function ProcesosPage() {
           <>
             <div className="grid gap-4 md:grid-cols-2">
               {tenders.map((t) => (
-                <Card key={t.id} title={t.title} variant="outline">
-                  {(t.territoryPreference === 'amazonia' || t.territoryPreference === 'galapagos') && (
-                    <span className="mb-2 inline-block rounded bg-accent/15 px-2 py-0.5 text-xs font-medium text-accent">
-                      {t.territoryPreference === 'amazonia' ? 'Amazonía' : 'Galápagos'}
-                    </span>
-                  )}
-                  {(t.referenceBudgetAmount != null || t.bidsDeadlineAt) && (
-                    <p className="mb-1 text-xs text-text-secondary">
-                      {t.referenceBudgetAmount != null && `Presupuesto ref.: $${Number(t.referenceBudgetAmount).toLocaleString()}`}
-                      {t.referenceBudgetAmount != null && t.bidsDeadlineAt && ' · '}
-                      {t.bidsDeadlineAt && `Cierre: ${new Date(t.bidsDeadlineAt).toLocaleDateString('es-EC')}`}
-                    </p>
-                  )}
-                  <p className="text-sm text-text-secondary line-clamp-2">{t.description || '—'}</p>
-                  <Link href={`/proceso/${t.id}`} className="mt-2 inline-block">
-                    <Button variant="accent" size="sm">Ver detalle</Button>
-                  </Link>
-                </Card>
+                <Link key={t.id} href={`/proceso/${t.id}`} className="block">
+                  <Card
+                    title={t.title}
+                    variant="interactive"
+                    className="h-full transition-shadow"
+                  >
+                    <div className="mb-2 flex flex-wrap gap-1">
+                      {t.processType && (
+                        <Badge variant="default">
+                          {PROCESS_TYPE_OPTIONS.find((o) => o.value === t.processType)?.label ?? t.processType}
+                        </Badge>
+                      )}
+                      {(t.territoryPreference === 'amazonia' || t.territoryPreference === 'galapagos') && (
+                        <Badge variant="success">
+                          {t.territoryPreference === 'amazonia' ? 'Amazonía' : 'Galápagos'}
+                        </Badge>
+                      )}
+                    </div>
+                    {(t.referenceBudgetAmount != null || t.bidsDeadlineAt) && (
+                      <p className="mb-1 text-xs text-text-secondary">
+                        {t.referenceBudgetAmount != null && `Presupuesto ref.: $${Number(t.referenceBudgetAmount).toLocaleString()}`}
+                        {t.referenceBudgetAmount != null && t.bidsDeadlineAt && ' · '}
+                        {t.bidsDeadlineAt && `Cierre: ${new Date(t.bidsDeadlineAt).toLocaleDateString('es-EC')}`}
+                      </p>
+                    )}
+                    <p className="text-sm text-text-secondary line-clamp-2">{t.description || '—'}</p>
+                    <span className="mt-2 inline-block text-sm font-medium text-accent">Ver detalle</span>
+                  </Card>
+                </Link>
               ))}
             </div>
             {total > 0 && (

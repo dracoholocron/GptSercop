@@ -24,7 +24,7 @@ export function AppHeader({ title, logo, navItems = [], activeId, rightContent, 
   const hasNav = navItems.length > 0;
 
   return (
-    <header className="border-b border-neutral-200 bg-white">
+    <header className="border-b border-neutral-200 bg-white shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-3 text-xl font-semibold text-text-primary no-underline">
@@ -55,7 +55,9 @@ export function AppHeader({ title, logo, navItems = [], activeId, rightContent, 
                       <Link
                         href={item.href}
                         className={`block rounded px-3 py-2 text-sm font-medium md:inline-block ${
-                          activeId === item.id ? 'bg-primary-light text-primary' : 'text-text-secondary hover:bg-neutral-100'
+                          activeId === item.id
+                            ? 'bg-primary-light text-primary md:border-b-2 md:border-primary md:rounded-b-none'
+                            : 'text-text-secondary hover:bg-neutral-100'
                         }`}
                         onClick={() => setMobileOpen(false)}
                       >

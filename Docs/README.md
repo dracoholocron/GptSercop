@@ -2,6 +2,15 @@
 
 Toda la documentación del proyecto (investigación, arquitectura, especificaciones técnicas, DevOps y roadmap) está en esta carpeta. El código de desarrollo vive en la raíz del repositorio.
 
+## Manuales de uso e implementación
+
+| Documento | Descripción |
+|-----------|-------------|
+| [Manual de Usuario](manual-usuario.md) | Uso de la plataforma: portal público, proveedor, entidad y administrador (pantallas, flujos, glosario). Incluye placeholders para capturas de pantalla. |
+| [Manual Técnico](manual-tecnico.md) | Arquitectura, stack, API REST, modelo de datos Prisma, portales Next.js, autenticación, pruebas y referencias. |
+| [Manual de Instalación](manual-instalacion.md) | Requisitos, obtención del código, instalación con Docker o solo Node.js, verificación y solución de problemas. |
+| [Manual de Configuración](manual-configuracion.md) | Variables de entorno (API y portales), Docker Compose, entornos desarrollo/staging/producción y buenas prácticas de seguridad. |
+
 ## Estructura
 
 | Carpeta | Descripción |

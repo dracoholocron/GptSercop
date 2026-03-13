@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { AppHeader, AppFooter, SercopLogo } from '@sercop/design-system';
+import { AppHeader, AppFooter, OfficialBanner, SercopLogo } from '@sercop/design-system';
 
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Inicio', href: '/' },
@@ -28,6 +28,7 @@ export function PublicShell({ children, activeId }: { children: React.ReactNode;
   return (
     <div className="flex min-h-screen flex-col">
       <a href="#main" className="skip-link">Saltar al contenido</a>
+      <OfficialBanner title="Portal de Contratación Pública" />
       <AppHeader
         title="Portal público"
         logo={<SercopLogo variant="compact" />}

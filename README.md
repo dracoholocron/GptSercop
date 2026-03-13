@@ -11,7 +11,7 @@ gptSercop/
 ├── Docs/                    # Documentación (arquitectura, specs, roadmap)
 ├── apps/api/                # API Fastify (health, /api/v1/tenders, providers, …)
 ├── infra/                   # Docker, Kubernetes (base), ver [infra/README.md](infra/README.md)
-├── apps/public-portal/      # Portal público (3001) – procesos + RAG
+├── apps/public-portal/      # Portal público (3010) – procesos + RAG
 ├── apps/supplier-portal/    # Portal proveedores (3002)
 ├── apps/entity-portal/      # Portal entidad (3003)
 ├── apps/sercop-admin/       # Admin (3004)
@@ -61,7 +61,7 @@ npm run db:setup
 npm run smoke
 ```
 
-Solo portales (con Docker/API ya levantados): `npm run dev:portales` (admin + supplier + entity en una terminal).
+Solo portales (con Docker/API ya levantados): `npm run dev:portales` (admin 3004 + supplier 3002 + entity 3003 en una terminal). **Portal público SERCOP en 3010 (dev local):** ejecuta `npm run dev:public-portal` (si en 3010 ves otro proyecto, cierra ese proceso antes). Los cuatro portales a la vez: `npm run dev:portales:full` (público 3010, proveedores 3002, entidad 3003, admin 3004). Si la interfaz se ve sin estilos, prueba `npm run dev:portales:fresh` (limpia caché .next y arranca todos los portales).
 
 Tras cambios en el schema (p. ej. Fase 1): `npm run db:generate` y `npm run db:push` (o `db:setup` para push + seed).
 
@@ -83,7 +83,7 @@ Para desarrollo local sin Docker: copia `.env.example` a `.env`, configura `DATA
 - **Seguridad:** `npm run test:security` — auth (401 en rutas protegidas).
 - **E2E Admin:** `npx playwright test e2e/admin.spec.ts --config=playwright.admin.config.ts` — levanta el admin en 3004 y prueba login, /usuarios, /normativa.
 - **Evidencia (screenshots):** `npm run evidence` — levanta el admin si hace falta, captura login/usuarios/normativa y documentación API en `docs/evidencia/`. Requiere API en 3080.
-- **Portales:** `npm run dev:public-portal` (3001), `dev:supplier-portal` (3002), etc.
+- **Portales:** `npm run dev:public-portal` (3010), `dev:supplier-portal` (3002), etc.
 
 **Verificación local (smoke + integración + seguridad):** Con la infra levantada (`npm run docker:up`), ejecutar `npm run db:setup`, luego en una terminal iniciar la API con `JWT_SECRET` (ej. `$env:JWT_SECRET="dev-secret-min-16-chars"; npm run dev`) y en otra ejecutar `npm run smoke`, `npm run test:integration` y `npm run test:security`.
 

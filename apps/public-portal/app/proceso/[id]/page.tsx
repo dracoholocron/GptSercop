@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Card, Button, Breadcrumb, EmptyState, Skeleton } from '@sercop/design-system';
+import { Card, Button, Breadcrumb, EmptyState, Skeleton, SummarySheet } from '@sercop/design-system';
 import { api, setBaseUrl, type TenderClarification } from '@sercop/api-client';
 import Link from 'next/link';
 import { PublicShell } from '../../components/PublicShell';
@@ -50,6 +50,30 @@ export default function TenderDetailPage() {
           />
         ) : (
           <>
+            <SummarySheet
+              title="Resumen del proceso"
+              className="mb-6"
+              items={[
+                { label: 'Objeto', value: String(tender.title) },
+                ...((tender as { referenceBudgetAmount?: number | null }).referenceBudgetAmount != null
+                  ? [{ label: 'Presupuesto referencial', value: `$${Number((tender as { referenceBudgetAmount: number }).referenceBudgetAmount).toLocaleString()}` }]
+                  : []),
+                ...((tender as { bidsDeadlineAt?: string | null }).bidsDeadlineAt
+                  ? [{ label: 'Límite entrega ofertas', value: new Date(String((tender as { bidsDeadlineAt: string }).bidsDeadlineAt)).toLocaleString('es-EC') }]
+                  : []),
+                ...((tender as { questionsDeadlineAt?: string | null }).questionsDeadlineAt
+                  ? [{ label: 'Límite preguntas', value: new Date(String((tender as { questionsDeadlineAt: string }).questionsDeadlineAt)).toLocaleString('es-EC') }]
+                  : []),
+                ...(tender.procurementPlan
+                  ? [{ label: 'Entidad', value: (tender.procurementPlan as { entity?: { name?: string } })?.entity?.name || '—' }]
+                  : []),
+              ].flat()}
+              cta={
+                <a href={`${SUPPLIER_URL}/procesos/${id}/oferta`} target="_blank" rel="noopener noreferrer">
+                  <Button variant="accent">Participar (presentar oferta)</Button>
+                </a>
+              }
+            />
             <Card title={String(tender.title)} variant="elevated">
               <p className="text-text-secondary">{String(tender.description || '—')}</p>
               <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">

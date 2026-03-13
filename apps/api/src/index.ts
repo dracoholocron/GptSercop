@@ -295,6 +295,100 @@ app.get<{
   }
 });
 
+// GET /api/v1/tenders/export – exportar listado con mismos filtros que GET /api/v1/tenders (CSV)
+app.get<{
+  Querystring: {
+    format?: string;
+    entityId?: string;
+    method?: string;
+    processType?: string;
+    regime?: string;
+    territoryPreference?: string;
+    minAmount?: string;
+    maxAmount?: string;
+    year?: string;
+  };
+}>('/api/v1/tenders/export', async (req, reply) => {
+  try {
+    const q = req.query;
+    const format = (typeof q.format === 'string' ? q.format.trim().toLowerCase() : 'csv') || 'csv';
+    if (format !== 'csv') return reply.status(400).send({ error: 'Solo format=csv está soportado' });
+
+    const procurementPlanWhere: Record<string, unknown> = {};
+    if (typeof q.entityId === 'string' && q.entityId.trim()) procurementPlanWhere.entityId = q.entityId.trim();
+    if (typeof q.year === 'string' && q.year.trim()) {
+      const y = parseInt(q.year, 10);
+      if (!isNaN(y)) procurementPlanWhere.year = y;
+    }
+    const estimatedWhere: { gte?: number; lte?: number } = {};
+    if (typeof q.minAmount === 'string' && q.minAmount.trim()) {
+      const min = parseFloat(q.minAmount);
+      if (!isNaN(min)) estimatedWhere.gte = min;
+    }
+    if (typeof q.maxAmount === 'string' && q.maxAmount.trim()) {
+      const max = parseFloat(q.maxAmount);
+      if (!isNaN(max)) estimatedWhere.lte = max;
+    }
+    const where: Record<string, unknown> = { status: 'published' };
+    if (Object.keys(procurementPlanWhere).length > 0) where.procurementPlan = procurementPlanWhere;
+    if (typeof q.method === 'string' && q.method.trim()) where.procurementMethod = q.method.trim();
+    if (typeof q.processType === 'string' && q.processType.trim()) where.processType = q.processType.trim();
+    if (typeof q.regime === 'string' && q.regime.trim()) where.regime = q.regime.trim();
+    const tp = typeof q.territoryPreference === 'string' ? q.territoryPreference.trim().toLowerCase() : '';
+    if (TERRITORY_PREFERENCE_VALUES.includes(tp as (typeof TERRITORY_PREFERENCE_VALUES)[number])) where.territoryPreference = tp;
+    const limit = 5000;
+    const tenders = await prisma.tender.findMany({
+      where,
+      orderBy: { publishedAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        status: true,
+        publishedAt: true,
+        processType: true,
+        regime: true,
+        referenceBudgetAmount: true,
+        questionsDeadlineAt: true,
+        bidsDeadlineAt: true,
+        procurementPlan: { select: { year: true, entity: { select: { name: true } } } },
+      },
+    });
+
+    const header = 'id;título;descripción;estado;publicado;tipo;régimen;presupuesto_ref.;límite_preguntas;límite_ofertas;entidad;año_PAC';
+    const escape = (v: unknown): string => {
+      if (v == null) return '';
+      const s = String(v);
+      return s.includes(';') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const rows = tenders.map((t) =>
+      [
+        t.id,
+        t.title ?? '',
+        (t.description ?? '').replace(/\s+/g, ' ').slice(0, 200),
+        t.status ?? '',
+        t.publishedAt ? new Date(t.publishedAt).toISOString().slice(0, 10) : '',
+        t.processType ?? '',
+        t.regime ?? '',
+        t.referenceBudgetAmount ?? '',
+        t.questionsDeadlineAt ? new Date(t.questionsDeadlineAt).toISOString().slice(0, 10) : '',
+        t.bidsDeadlineAt ? new Date(t.bidsDeadlineAt).toISOString().slice(0, 10) : '',
+        (t.procurementPlan as { entity?: { name?: string } } | null)?.entity?.name ?? '',
+        (t.procurementPlan as { year?: number } | null)?.year ?? '',
+      ].map(escape).join(';')
+    );
+    const csv = [header, ...rows].join('\n');
+    return reply
+      .header('Content-Type', 'text/csv; charset=utf-8')
+      .header('Content-Disposition', 'attachment; filename="procesos.csv"')
+      .send(csv);
+  } catch (e) {
+    req.log.error(e);
+    return reply.status(500).send({ error: 'Error al exportar procesos' });
+  }
+});
+
 app.get<{ Params: { id: string } }>('/api/v1/tenders/:id', async (req, reply) => {
   const { id } = req.params;
   try {
@@ -421,7 +515,25 @@ app.put<{ Params: { id: string }; Body: ProviderUpdateBody }>('/api/v1/providers
   if (body.isCompliantSRI !== undefined) data.isCompliantSRI = typeof body.isCompliantSRI === 'boolean' ? body.isCompliantSRI : body.isCompliantSRI === null ? null : undefined;
   if (body.isCompliantIESS !== undefined) data.isCompliantIESS = typeof body.isCompliantIESS === 'boolean' ? body.isCompliantIESS : body.isCompliantIESS === null ? null : undefined;
   if (Object.keys(data).length === 0) return reply.status(400).send({ error: 'Ningún campo válido para actualizar' });
+
   try {
+    // Validar completitud si se está finalizando el registro (Paso 9 / active validation)
+    if (data.registrationStep === 9 || data.status === 'active') {
+      const existing = await prisma.provider.findUnique({ where: { id } });
+      if (!existing) return reply.status(404).send({ error: 'Proveedor no encontrado' });
+      
+      const checkIdentifier = data.identifier !== undefined ? data.identifier : existing.identifier;
+      if (!checkIdentifier) return reply.status(400).send({ error: 'El RUC / Identificador es obligatorio para finalizar el registro.' });
+
+      const checkProvince = data.province !== undefined ? data.province : existing.province;
+      if (!checkProvince) return reply.status(400).send({ error: 'La provincia es obligatoria para finalizar el registro.' });
+
+      const checkActivities = data.activityCodes !== undefined ? data.activityCodes : existing.activityCodes;
+      if (!checkActivities || checkActivities.length === 0) {
+        return reply.status(400).send({ error: 'Debe tener al menos un código CPC seleccionado para finalizar.' });
+      }
+    }
+
     const provider = await prisma.provider.update({ where: { id }, data });
     await audit({ action: 'provider.update', entityType: 'Provider', entityId: id, payload: data });
     return provider;

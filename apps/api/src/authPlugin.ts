@@ -16,6 +16,7 @@ const PUBLIC_ROUTES: Array<{ method: string; path: RegExp }> = [
   { method: 'GET', path: /^\/openapi\.json$/ },
   { method: 'GET', path: /^\/documentation$/ },
   { method: 'GET', path: /^\/api\/v1\/tenders$/ },
+  { method: 'GET', path: /^\/api\/v1\/tenders\/export$/ },
   { method: 'GET', path: /^\/api\/v1\/tenders\/[^/]+$/ },
   { method: 'GET', path: /^\/api\/v1\/pac$/ },
   { method: 'GET', path: /^\/api\/v1\/pac\/[^/]+$/ },

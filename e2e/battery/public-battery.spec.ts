@@ -56,9 +56,26 @@ test.describe('Portal público – Procesos', () => {
     }
   });
 
+  test('P-procesos: badge de tipo o territorio visible cuando hay resultados', async ({ page }) => {
+    await page.goto('/procesos');
+    await page.getByText(/Resultados|encontrado|No hay|proceso/i).first().waitFor({ state: 'visible', timeout: 10000 });
+    const card = page.locator('[class*="rounded-lg"]').filter({ hasText: /Ver detalle|Presupuesto|Cierre/ }).first();
+    if (await card.isVisible().catch(() => false)) {
+      await expect(page.locator('body')).toContainText(/Licitación|SIE|Catálogo|Amazonía|Galápagos|Ordinario|Ínfima/i);
+    }
+  });
+
   test('P-procesos: paginación o lista visible', async ({ page }) => {
     await page.goto('/procesos');
     await expect(page.locator('main')).toBeVisible();
+  });
+
+  test('P-procesos: botón Exportar CSV visible y no falla al pulsar', async ({ page }) => {
+    await page.goto('/procesos');
+    const exportBtn = page.getByRole('button', { name: /Exportar CSV/i });
+    await expect(exportBtn).toBeVisible({ timeout: 10000 });
+    await exportBtn.click();
+    await expect(page.locator('body')).toBeVisible();
   });
 });
 
@@ -132,6 +149,20 @@ test.describe('Portal público – Denuncias', () => {
     await page.getByPlaceholder(/Breve descripción/i).fill('Prueba E2E denuncia');
     await page.getByRole('button', { name: /Enviar denuncia/i }).click();
     await expect(page.locator('body')).toContainText(/registrada|correctamente|recibido|Denuncia/i, { timeout: 10000 });
+  });
+});
+
+test.describe('Portal público – Hero y CTA', () => {
+  test.use({ baseURL: BASE });
+
+  test('P-hero: título principal visible', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 }).filter({ hasText: /Encuentra|procesos|contratación/i })).toBeVisible({ timeout: 8000 });
+  });
+
+  test('P-hero: CTA Buscar visible', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('button', { name: /Buscar/i }).first()).toBeVisible({ timeout: 8000 });
   });
 });
 

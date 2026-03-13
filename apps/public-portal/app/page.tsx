@@ -28,20 +28,32 @@ export default function PublicPortalPage() {
 
   return (
     <PublicShell activeId="inicio">
-      <section className="bg-hero-bg py-12">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h1 className="text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">Encuentra procesos de contratación pública</h1>
-          <p className="mt-2 text-lg text-text-secondary">Busque normativa, manuales y procesos publicados.</p>
-          <div className="mt-6 flex max-w-2xl gap-2">
+      <section className="relative overflow-hidden bg-hero-bg py-14">
+        <div className="pointer-events-none absolute inset-0 opacity-30" aria-hidden>
+          <svg className="h-full w-full" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="320" cy="80" r="80" stroke="currentColor" strokeWidth="1" className="text-primary" />
+            <circle cx="80" cy="120" r="60" stroke="currentColor" strokeWidth="1" className="text-accent" />
+          </svg>
+        </div>
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+          <h1 className="text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+            Encuentra procesos de contratación
+          </h1>
+          <p className="mt-3 max-w-2xl text-lg text-text-secondary">
+            Busque normativa, manuales y procesos publicados. Acceda a licitaciones y pliegos desde un solo lugar.
+          </p>
+          <div className="mt-6 flex max-w-2xl flex-wrap gap-2">
             <Input
               placeholder="Ej: contratación pública, RUP, PAC"
               value={ragQuery}
               onChange={(e) => setRagQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && searchRag()}
               iconLeft={<Search className="h-5 w-5" />}
-              className="flex-1"
+              className="min-w-[200px] flex-1"
             />
-            <Button variant="accent" onClick={searchRag} disabled={ragLoading}>Buscar</Button>
+            <Button variant="accent" onClick={searchRag} disabled={ragLoading}>
+              Buscar
+            </Button>
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, Button, Input, Select, type SelectOption } from '@sercop/design-system';
+import { Card, Button, Input, Select, type SelectOption, Tooltip, HelpCircle } from '@sercop/design-system';
 import { api, setBaseUrl, setToken } from '@sercop/api-client';
 import { getToken, getEntityId } from '../../lib/auth';
 import Link from 'next/link';
@@ -138,7 +138,14 @@ export default function NuevoProcesoPage() {
               {regime === 'emergencia' && <p className="text-xs text-text-secondary">Para régimen emergencia puede adjuntar el plan de contingencia al editar el proceso una vez creado.</p>}
               {processType === 'licitacion' && (
                 <>
-                  <Input label="Presupuesto referencial ($)" type="number" min={10001} step="0.01" value={referenceBudgetAmount} onChange={(e) => setReferenceBudgetAmount(e.target.value)} placeholder="Licitación requiere > 10.000" />
+                  <div className="flex items-start gap-2">
+                    <span className="min-w-0 flex-1">
+                      <Input label="Presupuesto referencial ($)" type="number" min={10001} step="0.01" value={referenceBudgetAmount} onChange={(e) => setReferenceBudgetAmount(e.target.value)} placeholder="Licitación requiere > 10.000" />
+                    </span>
+                    <Tooltip content="En licitación debe ser mayor a $10.000. Define el techo para las ofertas." position="top">
+                      <span className="inline-block pt-8"><HelpCircle className="h-4 w-4 text-text-secondary" aria-hidden /></span>
+                    </Tooltip>
+                  </div>
                   <Input label="Monto estimado ($) (opcional)" type="number" step="0.01" value={estimatedAmount} onChange={(e) => setEstimatedAmount(e.target.value)} placeholder="Ej: 50.000" />
                   <Select
                     label="Responsable (comisión o delegado)"

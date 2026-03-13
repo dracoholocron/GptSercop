@@ -1,7 +1,32 @@
 /**
  * Batería QA – Navegación por enlaces del menú en cada portal.
+ * Incluye comprobación de header, footer y OfficialBanner (portal público).
  */
 import { test, expect } from '@playwright/test';
+
+test.describe('Shell – Portal público (3010)', () => {
+  test.use({ baseURL: 'http://localhost:3010' });
+
+  test('Header y footer visibles', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('header')).toBeVisible();
+    await expect(page.locator('footer[role="contentinfo"]')).toBeVisible();
+  });
+
+  test('OfficialBanner visible y no bloquea navegación', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByText('Sitio oficial', { exact: false })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Cómo lo sabe/i })).toBeVisible();
+    await expect(page.locator('main')).toBeVisible();
+  });
+
+  test('Enlaces del footer son clicables', async ({ page }) => {
+    await page.goto('/');
+    const normativa = page.getByRole('link', { name: 'Normativa' }).first();
+    await expect(normativa).toBeVisible();
+    await expect(normativa).toHaveAttribute('href', '/normativa');
+  });
+});
 
 test.describe('Nav – Portal público (3010)', () => {
   test.use({ baseURL: 'http://localhost:3010' });
