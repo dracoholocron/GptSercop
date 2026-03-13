@@ -22,8 +22,18 @@ export function Step2Identifier({ initialEmail = '', onNext }: Step2IdentifierPr
     setError('');
     try {
       await onNext({ email, name });
-    } catch (err: any) {
-      setError(err instanceof Error ? err.message : 'Error de red');
+    } catch (err: unknown) {
+      let message = 'Error de conexión. Verifique que el servidor esté activo.';
+      if (err instanceof Error && err.message) {
+        try {
+          const parsed = JSON.parse(err.message) as { error?: string };
+          if (parsed?.error) message = parsed.error;
+          else message = err.message;
+        } catch {
+          message = err.message;
+        }
+      }
+      setError(message);
     } finally {
       setLoading(false);
     }

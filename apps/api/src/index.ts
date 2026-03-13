@@ -471,9 +471,16 @@ app.post<{ Body: ProviderBody }>('/api/v1/providers', async (req, reply) => {
     });
     await audit({ action: 'provider.create', entityType: 'Provider', entityId: provider.id, payload: { name: provider.name } });
     return reply.status(201).send(provider);
-  } catch (e) {
+  } catch (e: unknown) {
     req.log.error(e);
-    return reply.status(500).send({ error: 'Error al crear proveedor' });
+    const prisma = e as { code?: string; message?: string };
+    if (prisma?.code === 'P2002') {
+      return reply.status(409).send({ error: 'Ya existe un proveedor con ese correo o identificador. Use otro correo o inicie sesión.' });
+    }
+    if (prisma?.code === 'P1001' || prisma?.code === 'P1002' || (prisma?.message && /connect|reach|database/i.test(String(prisma.message)))) {
+      return reply.status(503).send({ error: 'Servicio no disponible. Verifique que la base de datos esté activa e intente más tarde.' });
+    }
+    return reply.status(500).send({ error: 'Error al crear proveedor. Intente de nuevo más tarde.' });
   }
 });
 
@@ -1762,10 +1769,13 @@ app.post<{ Body: PresignBody }>('/api/v1/documents/presign', async (req, reply) 
 
   if (!isStorageConfigured()) return reply.status(503).send({ error: 'Almacenamiento de documentos no configurado (S3_*)' });
 
-  const allowedExt = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.png', '.jpg', '.jpeg'];
+  const allowedExt = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.md'];
   const lower = fileName.toLowerCase();
   const ext = allowedExt.find((e) => lower.endsWith(e));
-  if (!ext) return reply.status(422).send({ error: 'Extensión no permitida' });
+  if (!ext) {
+    const list = allowedExt.join(', ');
+    return reply.status(422).send({ error: `Extensión no permitida. Use: ${list}` });
+  }
 
   await ensureBucket();
   const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -2912,6 +2922,173 @@ app.get('/api/v1/analytics/public', async (req, reply) => {
   } catch (e) {
     req.log.error(e);
     return reply.status(500).send({ error: 'Error al obtener estadísticas' });
+  }
+});
+
+// GET /api/v1/analytics/public/detail – listado para cada métrica (paginado)
+app.get<{
+  Querystring: { metric: string; page?: string; pageSize?: string; year?: string };
+}>('/api/v1/analytics/public/detail', async (req, reply) => {
+  try {
+    const metric = (req.query.metric || '').toLowerCase();
+    const page = Math.max(1, parseInt(req.query.page || '1', 10) || 1);
+    const pageSize = Math.min(50, Math.max(5, parseInt(req.query.pageSize || '20', 10) || 20));
+    const skip = (page - 1) * pageSize;
+    const year = req.query.year ? parseInt(req.query.year, 10) : null;
+
+    if (metric === 'tenders') {
+      const where: { procurementPlan?: { year?: number } } = {};
+      if (year && !isNaN(year)) where.procurementPlan = { year };
+      const [data, total] = await Promise.all([
+        prisma.tender.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: pageSize,
+          select: { id: true, title: true, status: true, createdAt: true, publishedAt: true, procurementMethod: true, procurementPlan: { select: { year: true, entity: { select: { name: true } } } } },
+        }),
+        prisma.tender.count({ where }),
+      ]);
+      return { data, total, page, pageSize };
+    }
+    if (metric === 'published') {
+      const where: { status: string; procurementPlan?: { year?: number } } = { status: 'published' };
+      if (year && !isNaN(year)) where.procurementPlan = { year };
+      const [data, total] = await Promise.all([
+        prisma.tender.findMany({
+          where,
+          orderBy: { publishedAt: 'desc' },
+          skip,
+          take: pageSize,
+          select: { id: true, title: true, status: true, publishedAt: true, procurementMethod: true, procurementPlan: { select: { year: true, entity: { select: { name: true } } } } },
+        }),
+        prisma.tender.count({ where }),
+      ]);
+      return { data, total, page, pageSize };
+    }
+    if (metric === 'providers') {
+      const where: { createdAt?: { gte?: Date; lte?: Date } } = {};
+      if (year && !isNaN(year)) {
+        where.createdAt = { gte: new Date(year, 0, 1), lte: new Date(year, 11, 31, 23, 59, 59) };
+      }
+      const [data, total] = await Promise.all([
+        prisma.provider.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: pageSize,
+          select: { id: true, name: true, identifier: true, legalName: true, createdAt: true },
+        }),
+        prisma.provider.count({ where }),
+      ]);
+      return { data, total, page, pageSize };
+    }
+    if (metric === 'contracts') {
+      const contractWhere = year && !isNaN(year)
+        ? { signedAt: { not: null, gte: new Date(year, 0, 1), lte: new Date(year, 11, 31, 23, 59, 59) } }
+        : { signedAt: { not: null } };
+      const [data, total] = await Promise.all([
+        prisma.contract.findMany({
+          where: contractWhere,
+          orderBy: { signedAt: 'desc' },
+          skip,
+          take: pageSize,
+          select: { id: true, tenderId: true, signedAt: true, tender: { select: { title: true } }, provider: { select: { name: true, identifier: true } } },
+        }),
+        prisma.contract.count({ where: contractWhere }),
+      ]);
+      return { data, total, page, pageSize };
+    }
+    return reply.status(400).send({ error: 'metric debe ser: tenders, published, providers o contracts' });
+  } catch (e) {
+    req.log.error(e);
+    return reply.status(500).send({ error: 'Error al obtener detalle' });
+  }
+});
+
+// GET /api/v1/analytics/public/charts – datos para gráficos (filtros: year, method)
+app.get<{
+  Querystring: { year?: string; method?: string };
+}>('/api/v1/analytics/public/charts', async (req, reply) => {
+  try {
+    const year = req.query.year ? parseInt(req.query.year, 10) : new Date().getFullYear();
+    const method = (req.query.method || '').trim() || null;
+    const start = isNaN(year) ? new Date(new Date().getFullYear(), 0, 1) : new Date(year, 0, 1);
+    const end = isNaN(year) ? new Date() : new Date(year, 11, 31, 23, 59, 59);
+
+    const tenderWhere: { createdAt?: { gte: Date; lte: Date }; status?: string; procurementMethod?: string } = { createdAt: { gte: start, lte: end } };
+    if (method) tenderWhere.procurementMethod = method;
+
+    const tenders = await prisma.tender.findMany({
+      where: tenderWhere,
+      select: { createdAt: true, publishedAt: true, status: true, procurementMethod: true },
+    });
+    const published = tenders.filter((t) => t.status === 'published' && t.publishedAt);
+    const byMonth: Record<string, { procesos: number; publicados: number }> = {};
+    for (let m = 1; m <= 12; m++) {
+      const key = `${year}-${String(m).padStart(2, '0')}`;
+      byMonth[key] = { procesos: 0, publicados: 0 };
+    }
+    tenders.forEach((t) => {
+      const monthKey = `${t.createdAt.getFullYear()}-${String(t.createdAt.getMonth() + 1).padStart(2, '0')}`;
+      if (!byMonth[monthKey]) byMonth[monthKey] = { procesos: 0, publicados: 0 };
+      byMonth[monthKey].procesos += 1;
+    });
+    published.forEach((t) => {
+      if (!t.publishedAt) return;
+      const monthKey = `${t.publishedAt.getFullYear()}-${String(t.publishedAt.getMonth() + 1).padStart(2, '0')}`;
+      if (!byMonth[monthKey]) byMonth[monthKey] = { procesos: 0, publicados: 0 };
+      byMonth[monthKey].publicados += 1;
+    });
+    const processesByMonth = Object.entries(byMonth)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, v]) => ({ month, total: v.procesos, publicados: v.publicados }));
+
+    const methodCount: Record<string, number> = {};
+    tenders.forEach((t) => {
+      const k = t.procurementMethod || 'otro';
+      methodCount[k] = (methodCount[k] || 0) + 1;
+    });
+    const processesByType = Object.entries(methodCount).map(([type, count]) => ({ type, count }));
+
+    const providers = await prisma.provider.findMany({
+      where: { createdAt: { gte: start, lte: end } },
+      select: { createdAt: true },
+    });
+    const providersByMonth: Record<string, number> = {};
+    for (let m = 1; m <= 12; m++) providersByMonth[`${year}-${String(m).padStart(2, '0')}`] = 0;
+    providers.forEach((p) => {
+      const key = `${p.createdAt.getFullYear()}-${String(p.createdAt.getMonth() + 1).padStart(2, '0')}`;
+      providersByMonth[key] = (providersByMonth[key] || 0) + 1;
+    });
+    const providersByMonthArr = Object.entries(providersByMonth)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, count]) => ({ month, count }));
+
+    const contracts = await prisma.contract.findMany({
+      where: { signedAt: { not: null, gte: start, lte: end } },
+      select: { signedAt: true },
+    });
+    const contractsByMonth: Record<string, number> = {};
+    for (let m = 1; m <= 12; m++) contractsByMonth[`${year}-${String(m).padStart(2, '0')}`] = 0;
+    contracts.forEach((c) => {
+      if (!c.signedAt) return;
+      const key = `${c.signedAt.getFullYear()}-${String(c.signedAt.getMonth() + 1).padStart(2, '0')}`;
+      contractsByMonth[key] = (contractsByMonth[key] || 0) + 1;
+    });
+    const contractsByMonthArr = Object.entries(contractsByMonth)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, count]) => ({ month, count }));
+
+    return {
+      processesByMonth,
+      processesByType,
+      providersByMonth: providersByMonthArr,
+      contractsByMonth: contractsByMonthArr,
+    };
+  } catch (e) {
+    req.log.error(e);
+    return reply.status(500).send({ error: 'Error al obtener datos de gráficos' });
   }
 });
 

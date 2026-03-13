@@ -358,9 +358,13 @@ export default function OfertaPage() {
                       />
                       <div className="flex flex-col gap-1">
                         <label className="text-sm font-medium text-text-secondary">Archivo</label>
-                        <input type="file" onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)} />
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.webp,.md"
+                          onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
+                        />
                         <div className="text-xs text-text-secondary">
-                          Máx. archivo: {(config?.limits?.maxFileBytes ? formatBytes(config.limits.maxFileBytes) : '20 MB')} · Máx. total: {(config?.limits?.maxTotalBytes ? formatBytes(config.limits.maxTotalBytes) : '100 MB')}
+                          Formatos: PDF, Word, Excel, imágenes (PNG, JPG, GIF, WebP), Markdown (.md). Máx. archivo: {(config?.limits?.maxFileBytes ? formatBytes(config.limits.maxFileBytes) : '20 MB')} · Máx. total: {(config?.limits?.maxTotalBytes ? formatBytes(config.limits.maxTotalBytes) : '100 MB')}
                         </div>
                       </div>
                     </div>
