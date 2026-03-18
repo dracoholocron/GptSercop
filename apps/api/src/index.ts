@@ -12,6 +12,7 @@ import { isRedisConfigured, pingRedis } from './redis.js';
 import { searchRag } from './rag.js';
 import { openapiSpec } from './openapi.js';
 import { getCpcSuggestions } from './cpc.js';
+import { registerCoreFlowRoutes } from './sercop/core-flow-routes.js';
 import { Prisma } from '@prisma/client';
 
 const app = Fastify({ logger: true, bodyLimit: 20 * 1024 * 1024 }); // 20MB (wizard docs usa presign; multipart legacy también)
@@ -24,6 +25,7 @@ const corsOpt = corsOrigins
 await app.register(cors, corsOpt);
 await app.register(multipart, { limits: { fileSize: 20 * 1024 * 1024 } }); // 20MB por archivo (legacy)
 await app.register(authPlugin);
+await registerCoreFlowRoutes(app);
 
 // Bucket MinIO se crea en el primer upload si hace falta
 
