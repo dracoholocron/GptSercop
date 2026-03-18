@@ -13,6 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "crawler:import": "tsx scripts/import-ocds-synthetic.ts",
     "cpc:import": "tsx scripts/import-cpc.ts",
+    "test:unit": "tsx --test test/unit/*.test.ts",
     "test:integration": "node --test test/integration/*.test.js",
     "test:security": "node --test test/security/*.test.js"
   },
