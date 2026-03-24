@@ -108,9 +108,6 @@ export default function RegistroPage() {
         setToken(json.token);
         setProviderId(json.providerId || provider.id);
         setLocalProviderId(json.providerId || provider.id);
-        
-        // Save Step 2 progress
-        await saveProgress(2, { email: data.email });
         goNext();
       } else {
         throw new Error('Error al iniciar sesión tras crear cuenta.');

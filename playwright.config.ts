@@ -55,19 +55,13 @@ export default defineConfig({
         JWT_SECRET: process.env.JWT_SECRET || 'e2e-test-secret-min-16-chars',
       },
     },
+    /*
     {
       command: 'npm run build --workspace=public-portal && cd apps/public-portal && npx next start -p 3010',
       url: 'http://localhost:3010',
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
       env: { ...process.env, PORT: '3010' },
-    },
-    {
-      command: 'npm run build --workspace=supplier-portal && cd apps/supplier-portal && npx next start -p 3012',
-      url: 'http://localhost:3012',
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-      env: { ...process.env, PORT: '3012', NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080' },
     },
     {
       command: 'npm run build --workspace=sercop-admin && cd apps/sercop-admin && npx next start -p 3014',
@@ -82,6 +76,14 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
       env: { ...process.env, PORT: '3013', NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080' },
+    },
+    */
+    {
+      command: 'npm run build --workspace=supplier-portal && cd apps/supplier-portal && npx next start -p 3012',
+      url: 'http://localhost:3012',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+      env: { ...process.env, PORT: '3012', NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080' },
     },
   ],
 });

@@ -4,25 +4,26 @@
  * Usar en theme de Tailwind de cada app para consistencia.
  */
 export const colors = {
-  primary: '#0A66C2',
-  primaryHover: '#0052A3',
-  primaryLight: '#E8F4FD',
-  accent: '#059669',
-  accentHover: '#047857',
-  backgroundHero: '#F0F7FF',
-  textPrimary: '#1A1A1A',
-  textSecondary: '#525252',
+  // CMX Theme (Banco Pichincha)
+  primary: '#FFB800',        // Amarillo/Dorado principal
+  primaryHover: '#E5A600',   // Hover Oscurecido
+  primaryLight: '#FFF8E5',   // Fondo suave
+  accent: '#0073E6',         // Azul secundario
+  accentHover: '#005BB8',
+  backgroundHero: '#F4F7FB', // Gris azulado de fondo
+  textPrimary: '#1A202C',    // Texto oscuro profundo
+  textSecondary: '#4A5568',  // Texto secundario (slate)
   success: '#059669',
   error: '#DC2626',
-  warning: '#f59e0b',
-  neutral50: '#fafafa',
-  neutral100: '#f5f5f5',
+  warning: '#D97706',
+  neutral50: '#F9FAFB',
+  neutral100: '#F3F4F6',
   neutral200: '#E5E7EB',
-  neutral300: '#d4d4d4',
-  neutral400: '#a3a3a3',
-  neutral500: '#9e9e9e',
-  neutral700: '#616161',
-  neutral900: '#1A1A1A',
+  neutral300: '#D1D5DB',
+  neutral400: '#9CA3AF',
+  neutral500: '#6B7280',
+  neutral700: '#374151',
+  neutral900: '#111827',
 } as const;
 
 export const spacing = {

@@ -20,6 +20,9 @@ export { Toast } from './Toast';
 export { Tooltip } from './Tooltip';
 export { AppHeader } from './AppHeader';
 export { AppFooter } from './AppFooter';
+// Layout CMX Re-estilizado
+export * from './Sidebar';
+export * from './TopBar';
 export { OfficialBanner } from './OfficialBanner';
 export { SercopLogo } from './SercopLogo';
 export { EmptyState } from './EmptyState';

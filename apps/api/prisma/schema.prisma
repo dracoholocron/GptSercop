@@ -23,6 +23,7 @@ model Entity {
   complaints       Complaint[]
   catalogs         Catalog[]
   purchaseOrders   PurchaseOrder[]
+  carts            Cart[]
 }
 
 model User {
@@ -454,6 +455,7 @@ model CatalogItem {
   catalog     Catalog  @relation(fields: [catalogId], references: [id], onDelete: Cascade)
   tender      Tender?  @relation(fields: [tenderId], references: [id], onDelete: SetNull)
   cpcNode     CpcNode? @relation(fields: [cpcCode], references: [code], onDelete: SetNull)
+  cartItems   CartItem[]
 
   @@index([cpcCode])
 }
@@ -553,4 +555,33 @@ model PurchaseOrder {
   entity        Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
   catalog       Catalog? @relation(fields: [catalogId], references: [id], onDelete: SetNull)
   tender        Tender?  @relation(fields: [tenderId], references: [id], onDelete: SetNull)
+}
+
+// Carrito institucional de la Entidad (Catálogo Electrónico)
+model Cart {
+  id          String   @id @default(uuid())
+  entityId    String   @unique
+  status      String   @default("active") // active | checked_out
+  totalAmount Decimal  @default(0) @db.Decimal(18, 2)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  entity      Entity     @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  items       CartItem[]
+}
+
+model CartItem {
+  id            String      @id @default(uuid())
+  cartId        String
+  catalogItemId String
+  quantity      Int         @default(1)
+  unitPrice     Decimal     @db.Decimal(18, 2)
+  subtotal      Decimal     @db.Decimal(18, 2)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  cart          Cart        @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Restrict)
+
+  @@unique([cartId, catalogItemId])
 }

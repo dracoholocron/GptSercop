@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Flujo de Registro de Proveedores (8 Pasos)', () => {
   test.beforeEach(async ({ page }) => {
     // Navegar y limpiar sesión
-    await page.goto('http://localhost:3002/registro');
+    await page.goto('http://localhost:3012/registro');
     await page.evaluate(() => {
       localStorage.clear();
       sessionStorage.clear();
