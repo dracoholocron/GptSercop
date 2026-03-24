@@ -1,0 +1,209 @@
+# =============================================================================
+# CONFIGURACIÓN PARA MICROSOFT AZURE
+# =============================================================================
+# Este perfil se activa con: -Dspring.profiles.active=azure
+#
+# IMPORTANTE: Para usar Service Bus en lugar de Kafka, solo necesitas activar
+# este perfil. La configuración de messaging.provider se sobrescribe
+# automáticamente a SERVICEBUS.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Sistema de Mensajería - Azure usa Service Bus
+# -----------------------------------------------------------------------------
+messaging:
+  # Cambiar el proveedor a SERVICEBUS para Azure
+  provider: SERVICEBUS
+
+  enabled: true
+
+  # Los topics son los mismos, solo cambia el proveedor
+  # (heredados de application.yml)
+
+  # Configuración específica de Service Bus
+  servicebus:
+    connection-string: ${AZURE_SERVICEBUS_CONNECTION_STRING:}
+    namespace: ${AZURE_SERVICEBUS_NAMESPACE:globalcmx-prod-servicebus}
+
+spring:
+  application:
+    name: globalcmx-api
+
+  # Deshabilitar Kafka en Azure (usamos Service Bus)
+  kafka:
+    enabled: false
+
+  # Deshabilitar autoconfiguraciones que no se usan en Azure
+  autoconfigure:
+    exclude:
+      - com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubAutoConfiguration
+      - com.google.cloud.spring.autoconfigure.pubsub.GcpPubSubReactiveAutoConfiguration
+      - com.google.cloud.spring.autoconfigure.core.GcpContextAutoConfiguration
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+
+  # Multi-DataSource Configuration para Azure
+  datasource:
+    # Event Store (MySQL Flexible Server) - MIGRADO DE POSTGRESQL
+    eventstore:
+      jdbc-url: jdbc:mysql://${DB_MYSQL_HOST:localhost}:3306/globalcmx_eventstore?createDatabaseIfNotExist=true&useSSL=true&requireSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&connectionCollation=utf8mb4_unicode_ci
+      username: ${DB_MYSQL_USER:globalcmx}
+      password: ${DB_MYSQL_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+    # Read Model (MySQL Flexible Server)
+    readmodel:
+      jdbc-url: jdbc:mysql://${DB_MYSQL_HOST:localhost}:3306/globalcmx_read?createDatabaseIfNotExist=true&useSSL=true&requireSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&connectionCollation=utf8mb4_unicode_ci
+      username: ${DB_MYSQL_USER:globalcmx}
+      password: ${DB_MYSQL_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+  # JPA Configuration
+  jpa:
+    show-sql: false  # Desactivar en producción
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: false
+    out-of-order: true
+    repair-on-migrate: true
+
+  integration:
+    poller:
+      fixed-delay: 1000
+
+# Server Configuration
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    connection-timeout: 20000
+    max-connections: 10000
+
+# Actuator Configuration para Azure Monitor
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      environment: azure
+
+# Security Configuration - Endpoints públicos configurables via Helm
+security:
+  public-endpoints: ${SECURITY_PUBLIC_ENDPOINTS:/auth/**,/actuator/health,/actuator/health/**,/currencies/queries/sync,/swift-section-config/**,/swift-field-configs/**,/product-type-config/**}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGIN_1:http://172.193.245.114},${CORS_ALLOWED_ORIGIN_2:http://48.192.33.237},${CORS_ALLOWED_ORIGIN_3:https://globalcmx.com}
+
+# Logging Configuration para Azure Application Insights
+logging:
+  level:
+    root: INFO
+    com.globalcmx: INFO
+    org.springframework: INFO
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /var/log/globalcmx/application.log
+    max-size: 10MB
+    max-history: 30
+
+# Event Sourcing Configuration
+eventsourcing:
+  snapshot:
+    frequency: 10
+    enabled: true
+
+# CQRS Configuration
+cqrs:
+  eventual-consistency-delay: 100
+  projection-retry:
+    max-attempts: 3
+    backoff-delay: 1000
+
+# Plantillas Configuration - Azure Blob Storage
+plantillas:
+  storage:
+    path: ${AZURE_STORAGE_ACCOUNT:globalcmxprodsa}/plantillas
+    type: azure-blob
+
+# Accounting Rules Configuration - Azure Blob Storage
+accounting:
+  rules:
+    storage:
+      path: ${AZURE_STORAGE_ACCOUNT:globalcmxprodsa}/accounting-rules
+      type: azure-blob
+
+# Document Storage Configuration - Azure Blob
+documents:
+  storage:
+    provider: AZURE
+    azure:
+      enabled: true
+      account-name: ${AZURE_STORAGE_ACCOUNT:globalcmxprodsa}
+      container: documents
+      use-managed-identity: false  # Use account key authentication
+      account-key: ${AZURE_STORAGE_ACCOUNT_KEY:}
+      sas-expiration-minutes: 60
+
+# Video Conference Configuration - Jitsi enabled
+videoconference:
+  enabled: true
+  default-provider: jitsi
+  jitsi:
+    enabled: true
+    server-url: https://meet.jit.si
+
+# =============================================================================
+# Real-Time Notifications - Azure SignalR Service
+# =============================================================================
+globalcmx:
+  realtime:
+    enabled: ${REALTIME_ENABLED:true}
+    provider: SIGNALR
+    signalr:
+      connection-string: ${AZURE_SIGNALR_CONNECTION_STRING:}
+      hub-name: ${AZURE_SIGNALR_HUB_NAME:notifications}
+      token-expiration-minutes: 60

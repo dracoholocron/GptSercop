@@ -1,0 +1,587 @@
+// SERCOP V2 – Modelo unificado (Docs/03_technical_specs, Docs/expanded_foundation/database)
+// Relaciones: Entity -> ProcurementPlan -> Tender -> Bid | Contract; audit_log, documents
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Entity {
+  id               String             @id @default(uuid())
+  name             String
+  code             String?            @unique
+  legalName        String?
+  organizationType String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  procurementPlans ProcurementPlan[]
+  users            User[]
+  complaints       Complaint[]
+  catalogs         Catalog[]
+  purchaseOrders   PurchaseOrder[]
+  carts            Cart[]
+}
+
+model User {
+  id             String   @id @default(uuid())
+  organizationId String?
+  email          String   @unique
+  fullName       String
+  status         String
+  createdAt      DateTime @default(now())
+  organization   Entity?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+}
+
+model Provider {
+  id                  String    @id @default(uuid())
+  name                String
+  identifier          String?   // RUC
+  legalName           String?
+  tradeName           String?
+  status              String    @default("active")
+  province            String?
+  canton             String?
+  address             String?
+  activityCodes           String[]   @default([]) // códigos CPC (Clasificador Central de Productos)
+  registrationStep        Int        @default(0) // 0 = no iniciado, 1..14 = pasos 8+6 (SERCOP)
+  registrationData        Json?      // datos por paso del registro RUP
+  legalEstablishmentDate  DateTime?  // existencia legal (art. 73.1: 3 años si monto > 500.000)
+  patrimonyAmount         Decimal?   @db.Decimal(18, 2) // verificación SRI/stub
+  isCompliantSRI          Boolean?   // al día obligaciones tributarias (null = no verificado)
+  isCompliantIESS         Boolean?   // al día obligaciones laborales IESS (null = no verificado)
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
+  bids                    Bid[]
+  contracts           Contract[]
+  complaints          Complaint[]
+  claims              ProcessClaim[]
+  tenderClarifications TenderClarification[]
+}
+
+model ProcurementPlan {
+  id          String    @id @default(uuid())
+  entityId    String
+  year        Int
+  status      String    @default("draft")
+  versionNo   Int       @default(1)
+  totalAmount Decimal   @default(0) @db.Decimal(18, 2)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  entity      Entity    @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  tenders     Tender[]
+}
+
+model Tender {
+  id                      String    @id @default(uuid())
+  procurementPlanId       String
+  code                    String?   @unique
+  title                   String
+  description             String?
+  status                  String    @default("draft")
+  procurementMethod       String?   @default("open")
+  processType             String?   // catálogo, ínfima cuantía, régimen especial, feria_inclusiva, emergencia, etc.
+  regime                  String?   // régimen jurídico o modalidad específica
+  isRestrictedVisibility  Boolean   @default(false)
+  claimWindowDays         Int       @default(3) // ventana mínima de 3 días calendario para reclamos
+  estimatedAmount         Decimal?  @db.Decimal(18, 2)
+  sustainabilityCriteria Json?     // criterios de sostenibilidad (SERCOP)
+  valueForMoneyCriteria   Json?     // criterios mejor valor por dinero
+  territoryPreference     String?   // ninguna | amazonia | galapagos (preferencia territorial)
+  minimumQuotes           Int?      // ínfima cuantía: mínimo de cotizaciones (ej. 3)
+  marketStudyDocumentId   String?   // documento de estudio de mercado (opcional)
+  apuDocumentId           String?   // documento de análisis de precios unitarios (licitación de obras)
+  liberationRequestedAt   DateTime? // solicitud liberación importación (no producción nacional)
+  liberationApprovedAt    DateTime? // aprobación liberación (SERCOP/admin)
+  liberationDocumentId    String?   // documento sustento solicitud/aprobación liberación
+  contingencyPlanDocumentId String? // plan de contingencia (régimen emergencia)
+  referenceBudgetAmount    Decimal?  @db.Decimal(18, 2) // presupuesto referencial (licitación > 10.000)
+  questionsDeadlineAt      DateTime? // cronograma: límite preguntas (art. 91)
+  bidsDeadlineAt           DateTime? // cronograma: límite entrega ofertas (art. 96)
+  clarificationResponseDeadlineAt DateTime?
+  convalidationRequestDeadlineAt  DateTime?
+  convalidationResponseDeadlineAt DateTime?
+  scoringDeadlineAt        DateTime?
+  awardResolutionDeadlineAt DateTime?
+  responsibleType          String?   // commission | delegate (comisión si monto > 100.000)
+  electronicSignatureRequired Boolean @default(true) // excepción: ferias, emergencia, ínfima
+  bidsOpenedAt            DateTime? // apertura ofertas 1h después del límite (art. 92)
+  bidOpeningActDocumentId String?
+  publishedAt             DateTime?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  procurementPlan         ProcurementPlan @relation(fields: [procurementPlanId], references: [id], onDelete: Cascade)
+  bids                    Bid[]
+  evaluations             Evaluation[] @relation("TenderEvaluations")
+  contract                Contract?
+  complaints              Complaint[]
+  claims                  ProcessClaim[]
+  clarifications          TenderClarification[]
+  catalogItems            CatalogItem[]
+  purchaseOrders          PurchaseOrder[]
+}
+
+model Bid {
+  id                            String       @id @default(uuid())
+  tenderId                      String
+  providerId                    String
+  amount                        Decimal?     @db.Decimal(18, 2)
+  baePercentage                 Decimal?     @db.Decimal(5, 2) // Valor Agregado Ecuatoriano (%)
+  nationalParticipation         Boolean?     @default(true)     // participación nacional
+  inabilityDeclarationAt        DateTime?    // declaración de no incurrir en inhabilidades (arts. 75-76 LOCP)
+  baeVerifiedAt                 DateTime?    // verificación BAE por la entidad (art. 51)
+  nationalParticipationVerifiedAt DateTime?  // verificación participación nacional
+  convalidationRequestedAt    DateTime?
+  convalidationRespondedAt    DateTime?
+  convalidationStatus        String?   // pending | accepted | rejected
+  convalidationErrorsDescription String? // descripción de errores al solicitar convalidación
+  convalidationResponse      String?   // respuesta de la entidad al aceptar/rechazar
+  rupVerifiedAtOpening      DateTime?
+  rupVerifiedAtAward         DateTime?
+  rupVerifiedAtContract      DateTime?
+  sanctionedUntil            DateTime? // adjudicatario fallido: fin sanción 3 años
+  invitationType             String?   // invited | self_invited (autoinvitación)
+  status                     String    @default("submitted") // submitted | failed_awardee | etc.
+  submittedAt                DateTime?
+  subcontractingPercentage   Decimal?  @db.Decimal(5, 2) // porcentaje de subcontratación declarado (obras)
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  tender                     Tender    @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  provider                   Provider  @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  evaluations                Evaluation[] @relation("BidEvaluations")
+}
+
+model Evaluation {
+  id                   String   @id @default(uuid())
+  tenderId             String
+  bidId                String
+  technicalScore       Decimal? @db.Decimal(10, 2)
+  financialScore       Decimal? @db.Decimal(10, 2)
+  baeScore             Decimal? @db.Decimal(10, 2) // puntaje BAE (Valor Agregado Ecuatoriano)
+  nationalPartScore    Decimal? @db.Decimal(10, 2) // puntaje participación nacional
+  experienceGeneralScore  Decimal? @db.Decimal(10, 2) // experiencia general (obras)
+  experienceSpecificScore Decimal? @db.Decimal(10, 2) // experiencia específica (obras)
+  subcontractingScore     Decimal? @db.Decimal(10, 2) // subcontratación 15–30% (obras)
+  otherParamsScore        Decimal? @db.Decimal(10, 2) // otros parámetros (máx. 1 pt)
+  totalScore           Decimal? @db.Decimal(10, 2)
+  status               String
+  tender               Tender   @relation("TenderEvaluations", fields: [tenderId], references: [id], onDelete: Cascade)
+  bid                  Bid      @relation("BidEvaluations", fields: [bidId], references: [id], onDelete: Cascade)
+}
+
+model Contract {
+  id                      String            @id @default(uuid())
+  tenderId                String            @unique
+  providerId              String
+  contractNo              String?           @unique
+  status                  String            @default("draft")
+  amount                  Decimal?          @db.Decimal(18, 2)
+  signedAt                DateTime?
+  administratorName       String?
+  administratorEmail      String?
+  administratorDesignatedAt DateTime? // fecha designación administrador de contrato
+  administratorObjectionAt   DateTime? // fecha objeción a la designación (plazo 3 días)
+  administratorObjectionReason String? // motivo objeción
+  terminatedAt            DateTime?
+  suspendedAt             DateTime?
+  terminationCause        String?            // causal de terminación unilateral
+  suspensionCause        String?            // causal de suspensión
+  disputeDeadlineDays     Int?              // plazo controversias (días); debe coincidir con TDR
+  resultReportDocumentId  String?
+  awardResolutionIssuedAt DateTime?         // fecha emisión resolución de adjudicación (art. 112)
+  awardPublishedAt        DateTime?         // publicación en portal (término máx. 1 día desde emisión)
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+  tender                  Tender            @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  provider                Provider          @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  payments                ContractPayment[]
+  resultReportDocument    Document?         @relation("ContractResultReport", fields: [resultReportDocumentId], references: [id], onDelete: SetNull)
+}
+
+model Document {
+  id           String     @id @default(uuid())
+  ownerType    String
+  ownerId      String
+  documentType String
+  fileName     String
+  storageKey   String
+  isPublic     Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  contractsAsResultReport Contract[] @relation("ContractResultReport")
+}
+
+// Wizard de ofertas (presentar oferta) – drafts + submit + no repudio (firma + OTP)
+model OfferFormConfig {
+  id        String   @id @default(uuid())
+  processId String   @unique
+  modality  String
+  version   String   @default("1")
+  config    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OfferDraft {
+  id         String   @id @default(uuid())
+  processId  String
+  tenderId   String?  // opcional: si el proceso corresponde a Tender
+  providerId String
+  modality   String
+  status     String   @default("draft") // draft | validating | pending_signature | pending_otp | submitted | cancelled
+  stepData   Json     @default("{}")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Offer {
+  id           String   @id @default(uuid())
+  processId    String
+  tenderId     String?
+  providerId   String
+  draftId      String?  @unique
+  status       String   @default("submitted") // submitted | under_review | clarification_requested | clarified | awarded | rejected | contracting
+  receiptFolio String   @unique
+  manifestHash String
+  submittedAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
+}
+
+model OfferDocument {
+  id         String   @id @default(uuid())
+  offerId    String?
+  draftId    String?
+  docType    String
+  fileName   String
+  mimeType   String
+  sizeBytes  Int
+  hash       String
+  storageKey String
+  createdAt  DateTime @default(now())
+}
+
+model OtpSession {
+  id           String   @id @default(uuid())
+  offerId      String
+  channel      String   // SMS | EMAIL
+  destination  String
+  codeHash     String
+  expiresAt    DateTime
+  attempts     Int      @default(0)
+  verifiedAt   DateTime?
+  cooldownUntil DateTime?
+  createdAt    DateTime @default(now())
+}
+
+model SignSession {
+  id          String   @id @default(uuid())
+  offerId     String
+  provider    String   @default("STUB")
+  status      String   @default("started") // started | completed | failed
+  artifactDocId String?
+  signedAt    DateTime?
+  createdAt   DateTime @default(now())
+}
+
+// Subasta Inversa Electrónica (SIE) – modelo mínimo para MVP
+// Duración puja normativa 15–60 min; reprogramación una vez 24 h (postura < mínima inicial).
+model Auction {
+  id                    String    @id @default(uuid())
+  tenderId              String    @unique
+  status                String    @default("ELIGIBLE_CHECK") // ver diagrama SIE del plan
+  currency              String    @default("USD")
+  startAmount           Decimal?  @db.Decimal(18, 2)
+  currentRound          Int       @default(1)
+  initialEndsAt         DateTime?
+  biddingEndsAt         DateTime?
+  biddingDurationMinutes Int?     // 15–60 normativa; null = usar default
+  rescheduledAt         DateTime? // fecha de reprogramación (una sola vez 24 h)
+  biddingRescheduled    Boolean   @default(false) // true si ya se reprogramó
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  bids                  AuctionBid[]
+}
+
+model AuctionBid {
+  id         String   @id @default(uuid())
+  auctionId  String
+  providerId String
+  roundNo    Int
+  amount     Decimal  @db.Decimal(18, 2)
+  kind       String   @default("BID") // INITIAL | BID | NEGOTIATION_FINAL
+  createdAt  DateTime @default(now())
+  auction    Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+}
+
+// Aclaraciones / convalidación (mínimo)
+model OfferClarification {
+  id          String   @id @default(uuid())
+  offerId     String
+  status      String   @default("OPEN") // OPEN | RESPONDED | CLOSED
+  subject     String
+  message     String
+  response    String?
+  requestedAt DateTime @default(now())
+  respondedAt DateTime?
+}
+
+model AuditLog {
+  id                  String   @id @default(uuid())
+  actorId             String?
+  action              String
+  entityType          String
+  entityId            String?
+  payload             Json?
+  occurredAt          DateTime @default(now())
+  contractingEntityId String?  // entidad contratante (para rendición de cuentas por entidad)
+}
+
+// Fase 4b: RAG – chunks de normativa/manuales para búsqueda full-text (index_plan: date, jurisdiction, version)
+model RagChunk {
+  id            String    @id @default(uuid())
+  title         String
+  content       String
+  source        String    // normativa | manuales | resoluciones | guias | faq
+  documentType  String
+  url           String?
+  date          DateTime? // fecha del documento
+  jurisdiction  String?   // ámbito jurisdiccional
+  version       String?   // versión del documento
+  createdAt     DateTime  @default(now())
+}
+
+// Denuncias públicas asociadas a procesos, entidades o proveedores
+model Complaint {
+  id           String    @id @default(uuid())
+  tenderId     String?
+  entityId     String?
+  providerId   String?
+  channel      String    // WEB | PHONE | IN_PERSON | OTHER
+  category     String    // ética, integridad, transparencia, corrupción, etc.
+  status       String    @default("OPEN") // OPEN | UNDER_REVIEW | CLOSED
+  summary      String
+  details      String?
+  contactEmail String?
+  contactPhone String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  tender   Tender?  @relation(fields: [tenderId], references: [id], onDelete: SetNull)
+  entity   Entity?  @relation(fields: [entityId], references: [id], onDelete: SetNull)
+  provider Provider? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+}
+
+// Reclamos formales de proveedores sobre un proceso específico
+model ProcessClaim {
+  id          String    @id @default(uuid())
+  tenderId    String
+  providerId  String
+  kind        String    // EVALUATION | AWARD | SPECIFICATIONS | PROCEDURE | OTHER
+  status      String    @default("OPEN") // OPEN | UNDER_REVIEW | RESOLVED | REJECTED
+  subject     String
+  message     String
+  response    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tender      Tender    @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  provider    Provider  @relation(fields: [providerId], references: [id], onDelete: Restrict)
+}
+
+// Aclaraciones y preguntas a nivel de proceso
+model TenderClarification {
+  id                 String    @id @default(uuid())
+  tenderId           String
+  askedByProviderId  String?
+  status             String    @default("OPEN") // OPEN | ANSWERED | CLOSED
+  question           String
+  answer             String?
+  askedAt            DateTime  @default(now())
+  answeredAt         DateTime?
+
+  tender            Tender    @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  askedByProvider   Provider? @relation(fields: [askedByProviderId], references: [id], onDelete: SetNull)
+}
+
+// Pagos asociados a un contrato para seguimiento de ejecución
+model ContractPayment {
+  id         String    @id @default(uuid())
+  contractId String
+  sequenceNo Int
+  status     String    @default("planned") // planned | requested | approved | paid | cancelled
+  amount     Decimal   @db.Decimal(18, 2)
+  dueDate    DateTime?
+  paidAt     DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  contract   Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+}
+
+// Catálogo electrónico – ítems disponibles para compra (por entidad o nacional)
+model Catalog {
+  id          String        @id @default(uuid())
+  entityId    String?       // null = catálogo nacional/inclusivo
+  catalogType String        @default("electronico") // electronico | dinamico_inclusivo (MIPyMEs y economía popular)
+  name        String
+  description String?
+  status      String        @default("draft") // draft | published
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  entity           Entity?         @relation(fields: [entityId], references: [id], onDelete: SetNull)
+  items            CatalogItem[]
+  purchaseOrders   PurchaseOrder[]
+}
+
+// Ítem de catálogo (producto/servicio con código CPC, precio ref., etc.)
+model CatalogItem {
+  id          String   @id @default(uuid())
+  catalogId   String
+  tenderId    String?  // si el ítem se usa en un proceso específico
+  cpcCode     String?  // Clasificador Central de Productos
+  name        String
+  description String?
+  unit        String?  // UN, KG, etc.
+  referencePrice Decimal? @db.Decimal(18, 2)
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  catalog     Catalog  @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+  tender      Tender?  @relation(fields: [tenderId], references: [id], onDelete: SetNull)
+  cpcNode     CpcNode? @relation(fields: [cpcCode], references: [code], onDelete: SetNull)
+  cartItems   CartItem[]
+
+  @@index([cpcCode])
+}
+
+// Snapshot/carga del catálogo CPC (trazabilidad de importaciones)
+model CpcSnapshot {
+  id               String   @id @default(uuid())
+  source           String   @default("sercop")
+  loadedAt         DateTime @default(now())
+  requestsCount    Int?
+  visitedCount     Int?
+  queueRemaining   Int?
+  errorsCount      Int?
+  status           String   @default("completed") // completed | partial | failed
+  notes            String?
+
+  edges            CpcEdge[]
+  rawRows          CpcNodeRaw[]
+
+  @@index([loadedAt])
+  @@index([source])
+}
+
+// Nodo canónico CPC (un código único)
+model CpcNode {
+  id               String   @id @default(uuid())
+  code             String   @unique
+  name             String
+  levelNum         Int?
+  nodeType         Int?     // 1 expandible, 2 detalle
+  isLeaf           Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  parentEdges      CpcEdge[] @relation("CpcEdgeParent")
+  childEdges       CpcEdge[] @relation("CpcEdgeChild")
+  rawRows          CpcNodeRaw[]
+  catalogItems     CatalogItem[]
+
+  @@index([levelNum])
+  @@index([nodeType])
+}
+
+// Relación jerárquica padre -> hijo por snapshot
+model CpcEdge {
+  id               String      @id @default(uuid())
+  snapshotId       String
+  parentNodeId     String?
+  childNodeId      String
+  createdAt        DateTime    @default(now())
+
+  snapshot         CpcSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  parentNode       CpcNode?    @relation("CpcEdgeParent", fields: [parentNodeId], references: [id], onDelete: SetNull)
+  childNode        CpcNode     @relation("CpcEdgeChild", fields: [childNodeId], references: [id], onDelete: Cascade)
+
+  @@unique([snapshotId, parentNodeId, childNodeId])
+  @@index([parentNodeId])
+  @@index([childNodeId])
+}
+
+// Staging/auditoría: fila cruda recibida desde la fuente
+model CpcNodeRaw {
+  id               String      @id @default(uuid())
+  snapshotId       String
+  nodeId           String?
+  code             String
+  parentCode       String?
+  levelNum         Int?
+  nodeType         Int?
+  description      String?
+  idProducto       String?
+  descProducto     String?
+  rawJson          Json?
+  createdAt        DateTime    @default(now())
+
+  snapshot         CpcSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  node             CpcNode?    @relation(fields: [nodeId], references: [id], onDelete: SetNull)
+
+  @@index([snapshotId])
+  @@index([code])
+  @@index([parentCode])
+}
+
+// Orden de compra (referencia a catálogo o proceso)
+model PurchaseOrder {
+  id            String   @id @default(uuid())
+  entityId      String
+  catalogId     String?
+  tenderId      String?
+  orderNo       String?  @unique
+  status        String   @default("draft") // draft | sent | approved | received | cancelled
+  totalAmount   Decimal? @db.Decimal(18, 2)
+  orderedAt     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  entity        Entity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  catalog       Catalog? @relation(fields: [catalogId], references: [id], onDelete: SetNull)
+  tender        Tender?  @relation(fields: [tenderId], references: [id], onDelete: SetNull)
+}
+
+// Carrito institucional de la Entidad (Catálogo Electrónico)
+model Cart {
+  id          String   @id @default(uuid())
+  entityId    String   @unique
+  status      String   @default("active") // active | checked_out
+  totalAmount Decimal  @default(0) @db.Decimal(18, 2)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  entity      Entity     @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  items       CartItem[]
+}
+
+model CartItem {
+  id            String      @id @default(uuid())
+  cartId        String
+  catalogItemId String
+  quantity      Int         @default(1)
+  unitPrice     Decimal     @db.Decimal(18, 2)
+  subtotal      Decimal     @db.Decimal(18, 2)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  cart          Cart        @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Restrict)
+
+  @@unique([cartId, catalogItemId])
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>MT760 - Garantía Bancaria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #1976d2;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #1976d2;
+        }
+        .section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            background-color: #1976d2;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin: 10px 0;
+        }
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 220px;
+        }
+        .field-value {
+            display: inline-block;
+        }
+        .guarantee-box {
+            background-color: #e3f2fd;
+            border: 2px solid #1976d2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .terms-section {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #1976d2;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>GARANTÍA BANCARIA</h1>
+        <h2>SWIFT MT760</h2>
+    </div>
+
+    <div class="section">
+        <div class="section-title">INFORMACIÓN DE LA GARANTÍA</div>
+        <div class="field">
+            <span class="field-label">Número de Garantía:</span>
+            <span class="field-value">[[${numeroGarantia}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Emisión:</span>
+            <span class="field-value">[[${fechaEmision}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Tipo de Garantía:</span>
+            <span class="field-value">[[${tipoGarantia}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Vencimiento:</span>
+            <span class="field-value">[[${fechaVencimiento}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BANCO GARANTE</div>
+        <div class="field">
+            <span class="field-label">Nombre del Banco:</span>
+            <span class="field-value">[[${bancoGarante}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Código SWIFT:</span>
+            <span class="field-value">[[${codigoSwiftGarante}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Dirección:</span>
+            <span class="field-value">[[${direccionBanco}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">ORDENANTE (PRINCIPAL)</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${ordenanteNombre}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Dirección:</span>
+            <span class="field-value">[[${ordenanteDireccion}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">País:</span>
+            <span class="field-value">[[${ordenantePais}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BENEFICIARIO</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${beneficiarioNombre}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Dirección:</span>
+            <span class="field-value">[[${beneficiarioDireccion}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">País:</span>
+            <span class="field-value">[[${beneficiarioPais}]]</span>
+        </div>
+    </div>
+
+    <div class="guarantee-box">
+        <div class="section">
+            <div class="section-title">MONTO GARANTIZADO</div>
+            <div class="field">
+                <span class="field-label">Moneda:</span>
+                <span class="field-value">[[${moneda}]]</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Monto:</span>
+                <span class="field-value" style="font-size: 20px; font-weight: bold;">[[${monto}]]</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Monto en Letras:</span>
+                <span class="field-value">[[${montoLetras}]]</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">PROPÓSITO DE LA GARANTÍA</div>
+        <p>[[${proposito}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CONTRATO SUBYACENTE</div>
+        <div class="field">
+            <span class="field-label">Número de Contrato:</span>
+            <span class="field-value">[[${numeroContrato}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Descripción:</span>
+            <span class="field-value">[[${descripcionContrato}]]</span>
+        </div>
+    </div>
+
+    <div class="terms-section">
+        <strong>TÉRMINOS Y CONDICIONES:</strong>
+        <p>[[${terminosCondiciones}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">INSTRUCCIONES DE COBRO</div>
+        <p>[[${instruccionesCobro}]]</p>
+    </div>
+
+    <div class="footer">
+        <p><strong>Esta garantía está sujeta a las Reglas Uniformes para Garantías a la Vista (URDG 758)</strong></p>
+        <p>Documento generado automáticamente</p>
+        <p>GlobalCMX - Sistema de Gestión de Comercio Internacional</p>
+    </div>
+</body>
+</html>

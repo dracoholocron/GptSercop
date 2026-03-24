@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>MT707 - Enmienda a Carta de Crédito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #673ab7;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #673ab7;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            background-color: #673ab7;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin: 10px 0;
+        }
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 220px;
+        }
+        .field-value {
+            display: inline-block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #673ab7;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f3e5f5;
+        }
+        .amendment-box {
+            background-color: #fff9c4;
+            border-left: 4px solid #fbc02d;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ENMIENDA A CARTA DE CRÉDITO</h1>
+        <h2>SWIFT MT707</h2>
+    </div>
+
+    <div class="amendment-box">
+        <strong>AVISO IMPORTANTE:</strong> Este documento constituye una enmienda formal a la carta de crédito original.
+        Todas las condiciones no modificadas por esta enmienda permanecen en vigor.
+    </div>
+
+    <div class="section">
+        <div class="section-title">INFORMACIÓN DE LA ENMIENDA</div>
+        <div class="field">
+            <span class="field-label">Número de Enmienda:</span>
+            <span class="field-value">[[${numeroEnmienda}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Enmienda:</span>
+            <span class="field-value">[[${fechaEnmienda}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Número de Crédito Original:</span>
+            <span class="field-value">[[${numeroCreditoOriginal}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Emisión Original:</span>
+            <span class="field-value">[[${fechaEmisionOriginal}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BANCO EMISOR</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${bancoEmisor}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Código SWIFT:</span>
+            <span class="field-value">[[${codigoSwiftEmisor}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">ORDENANTE</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${ordenanteNombre}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BENEFICIARIO</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${beneficiarioNombre}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CAMBIOS REALIZADOS</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Campo Modificado</th>
+                    <th>Valor Anterior</th>
+                    <th>Nuevo Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cambio : ${cambios}">
+                    <td>[[${cambio.campo}]]</td>
+                    <td>[[${cambio.valorAnterior}]]</td>
+                    <td style="font-weight: bold; color: #673ab7;">[[${cambio.nuevoValor}]]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">MONTO MODIFICADO (SI APLICA)</div>
+        <div class="field">
+            <span class="field-label">Monto Original:</span>
+            <span class="field-value">[[${moneda}]] [[${montoOriginal}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Incremento/Reducción:</span>
+            <span class="field-value">[[${tipoModificacion}]] [[${montoModificacion}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Nuevo Monto Total:</span>
+            <span class="field-value" style="font-size: 18px; font-weight: bold; color: #673ab7;">
+                [[${moneda}]] [[${montoNuevo}]]
+            </span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">FECHAS MODIFICADAS (SI APLICA)</div>
+        <div class="field">
+            <span class="field-label">Vencimiento Original:</span>
+            <span class="field-value">[[${fechaVencimientoOriginal}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Nuevo Vencimiento:</span>
+            <span class="field-value" style="font-weight: bold; color: #673ab7;">[[${fechaVencimientoNuevo}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Último Día Embarque Original:</span>
+            <span class="field-value">[[${fechaEmbarqueOriginal}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Nuevo Último Día Embarque:</span>
+            <span class="field-value" style="font-weight: bold; color: #673ab7;">[[${fechaEmbarqueNuevo}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CONDICIONES ADICIONALES O MODIFICADAS</div>
+        <p>[[${condicionesAdicionales}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">MOTIVO DE LA ENMIENDA</div>
+        <p>[[${motivoEnmienda}]]</p>
+    </div>
+
+    <div class="footer">
+        <p><strong>Esta enmienda está sujeta a la aceptación del beneficiario según UCP 600</strong></p>
+        <p>Documento generado automáticamente</p>
+        <p>GlobalCMX - Sistema de Gestión de Comercio Internacional</p>
+    </div>
+</body>
+</html>

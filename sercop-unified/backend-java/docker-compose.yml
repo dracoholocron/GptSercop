@@ -1,0 +1,177 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - Event Store Database
+  postgres-eventstore:
+    image: postgres:16-alpine
+    container_name: globalcmx-postgres-eventstore
+    environment:
+      POSTGRES_DB: globalcmx_eventstore
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_eventstore_data:/var/lib/postgresql/data
+    networks:
+      - globalcmx-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MySQL - Read Model Database
+  mysql-readmodel:
+    image: mysql:8.0
+    container_name: globalcmx-mysql-readmodel
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: globalcmx_read
+      MYSQL_USER: globalcmx
+      MYSQL_PASSWORD: globalcmx123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_readmodel_data:/var/lib/mysql
+    networks:
+      - globalcmx-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Zookeeper (required for Kafka)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: globalcmx-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - globalcmx-network
+
+  # Kafka Broker
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: globalcmx-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 30000
+      KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 30000
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - globalcmx-network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  # Kafka UI (Optional - for monitoring)
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: globalcmx-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: globalcmx-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    networks:
+      - globalcmx-network
+
+  # ChromaDB - Vector Store for RAG
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: globalcmx-chromadb
+    ports:
+      - "8002:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    networks:
+      - globalcmx-network
+    environment:
+      IS_PERSISTENT: "TRUE"
+      PERSIST_DIRECTORY: /chroma/chroma
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8000' 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # Backend API
+  backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: globalcmx-backend-api
+    depends_on:
+      mysql-readmodel:
+        condition: service_healthy
+      postgres-eventstore:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      chromadb:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      # Database Configuration
+      DB_READMODEL_URL: jdbc:mysql://mysql-readmodel:3306/globalcmx_read?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_READMODEL_USER: globalcmx
+      DB_READMODEL_PASSWORD: globalcmx123
+      DB_EVENTSTORE_URL: jdbc:mysql://mysql-readmodel:3306/globalcmx_eventstore?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_EVENTSTORE_USER: root
+      DB_EVENTSTORE_PASSWORD: root
+      # Kafka Configuration
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      # OpenAI Configuration
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-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}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4}
+      OPENAI_MAX_TOKENS: ${OPENAI_MAX_TOKENS:-2000}
+      OPENAI_TEMPERATURE: ${OPENAI_TEMPERATURE:-0.7}
+      # Vector Store Configuration
+      AI_VECTOR_STORE: ${AI_VECTOR_STORE:-chroma} # inmemory, chroma
+      CHROMA_URL: ${CHROMA_URL:-http://chromadb:8000} # Internal port is 8000, external is 8001
+      # Logging
+      LOG_LEVEL_ROOT: INFO
+      LOG_LEVEL_APP: DEBUG
+    networks:
+      - globalcmx-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/internal/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+networks:
+  globalcmx-network:
+    driver: bridge
+
+volumes:
+  postgres_eventstore_data:
+  mysql_readmodel_data:
+  kafka_data:
+  chroma_data:

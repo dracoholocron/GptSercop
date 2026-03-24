@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty scope="context" name="appName" source="spring.application.name" defaultValue="globalcmx-api"/>
+    <springProperty scope="context" name="appVersion" source="application.version" defaultValue="1.0.0"/>
+
+    <!-- Console Appender con logs estructurados en JSON -->
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Campos personalizados globales -->
+            <customFields>{"application":"${appName}","version":"${appVersion}","environment":"${SPRING_PROFILES_ACTIVE:-local}"}</customFields>
+
+            <!-- Configuración de campos -->
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <message>message</message>
+                <logger>logger</logger>
+                <thread>thread</thread>
+                <level>level</level>
+                <levelValue>[ignore]</levelValue>
+            </fieldNames>
+
+            <!-- Incluir Stack Traces -->
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <maxLength>2048</maxLength>
+                <shortenedClassNameLength>20</shortenedClassNameLength>
+                <exclude>^sun\.reflect\..*\.invoke</exclude>
+                <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+                <rootCauseFirst>true</rootCauseFirst>
+            </throwableConverter>
+
+            <!-- Incluir contexto MDC -->
+            <includeMdcKeyName>true</includeMdcKeyName>
+            <includeContext>true</includeContext>
+
+            <!-- Incluir caller data (archivo y línea) -->
+            <includeCallerData>false</includeCallerData>
+
+            <!-- Pretty print en desarrollo -->
+            <jsonGeneratorDecorator class="net.logstash.logback.decorate.CompositeJsonGeneratorDecorator">
+                <decorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            </jsonGeneratorDecorator>
+        </encoder>
+    </appender>
+
+    <!-- File Appender para logs en archivo JSON -->
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/globalcmx.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/globalcmx.%d{yyyy-MM-dd}.json</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"application":"${appName}","version":"${appVersion}","environment":"${SPRING_PROFILES_ACTIVE:-local}"}</customFields>
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <message>message</message>
+                <logger>logger</logger>
+                <thread>thread</thread>
+                <level>level</level>
+            </fieldNames>
+            <includeMdcKeyName>true</includeMdcKeyName>
+            <includeContext>true</includeContext>
+        </encoder>
+    </appender>
+
+    <!-- Appender separado para logs de negocio -->
+    <appender name="BUSINESS_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/business.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/business.%d{yyyy-MM-dd}.json</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"log_type":"business","application":"${appName}"}</customFields>
+            <includeMdcKeyName>true</includeMdcKeyName>
+            <includeContext>true</includeContext>
+        </encoder>
+    </appender>
+
+    <!-- Logger específico para eventos de negocio -->
+    <logger name="com.globalcmx.business" level="INFO" additivity="false">
+        <appender-ref ref="BUSINESS_LOG"/>
+        <appender-ref ref="JSON_CONSOLE"/>
+    </logger>
+
+    <!-- Logger para controladores (APIs) -->
+    <logger name="com.globalcmx.api.controller" level="INFO"/>
+
+    <!-- Logger para servicios -->
+    <logger name="com.globalcmx.api.service" level="INFO"/>
+
+    <!-- Logger para repositorios -->
+    <logger name="com.globalcmx.api.repository" level="DEBUG"/>
+
+    <!-- Logger para seguridad -->
+    <logger name="com.globalcmx.api.security" level="INFO"/>
+
+    <!-- Reducir logs de Spring Framework -->
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="org.springframework.security" level="INFO"/>
+
+    <!-- Reducir logs de Hibernate -->
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+
+    <!-- Reducir logs de Kafka -->
+    <logger name="org.apache.kafka" level="WARN"/>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="JSON_CONSOLE"/>
+        <appender-ref ref="JSON_FILE"/>
+    </root>
+
+    <!-- Profile-specific configurations -->
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="JSON_FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>

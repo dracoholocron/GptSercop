@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GlobalCMX Widget Demo - Portal Externo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header .badge {
+      background: rgba(255,255,255,0.15);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card h2 { font-size: 16px; margin-bottom: 16px; color: #333; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 4px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group textarea {
+      font-family: monospace;
+      font-size: 12px;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #4361ee;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #4361ee; color: white; }
+    .btn-primary:hover { background: #3a56d4; }
+    .btn-primary:disabled { background: #a0a0a0; cursor: not-allowed; }
+    .btn-success { background: #2ec4b6; color: white; }
+    .btn-success:hover { background: #28b0a3; }
+    .btn-danger { background: #e63946; color: white; margin-left: 8px; }
+    .steps {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .step.pending { background: #f0f0f0; color: #888; }
+    .step.active { background: #dbeafe; color: #2563eb; }
+    .step.done { background: #d1fae5; color: #059669; }
+    .step-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .step.pending .step-num { background: #ddd; color: #888; }
+    .step.active .step-num { background: #2563eb; color: white; }
+    .step.done .step-num { background: #059669; color: white; }
+    .status {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+    .status-info { background: #dbeafe; color: #1e40af; }
+    .status-success { background: #d1fae5; color: #065f46; }
+    .status-error { background: #fee2e2; color: #991b1b; }
+    .widget-container {
+      min-height: 600px;
+      border: 2px dashed #ddd;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    .widget-container.loaded { border: none; background: transparent; }
+    .row { display: flex; gap: 20px; }
+    .col-left { flex: 0 0 380px; }
+    .col-right { flex: 1; min-width: 0; }
+    @media (max-width: 800px) {
+      .row { flex-direction: column; }
+      .col-left { flex: none; }
+    }
+    .token-display {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 11px;
+      word-break: break-all;
+      max-height: 60px;
+      overflow: auto;
+      margin-top: 8px;
+    }
+    /* Auth mode tabs */
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .auth-tab {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: #888;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .auth-tab.active {
+      color: #4361ee;
+      border-bottom-color: #4361ee;
+    }
+    .auth-tab:hover { color: #333; }
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; }
+    .hint {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Portal Bancario Externo (Demo)</h1>
+    <span class="badge">Simulacion de sitio externo</span>
+  </div>
+
+  <div class="container">
+    <div class="steps" id="steps">
+      <div class="step active" id="step1">
+        <span class="step-num">1</span> Autenticacion
+      </div>
+      <div class="step pending" id="step2">
+        <span class="step-num">2</span> Widget Token
+      </div>
+      <div class="step pending" id="step3">
+        <span class="step-num">3</span> Embeber Widget
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-left">
+        <!-- Step 1: Auth -->
+        <div class="card" id="loginCard">
+          <h2>1. Autenticacion</h2>
+
+          <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('token')">Token JWT (SSO)</button>
+            <button class="auth-tab" onclick="switchAuthTab('credentials')">Usuario / Password</button>
+          </div>
+
+          <!-- Token directo (Auth0, Azure AD, etc.) -->
+          <div class="auth-panel active" id="panel-token">
+            <div class="form-group">
+              <label>API URL</label>
+              <input type="text" id="apiUrlToken" value="http://localhost:8000/api" />
+            </div>
+            <div class="form-group">
+              <label>JWT Token</label>
+              <textarea id="existingToken" rows="4" placeholder="Pega aqui el JWT de tu sesion activa (Auth0, Azure AD, token de /auth/login, etc.)"></textarea>
+              <div class="hint">Puedes copiar el token desde DevTools &gt; Application &gt; LocalStorage &gt; globalcmx_token</div>
+            </div>
+            <button class="btn btn-primary" onclick="useExistingToken()">
+              Usar este Token
+            </button>
+          </div>
+
+          <!-- Login local -->
+          <div class="auth-panel" id="panel-credentials">
+            <div class="form-group">
+              <label>API URL</label>
+              <input type="text" id="apiUrl" value="http://localhost:8000/api" />
+            </div>
+            <div class="form-group">
+              <label>Usuario</label>
+              <input type="text" id="username" value="" placeholder="admin@globalcmx.com" />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="password" value="" placeholder="********" />
+            </div>
+            <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
+              Login
+            </button>
+          </div>
+
+          <div id="loginStatus"></div>
+        </div>
+
+        <!-- Step 2: Widget Token -->
+        <div class="card" id="tokenCard" style="opacity: 0.5; pointer-events: none;">
+          <h2>2. Obtener Widget Token</h2>
+          <div class="form-group">
+            <label>Widget</label>
+            <select id="widgetSelect">
+              <option value="business-dashboard">Business Dashboard</option>
+              <option value="commissions-dashboard">Commissions Dashboard</option>
+              <option value="alerts">Alertas</option>
+            </select>
+          </div>
+          <button class="btn btn-success" id="tokenBtn" onclick="getWidgetToken()">
+            Obtener Token
+          </button>
+          <div id="tokenStatus"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="card" id="controlsCard" style="opacity: 0.5; pointer-events: none;">
+          <h2>3. Controles</h2>
+          <button class="btn btn-primary" onclick="embedWidget()">Embeber Widget</button>
+          <button class="btn btn-danger" onclick="destroyWidget()">Destruir</button>
+          <div id="embedStatus"></div>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="card">
+          <h2>Widget Embebido</h2>
+          <div class="widget-container" id="widgetContainer">
+            Completa los pasos de la izquierda para ver el widget aqui
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/globalcmx-widgets.js"></script>
+  <script>
+    var authToken = null;
+    var widgetToken = null;
+    var activeApiUrl = '';
+
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(function (t) { t.classList.remove('active'); });
+      document.querySelectorAll('.auth-panel').forEach(function (p) { p.classList.remove('active'); });
+      document.getElementById('panel-' + tab).classList.add('active');
+      // Activate the clicked tab button
+      event.target.classList.add('active');
+    }
+
+    function setStep(stepNum) {
+      for (var i = 1; i <= 3; i++) {
+        var el = document.getElementById('step' + i);
+        if (i < stepNum) el.className = 'step done';
+        else if (i === stepNum) el.className = 'step active';
+        else el.className = 'step pending';
+      }
+    }
+
+    function showStatus(elId, msg, type) {
+      var el = document.getElementById(elId);
+      el.innerHTML = '<div class="status status-' + type + '">' + msg + '</div>';
+    }
+
+    function enableStep2() {
+      setStep(2);
+      document.getElementById('tokenCard').style.opacity = '1';
+      document.getElementById('tokenCard').style.pointerEvents = 'auto';
+    }
+
+    // --- Auth Mode 1: Usar token existente (SSO / Auth0 / Azure AD) ---
+    function useExistingToken() {
+      var token = document.getElementById('existingToken').value.trim();
+      activeApiUrl = document.getElementById('apiUrlToken').value;
+
+      if (!token) {
+        showStatus('loginStatus', 'Pega un JWT token valido', 'error');
+        return;
+      }
+
+      authToken = token;
+      showStatus('loginStatus', 'Token configurado. Listo para solicitar widget token.', 'success');
+      enableStep2();
+    }
+
+    // --- Auth Mode 2: Login con usuario/password ---
+    async function doLogin() {
+      activeApiUrl = document.getElementById('apiUrl').value;
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showStatus('loginStatus', 'Ingresa usuario y password', 'error');
+        return;
+      }
+
+      document.getElementById('loginBtn').disabled = true;
+      document.getElementById('loginBtn').textContent = 'Autenticando...';
+
+      try {
+        var resp = await fetch(activeApiUrl + '/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: username, password: password })
+        });
+
+        if (!resp.ok) {
+          var errData = await resp.json().catch(function() { return {}; });
+          throw new Error(errData.message || 'Login fallido (HTTP ' + resp.status + ')');
+        }
+
+        var data = await resp.json();
+        authToken = data.token;
+
+        showStatus('loginStatus', 'Login exitoso. Token recibido.', 'success');
+        enableStep2();
+
+      } catch (err) {
+        showStatus('loginStatus', 'Error: ' + err.message, 'error');
+      }
+
+      document.getElementById('loginBtn').disabled = false;
+      document.getElementById('loginBtn').textContent = 'Login';
+    }
+
+    // --- Step 2: Obtener widget token ---
+    async function getWidgetToken() {
+      var widget = document.getElementById('widgetSelect').value;
+
+      document.getElementById('tokenBtn').disabled = true;
+      document.getElementById('tokenBtn').textContent = 'Solicitando...';
+
+      try {
+        var resp = await fetch(activeApiUrl + '/auth/widget-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+          },
+          body: JSON.stringify({ widgets: [widget] })
+        });
+
+        if (!resp.ok) {
+          var errData = await resp.json().catch(function() { return {}; });
+          throw new Error(errData.error || errData.message || 'Error obteniendo widget token (HTTP ' + resp.status + ')');
+        }
+
+        var data = await resp.json();
+        widgetToken = data.token;
+
+        showStatus('tokenStatus',
+          'Widget token obtenido (expira en ' + data.expiresIn + 's)' +
+          '<div class="token-display">' + widgetToken.substring(0, 80) + '...</div>',
+          'success'
+        );
+        setStep(3);
+
+        document.getElementById('controlsCard').style.opacity = '1';
+        document.getElementById('controlsCard').style.pointerEvents = 'auto';
+
+      } catch (err) {
+        showStatus('tokenStatus', 'Error: ' + err.message, 'error');
+      }
+
+      document.getElementById('tokenBtn').disabled = false;
+      document.getElementById('tokenBtn').textContent = 'Obtener Token';
+    }
+
+    // --- Step 3: Embeber widget ---
+    function embedWidget() {
+      var widget = document.getElementById('widgetSelect').value;
+      var appUrl = window.location.origin;
+
+      GlobalCMX.init({
+        appUrl: appUrl,
+        token: widgetToken
+      });
+
+      GlobalCMX.embed(widget, '#widgetContainer', {
+        height: '700px',
+        onReady: function (name) {
+          showStatus('embedStatus', 'Widget "' + name + '" cargado exitosamente', 'success');
+          document.getElementById('widgetContainer').classList.add('loaded');
+        },
+        onError: function (err) {
+          showStatus('embedStatus', 'Error: ' + err.message, 'error');
+        }
+      });
+
+      showStatus('embedStatus', 'Cargando widget...', 'info');
+    }
+
+    function destroyWidget() {
+      GlobalCMX.destroy();
+      var container = document.getElementById('widgetContainer');
+      container.innerHTML = 'Widget destruido. Haz click en "Embeber Widget" para volver a cargar.';
+      container.classList.remove('loaded');
+      showStatus('embedStatus', 'Widget destruido', 'info');
+    }
+  </script>
+</body>
+</html>

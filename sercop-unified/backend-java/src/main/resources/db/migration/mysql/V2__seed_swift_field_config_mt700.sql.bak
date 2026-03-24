@@ -1,0 +1,564 @@
+-- ================================================
+-- Seed Data: swift_field_config - MT700 Fields
+-- Descripción: Configuración inicial de campos SWIFT MT700
+-- Autor: Arquitectura GlobalCMX
+-- Fecha: 2025-11-05
+-- ================================================
+
+-- ============================
+-- SECCIÓN: MONTOS
+-- ============================
+
+-- Campo: 32B - Monto de la Carta de Crédito (OBLIGATORIO)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':32B:',
+    'Monto de la LC',
+    'Monto y moneda de la carta de crédito',
+    'MT700',
+    'MONTOS',
+    1,
+    true,
+    true,
+    'CURRENCY',
+    'CURRENCY_AMOUNT_INPUT',
+    'Ingrese el monto de la LC',
+    '{"minValue": 0.01, "maxValue": 99999999.99, "required": true, "errorMessage": "El monto de la LC es obligatorio y debe ser mayor a 0"}',
+    '{"triggers": [":39A:", ":39B:", ":39C:"], "revalidates": [":39B:", ":39C:"]}',
+    NULL,
+    NULL,
+    null,
+    'Monto principal de la carta de crédito según norma SWIFT MT700',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_32B.htm',
+    'SYSTEM'
+);
+
+-- Campo: 39A - Tolerancia Porcentual (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':39A:',
+    'Tolerancia Porcentual',
+    'Porcentaje de tolerancia permitido (+/-)',
+    'MT700',
+    'MONTOS',
+    2,
+    false,
+    true,
+    'TEXT',
+    'INPUT',
+    'Ej: +10%, -5%, +10/-5%',
+    '{"pattern": "^[+-]?\\d{1,2}(\\.\\d{1,2})?%(\\/[+-]?\\d{1,2}(\\.\\d{1,2})?%)?$", "customValidator": "toleranceValidator", "errorMessage": "Formato inválido. Ejemplos válidos: +10%, -5%, +10/-5%"}',
+    '{"triggers": [":32B:"], "disabledIf": {"field": ":39B:", "condition": "NOT_EMPTY", "operator": "OR", "field2": ":39C:", "condition2": "NOT_EMPTY"}}',
+    '[{"condition": "HAS_VALUE", "severity": "INFO", "message": "La tolerancia porcentual permite variaciones en el monto de la LC"}]',
+    NULL,
+    null,
+    'Tolerancia permitida para el monto de la LC. No se puede usar junto con Monto Máximo o Adicional',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_39A.htm',
+    'SYSTEM'
+);
+
+-- Campo: 39B - Monto Máximo (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':39B:',
+    'Monto Máximo',
+    'Monto máximo permitido',
+    'MT700',
+    'MONTOS',
+    3,
+    false,
+    true,
+    'DECIMAL',
+    'INPUT',
+    'Ingrese el monto máximo',
+    '{"minValue": 0.01, "customValidator": "maxAmountValidator", "errorMessage": "El monto máximo debe ser mayor al monto de la LC"}',
+    '{"triggers": [":32B:"], "requiredIf": {"field": ":39C:", "condition": "NOT_EMPTY"}, "disabledIf": {"field": ":39A:", "condition": "NOT_EMPTY"}}',
+    '[{"condition": "GREATER_THAN", "field": ":32B:", "severity": "INFO", "message": "Se ha establecido un monto máximo mayor al monto de la LC", "suggestedFields": [":39C:"]}]',
+    NULL,
+    null,
+    'Monto máximo permitido para la LC. No se puede usar junto con Tolerancia Porcentual',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_39B.htm',
+    'SYSTEM'
+);
+
+-- Campo: 39C - Monto Adicional (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':39C:',
+    'Monto Adicional',
+    'Monto adicional cubierto',
+    'MT700',
+    'MONTOS',
+    4,
+    false,
+    true,
+    'DECIMAL',
+    'INPUT',
+    'Ingrese el monto adicional',
+    '{"minValue": 0.01, "customValidator": "additionalAmountValidator", "errorMessage": "El monto adicional debe ser menor al monto máximo establecido en 39B"}',
+    '{"triggers": [":39B:"], "requiredIf": {"field": ":39B:", "condition": "NOT_EMPTY"}, "disabledIf": {"field": ":39A:", "condition": "NOT_EMPTY"}}',
+    '[{"condition": "HAS_VALUE", "severity": "WARNING", "message": "El monto adicional solo es válido si se especificó un monto máximo en 39B"}]',
+    NULL,
+    null,
+    'Monto adicional cubierto por la LC. Requiere que se especifique Monto Máximo (39B)',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_39C.htm',
+    'SYSTEM'
+);
+
+-- ============================
+-- SECCIÓN: BANCOS
+-- ============================
+
+-- Campo: 51a - Banco Solicitante/Ordenante (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':51a:',
+    'Banco del Ordenante',
+    'Banco del importador/ordenante',
+    'MT700',
+    'BANCOS',
+    10,
+    false,
+    true,
+    'INSTITUTION',
+    'FINANCIAL_INSTITUTION_SELECTOR',
+    'Seleccione el banco del ordenante',
+    '{"required": false}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Banco del ordenante de la carta de crédito',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_51a.htm',
+    'SYSTEM'
+);
+
+-- Campo: 52a - Banco Emisor (OPCIONAL - aunque generalmente presente)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':52a:',
+    'Banco Emisor',
+    'Banco emisor de la carta de crédito',
+    'MT700',
+    'BANCOS',
+    11,
+    false,
+    true,
+    'INSTITUTION',
+    'FINANCIAL_INSTITUTION_SELECTOR',
+    'Seleccione el banco emisor',
+    '{"required": false}',
+    NULL,
+    '[{"condition": "EMPTY", "severity": "WARNING", "message": "Se recomienda especificar el banco emisor"}]',
+    NULL,
+    null,
+    'Banco que emite la carta de crédito',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_52a.htm',
+    'SYSTEM'
+);
+
+-- Campo: 53a - Banco Reembolsador (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':53a:',
+    'Banco Reembolsador',
+    'Banco que realizará el reembolso',
+    'MT700',
+    'BANCOS',
+    12,
+    false,
+    true,
+    'INSTITUTION',
+    'FINANCIAL_INSTITUTION_SELECTOR',
+    'Seleccione el banco reembolsador',
+    '{"required": false}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Banco encargado del reembolso de la LC',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_53a.htm',
+    'SYSTEM'
+);
+
+-- Campo: 54a - Banco Intermediario (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':54a:',
+    'Banco Intermediario',
+    'Banco intermediario en la transacción',
+    'MT700',
+    'BANCOS',
+    13,
+    false,
+    true,
+    'INSTITUTION',
+    'FINANCIAL_INSTITUTION_SELECTOR',
+    'Seleccione el banco intermediario',
+    '{"required": false}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Banco que actúa como intermediario',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_54a.htm',
+    'SYSTEM'
+);
+
+-- Campo: 58a - Banco del Beneficiario (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':58a:',
+    'Banco del Beneficiario',
+    'Banco del exportador/beneficiario',
+    'MT700',
+    'BANCOS',
+    14,
+    false,
+    true,
+    'INSTITUTION',
+    'FINANCIAL_INSTITUTION_SELECTOR',
+    'Seleccione el banco del beneficiario',
+    '{"required": false}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Banco donde el beneficiario tiene cuenta',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_58a.htm',
+    'SYSTEM'
+);
+
+-- ============================
+-- SECCIÓN: FECHAS
+-- ============================
+
+-- Campo: 31C - Fecha de Emisión (OBLIGATORIO)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':31C:',
+    'Fecha de Emisión',
+    'Fecha de emisión de la LC',
+    'MT700',
+    'FECHAS',
+    20,
+    true,
+    true,
+    'DATE',
+    'DATE_PICKER',
+    'Seleccione la fecha',
+    '{"required": true, "errorMessage": "La fecha de emisión es obligatoria"}',
+    '{"triggers": [":31D:"], "revalidates": [":31D:"]}',
+    NULL,
+    NULL,
+    null,
+    'Fecha en que se emite la carta de crédito',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_31C.htm',
+    'SYSTEM'
+);
+
+-- Campo: 31D - Fecha de Vencimiento (OBLIGATORIO)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':31D:',
+    'Fecha de Vencimiento',
+    'Fecha de vencimiento de la LC',
+    'MT700',
+    'FECHAS',
+    21,
+    true,
+    true,
+    'DATE',
+    'DATE_PICKER',
+    'Seleccione la fecha',
+    '{"required": true, "errorMessage": "La fecha de vencimiento es obligatoria"}',
+    '{"triggers": [":31C:"]}',
+    '[{"condition": "BEFORE_FIELD", "field": ":31C:", "severity": "ERROR", "message": "La fecha de vencimiento debe ser posterior a la fecha de emisión"}]',
+    NULL,
+    null,
+    'Fecha límite de validez de la carta de crédito',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_31D.htm',
+    'SYSTEM'
+);
+
+-- Campo: 44C - Fecha Última de Embarque (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':44C:',
+    'Fecha Última de Embarque',
+    'Fecha límite para el embarque de mercancías',
+    'MT700',
+    'FECHAS',
+    22,
+    false,
+    true,
+    'DATE',
+    'DATE_PICKER',
+    'Seleccione la fecha',
+    '{"required": false}',
+    '{"triggers": [":31D:"]}',
+    '[{"condition": "AFTER_FIELD", "field": ":31D:", "severity": "ERROR", "message": "La fecha de embarque no puede ser posterior al vencimiento de la LC"}]',
+    NULL,
+    null,
+    'Fecha límite para embarcar las mercancías',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_44C.htm',
+    'SYSTEM'
+);
+
+-- ============================
+-- SECCIÓN: PARTES
+-- ============================
+
+-- Campo: 50 - Ordenante/Importador (OBLIGATORIO)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':50:',
+    'Ordenante',
+    'Datos del importador/ordenante',
+    'MT700',
+    'PARTES',
+    30,
+    true,
+    true,
+    'PARTICIPANT',
+    'PARTICIPANT_SELECTOR',
+    'Seleccione el ordenante',
+    '{"required": true, "errorMessage": "El ordenante es obligatorio"}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Importador u ordenante de la carta de crédito',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_50.htm',
+    'SYSTEM'
+);
+
+-- Campo: 59 - Beneficiario (OBLIGATORIO)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':59:',
+    'Beneficiario',
+    'Datos del exportador/beneficiario',
+    'MT700',
+    'PARTES',
+    31,
+    true,
+    true,
+    'PARTICIPANT',
+    'PARTICIPANT_SELECTOR',
+    'Seleccione el beneficiario',
+    '{"required": true, "errorMessage": "El beneficiario es obligatorio"}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Exportador o beneficiario de la carta de crédito',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_59.htm',
+    'SYSTEM'
+);
+
+-- ============================
+-- SECCIÓN: TÉRMINOS
+-- ============================
+
+-- Campo: 40A - Tipo de Crédito Disponible (OBLIGATORIO)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':40A:',
+    'Tipo de Crédito Disponible',
+    'Forma en que el crédito está disponible',
+    'MT700',
+    'TERMINOS',
+    40,
+    true,
+    true,
+    'SELECT',
+    'SELECT',
+    'Seleccione el tipo',
+    '{"required": true, "errorMessage": "El tipo de crédito disponible es obligatorio"}',
+    NULL,
+    NULL,
+    '[{"value": "BY PAYMENT", "label": "Por Pago"}, {"value": "BY ACCEPTANCE", "label": "Por Aceptación"}, {"value": "BY NEGOTIATION", "label": "Por Negociación"}, {"value": "BY DEF PAYMENT", "label": "Por Pago Diferido"}]',
+    null,
+    'Forma en que el crédito está disponible para el beneficiario',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_40A.htm',
+    'SYSTEM'
+);
+
+-- Campo: 41a - Banco Disponible (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':41a:',
+    'Banco Disponible',
+    'Banco donde el crédito está disponible',
+    'MT700',
+    'TERMINOS',
+    41,
+    false,
+    true,
+    'INSTITUTION',
+    'FINANCIAL_INSTITUTION_SELECTOR',
+    'Seleccione el banco disponible',
+    '{"required": false}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Banco donde el beneficiario puede utilizar el crédito',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_41a.htm',
+    'SYSTEM'
+);
+
+-- Campo: 42C - Giros a la Vista/Plazo (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':42C:',
+    'Giros a',
+    'Plazo de los giros',
+    'MT700',
+    'TERMINOS',
+    42,
+    false,
+    true,
+    'TEXT',
+    'INPUT',
+    'Ej: SIGHT, 30 DAYS, 60 DAYS',
+    '{"required": false, "maxLength": 35}',
+    NULL,
+    NULL,
+    NULL,
+    null,
+    'Plazo en que deben pagarse los giros (a la vista o plazo)',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_42C.htm',
+    'SYSTEM'
+);
+
+-- Campo: 43P - Embarques Parciales (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':43P:',
+    'Embarques Parciales',
+    'Si se permiten embarques parciales',
+    'MT700',
+    'TERMINOS',
+    43,
+    false,
+    true,
+    'SELECT',
+    'SELECT',
+    'Seleccione opción',
+    '{"required": false}',
+    NULL,
+    NULL,
+    '[{"value": "ALLOWED", "label": "Permitidos"}, {"value": "NOT ALLOWED", "label": "No Permitidos"}]',
+    'NOT ALLOWED',
+    'Indica si se permiten embarques parciales',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_43P.htm',
+    'SYSTEM'
+);
+
+-- Campo: 43T - Transbordos (OPCIONAL)
+INSERT INTO swift_field_config (
+    field_code, field_name, description, message_type, section, display_order,
+    is_required, is_active, field_type, component_type, placeholder,
+    validation_rules, dependencies, contextual_alerts, field_options,
+    default_value, help_text, documentation_url, created_by
+) VALUES (
+    ':43T:',
+    'Transbordos',
+    'Si se permiten transbordos',
+    'MT700',
+    'TERMINOS',
+    44,
+    false,
+    true,
+    'SELECT',
+    'SELECT',
+    'Seleccione opción',
+    '{"required": false}',
+    NULL,
+    NULL,
+    '[{"value": "ALLOWED", "label": "Permitidos"}, {"value": "NOT ALLOWED", "label": "No Permitidos"}]',
+    'NOT ALLOWED',
+    'Indica si se permiten transbordos de mercancía',
+    'https://www2.swift.com/knowledgecentre/publications/us7m_20230720/2.0?topic=idx_fld_tag_43T.htm',
+    'SYSTEM'
+);
+
+-- ============================
+-- COMENTARIOS FINALES
+-- ============================
+
+COMMENT ON TABLE swift_field_config IS 'Configuración centralizada de campos SWIFT MT700. Seed data inicial con campos obligatorios y opcionales más comunes.';

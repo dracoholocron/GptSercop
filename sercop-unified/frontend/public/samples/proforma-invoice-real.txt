@@ -1,0 +1,138 @@
+================================================================================
+                           PROFORMA INVOICE
+================================================================================
+
+SHANGHAI ELECTRONICS TRADING CO., LTD
+No. 1688 Pudong Avenue, Lujiazui Financial District
+Shanghai 200120, China
+Tel: +86 21 5888 9999 | Fax: +86 21 5888 9998
+Email: sales@shanghaielectronics.cn
+Tax ID: 91310000MA1FL2XQ6B
+
+================================================================================
+
+Invoice Number: PI-2026-0089
+Invoice Date: January 10, 2026
+Valid Until: February 10, 2026
+Payment Terms: Irrevocable Letter of Credit at Sight
+
+--------------------------------------------------------------------------------
+BILL TO (BUYER)                      SHIP TO (CONSIGNEE)
+--------------------------------------------------------------------------------
+IMPORTADORA DEL PACIFICO S.A.        Same as Bill To
+Av. de los Shyris N34-152 y Portugal
+Quito, Ecuador
+RUC: 1792456780001
+Attn: Maria Fernanda Gonzalez
+Tel: +593 2 245 6789
+Email: comercio@importadorapacifico.com.ec
+
+--------------------------------------------------------------------------------
+SHIPPING INFORMATION
+--------------------------------------------------------------------------------
+Origin Port:        Shanghai, China
+Destination Port:   Guayaquil, Ecuador
+Shipping Terms:     CIF Guayaquil (Incoterms 2020)
+Estimated Ship Date: March 15, 2026
+Carrier:            COSCO Shipping Lines
+Transit Time:       Approximately 35-40 days
+
+================================================================================
+                              ITEM DETAILS
+================================================================================
+
+LINE  ITEM CODE    DESCRIPTION                      QTY    UNIT PRICE   AMOUNT
+--------------------------------------------------------------------------------
+1     ST-55X       LED Smart TV 55"                 500    USD 185.00   USD 92,500.00
+                   - 4K UHD Resolution
+                   - WiFi/Bluetooth
+                   - Android 12 OS
+                   - 2 Year Warranty
+                   HS Code: 8528.72.00
+
+2     LT-156       Laptop 15.6" Core i5             300    USD 65.00    USD 19,500.00
+                   - Intel Core i5-1235U
+                   - 8GB RAM / 256GB SSD
+                   - Windows 11 Home
+                   - 1 Year Warranty
+                   HS Code: 8471.30.00
+
+3     TB-101       Tablet 10.1" Android             200    USD 35.00    USD 7,000.00
+                   - Quad Core Processor
+                   - 4GB RAM / 64GB Storage
+                   - Android 13
+                   - 1 Year Warranty
+                   HS Code: 8471.30.00
+
+4     BT-200       Wireless Bluetooth Headphones   1000    USD 5.50     USD 5,500.00
+                   - Noise Cancellation
+                   - 20 Hour Battery
+                   - Foldable Design
+                   HS Code: 8518.30.00
+
+================================================================================
+                              TOTALS
+================================================================================
+
+                                    Subtotal (FOB Shanghai):    USD 124,500.00
+                                    Ocean Freight:              USD    850.00
+                                    Insurance (0.32%):          USD    400.00
+                                    -----------------------------------------
+                                    TOTAL CIF GUAYAQUIL:        USD 125,750.00
+
+================================================================================
+
+Amount in Words: US DOLLARS ONE HUNDRED TWENTY FIVE THOUSAND SEVEN HUNDRED
+                 FIFTY AND 00/100 ONLY
+
+================================================================================
+PAYMENT INSTRUCTIONS
+================================================================================
+
+Payment shall be made by Irrevocable Documentary Letter of Credit
+payable at sight, confirmed by a first class international bank.
+
+Letter of Credit should be issued in favor of:
+  Beneficiary: SHANGHAI ELECTRONICS TRADING CO., LTD
+  Bank: BANK OF CHINA, SHANGHAI BRANCH
+  Account: 1001 2826 0900 1234 5678
+  SWIFT: BKCHCNBJ300
+
+Letter of Credit must allow:
+  - Partial shipments: Allowed
+  - Transshipment: Allowed
+  - Validity: Minimum 90 days
+
+================================================================================
+PACKING SPECIFICATIONS
+================================================================================
+
+Total Packages: 85 Cartons on 4 Pallets
+Gross Weight: 2,450 Kgs
+Net Weight: 2,100 Kgs
+Dimensions: 4 Pallets of 120cm x 100cm x 150cm
+
+================================================================================
+BANK INFORMATION
+================================================================================
+
+Bank Name: BANK OF CHINA, SHANGHAI BRANCH
+Bank Address: 200 Yincheng Middle Road, Pudong, Shanghai
+Account Name: SHANGHAI ELECTRONICS TRADING CO., LTD
+Account Number: 1001 2826 0900 1234 5678
+SWIFT Code: BKCHCNBJ300
+
+================================================================================
+
+This Proforma Invoice is valid for 30 days from the date of issue.
+Prices are subject to change without prior notice after validity period.
+
+For Shanghai Electronics Trading Co., Ltd
+
+
+_________________________________
+Li Ming
+Export Sales Manager
+Date: January 10, 2026
+
+================================================================================

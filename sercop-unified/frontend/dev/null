@@ -1,0 +1,1054 @@
+import { ChakraProvider, Box, Spinner } from "@chakra-ui/react";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { BrandProvider } from "./contexts/BrandContext";
+import { SidebarProvider } from "./contexts/SidebarContext";
+import { ScheduleProvider, useSchedule } from "./contexts/ScheduleContext";
+import { CorporationProvider } from "./contexts/CorporationContext";
+import { SystemConfigProvider } from "./contexts/SystemConfigContext";
+import { ResponsiveProvider } from "./hooks/useResponsive";
+import { Toaster } from "./components/ui/toaster";
+import ScheduleBlockedPage from "./pages/ScheduleBlockedPage";
+import "./styles/mobile.css";
+import { Login } from "./pages/Login";
+import { Dashboard } from "./pages/Dashboard";
+import { Participants } from "./pages/Participants";
+import { Users } from "./pages/Users";
+import { CustomCatalogs } from "./pages/CustomCatalogs";
+import { Templates } from "./pages/Templates";
+import { EmailTemplates } from "./pages/EmailTemplates";
+import { EmailProviders } from "./pages/EmailProviders";
+import { EmailQueue } from "./pages/EmailQueue";
+import { EmailActions } from "./pages/EmailActions";
+import { EventTypeConfigAdmin } from "./pages/catalogs/EventTypeConfigAdmin";
+import { ProductTypeConfigAdmin } from "./pages/catalogs/ProductTypeConfigAdmin";
+import { BrandTemplatesAdmin } from "./pages/catalogs/BrandTemplatesAdmin";
+import TemplateVariablesPage from "./pages/catalogs/TemplateVariables";
+import CPMethodologyConfigAdmin from "./pages/catalogs/CPMethodologyConfigAdmin";
+import { ReportGenerator } from "./pages/ReportGenerator";
+import { CustomFieldsAdmin } from "./pages/CustomFieldsAdmin";
+import AIPromptConfigAdmin from "./pages/AIPromptConfigAdmin";
+import { ComprasPublicasExpert } from "./pages/ComprasPublicasExpert";
+import InfimaCuantiaPage from "./pages/cp/InfimaCuantiaPage";
+import AdvancedSearchPage from "./pages/cp/AdvancedSearchPage";
+const CPNewProcessWrapper = () => {
+  const { productType } = useParams();
+  if (!productType) return /* @__PURE__ */ React.createElement(Navigate, { to: "/cp/processes", replace: true });
+  return /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType });
+};
+import { AIShowcase } from "./pages/AIShowcase";
+import CPAIAssistantPage from "./pages/CPAIAssistantPage";
+import CPDashboardPage from "./pages/cp/CPDashboardPage";
+import CPProcessListPage from "./pages/cp/CPProcessListPage";
+import CPPAAListPage from "./pages/cp/CPPAAListPage";
+import CPPAAEditPage from "./pages/cp/CPPAAEditPage";
+import CPBudgetPage from "./pages/cp/CPBudgetPage";
+import CPMarketStudyPage from "./pages/cp/CPMarketStudyPage";
+import CPRiskDashboardPage from "./pages/cp/CPRiskDashboardPage";
+import CPPAAWorkspacePage from "./pages/cp/CPPAAWorkspacePage";
+import CPPAADeptWizardPage from "./pages/cp/CPPAADeptWizardPage";
+import EventHistory from "./pages/EventHistory";
+import { AIAnalysis } from "./pages/AIAnalysis";
+const CMXChat = lazy(() => import("./components/chat").then((module) => ({ default: module.CMXChat })));
+import EmbedWidget from "./pages/EmbedWidget";
+import { MobileHomeDashboard } from "./pages/MobileHomeDashboard";
+import SecurityDashboard from "./pages/SecurityDashboard";
+import PermissionsAdmin from "./pages/PermissionsAdmin";
+import { OAuth2Callback } from "./pages/auth/OAuth2Callback";
+import { PendingApproval } from "./pages/auth/PendingApproval";
+import { ForgotPassword } from "./pages/auth/ForgotPassword";
+import { Register } from "./pages/auth/Register";
+import { SecurityConfigurationPage } from "./pages/admin/security/SecurityConfigurationPage";
+import SecurityAuditPage from "./pages/admin/SecurityAuditPage";
+import ExternalApiConfig from "./pages/admin/ExternalApiConfig";
+import ExternalApiAudit from "./pages/admin/ExternalApiAudit";
+import { ScheduleConfigPage } from "./pages/admin/schedules/ScheduleConfigPage";
+import { ScheduleExemptionsPage } from "./pages/admin/schedules/ScheduleExemptionsPage";
+import { WorkflowConfigPage } from "./pages/admin/WorkflowConfigPage";
+import AIUsageReportsPage from "./pages/admin/AIUsageReportsPage";
+import MenuManagementPage from "./pages/admin/MenuManagementPage";
+import ScheduledJobsAdmin from "./pages/admin/jobs/ScheduledJobsAdmin";
+import { AlertsAgendaPage } from "./pages/AlertsAgendaPage";
+import { AlertsPage } from "./pages/AlertsPage";
+import { VideoConferencePage } from "./pages/VideoConferencePage";
+import { AlertNotificationListener } from "./components/alerts/AlertNotificationListener";
+import MfaSettings from "./pages/MfaSettings";
+import { FeatureCertificationPage } from "./pages/FeatureCertificationPage";
+import {
+  ClientDashboard,
+  ClientNewRequest,
+  ClientRequestForm,
+  ClientRequestDetail,
+  ClientRequestEdit,
+  ClientRequests,
+  ClientOperations,
+  ClientOperationDetail,
+  ClientDocuments,
+  ClientReports,
+  ClientProfile
+} from "./pages/client";
+import system from "./theme";
+import "./i18n/config";
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? /* @__PURE__ */ React.createElement(React.Fragment, null, children) : /* @__PURE__ */ React.createElement(Navigate, { to: "/", replace: true });
+};
+const ScheduleGuard = ({ children }) => {
+  const { isBlocked, scheduleStatus, refreshStatus, isLoading } = useSchedule();
+  const { isAuthenticated } = useAuth();
+  if (window.location.pathname.startsWith("/embed/")) {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, children);
+  }
+  if (isAuthenticated && !isLoading && isBlocked) {
+    return /* @__PURE__ */ React.createElement(
+      ScheduleBlockedPage,
+      {
+        reason: scheduleStatus?.reason,
+        nextAccessTime: scheduleStatus?.nextAccessTime,
+        level: scheduleStatus?.appliedLevel,
+        startTime: scheduleStatus?.currentStartTime,
+        endTime: scheduleStatus?.currentEndTime,
+        onRetry: refreshStatus
+      }
+    );
+  }
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, children);
+};
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, hasRole, user } = useAuth();
+  const canAccess = isAdmin || hasRole("ROLE_MANAGER") || user?.role === "admin" || user?.role === "manager";
+  if (!isAuthenticated) {
+    return /* @__PURE__ */ React.createElement(Navigate, { to: "/", replace: true });
+  }
+  if (!canAccess) {
+    return /* @__PURE__ */ React.createElement(Navigate, { to: "/dashboard", replace: true });
+  }
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, children);
+};
+function AppRoutes() {
+  return /* @__PURE__ */ React.createElement(Routes, null, /* @__PURE__ */ React.createElement(Route, { path: "/", element: /* @__PURE__ */ React.createElement(Login, null) }), /* @__PURE__ */ React.createElement(Route, { path: "/login", element: /* @__PURE__ */ React.createElement(Login, null) }), /* @__PURE__ */ React.createElement(Route, { path: "/auth/callback/:provider", element: /* @__PURE__ */ React.createElement(OAuth2Callback, null) }), /* @__PURE__ */ React.createElement(Route, { path: "/auth/callback", element: /* @__PURE__ */ React.createElement(OAuth2Callback, null) }), /* @__PURE__ */ React.createElement(Route, { path: "/pending-approval", element: /* @__PURE__ */ React.createElement(PendingApproval, null) }), /* @__PURE__ */ React.createElement(Route, { path: "/forgot-password", element: /* @__PURE__ */ React.createElement(ForgotPassword, null) }), /* @__PURE__ */ React.createElement(Route, { path: "/register", element: /* @__PURE__ */ React.createElement(Register, null) }), /* @__PURE__ */ React.createElement(Route, { path: "/embed/:widgetName", element: /* @__PURE__ */ React.createElement(EmbedWidget, null) }), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/business-intelligence",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(BusinessDashboard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/mobile-home",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(MobileHomeDashboard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/ai-analysis/commissions",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CommissionsDashboard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/alerts",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AlertsPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/alerts/agenda",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AlertsAgendaPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/video-conference",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(VideoConferencePage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/drafts",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxDrafts, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/pending-approval",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxPendingApproval, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/lc-imports",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxLCImports, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/lc-exports",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxLCExports, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/guarantees",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxGuarantees, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/collections",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxCollections, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/standby-lc",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxStandbyLC, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/collection-imports",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxCollectionImports, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/collection-exports",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxCollectionExports, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/guarantee-mandataria",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxGuaranteeMandataria, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/trade-financing",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxTradeFinancing, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/workbox/aval-descuento",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkboxAvalDescuento, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { filter: "all" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/assigned",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { filter: "assigned" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/pending-approval",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { filter: "pending-approval" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/sla",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { filter: "sla" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/stage/recepcion",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { stageFilter: "RECEPCION" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/stage/validacion",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { stageFilter: "VALIDACION" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/stage/compliance",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { stageFilter: "COMPLIANCE" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/stage/aprobacion",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { stageFilter: "APROBACION" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/stage/comisiones",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { stageFilter: "COMISIONES" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/stage/registro",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { stageFilter: "REGISTRO" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/stage/finalizado",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestsWorkbox, { stageFilter: "FINALIZADO" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/client-requests/:id",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(BackofficeRequestDetail, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/participants",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(Participants, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/financial-institutions",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(FinancialInstitutions, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/currencies",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(Currencies, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/exchange-rates",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ExchangeRates, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/bank-accounts",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(BankAccounts, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/custom",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CustomCatalogs, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/templates",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(Templates, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/email-templates",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(EmailTemplates, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/email-providers",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(EmailProviders, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/email-queue",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(EmailQueue, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/email-actions",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(EmailActions, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/commissions",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(Commissions, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/accounting-rules",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/event-rules",
+      element: /* @__PURE__ */ React.createElement(Navigate, { to: "/catalogs/event-types", replace: true })
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/reference-number",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ReferenceNumberConfig, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/swift-fields",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/custom-fields",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CustomFieldsAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/ai-prompts",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AIPromptConfigAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/event-types",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(EventTypeConfigAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/swift-responses",
+      element: /* @__PURE__ */ React.createElement(Navigate, { to: "/catalogs/event-types", replace: true })
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/product-types",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ProductTypeConfigAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/brand-templates",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(BrandTemplatesAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/action-type-config",
+      element: /* @__PURE__ */ React.createElement(Navigate, { to: "/catalogs/event-types", replace: true })
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/template-variables",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(TemplateVariablesPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/catalogs/cp-methodologies",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPMethodologyConfigAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/users",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(Users, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/security",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(SecurityDashboard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/permissions",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(PermissionsAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/security-configuration",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(SecurityConfigurationPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/security-audit",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(SecurityAuditPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/external-api-config",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ExternalApiConfig, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/external-api-audit",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ExternalApiAudit, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/schedules",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ScheduleConfigPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/schedule-exemptions",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ScheduleExemptionsPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/workflow-config",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(WorkflowConfigPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/ai-usage-reports",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AIUsageReportsPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/scheduled-jobs",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ScheduledJobsAdmin, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/menu-config",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(MenuManagementPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/admin/feature-certification",
+      element: /* @__PURE__ */ React.createElement(AdminRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(FeatureCertificationPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/settings/mfa",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(MfaSettings, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/reports",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ReportGenerator, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantees/issuance",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GuaranteesIssuance, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantees/issuance-wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GuaranteesIssuanceWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantees/issuance-new",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GuaranteesIssuanceNew, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantees/issuance-expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GuaranteesIssuanceExpert, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantees/issuance-client",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GuaranteesIssuanceClient, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-imports/issuance-wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCImportIssuanceWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-imports/issuance-expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCImportIssuanceExpert, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-imports/issuance-client",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCImportIssuanceClient, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-exports/issuance-wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCExportIssuanceWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-exports/issuance-expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCExportIssuanceExpert, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-exports/issuance-client",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCExportIssuanceClient, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-imports/acknowledgment",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCImportAcknowledgment, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/lc-exports/acknowledgment",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(LCExportAcknowledgment, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantees/acknowledgment",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GuaranteesAcknowledgment, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collections/payment-notice",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(PaymentNoticeWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collections/acknowledgment-receipt",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AcknowledgmentReceiptWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collections/acceptance-notice",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AcceptanceNoticeWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collections/non-payment-notice",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(NonPaymentNoticeWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collections/tracking",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(TracerWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collections/issuance-wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CollectionsIssuanceWizard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collections/issuance-expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CollectionsIssuanceExpert, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/standby-lc/wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductWizard, { productType: "STANDBY_LC" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collection-imports/wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductWizard, { productType: "COLLECTION_IMPORT" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collection-exports/wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductWizard, { productType: "COLLECTION_EXPORT" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantee-mandataria/wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductWizard, { productType: "GUARANTEE_MANDATARIA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/trade-financing/wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductWizard, { productType: "TRADE_FINANCING" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/aval-descuento/wizard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductWizard, { productType: "AVAL_DESCUENTO" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/ai-showcase",
+      element: /* @__PURE__ */ React.createElement(AIShowcase, null)
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/compras-publicas",
+      element: /* @__PURE__ */ React.createElement(AIShowcase, null)
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/ai-assistant",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPAIAssistantPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/nuevo/:productType",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPNewProcessWrapper, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-catalogo",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_CATALOGO_ELECTRONICO" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-subasta",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_SUBASTA_INVERSA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-menor-cuantia",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_MENOR_CUANTIA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-cotizacion",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_COTIZACION" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-licitacion",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_LICITACION" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-directa",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_CONTRATACION_DIRECTA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-especial",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_REGIMEN_ESPECIAL" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-obra-mc",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_OBRA_MENOR_CUANTIA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-obra-cot",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_OBRA_COTIZACION" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-obra-lic",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_OBRA_LICITACION" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-cons-directa",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_CONSULTORIA_DIRECTA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-cons-lista",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_CONSULTORIA_LISTA_CORTA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-cons-concurso",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_CONSULTORIA_CONCURSO" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/wizard/cp-infima",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ComprasPublicasExpert, { productType: "CP_INFIMA_CUANTIA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/dashboard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPDashboardPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/processes",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPProcessListPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/paa",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPPAAListPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/paa/:id",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPPAAEditPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/budget",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPBudgetPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/market",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPMarketStudyPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/risk",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPRiskDashboardPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/risk/:assessmentId",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPRiskDashboardPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/paa/workspaces",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPPAAWorkspacePage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/paa/workspaces/:workspaceId",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPPAAWorkspacePage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/paa/workspaces/:workspaceId/departments/:deptId",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPPAADeptWizardPage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/cp/paa/my-plans",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(CPPAAWorkspacePage, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/standby-lc/expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductExpert, { productType: "STANDBY_LC" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collection-imports/expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductExpert, { productType: "COLLECTION_IMPORT" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/collection-exports/expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductExpert, { productType: "COLLECTION_EXPORT" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/guarantee-mandataria/expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductExpert, { productType: "GUARANTEE_MANDATARIA" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/trade-financing/expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductExpert, { productType: "TRADE_FINANCING" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/aval-descuento/expert",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(GenericProductExpert, { productType: "AVAL_DESCUENTO" })))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/document-management",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(DocumentManagement, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/swift-message-center",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/active",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ActiveOperations, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/awaiting-response",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AwaitingResponse, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/operations/event-history",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(EventHistory, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/ai-analysis/assistant",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AIAnalysis, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/ai-analysis/chat",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(Suspense, { fallback: /* @__PURE__ */ React.createElement(Box, { p: 8, display: "flex", justifyContent: "center", alignItems: "center", h: "400px" }, /* @__PURE__ */ React.createElement(Spinner, { size: "xl" })) }, /* @__PURE__ */ React.createElement(CMXChat, null))))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/ai-analysis/regulatory-reporting",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(RegulatoryReporting, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/dashboard",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientDashboard, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/requests/new/:productType",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestForm, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/requests/new",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientNewRequest, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/requests/:id",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestDetail, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/requests/:id/edit",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequestEdit, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/requests",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientRequests, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/operations",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientOperations, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/operations/:operationId",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientOperationDetail, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/documents",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientDocuments, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/reports",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientReports, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(
+    Route,
+    {
+      path: "/client/profile",
+      element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(ClientProfile, null)))
+    }
+  ), /* @__PURE__ */ React.createElement(Route, { path: "*", element: /* @__PURE__ */ React.createElement(Navigate, { to: "/", replace: true }) }), /* @__PURE__ */ React.createElement(Route, { path: "/cp/infima-cuantia", element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(InfimaCuantiaPage, null))) }), /* @__PURE__ */ React.createElement(Route, { path: "/search", element: /* @__PURE__ */ React.createElement(ProtectedRoute, null, /* @__PURE__ */ React.createElement(Dashboard, null, /* @__PURE__ */ React.createElement(AdvancedSearchPage, null))) }));
+}
+function App() {
+  return /* @__PURE__ */ React.createElement(ChakraProvider, { value: system }, /* @__PURE__ */ React.createElement(BrowserRouter, null, /* @__PURE__ */ React.createElement(AuthProvider, null, /* @__PURE__ */ React.createElement(SystemConfigProvider, null, /* @__PURE__ */ React.createElement(ScheduleProvider, null, /* @__PURE__ */ React.createElement(CorporationProvider, null, /* @__PURE__ */ React.createElement(BrandProvider, null, /* @__PURE__ */ React.createElement(ThemeProvider, null, /* @__PURE__ */ React.createElement(ResponsiveProvider, null, /* @__PURE__ */ React.createElement(SidebarProvider, null, /* @__PURE__ */ React.createElement(ScheduleGuard, null, /* @__PURE__ */ React.createElement(AppRoutes, null)), /* @__PURE__ */ React.createElement(Toaster, null), /* @__PURE__ */ React.createElement(AlertNotificationListener, null)))))))))));
+}
+export default App;

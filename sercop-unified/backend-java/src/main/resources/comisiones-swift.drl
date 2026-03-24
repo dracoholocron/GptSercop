@@ -1,0 +1,877 @@
+package com.globalcmx.comisiones;
+
+
+import com.globalcmx.api.dto.swift.MensajeSWIFT;
+import com.globalcmx.api.dto.comision.ConfiguracionComision;
+
+// Archivo DRL generado automáticamente desde Excel
+// Generado: 2026-02-20T16:26:02.627644
+// Fuente: comisiones-swift-config-correcto.xlsx
+
+rule "Regla_MT400_RECEIPT_COLLECTION_1"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT400",
+                          evento == "RECEIPT_COLLECTION",
+                          monto < 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(150.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(500.0);
+end
+
+rule "Regla_MT400_RECEIPT_COLLECTION_2"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT400",
+                          evento == "RECEIPT_COLLECTION",
+                          monto >= 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.3);
+        $c.setComisionMinima(150.0);
+        $c.setComisionMaxima(1000.0);
+end
+
+rule "Regla_MT400_RECEIPT_COLLECTION_3"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT400",
+                          evento == "RECEIPT_COLLECTION",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(180.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(120.0);
+        $c.setComisionMaxima(600.0);
+end
+
+rule "Regla_MT410_ACKNOWLEDGE_4"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT410",
+                          evento == "ACKNOWLEDGE",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(50.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(30.0);
+        $c.setComisionMaxima(200.0);
+end
+
+rule "Regla_MT410_ACKNOWLEDGE_5"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT410",
+                          evento == "ACKNOWLEDGE",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(60.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(40.0);
+        $c.setComisionMaxima(250.0);
+end
+
+rule "Regla_MT412_ACCEPT_6"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT412",
+                          evento == "ACCEPT",
+                          monto < 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(100.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(75.0);
+        $c.setComisionMaxima(400.0);
+end
+
+rule "Regla_MT412_ACCEPT_7"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT412",
+                          evento == "ACCEPT",
+                          monto >= 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.2);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(800.0);
+end
+
+rule "Regla_MT416_PAYMENT_COLLECTION_8"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT416",
+                          evento == "PAYMENT_COLLECTION",
+                          monto < 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(80.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(50.0);
+        $c.setComisionMaxima(300.0);
+end
+
+rule "Regla_MT416_PAYMENT_COLLECTION_9"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT416",
+                          evento == "PAYMENT_COLLECTION",
+                          monto >= 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.15);
+        $c.setComisionMinima(80.0);
+        $c.setComisionMaxima(600.0);
+end
+
+rule "Regla_MT420_TRACER_10"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT420",
+                          evento == "TRACER",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(25.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(15.0);
+        $c.setComisionMaxima(100.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_11"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(250.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(200.0);
+        $c.setComisionMaxima(1000.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_12"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto >= 100000.0,
+                          monto < 500000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.25);
+        $c.setComisionMinima(250.0);
+        $c.setComisionMaxima(2000.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_13"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto >= 500000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.2);
+        $c.setComisionMinima(500.0);
+        $c.setComisionMaxima(5000.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_14"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto < 100000.0,
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(300.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(250.0);
+        $c.setComisionMaxima(1200.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_15"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto >= 100000.0,
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.28);
+        $c.setComisionMinima(300.0);
+        $c.setComisionMaxima(2500.0);
+end
+
+rule "Regla_MT701_EMISSION_LC_IMPORT_16"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT701",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(300.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(250.0);
+        $c.setComisionMaxima(1200.0);
+end
+
+rule "Regla_MT701_EMISSION_LC_IMPORT_17"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT701",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.3);
+        $c.setComisionMinima(300.0);
+        $c.setComisionMaxima(2500.0);
+end
+
+rule "Regla_MT707_AMENDMENT_LC_IMPORT_18"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT707",
+                          evento == "AMENDMENT_LC_IMPORT",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(150.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(800.0);
+end
+
+rule "Regla_MT707_AMENDMENT_LC_IMPORT_19"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT707",
+                          evento == "AMENDMENT_LC_IMPORT",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(180.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(120.0);
+        $c.setComisionMaxima(900.0);
+end
+
+rule "Regla_MT710_EMISSION_LC_EXPORT_20"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT710",
+                          evento == "EMISSION_LC_EXPORT",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(200.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(150.0);
+        $c.setComisionMaxima(800.0);
+end
+
+rule "Regla_MT710_EMISSION_LC_EXPORT_21"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT710",
+                          evento == "EMISSION_LC_EXPORT",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.2);
+        $c.setComisionMinima(200.0);
+        $c.setComisionMaxima(1500.0);
+end
+
+rule "Regla_MT711_ADVICE_LC_EXPORT_22"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT711",
+                          evento == "ADVICE_LC_EXPORT",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(250.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(180.0);
+        $c.setComisionMaxima(900.0);
+end
+
+rule "Regla_MT711_ADVICE_LC_EXPORT_23"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT711",
+                          evento == "ADVICE_LC_EXPORT",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.22);
+        $c.setComisionMinima(250.0);
+        $c.setComisionMaxima(1800.0);
+end
+
+rule "Regla_MT720_TRANSFER_24"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT720",
+                          evento == "TRANSFER",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(200.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(150.0);
+        $c.setComisionMaxima(900.0);
+end
+
+rule "Regla_MT720_TRANSFER_25"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT720",
+                          evento == "TRANSFER",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.18);
+        $c.setComisionMinima(200.0);
+        $c.setComisionMaxima(1500.0);
+end
+
+rule "Regla_MT730_PRESENT_DOCUMENTS_26"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT730",
+                          evento == "PRESENT_DOCUMENTS",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(50.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(30.0);
+        $c.setComisionMaxima(200.0);
+end
+
+rule "Regla_MT730_PRESENT_DOCUMENTS_27"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT730",
+                          evento == "PRESENT_DOCUMENTS",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(60.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(40.0);
+        $c.setComisionMaxima(250.0);
+end
+
+rule "Regla_MT732_DISCHARGE_28"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT732",
+                          evento == "DISCHARGE",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(100.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(75.0);
+        $c.setComisionMaxima(400.0);
+end
+
+rule "Regla_MT732_DISCHARGE_29"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT732",
+                          evento == "DISCHARGE",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(120.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(90.0);
+        $c.setComisionMaxima(480.0);
+end
+
+rule "Regla_MT734_REFUSE_AMENDMENT_30"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT734",
+                          evento == "REFUSE_AMENDMENT",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(75.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(50.0);
+        $c.setComisionMaxima(300.0);
+end
+
+rule "Regla_MT740_REIMBURSEMENT_ADVICE_31"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT740",
+                          evento == "REIMBURSEMENT_ADVICE",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(120.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(80.0);
+        $c.setComisionMaxima(500.0);
+end
+
+rule "Regla_MT740_REIMBURSEMENT_ADVICE_32"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT740",
+                          evento == "REIMBURSEMENT_ADVICE",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.12);
+        $c.setComisionMinima(120.0);
+        $c.setComisionMaxima(1000.0);
+end
+
+rule "Regla_MT742_REIMBURSEMENT_CLAIM_33"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT742",
+                          evento == "REIMBURSEMENT_CLAIM",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(100.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(70.0);
+        $c.setComisionMaxima(450.0);
+end
+
+rule "Regla_MT742_REIMBURSEMENT_CLAIM_34"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT742",
+                          evento == "REIMBURSEMENT_CLAIM",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.1);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(800.0);
+end
+
+rule "Regla_MT747_AMENDMENT_LC_IMPORT_35"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT747",
+                          evento == "AMENDMENT_LC_IMPORT",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(150.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(800.0);
+end
+
+rule "Regla_MT747_AMENDMENT_LC_IMPORT_36"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT747",
+                          evento == "AMENDMENT_LC_IMPORT",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(180.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(120.0);
+        $c.setComisionMaxima(900.0);
+end
+
+rule "Regla_MT750_CLAIM_37"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT750",
+                          evento == "CLAIM",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(80.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(50.0);
+        $c.setComisionMaxima(350.0);
+end
+
+rule "Regla_MT750_CLAIM_38"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT750",
+                          evento == "CLAIM",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(100.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(60.0);
+        $c.setComisionMaxima(400.0);
+end
+
+rule "Regla_MT752_NEGOTIATION_LC_EXPORT_39"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT752",
+                          evento == "NEGOTIATION_LC_EXPORT",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(150.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(600.0);
+end
+
+rule "Regla_MT752_NEGOTIATION_LC_EXPORT_40"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT752",
+                          evento == "NEGOTIATION_LC_EXPORT",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.15);
+        $c.setComisionMinima(150.0);
+        $c.setComisionMaxima(1200.0);
+end
+
+rule "Regla_MT754_PAYMENT_LC_IMPORT_41"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT754",
+                          evento == "PAYMENT_LC_IMPORT",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(120.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(80.0);
+        $c.setComisionMaxima(500.0);
+end
+
+rule "Regla_MT754_PAYMENT_LC_IMPORT_42"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT754",
+                          evento == "PAYMENT_LC_IMPORT",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.12);
+        $c.setComisionMinima(120.0);
+        $c.setComisionMaxima(1000.0);
+end
+
+rule "Regla_MT756_REIMBURSEMENT_ADVICE_43"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT756",
+                          evento == "REIMBURSEMENT_ADVICE",
+                          monto < 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(100.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(70.0);
+        $c.setComisionMaxima(450.0);
+end
+
+rule "Regla_MT756_REIMBURSEMENT_ADVICE_44"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT756",
+                          evento == "REIMBURSEMENT_ADVICE",
+                          monto >= 100000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.1);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(800.0);
+end
+
+rule "Regla_MT760_GUARANTEE_ISSUANCE_45"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT760",
+                          evento == "GUARANTEE_ISSUANCE",
+                          monto < 200000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(300.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(250.0);
+        $c.setComisionMaxima(1500.0);
+end
+
+rule "Regla_MT760_GUARANTEE_ISSUANCE_46"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT760",
+                          evento == "GUARANTEE_ISSUANCE",
+                          monto >= 200000.0,
+                          monto < 1000000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.15);
+        $c.setComisionMinima(300.0);
+        $c.setComisionMaxima(3000.0);
+end
+
+rule "Regla_MT760_GUARANTEE_ISSUANCE_47"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT760",
+                          evento == "GUARANTEE_ISSUANCE",
+                          monto >= 1000000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.12);
+        $c.setComisionMinima(500.0);
+        $c.setComisionMaxima(5000.0);
+end
+
+rule "Regla_MT760_GUARANTEE_ISSUANCE_48"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT760",
+                          evento == "GUARANTEE_ISSUANCE",
+                          monto < 200000.0,
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(350.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(280.0);
+        $c.setComisionMaxima(1600.0);
+end
+
+rule "Regla_MT760_GUARANTEE_ISSUANCE_49"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT760",
+                          evento == "GUARANTEE_ISSUANCE",
+                          monto >= 200000.0,
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.18);
+        $c.setComisionMinima(350.0);
+        $c.setComisionMaxima(3500.0);
+end
+
+rule "Regla_MT767_AMEND_50"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT767",
+                          evento == "AMEND",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(200.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(150.0);
+        $c.setComisionMaxima(1000.0);
+end
+
+rule "Regla_MT767_AMEND_51"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT767",
+                          evento == "AMEND",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(250.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(180.0);
+        $c.setComisionMaxima(1200.0);
+end
+
+rule "Regla_MT799_FREE_FORMAT_52"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT799",
+                          evento == "FREE_FORMAT",
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(30.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(20.0);
+        $c.setComisionMaxima(100.0);
+end
+
+rule "Regla_MT799_FREE_FORMAT_53"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT799",
+                          evento == "FREE_FORMAT",
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(35.0);
+        $c.setComisionPorcentaje(0.0);
+        $c.setComisionMinima(25.0);
+        $c.setComisionMaxima(120.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_54"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto < 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.125);
+        $c.setComisionMinima(100.0);
+        $c.setComisionMaxima(500.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_55"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto >= 50000.0,
+                          moneda == "USD",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.1);
+        $c.setComisionMinima(500.0);
+        $c.setComisionMaxima(5000.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_56"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto < 50000.0,
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.125);
+        $c.setComisionMinima(120.0);
+        $c.setComisionMaxima(600.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_57"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto >= 50000.0,
+                          moneda == "EUR",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.1);
+        $c.setComisionMinima(600.0);
+        $c.setComisionMaxima(6000.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_58"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto < 1000000.0,
+                          moneda == "MXN",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.125);
+        $c.setComisionMinima(2000.0);
+        $c.setComisionMaxima(10000.0);
+end
+
+rule "Regla_MT700_EMISSION_LC_IMPORT_59"
+    when
+        $m : MensajeSWIFT(tipoMensaje == "MT700",
+                          evento == "EMISSION_LC_IMPORT",
+                          monto >= 1000000.0,
+                          moneda == "MXN",
+                          paisOrigen == "EC")
+        $c : ConfiguracionComision()
+    then
+        $c.setComisionFija(0.0);
+        $c.setComisionPorcentaje(0.1);
+        $c.setComisionMinima(10000.0);
+        $c.setComisionMaxima(100000.0);
+end

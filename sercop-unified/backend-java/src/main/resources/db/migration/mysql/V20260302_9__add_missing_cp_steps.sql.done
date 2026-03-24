@@ -1,0 +1,251 @@
+-- ============================================================================
+-- Add missing PRESUPUESTO, CRONOGRAMA, DOCUMENTOS steps to CP product types
+-- that currently only have DATOS_PROCESO
+-- ============================================================================
+
+-- Helper: Product types that need PRESUPUESTO step
+-- CP_CONSULTORIA_CONCURSO, CP_CONSULTORIA_DIRECTA, CP_CONSULTORIA_LISTA_CORTA,
+-- CP_OBRA_COTIZACION, CP_OBRA_LICITACION, CP_OBRA_MENOR_CUANTIA,
+-- CP_MENOR_CUANTIA, CP_COTIZACION, CP_CONTRATACION_DIRECTA, CP_REGIMEN_ESPECIAL, CP_LICITACION
+
+-- ============================================================================
+-- PRESUPUESTO STEP + SECTIONS + FIELDS
+-- ============================================================================
+
+-- Create a procedure to avoid repeating the same INSERT for each product type
+DROP PROCEDURE IF EXISTS add_presupuesto_step;
+DELIMITER //
+CREATE PROCEDURE add_presupuesto_step(IN p_product_type VARCHAR(50), IN p_display_order INT)
+BEGIN
+  DECLARE v_step_id CHAR(36);
+  DECLARE v_sec1_id CHAR(36);
+  DECLARE v_sec2_id CHAR(36);
+  DECLARE v_sec3_id CHAR(36);
+
+  -- Check if step already exists
+  IF NOT EXISTS (SELECT 1 FROM custom_field_step_config_readmodel
+                 WHERE product_type = p_product_type AND step_code = 'PRESUPUESTO' AND is_active = 1) THEN
+
+    SET v_step_id = UUID();
+    SET v_sec1_id = UUID();
+    SET v_sec2_id = UUID();
+    SET v_sec3_id = UUID();
+
+    INSERT INTO custom_field_step_config_readmodel
+      (id, step_code, step_name_key, step_description_key, product_type, display_order, icon,
+       embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_step_id, 'PRESUPUESTO', 'Presupuesto y Certificación', 'Información presupuestaria y certificación',
+            p_product_type, p_display_order, 'FiDollarSign', 'SEPARATE_STEP', 1, 1, 1, 1, 1, NOW());
+
+    -- Section: Presupuesto Referencial
+    INSERT INTO custom_field_section_config_readmodel
+      (id, section_code, section_name_key, step_id, section_type, display_order, columns,
+       collapsible, default_collapsed, embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_sec1_id, 'PRESUPUESTO_REF', 'Presupuesto Referencial', v_step_id, 'SINGLE', 1, 2,
+            0, 0, 'WITHIN_STEP', 1, 1, 1, 1, 1, NOW());
+
+    INSERT INTO custom_field_config_readmodel (id, field_code, field_name_key, section_id, field_type, component_type, display_order, span_columns, is_required, is_active, show_in_wizard, show_in_expert, show_in_custom, show_in_view, show_in_list, embed_inline, created_at, ai_enabled, ai_help_prompt)
+    VALUES
+      (UUID(), 'presupuesto_referencial', 'Presupuesto Referencial (USD)', v_sec1_id, 'NUMBER', 'INPUT', 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, NOW(), 1, 'Asiste al usuario con el presupuesto referencial según LOSNCP Art. 23. Explica cómo calcularlo y los requisitos legales.'),
+      (UUID(), 'incluye_iva', '¿Incluye IVA?', v_sec1_id, 'BOOLEAN', 'SWITCH', 2, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'valor_iva', 'Valor IVA (USD)', v_sec1_id, 'NUMBER', 'INPUT', 3, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'presupuesto_total', 'Presupuesto Total (USD)', v_sec1_id, 'NUMBER', 'INPUT', 4, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL);
+
+    -- Section: Certificación Presupuestaria
+    INSERT INTO custom_field_section_config_readmodel
+      (id, section_code, section_name_key, step_id, section_type, display_order, columns,
+       collapsible, default_collapsed, embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_sec2_id, 'CERTIFICACION', 'Certificación Presupuestaria', v_step_id, 'SINGLE', 2, 2,
+            0, 0, 'WITHIN_STEP', 1, 1, 1, 1, 1, NOW());
+
+    INSERT INTO custom_field_config_readmodel (id, field_code, field_name_key, section_id, field_type, component_type, display_order, span_columns, is_required, is_active, show_in_wizard, show_in_expert, show_in_custom, show_in_view, show_in_list, embed_inline, created_at, ai_enabled, ai_help_prompt)
+    VALUES
+      (UUID(), 'partida_presupuestaria', 'Partida Presupuestaria', v_sec2_id, 'TEXT', 'INPUT', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 1, 'Explica la estructura de partidas presupuestarias del sector público ecuatoriano y su importancia en contratación pública.'),
+      (UUID(), 'certificacion_numero', 'No. Certificación Presupuestaria', v_sec2_id, 'TEXT', 'INPUT', 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'certificacion_fecha', 'Fecha Certificación', v_sec2_id, 'DATE', 'DATE_PICKER', 3, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'certificacion_monto', 'Monto Certificado (USD)', v_sec2_id, 'NUMBER', 'INPUT', 4, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL);
+
+    -- Section: Fuente de Financiamiento
+    INSERT INTO custom_field_section_config_readmodel
+      (id, section_code, section_name_key, step_id, section_type, display_order, columns,
+       collapsible, default_collapsed, embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_sec3_id, 'FINANCIAMIENTO', 'Fuente de Financiamiento', v_step_id, 'SINGLE', 3, 2,
+            0, 0, 'WITHIN_STEP', 1, 1, 1, 1, 1, NOW());
+
+    INSERT INTO custom_field_config_readmodel (id, field_code, field_name_key, section_id, field_type, component_type, display_order, span_columns, is_required, field_options, is_active, show_in_wizard, show_in_expert, show_in_custom, show_in_view, show_in_list, embed_inline, created_at)
+    VALUES
+      (UUID(), 'fuente_financiamiento', 'Fuente de Financiamiento', v_sec3_id, 'SELECT', 'SELECT', 1, 1, 1, '[{"value":"FISCAL","label":"Recursos Fiscales"},{"value":"AUTOFINANCIAR","label":"Autofinanciamiento"},{"value":"CREDITO","label":"Crédito"},{"value":"ASISTENCIA","label":"Asistencia Técnica"}]', 1, 1, 1, 1, 1, 0, 0, NOW()),
+      (UUID(), 'tipo_recurso', 'Tipo de Recurso', v_sec3_id, 'SELECT', 'SELECT', 2, 1, 0, '[{"value":"CORRIENTE","label":"Corriente"},{"value":"INVERSION","label":"Inversión"},{"value":"CAPITAL","label":"Capital"}]', 1, 1, 1, 1, 1, 0, 0, NOW()),
+      (UUID(), 'proyecto_codigo', 'Código de Proyecto', v_sec3_id, 'TEXT', 'INPUT', 3, 1, 0, NULL, 1, 1, 1, 1, 1, 0, 0, NOW()),
+      (UUID(), 'proyecto_nombre', 'Nombre del Proyecto', v_sec3_id, 'TEXT', 'INPUT', 4, 1, 0, NULL, 1, 1, 1, 1, 1, 0, 0, NOW());
+  END IF;
+END //
+DELIMITER ;
+
+-- Create CRONOGRAMA step procedure
+DROP PROCEDURE IF EXISTS add_cronograma_step;
+DELIMITER //
+CREATE PROCEDURE add_cronograma_step(IN p_product_type VARCHAR(50), IN p_display_order INT)
+BEGIN
+  DECLARE v_step_id CHAR(36);
+  DECLARE v_sec1_id CHAR(36);
+  DECLARE v_sec2_id CHAR(36);
+
+  IF NOT EXISTS (SELECT 1 FROM custom_field_step_config_readmodel
+                 WHERE product_type = p_product_type AND step_code = 'CRONOGRAMA' AND is_active = 1) THEN
+
+    SET v_step_id = UUID();
+    SET v_sec1_id = UUID();
+    SET v_sec2_id = UUID();
+
+    INSERT INTO custom_field_step_config_readmodel
+      (id, step_code, step_name_key, step_description_key, product_type, display_order, icon,
+       embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_step_id, 'CRONOGRAMA', 'Cronograma del Proceso', 'Fechas y plazos del procedimiento',
+            p_product_type, p_display_order, 'FiCalendar', 'SEPARATE_STEP', 1, 1, 1, 1, 1, NOW());
+
+    -- Section: Fechas
+    INSERT INTO custom_field_section_config_readmodel
+      (id, section_code, section_name_key, step_id, section_type, display_order, columns,
+       collapsible, default_collapsed, embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_sec1_id, 'FECHAS', 'Cronograma de Etapas', v_step_id, 'SINGLE', 1, 2,
+            0, 0, 'WITHIN_STEP', 1, 1, 1, 1, 1, NOW());
+
+    INSERT INTO custom_field_config_readmodel (id, field_code, field_name_key, section_id, field_type, component_type, display_order, span_columns, is_required, is_active, show_in_wizard, show_in_expert, show_in_custom, show_in_view, show_in_list, embed_inline, created_at, ai_enabled, ai_help_prompt)
+    VALUES
+      (UUID(), 'fecha_publicacion', 'Fecha de Publicación', v_sec1_id, 'DATE', 'DATE_PICKER', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 1, 'Indica los plazos legales para publicación según LOSNCP y el tipo de proceso.'),
+      (UUID(), 'fecha_limite_preguntas', 'Fecha Límite Preguntas', v_sec1_id, 'DATE', 'DATE_PICKER', 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'fecha_limite_respuestas', 'Fecha Límite Respuestas', v_sec1_id, 'DATE', 'DATE_PICKER', 3, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'fecha_entrega_ofertas', 'Fecha Entrega Ofertas', v_sec1_id, 'DATETIME', 'DATETIME_PICKER', 4, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'fecha_apertura_ofertas', 'Fecha Apertura Ofertas', v_sec1_id, 'DATETIME', 'DATETIME_PICKER', 5, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'fecha_calificacion', 'Fecha Calificación', v_sec1_id, 'DATE', 'DATE_PICKER', 6, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'fecha_adjudicacion', 'Fecha Estimada Adjudicación', v_sec1_id, 'DATE', 'DATE_PICKER', 7, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL);
+
+    -- Section: Plazos
+    INSERT INTO custom_field_section_config_readmodel
+      (id, section_code, section_name_key, step_id, section_type, display_order, columns,
+       collapsible, default_collapsed, embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_sec2_id, 'PLAZOS', 'Plazos de Ejecución', v_step_id, 'SINGLE', 2, 2,
+            0, 0, 'WITHIN_STEP', 1, 1, 1, 1, 1, NOW());
+
+    INSERT INTO custom_field_config_readmodel (id, field_code, field_name_key, section_id, field_type, component_type, display_order, span_columns, is_required, field_options, is_active, show_in_wizard, show_in_expert, show_in_custom, show_in_view, show_in_list, embed_inline, created_at, ai_enabled, ai_help_prompt)
+    VALUES
+      (UUID(), 'plazo_entrega', 'Plazo de Entrega', v_sec2_id, 'NUMBER', 'INPUT', 1, 1, 1, NULL, 1, 1, 1, 1, 1, 0, 0, NOW(), 1, 'Orienta sobre plazos de entrega razonables según el tipo de bien/servicio y la LOSNCP.'),
+      (UUID(), 'plazo_entrega_tipo', 'Tipo de Plazo', v_sec2_id, 'SELECT', 'SELECT', 2, 1, 1, '[{"value":"DIAS","label":"Días"},{"value":"SEMANAS","label":"Semanas"},{"value":"MESES","label":"Meses"}]', 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'lugar_entrega', 'Lugar de Entrega', v_sec2_id, 'TEXT', 'INPUT', 3, 2, 1, NULL, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'forma_pago', 'Forma de Pago', v_sec2_id, 'SELECT', 'SELECT', 4, 1, 1, '[{"value":"CONTADO","label":"Contra Entrega"},{"value":"CREDITO_30","label":"Crédito 30 días"},{"value":"CREDITO_60","label":"Crédito 60 días"},{"value":"ANTICIPO_LIQUIDACION","label":"Anticipo y Liquidación"},{"value":"PLANILLAS","label":"Planillas de Avance"}]', 1, 1, 1, 1, 1, 0, 0, NOW(), 1, 'Explica las formas de pago permitidas según LOSNCP Art. 116-117 y cuándo usar cada una.'),
+      (UUID(), 'anticipo_porcentaje', 'Anticipo (%)', v_sec2_id, 'NUMBER', 'INPUT', 5, 1, 0, NULL, 1, 1, 1, 1, 1, 0, 0, NOW(), 1, 'Indica los límites de anticipo según LOSNCP Art. 117. Máximo 50% para bienes/servicios, 70% para obras.'),
+      (UUID(), 'garantia_tecnica', 'Garantía Técnica (meses)', v_sec2_id, 'NUMBER', 'INPUT', 6, 1, 0, NULL, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL);
+  END IF;
+END //
+DELIMITER ;
+
+-- Create DOCUMENTOS step procedure
+DROP PROCEDURE IF EXISTS add_documentos_step;
+DELIMITER //
+CREATE PROCEDURE add_documentos_step(IN p_product_type VARCHAR(50), IN p_display_order INT)
+BEGIN
+  DECLARE v_step_id CHAR(36);
+  DECLARE v_sec1_id CHAR(36);
+  DECLARE v_sec2_id CHAR(36);
+
+  IF NOT EXISTS (SELECT 1 FROM custom_field_step_config_readmodel
+                 WHERE product_type = p_product_type AND step_code = 'DOCUMENTOS' AND is_active = 1) THEN
+
+    SET v_step_id = UUID();
+    SET v_sec1_id = UUID();
+    SET v_sec2_id = UUID();
+
+    INSERT INTO custom_field_step_config_readmodel
+      (id, step_code, step_name_key, step_description_key, product_type, display_order, icon,
+       embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_step_id, 'DOCUMENTOS', 'Documentos del Proceso', 'Documentos habilitantes y formularios',
+            p_product_type, p_display_order, 'FiFolder', 'SEPARATE_STEP', 1, 1, 1, 1, 1, NOW());
+
+    -- Section: Documentos del Proceso
+    INSERT INTO custom_field_section_config_readmodel
+      (id, section_code, section_name_key, step_id, section_type, display_order, columns,
+       collapsible, default_collapsed, embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_sec1_id, 'DOCS_PROCESO', 'Documentos del Proceso', v_step_id, 'SINGLE', 1, 1,
+            0, 0, 'WITHIN_STEP', 1, 1, 1, 1, 1, NOW());
+
+    INSERT INTO custom_field_config_readmodel (id, field_code, field_name_key, section_id, field_type, component_type, display_order, span_columns, is_required, is_active, show_in_wizard, show_in_expert, show_in_custom, show_in_view, show_in_list, embed_inline, created_at, ai_enabled, ai_help_prompt)
+    VALUES
+      (UUID(), 'doc_pliegos', 'Pliegos', v_sec1_id, 'FILE', 'FILE_UPLOAD', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 1, 'Explica los requisitos de pliegos según LOSNCP Art. 31 y los modelos SERCOP obligatorios.'),
+      (UUID(), 'doc_especificaciones', 'Especificaciones Técnicas', v_sec1_id, 'FILE', 'FILE_UPLOAD', 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 1, 'Indica los requisitos para especificaciones técnicas según Art. 23 LOSNCP. No deben ser restrictivas.'),
+      (UUID(), 'doc_certificacion_pac', 'Certificación PAC', v_sec1_id, 'FILE', 'FILE_UPLOAD', 3, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'doc_certificacion_presupuestaria', 'Certificación Presupuestaria', v_sec1_id, 'FILE', 'FILE_UPLOAD', 4, 1, 1, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'doc_resolucion_inicio', 'Resolución de Inicio', v_sec1_id, 'FILE', 'FILE_UPLOAD', 5, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'doc_estudios_mercado', 'Estudios de Mercado', v_sec1_id, 'FILE', 'FILE_UPLOAD', 6, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL),
+      (UUID(), 'doc_terminos_referencia', 'Términos de Referencia', v_sec1_id, 'FILE', 'FILE_UPLOAD', 7, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW(), 0, NULL);
+
+    -- Section: Observaciones
+    INSERT INTO custom_field_section_config_readmodel
+      (id, section_code, section_name_key, step_id, section_type, display_order, columns,
+       collapsible, default_collapsed, embed_mode, show_in_wizard, show_in_expert, show_in_custom, show_in_view, is_active, created_at)
+    VALUES (v_sec2_id, 'OBSERVACIONES', 'Observaciones', v_step_id, 'SINGLE', 2, 1,
+            0, 0, 'WITHIN_STEP', 1, 1, 1, 1, 1, NOW());
+
+    INSERT INTO custom_field_config_readmodel (id, field_code, field_name_key, section_id, field_type, component_type, display_order, span_columns, is_required, is_active, show_in_wizard, show_in_expert, show_in_custom, show_in_view, show_in_list, embed_inline, created_at)
+    VALUES
+      (UUID(), 'observaciones_generales', 'Observaciones Generales', v_sec2_id, 'TEXTAREA', 'TEXTAREA', 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW()),
+      (UUID(), 'condiciones_especiales', 'Condiciones Especiales', v_sec2_id, 'TEXTAREA', 'TEXTAREA', 2, 1, 0, 1, 1, 1, 1, 1, 0, 0, NOW());
+  END IF;
+END //
+DELIMITER ;
+
+-- ============================================================================
+-- Execute for each product type that needs the steps
+-- ============================================================================
+
+-- Products needing ALL 3 steps (PRESUPUESTO + CRONOGRAMA + DOCUMENTOS)
+CALL add_presupuesto_step('CP_CONSULTORIA_CONCURSO', 2);
+CALL add_cronograma_step('CP_CONSULTORIA_CONCURSO', 3);
+CALL add_documentos_step('CP_CONSULTORIA_CONCURSO', 4);
+
+CALL add_presupuesto_step('CP_CONSULTORIA_DIRECTA', 2);
+CALL add_cronograma_step('CP_CONSULTORIA_DIRECTA', 3);
+CALL add_documentos_step('CP_CONSULTORIA_DIRECTA', 4);
+
+CALL add_presupuesto_step('CP_CONSULTORIA_LISTA_CORTA', 2);
+CALL add_cronograma_step('CP_CONSULTORIA_LISTA_CORTA', 3);
+CALL add_documentos_step('CP_CONSULTORIA_LISTA_CORTA', 4);
+
+CALL add_presupuesto_step('CP_OBRA_COTIZACION', 2);
+CALL add_cronograma_step('CP_OBRA_COTIZACION', 3);
+CALL add_documentos_step('CP_OBRA_COTIZACION', 4);
+
+CALL add_presupuesto_step('CP_OBRA_LICITACION', 2);
+CALL add_cronograma_step('CP_OBRA_LICITACION', 3);
+CALL add_documentos_step('CP_OBRA_LICITACION', 4);
+
+CALL add_presupuesto_step('CP_OBRA_MENOR_CUANTIA', 2);
+CALL add_cronograma_step('CP_OBRA_MENOR_CUANTIA', 3);
+CALL add_documentos_step('CP_OBRA_MENOR_CUANTIA', 4);
+
+CALL add_presupuesto_step('CP_MENOR_CUANTIA', 2);
+CALL add_cronograma_step('CP_MENOR_CUANTIA', 3);
+CALL add_documentos_step('CP_MENOR_CUANTIA', 4);
+
+CALL add_presupuesto_step('CP_COTIZACION', 2);
+CALL add_cronograma_step('CP_COTIZACION', 3);
+CALL add_documentos_step('CP_COTIZACION', 4);
+
+CALL add_presupuesto_step('CP_REGIMEN_ESPECIAL', 3);
+CALL add_cronograma_step('CP_REGIMEN_ESPECIAL', 4);
+CALL add_documentos_step('CP_REGIMEN_ESPECIAL', 5);
+
+-- Products needing PRESUPUESTO + DOCUMENTOS (CP_CONTRATACION_DIRECTA - no formal bidding cronograma)
+CALL add_presupuesto_step('CP_CONTRATACION_DIRECTA', 2);
+CALL add_documentos_step('CP_CONTRATACION_DIRECTA', 3);
+
+-- Products needing only DOCUMENTOS (CP_INFIMA_CUANTIA)
+CALL add_documentos_step('CP_INFIMA_CUANTIA', 2);
+
+-- Products needing only PRESUPUESTO (CP_LICITACION already has CRONOGRAMA and DOCUMENTOS)
+CALL add_presupuesto_step('CP_LICITACION', 2);
+
+-- Clean up procedures
+DROP PROCEDURE IF EXISTS add_presupuesto_step;
+DROP PROCEDURE IF EXISTS add_cronograma_step;
+DROP PROCEDURE IF EXISTS add_documentos_step;

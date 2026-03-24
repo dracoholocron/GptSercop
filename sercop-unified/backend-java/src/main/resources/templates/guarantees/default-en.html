@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Bank Guarantee</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 2.5cm 2cm;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+        }
+        .bank-name {
+            font-size: 18pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .guarantee-type {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+        .reference {
+            font-size: 11pt;
+            margin-top: 10px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+        .field {
+            margin-bottom: 8px;
+        }
+        .field-label {
+            font-weight: bold;
+        }
+        .amount {
+            font-size: 13pt;
+            font-weight: bold;
+        }
+        .amount-words {
+            font-style: italic;
+        }
+        .legal-text {
+            margin-top: 30px;
+            text-align: justify;
+        }
+        .signature-section {
+            margin-top: 60px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 250px;
+            margin-top: 60px;
+            padding-top: 5px;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 10pt;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="bank-name">[[${issuingBankName}]]</div>
+        <div class="guarantee-type">[[${tipoDescripcion}]]</div>
+        <div class="reference">Reference: [[${numeroGarantia}]]</div>
+    </div>
+
+    <div class="section">
+        <p><strong>Date of Issue:</strong> [[${fechaEmision}]]</p>
+        <p><strong>Expiry Date:</strong> [[${fechaVencimiento}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BENEFICIARY</div>
+        <p>[[${beneficiaryName}]]</p>
+        <p>[[${beneficiaryAddress}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">APPLICANT</div>
+        <p>[[${applicantName}]]</p>
+        <p>[[${applicantAddress}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">AMOUNT GUARANTEED</div>
+        <p class="amount">[[${montoFormateado}]]</p>
+        <p class="amount-words">([[${montoLetras}]])</p>
+    </div>
+
+    <div class="section" th:if="${numeroContrato != null and numeroContrato != ''}">
+        <div class="section-title">UNDERLYING CONTRACT</div>
+        <p><strong>Contract Number:</strong> [[${numeroContrato}]]</p>
+        <p th:if="${objetoContrato != null and objetoContrato != ''}"><strong>Subject:</strong> [[${objetoContrato}]]</p>
+        <p th:if="${montoContratoFormateado != null and montoContratoFormateado != ''}"><strong>Contract Amount:</strong> [[${montoContratoFormateado}]]</p>
+    </div>
+
+    <div class="legal-text">
+        <p>We, <strong>[[${issuingBankName}]]</strong>, located at [[${issuingBankAddress}]],
+        hereby irrevocably undertake to pay to <strong>[[${beneficiaryName}]]</strong> (the "Beneficiary"),
+        any sum or sums not exceeding in total <strong>[[${montoFormateado}]]</strong> ([[${montoLetras}]]),
+        upon receipt of your first written demand.</p>
+
+        <p>This guarantee is issued in connection with the obligations of <strong>[[${applicantName}]]</strong>
+        (the "Applicant") under the referenced contract.</p>
+
+        <p th:if="${condicionesEjecucion != null and condicionesEjecucion != ''}">
+            <strong>Conditions for Drawing:</strong> [[${condicionesEjecucion}]]
+        </p>
+
+        <p>This guarantee shall come into force on [[${fechaEmision}]] and shall expire on [[${fechaVencimiento}]],
+        by which date we must have received any claim hereunder.</p>
+
+        <p>[[${textoLeyAplicable}]]</p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-line">
+            <p>Authorized Signature</p>
+            <p>[[${issuingBankName}]]</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Electronically Generated Document - [[${fechaActual}]]</p>
+        <p>SWIFT: [[${issuingBankSwift}]]</p>
+    </div>
+</body>
+</html>

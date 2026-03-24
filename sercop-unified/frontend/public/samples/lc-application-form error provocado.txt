@@ -1,0 +1,129 @@
+================================================================================
+                         SOLICITUD DE CARTA DE CREDITO
+                    BANCO NACIONAL DE COMERCIO EXTERIOR
+================================================================================
+
+Fecha de solicitud: 32 de enero de 2026
+Numero de solicitud: APP-2026-00145
+
+--------------------------------------------------------------------------------
+                           DATOS DEL SOLICITANTE
+--------------------------------------------------------------------------------
+
+Empresa solicitante: IMPORTADORA DEL PACIFICO S.A.
+RUC/NIT: 1792456780001
+Direccion: Av. de los Shyris N34-152 y Portugal
+Ciudad: Quito
+Pais: Ecuador
+Telefono: +593 2 245 6789
+Email: comercio@importadorapacifico.com.ec
+Persona de contacto: Maria Fernanda Gonzalez
+Cargo: Gerente de Comercio Exterior
+
+--------------------------------------------------------------------------------
+                           DATOS DEL BENEFICIARIO
+--------------------------------------------------------------------------------
+
+Nombre del beneficiario: SHANGHAI ELECTRONICS TRADING CO., LTD
+Direccion: No. 1688 Pudong Avenue, Lujiazui Financial District
+Ciudad: Shanghai
+Pais: China
+Codigo postal: 200120
+Telefono: +86 21 5888 9999
+Swift del banco beneficiario: BABORHROSTR
+
+--------------------------------------------------------------------------------
+                        INFORMACION DE LA CARTA DE CREDITO
+--------------------------------------------------------------------------------
+
+Tipo de credito documentario: IRREVOCABLE
+Monto solicitado: USD 125,750.00 (Ciento veinticinco mil setecientos cincuenta dolares americanos)
+Tolerancia de monto: +/- 5%
+Moneda: Dolares de los Estados Unidos de America
+
+Fecha de vencimiento: 15 de abril de 2026
+Lugar de vencimiento: Shanghai, China
+
+Credito disponible mediante: PAGO A LA VISTA
+Drafts at: A la vista (At sight)
+
+--------------------------------------------------------------------------------
+                           CONDICIONES DE EMBARQUE
+--------------------------------------------------------------------------------
+
+Puerto/Lugar de embarque: Puerto de Shanghai, China
+Puerto/Lugar de destino: Puerto de Guayaquil, Ecuador
+Fecha limite de embarque: 31 de marzo de 2026
+Embarques parciales: PERMITIDOS
+Transbordos: PERMITIDOS
+Incoterm: CIF Guayaquil
+
+--------------------------------------------------------------------------------
+                         DESCRIPCION DE LA MERCANCIA
+--------------------------------------------------------------------------------
+
+EQUIPOS ELECTRONICOS DE CONSUMO:
+- 500 unidades de Televisores LED 55" Smart TV, Modelo ST-55X
+- 300 unidades de Laptops 15.6" Core i5, Modelo LT-156
+- 200 unidades de Tablets 10.1" Android, Modelo TB-101
+- 1000 unidades de Audifonos inalambricos Bluetooth, Modelo BT-200
+
+Segun Orden de Compra No. PO-2026-0089 de fecha 10 de enero de 2026
+Codigo arancelario: 8528.72.00
+
+--------------------------------------------------------------------------------
+                          DOCUMENTOS REQUERIDOS
+--------------------------------------------------------------------------------
+
+1. Factura comercial original y 3 copias, firmada y sellada
+2. Lista de empaque (Packing List) original y 2 copias
+3. Conocimiento de embarque maritimo (Bill of Lading) 3/3 originales
+   - Marcado "FLETE PAGADO" (Freight Prepaid)
+   - Consignado a la orden del Banco Nacional de Comercio Exterior
+   - Notificar a: Importadora del Pacifico S.A.
+4. Certificado de origen emitido por la Camara de Comercio de Shanghai
+5. Certificado de calidad emitido por SGS o equivalente
+6. Poliza de seguro maritimo por el 110% del valor CIF
+7. Certificado fitosanitario (si aplica)
+
+--------------------------------------------------------------------------------
+                          INSTRUCCIONES ESPECIALES
+--------------------------------------------------------------------------------
+
+- Los documentos deben presentarse dentro de los 21 dias posteriores a la fecha de embarque
+- Todos los gastos bancarios fuera de Ecuador son por cuenta del beneficiario
+- El credito esta sujeto a las Reglas y Usos Uniformes (UCP 600)
+- Comision de confirmacion (si se solicita) por cuenta del beneficiario
+
+--------------------------------------------------------------------------------
+                              BANCO AVISADOR
+--------------------------------------------------------------------------------
+
+Nombre: BANK OF CHINA, SHANGHAI BRANCH
+Swift: BKCHCNBJ300
+Direccion: 200 Yincheng Middle Road, Pudong, Shanghai
+
+--------------------------------------------------------------------------------
+                               FIRMAS
+--------------------------------------------------------------------------------
+
+Solicitante autorizado: ________________________
+                       Maria Fernanda Gonzalez
+                       Gerente de Comercio Exterior
+
+Fecha: 15 de enero de 2026
+
+Sello de la empresa:
+
+
+
+--------------------------------------------------------------------------------
+                         USO EXCLUSIVO DEL BANCO
+--------------------------------------------------------------------------------
+
+Recibido por: _______________________
+Fecha de recepcion: _________________
+Numero de LC asignado: ______________
+Oficial de cuenta: __________________
+
+================================================================================

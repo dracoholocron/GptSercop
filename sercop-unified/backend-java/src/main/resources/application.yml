@@ -1,0 +1,462 @@
+# =============================================================================
+# CONFIGURACIÓN PRINCIPAL DE GLOBALCMX API
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Sistema de Mensajería (Kafka o Pub/Sub)
+# -----------------------------------------------------------------------------
+# Configuración centralizada para el sistema de mensajería.
+# Cambia el provider entre KAFKA, PUBSUB o NONE según tu ambiente.
+# -----------------------------------------------------------------------------
+messaging:
+  # Proveedor de mensajería: KAFKA (local/on-premise) o PUBSUB (GCP)
+  provider: KAFKA
+
+  # Habilitar/deshabilitar el sistema de mensajería
+  enabled: true
+
+  # Mapeo de topics lógicos a nombres físicos
+  topics:
+    moneda-events: moneda-events
+    moneda-commands: moneda-commands
+    cotizacion-events: cotizacion-events
+    participante-events: participante-events
+    cuenta-bancaria-events: cuenta-bancaria-events
+    catalogo-personalizado-events: catalogopersonalizado-events
+    plantilla-correo-events: plantilla-correo-events
+    regla-evento-events: regla-evento-events
+    # Comercio Exterior
+    institucion-financiera-events: institucion-financiera-events
+    carta-credito-events: carta-credito-events
+    garantia-bancaria-events: garantia-bancaria-events
+    cobranza-documentaria-events: cobranza-documentaria-events
+    financiamiento-cx-events: financiamiento-cx-events
+    letter-of-credit-events: letter-of-credit-events
+    bank-guarantee-events: bank-guarantee-events
+    documentary-collections-events: documentary-collections-events
+    linea-credito-events: linea-credito-events
+    plantilla-events: plantilla-events
+    # Configuracion de reglas
+    droolsrulesconfig-events: droolsrulesconfig-events
+
+  # Configuración específica de Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer-group-id: globalcmx-consumer-group-v3
+    default-partitions: 3
+    default-replicas: 1
+
+spring:
+  application:
+    name: globalcmx-api
+  cloud:
+    gcp:
+      pubsub:
+        enabled: false
+  # File Upload Limits
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+  # HTTP Encoding - Force UTF-8 for all responses
+  server:
+    servlet:
+      encoding:
+        charset: UTF-8
+        enabled: true
+        force: true
+        force-request: true
+        force-response: true
+  # Multi-DataSource Configuration
+  # IMPORTANTE: En produccion usar variables de entorno, NO los valores por defecto
+  datasource:
+    # Event Store (MySQL)
+    eventstore:
+      jdbc-url: ${DB_EVENTSTORE_URL:jdbc:mysql://localhost:3306/globalcmx_eventstore?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8mb4}
+      username: ${DB_EVENTSTORE_USER:globalcmx}
+      password: ${DB_EVENTSTORE_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+    # Read Model (MySQL)
+    readmodel:
+      jdbc-url: ${DB_READMODEL_URL:jdbc:mysql://localhost:3306/globalcmx_read?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8mb4}
+      username: ${DB_READMODEL_USER:globalcmx}
+      password: ${DB_READMODEL_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA Configuration (will be overridden by DataSourceConfig)
+  jpa:
+    show-sql: true
+    # Disable open-in-view to fix SSE async handling
+    # This prevents OpenEntityManagerInViewInterceptor conflicts with SseEmitter
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+  # Flyway Configuration
+  flyway:
+    enabled: ${SPRING_FLYWAY_ENABLED:true}  # Enabled to run pending migrations
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    placeholder-replacement: false
+    repair-on-migrate: true  # TODO: Remove after migrations are fixed
+
+  # Kafka Configuration (solo se usa si messaging.provider=KAFKA)
+  kafka:
+    bootstrap-servers: ${messaging.kafka.bootstrap-servers}
+    # Security Configuration - SASL/SSL para produccion
+    security:
+      protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+    properties:
+      # SASL Configuration (solo si KAFKA_SECURITY_PROTOCOL=SASL_SSL)
+      sasl.mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
+      sasl.jaas.config: ${KAFKA_SASL_JAAS_CONFIG:}
+      # SSL Configuration (solo si se usa SSL)
+      ssl.truststore.location: ${KAFKA_SSL_TRUSTSTORE_LOCATION:}
+      ssl.truststore.password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD:}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: true
+    consumer:
+      group-id: ${messaging.kafka.consumer-group-id}
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: true
+        spring.json.type.mapping: "MonedaEvent:com.globalcmx.api.dto.event.MonedaEvent,CotizacionEvent:com.globalcmx.api.dto.event.CotizacionEvent,ParticipanteEvent:com.globalcmx.api.dto.event.ParticipanteEvent,CuentaBancariaEvent:com.globalcmx.api.dto.event.CuentaBancariaEvent,CatalogoPersonalizadoEvent:com.globalcmx.api.dto.event.CatalogoPersonalizadoEvent,PlantillaEvent:com.globalcmx.api.dto.event.PlantillaEvent,PlantillaCorreoEvent:com.globalcmx.api.dto.event.PlantillaCorreoEvent,ReglaEventoEvent:com.globalcmx.api.dto.event.ReglaEventoEvent,InstitucionFinancieraEvent:com.globalcmx.api.dto.event.FinancialInstitutionEvent,CartaCreditoEvent:com.globalcmx.api.dto.event.LetterOfCreditEvent,GarantiaBancariaEvent:com.globalcmx.api.dto.event.BankGuaranteeEvent,CobranzaDocumentariaEvent:com.globalcmx.api.dto.event.DocumentaryCollectionEvent,FinanciamientoCxEvent:com.globalcmx.api.dto.event.FinanciamientoCxEvent"
+      auto-offset-reset: latest
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    include-stacktrace: never
+    include-message: always
+    include-binding-errors: always
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      base-path: /internal/actuator
+      exposure:
+        include: ${ACTUATOR_ENDPOINTS:health,info,metrics,prometheus}
+  endpoint:
+    health:
+      show-details: ${ACTUATOR_HEALTH_SHOW_DETAILS:when-authorized}
+  server:
+    port: ${ACTUATOR_PORT:8081}  # Separate port for actuator (optional, remove for same port)
+
+# Logging Configuration
+# NOTA: En produccion usar perfil -Dspring.profiles.active=prod
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.globalcmx: ${LOG_LEVEL_APP:DEBUG}
+    com.globalcmx.api.security.service.ApiEndpointCacheService: DEBUG
+    com.globalcmx.api.security.filter.ApiPermissionFilter: DEBUG
+    org.springframework.kafka: ${LOG_LEVEL_KAFKA:INFO}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:INFO}
+    # Deshabilitar SQL logging en desarrollo (usar solo para debugging)
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:INFO}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${LOG_LEVEL_SQL_PARAMS:INFO}
+
+# NOTA: Los topics de Kafka/PubSub ahora se configuran en la sección 'messaging' al inicio del archivo
+
+# Event Sourcing Configuration
+eventsourcing:
+  snapshot:
+    frequency: 10  # Create snapshot every 10 events
+    enabled: true
+
+# CQRS Configuration
+cqrs:
+  eventual-consistency-delay: 100  # milliseconds
+  projection-retry:
+    max-attempts: 3
+    backoff-delay: 1000
+
+# Plantillas Configuration
+plantillas:
+  storage:
+    path: ${user.home}/plantillas  # Ruta donde se almacenan las plantillas
+
+# Accounting Rules Configuration
+accounting:
+  rules:
+    storage:
+      path: ${user.home}/accounting-rules  # Ruta donde se almacenan los archivos DRL
+
+# Security Configuration
+security:
+  public-endpoints: /auth/**,/internal/actuator/health,/internal/actuator/health/**,/swagger-ui/**,/swagger-ui.html,/v3/api-docs/**,/api-docs/**,/swift-section-config/**,/swift-field-configs/**,/product-type-config/**,/video-conference/oauth/*/callback
+  frontend-callback-url: ${FRONTEND_CALLBACK_URL:http://localhost:5173}
+  cors:
+    allowed-origins: http://localhost:3000,http://localhost:5173,http://localhost:5174,http://localhost:5175,http://34.30.32.157,http://20.83.75.157,http://172.179.170.2
+    # LAN access: any private IP is allowed via CorsConfig.java allowedOriginPatterns
+    allowed-origin-patterns: http://192.168.*:*,http://10.*:*,http://172.1[6-9].*:*,http://172.2[0-9].*:*,http://172.3[0-1].*:*,http://100.*:*
+  rate-limiting:
+    enabled: ${RATE_LIMITING_ENABLED:false}  # Deshabilitado por defecto en dev
+    requests-per-minute: ${RATE_LIMITING_RPM:10000}  # 10,000 requests/min para dev
+  # Security Audit Configuration
+  audit:
+    enabled: ${SECURITY_AUDIT_ENABLED:true}
+    brute-force:
+      max-failed-logins-per-user: ${SECURITY_MAX_FAILED_LOGINS_USER:5}
+      max-failed-logins-per-ip: ${SECURITY_MAX_FAILED_LOGINS_IP:10}
+      window-minutes: ${SECURITY_BRUTE_FORCE_WINDOW:15}
+      auto-lock-enabled: ${SECURITY_AUTO_LOCK_ENABLED:false}
+      lock-duration-minutes: ${SECURITY_LOCK_DURATION:30}
+    suspicious-activity:
+      max-permission-denials: ${SECURITY_MAX_PERMISSION_DENIALS:200}
+      window-minutes: ${SECURITY_SUSPICIOUS_WINDOW:15}
+      max-api-calls-per-minute: ${SECURITY_MAX_API_CALLS:10000}
+    retention:
+      days: ${SECURITY_AUDIT_RETENTION_DAYS:90}
+      cleanup-cron: ${SECURITY_AUDIT_CLEANUP_CRON:0 0 2 * * *}
+    alerts:
+      email-enabled: ${SECURITY_ALERT_EMAIL_ENABLED:false}
+      alert-emails: ${SECURITY_ALERT_EMAILS:}
+      webhook-enabled: ${SECURITY_ALERT_WEBHOOK_ENABLED:false}
+      webhook-url: ${SECURITY_ALERT_WEBHOOK_URL:}
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+# Operation Lock Configuration (Pessimistic Locking)
+operation-lock:
+  default-duration-seconds: 900      # 15 minutes default
+  max-duration-seconds: 3600         # Maximum 60 minutes
+  min-duration-seconds: 60           # Minimum 1 minute
+  cleanup-interval-seconds: 60       # Clean expired locks every minute
+  auto-extend-on-action: true        # Auto-extend when executing actions
+  max-locks-per-user: 5              # Maximum concurrent locks per user
+
+# SSO / Identity Provider Configuration
+auth:
+  # Base URL for API Gateway (Kong) - used for constructing callback URLs
+  # Development: auto-detected from request if not set
+  # Production: set via API_BASE_URL environment variable
+  api-base-url: ${API_BASE_URL:}
+
+  default-provider: ${AUTH_DEFAULT_PROVIDER:LOCAL}
+  jit-provisioning-enabled: ${AUTH_JIT_PROVISIONING_ENABLED:true}
+  jit-default-role: ${AUTH_JIT_DEFAULT_ROLE:ROLE_USER}
+  local-auth-enabled: ${AUTH_LOCAL_AUTH_ENABLED:true}
+  group-sync-mode: ${AUTH_GROUP_SYNC_MODE:MERGE}  # ADDITIVE, REPLACE, MERGE
+
+  # Auth0 Configuration
+  auth0:
+    enabled: ${AUTH0_ENABLED:false}
+    domain: ${AUTH0_DOMAIN:}
+    client-id: ${AUTH0_CLIENT_ID:}
+    client-secret: ${AUTH0_CLIENT_SECRET:}
+    audience: ${AUTH0_AUDIENCE:}
+    # callback-url is now dynamically generated from request headers
+
+  # Azure AD / Entra ID Configuration
+  azure-ad:
+    enabled: ${AZURE_AD_ENABLED:false}
+    tenant-id: ${AZURE_AD_TENANT_ID:}
+    client-id: ${AZURE_AD_CLIENT_ID:}
+    client-secret: ${AZURE_AD_CLIENT_SECRET:}
+    # callback-url is now dynamically generated from request headers
+
+  # Google Cloud Identity Configuration
+  google:
+    enabled: ${GOOGLE_ENABLED:false}
+    client-id: ${GOOGLE_CLIENT_ID:}
+    client-secret: ${GOOGLE_CLIENT_SECRET:}
+    hosted-domain: ${GOOGLE_HOSTED_DOMAIN:}  # Optional: restrict to domain
+    # callback-url is now dynamically generated from request headers
+
+  # AWS Cognito Configuration
+  cognito:
+    enabled: ${COGNITO_ENABLED:false}
+    user-pool-id: ${COGNITO_USER_POOL_ID:}
+    client-id: ${COGNITO_CLIENT_ID:}
+    client-secret: ${COGNITO_CLIENT_SECRET:}
+    region: ${COGNITO_REGION:us-east-1}
+    domain: ${COGNITO_DOMAIN:}
+    # callback-url is now dynamically generated from request headers
+
+  # Okta Configuration
+  okta:
+    enabled: ${OKTA_ENABLED:false}
+    domain: ${OKTA_DOMAIN:}  # e.g., "dev-123456.okta.com" or "mycompany.okta.com"
+    client-id: ${OKTA_CLIENT_ID:}
+    client-secret: ${OKTA_CLIENT_SECRET:}
+    authorization-server-id: ${OKTA_AUTHORIZATION_SERVER_ID:default}  # "default" or custom server ID
+    # callback-url is now dynamically generated from request headers
+
+# =============================================================================
+# MFA (Multi-Factor Authentication) Configuration
+# =============================================================================
+mfa:
+  # MFA Policy: disabled, optional, required, risk-based
+  policy: ${MFA_POLICY:risk-based}
+
+  # TOTP (Authenticator App) Configuration
+  totp:
+    enabled: ${MFA_TOTP_ENABLED:true}
+    issuer: ${MFA_TOTP_ISSUER:GlobalCMX}
+
+  # SMS MFA Configuration
+  sms:
+    enabled: ${MFA_SMS_ENABLED:true}
+
+  # Email MFA Configuration
+  email:
+    enabled: ${MFA_EMAIL_ENABLED:false}
+
+  # WebAuthn/Biometric Configuration
+  webauthn:
+    enabled: ${MFA_WEBAUTHN_ENABLED:false}
+
+  # Push Notification Configuration
+  push:
+    enabled: ${MFA_PUSH_ENABLED:false}
+
+  # Remember Device (Trust Device) Configuration
+  remember_device:
+    enabled: ${MFA_REMEMBER_DEVICE_ENABLED:true}
+    days: ${MFA_REMEMBER_DEVICE_DAYS:30}
+
+  # Recovery Codes Configuration
+  recovery_codes:
+    enabled: ${MFA_RECOVERY_CODES_ENABLED:true}
+    count: ${MFA_RECOVERY_CODES_COUNT:10}
+
+  # Grace Period (days before MFA becomes mandatory for new users)
+  grace_period:
+    enabled: ${MFA_GRACE_PERIOD_ENABLED:true}
+    days: ${MFA_GRACE_PERIOD_DAYS:7}
+
+  # IdP Sync Configuration
+  idp_sync:
+    enabled: ${MFA_IDP_SYNC_ENABLED:true}
+    sync_phone: ${MFA_IDP_SYNC_PHONE:true}
+    sync_email: ${MFA_IDP_SYNC_EMAIL:true}
+
+  # Security Settings
+  max_failed_attempts: ${MFA_MAX_FAILED_ATTEMPTS:5}
+  lockout_duration_minutes: ${MFA_LOCKOUT_DURATION_MINUTES:15}
+
+# =============================================================================
+# Document Storage Configuration
+# =============================================================================
+# Development uses MinIO (S3-compatible) with persistent volume
+# Production should use cloud storage (S3, Azure, GCS) via environment variables
+documents:
+  storage:
+    provider: ${DOCUMENT_STORAGE_PROVIDER:S3}  # LOCAL, S3, AZURE, GCS
+    local:
+      path: ${user.home}/globalcmx/documents
+    s3:
+      enabled: ${S3_ENABLED:true}
+      bucket: ${S3_BUCKET:globalcmx-documents}
+      region: ${S3_REGION:us-east-1}
+      endpoint: ${S3_ENDPOINT:http://localhost:9000}
+      access-key-id: ${S3_ACCESS_KEY:minioadmin}
+      secret-access-key: ${S3_SECRET_KEY:minioadmin123}
+      use-instance-credentials: ${S3_USE_INSTANCE_CREDENTIALS:false}
+    azure:
+      enabled: false
+    gcs:
+      enabled: false
+
+# =============================================================================
+# AI / OpenAI Configuration
+# =============================================================================
+ai:
+  vector-store:
+    provider: ${AI_VECTOR_STORE:inmemory} # inmemory, chroma, mysql
+    chroma:
+      url: ${CHROMA_URL:http://chromadb:8000}
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    model: ${OPENAI_MODEL:gpt-4o}
+    max-tokens: ${OPENAI_MAX_TOKENS:8192}
+    temperature: ${OPENAI_TEMPERATURE:0.1}
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+  # Claude (Anthropic) Configuration
+  claude:
+    api-key: ${CLAUDE_API_KEY:}
+    model: ${CLAUDE_MODEL:claude-sonnet-4-20250514}
+    max-tokens: ${CLAUDE_MAX_TOKENS:8192}
+    temperature: ${CLAUDE_TEMPERATURE:0.1}
+    timeout-seconds: ${CLAUDE_TIMEOUT:120}
+  # Google Gemini Configuration
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-2.0-flash-exp}
+    max-tokens: ${GEMINI_MAX_TOKENS:8192}
+    temperature: ${GEMINI_TEMPERATURE:0.1}
+  # Document Extraction Configuration
+  extraction:
+    default-provider: ${AI_EXTRACTION_PROVIDER:claude}
+    save-history: ${AI_EXTRACTION_SAVE_HISTORY:true}
+
+# =============================================================================
+# Video Conference Configuration
+# =============================================================================
+videoconference:
+  enabled: ${VIDEO_CONFERENCE_ENABLED:true}
+  default-provider: ${VIDEO_CONFERENCE_DEFAULT_PROVIDER:googlemeet}
+  googlemeet:
+    enabled: ${GOOGLE_MEET_ENABLED:true}
+    client-id: ${GOOGLE_MEET_CLIENT_ID:}
+    client-secret: ${GOOGLE_MEET_CLIENT_SECRET:}
+  teams:
+    enabled: ${TEAMS_ENABLED:true}
+    tenant-id: ${TEAMS_TENANT_ID:}
+    client-id: ${TEAMS_CLIENT_ID:}
+    client-secret: ${TEAMS_CLIENT_SECRET:}
+  jitsi:
+    enabled: ${JITSI_ENABLED:true}
+    server-url: ${JITSI_SERVER_URL:https://meet.jit.si}
+
+# =============================================================================
+# Real-Time Notifications Configuration
+# =============================================================================
+# Supports multiple providers: SIGNALR (Azure), WEBSOCKET (AWS), PUBSUB (GCP), NONE
+globalcmx:
+  realtime:
+    enabled: false
+    provider: NONE
+
+# -----------------------------------------------------------------------------
+# Configuración de la Aplicación
+# -----------------------------------------------------------------------------
+app:
+  # Base URL for document URLs - should point to Kong API Gateway
+  # Development: http://localhost:8000 (Kong)
+  # Production: set via APP_BASE_URL environment variable
+  base-url: ${APP_BASE_URL:http://localhost:8000}
+
+  # Phase-1 cleanup: módulos no-SERCOP quedan aislados por defecto
+  module-isolation:
+    sercop-mode: ${APP_SERCOP_MODE:true}
+    non-sercop-modules-enabled: ${APP_NON_SERCOP_MODULES_ENABLED:false}
+    blocked-controller-keywords:
+      - tradefinancing
+      - documentarycollection
+      - letterofcredit
+      - bankguarantee
+      - swiftmessage
+      - swiftdraft
+      - swiftfieldconfig
+      - creditline
+      - financialinstitution
+      - commission

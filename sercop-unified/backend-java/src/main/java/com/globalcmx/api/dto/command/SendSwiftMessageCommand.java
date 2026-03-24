@@ -1,0 +1,32 @@
+package com.globalcmx.api.dto.command;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+/**
+ * Command for sending a SWIFT message.
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SendSwiftMessageCommand {
+
+    private String operationId;
+    private String messageType;
+    private String senderBic;
+    private String receiverBic;
+    private String swiftContent;
+    private String field20Reference;
+    private String field21RelatedRef;
+    private String currency;
+    private BigDecimal amount;
+    private LocalDate valueDate;
+    private String triggeredByEvent;
+    private String createdBy;
+}

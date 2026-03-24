@@ -1,0 +1,10 @@
+package com.globalcmx.api.model.cx.enums;
+
+public enum TipoFinanciamiento {
+    PREFINANCIAMIENTO_EXPORTACION,
+    POSTFINANCIAMIENTO_EXPORTACION,
+    FINANCIAMIENTO_IMPORTACION,
+    FORFAITING,
+    FACTORING_INTERNACIONAL,
+    DESCUENTO_LC
+}
