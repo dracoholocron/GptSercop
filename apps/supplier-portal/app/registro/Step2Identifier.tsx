@@ -49,7 +49,6 @@ export function Step2Identifier({ initialEmail = '', onNext }: Step2IdentifierPr
         <Input
           label="Correo Electrónico *"
           type="email"
-          required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="ejemplo@empresa.com"
@@ -57,7 +56,6 @@ export function Step2Identifier({ initialEmail = '', onNext }: Step2IdentifierPr
 
         <Input
           label="Razón Social / Nombres Completos *"
-          required
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Ej: Proveedores Unidos S.A."

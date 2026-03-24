@@ -89,7 +89,14 @@ export default function CifrasPage() {
       // Usar el endpoint público de procesos (siempre devuelve procesos publicados)
       api
         .getTenders({ page, pageSize })
-        .then((res) => setDetailData({ data: res.data, total: res.total, page: res.page, pageSize: res.pageSize }))
+        .then((res) =>
+          setDetailData({
+            data: res.data || [],
+            total: res.total || 0,
+            page: res.page || page,
+            pageSize: res.pageSize || pageSize,
+          }),
+        )
         .catch(() => setDetailData(null))
         .finally(() => setDetailLoading(false));
       return;
@@ -256,7 +263,7 @@ export default function CifrasPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {detailData.data.map((row: Record<string, unknown>, i: number) => (
+                          {detailData.data.map((row: any, i: number) => (
                             <tr key={(row.id as string) || i} className="border-b border-neutral-100">
                               {selectedMetric === 'tenders' || selectedMetric === 'published' ? (
                                 <>
