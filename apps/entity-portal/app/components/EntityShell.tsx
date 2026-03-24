@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AppHeader, AppFooter, SercopLogo } from '@sercop/design-system';
+import { Sidebar, TopBar, AppFooter, SercopLogo } from '@sercop/design-system';
 import { isLoggedIn, logout } from '../lib/auth';
 
 const NAV_ITEMS = [
@@ -26,33 +26,42 @@ export function EntityShell({ children, activeId }: { children: React.ReactNode;
   const isLoginPage = pathname === '/login';
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen bg-neutral-50 text-text-primary">
       <a href="#main" className="skip-link">Saltar al contenido</a>
-      <AppHeader
-        title="Portal entidad"
+      <Sidebar
+        title="Entidades CMX"
         logo={<SercopLogo variant="compact" />}
-        navItems={NAV_ITEMS}
+        items={NAV_ITEMS}
         activeId={activeId}
-        rightContent={
-          !isLoginPage && (
-            loggedIn ? (
-              <button type="button" onClick={() => { logout(); window.location.href = '/'; }} className="rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-                Cerrar sesión
-              </button>
-            ) : (
-              <Link href="/login" className="rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
-                Iniciar sesión
-              </Link>
-            )
-          )
-        }
         LinkComponent={Link as React.ComponentType<{ href: string; className?: string; children: React.ReactNode }>}
       />
-      <main id="main" className="flex-1" tabIndex={-1}>{children}</main>
-      <AppFooter
-        links={FOOTER_LINKS}
-        copyright={`© ${new Date().getFullYear()} SERCOP – Servicio Nacional de Contratación Pública`}
-      />
+      <div className="flex flex-1 flex-col md:ml-64 transition-all duration-300">
+        <TopBar
+          title="Portal Entidad Institucional"
+          userName={loggedIn ? 'Funcionario Público' : 'Visitante'}
+          role={loggedIn ? 'Gestor Comprador' : 'Exterior'}
+          rightContent={
+            !isLoginPage && (
+              loggedIn ? (
+                <button type="button" onClick={() => { logout(); window.location.href = '/'; }} className="rounded px-4 py-2 text-sm font-semibold text-text-secondary hover:bg-neutral-100 transition-colors">
+                  Cerrar sesión
+                </button>
+              ) : (
+                <Link href="/login" className="rounded px-4 py-2 text-sm font-semibold text-text-secondary hover:bg-neutral-100 transition-colors">
+                  Iniciar sesión
+                </Link>
+              )
+            )
+          }
+        />
+        <main id="main" className="flex-1 w-full" tabIndex={-1}>
+          {children}
+        </main>
+        <AppFooter
+          links={FOOTER_LINKS}
+          copyright={`© ${new Date().getFullYear()} SERCOP – Servicio Nacional de Contratación Pública`}
+        />
+      </div>
     </div>
   );
 }

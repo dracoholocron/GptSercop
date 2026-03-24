@@ -1,0 +1,598 @@
+/**
+ * Mobile Styles - Estilos específicos para dispositivos móviles
+ *
+ * Incluye:
+ * - Safe areas para dispositivos con notch
+ * - Prevención de zoom en inputs
+ * - Touch feedback mejorado
+ * - Scrolling suave
+ */
+
+/* =============================================
+   SAFE AREAS (para iPhone con notch)
+   ============================================= */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* =============================================
+   PREVENIR ZOOM EN INPUTS (iOS)
+   ============================================= */
+@media screen and (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Asegurar que los selects no hagan zoom */
+  select:focus,
+  input:focus,
+  textarea:focus {
+    font-size: 16px !important;
+  }
+}
+
+/* =============================================
+   TOUCH FEEDBACK
+   ============================================= */
+.touch-feedback {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  touch-action: manipulation;
+}
+
+/* Feedback visual al tocar */
+.touch-active:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+/* =============================================
+   SCROLLING
+   ============================================= */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ocultar scrollbar pero mantener scroll */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Scroll momentum en iOS */
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* =============================================
+   PREVENIR SELECCIÓN ACCIDENTAL
+   ============================================= */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* =============================================
+   MOBILE UTILITIES
+   ============================================= */
+
+/* Ocultar en móvil */
+@media screen and (max-width: 767px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Mostrar solo en móvil */
+@media screen and (min-width: 768px) {
+  .show-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Ocultar en tablet */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+/* Ocultar en desktop */
+@media screen and (min-width: 992px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* =============================================
+   BOTTOM NAVIGATION SPACING
+   ============================================= */
+.with-bottom-nav {
+  padding-bottom: 80px;
+}
+
+/* =============================================
+   PULL TO REFRESH INDICATOR
+   ============================================= */
+.pull-indicator {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: top 0.2s ease;
+  z-index: 1000;
+}
+
+.pull-indicator.visible {
+  top: 10px;
+}
+
+/* =============================================
+   SWIPE GESTURES
+   ============================================= */
+.swipeable {
+  touch-action: pan-y;
+  overflow-x: hidden;
+}
+
+/* =============================================
+   MOBILE CARD STYLES
+   ============================================= */
+@media screen and (max-width: 767px) {
+  .mobile-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 12px;
+  }
+
+  .mobile-card:active {
+    transform: scale(0.99);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* =============================================
+   MOBILE FORM STYLES
+   ============================================= */
+@media screen and (max-width: 767px) {
+  .mobile-form-field {
+    margin-bottom: 16px;
+  }
+
+  .mobile-form-field label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .mobile-form-field input,
+  .mobile-form-field select,
+  .mobile-form-field textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+}
+
+/* =============================================
+   ANIMATIONS
+   ============================================= */
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 115, 230, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(0, 115, 230, 0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spotlightIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    backdrop-filter: blur(20px);
+  }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-slide-up {
+  animation: slideInFromBottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-slide-left {
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-spotlight {
+  animation: spotlightIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Stagger animation delays for cards */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.10s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.30s; }
+
+/* Skeleton shimmer */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(200, 200, 200, 0.1) 25%,
+    rgba(200, 200, 200, 0.3) 50%,
+    rgba(200, 200, 200, 0.1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Pulse glow for FAB */
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Animated gradient background */
+.gradient-animated {
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* Glass effect */
+.glass-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dark .glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* =============================================
+   RADIAL ACTION MENU (Apple Watch style)
+   ============================================= */
+@keyframes orbitIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes pulseCenter {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3); }
+  50% { box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); }
+}
+
+@keyframes orbitOut {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+}
+
+.radial-center {
+  animation: pulseCenter 2.5s ease-in-out infinite;
+}
+
+.radial-item {
+  animation: orbitIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.radial-item-exit {
+  animation: orbitOut 0.25s ease-in both;
+}
+
+/* Stagger delays for orbit items */
+.orbit-stagger-0 { animation-delay: 0s; }
+.orbit-stagger-1 { animation-delay: 0.06s; }
+.orbit-stagger-2 { animation-delay: 0.12s; }
+.orbit-stagger-3 { animation-delay: 0.16s; }
+.orbit-stagger-4 { animation-delay: 0.20s; }
+.orbit-stagger-5 { animation-delay: 0.24s; }
+.orbit-stagger-6 { animation-delay: 0.28s; }
+.orbit-stagger-7 { animation-delay: 0.32s; }
+
+/* =============================================
+   PRODUCT JOURNEY TIMELINE
+   ============================================= */
+@keyframes timelineSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-timeline-slide-in {
+  animation: timelineSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger delays for timeline stages */
+.timeline-stagger-1 { animation-delay: 0.00s; }
+.timeline-stagger-2 { animation-delay: 0.05s; }
+.timeline-stagger-3 { animation-delay: 0.10s; }
+.timeline-stagger-4 { animation-delay: 0.15s; }
+.timeline-stagger-5 { animation-delay: 0.20s; }
+.timeline-stagger-6 { animation-delay: 0.25s; }
+.timeline-stagger-7 { animation-delay: 0.30s; }
+.timeline-stagger-8 { animation-delay: 0.35s; }
+
+/* =============================================
+   JOURNEY MAP - Professional Fintech Style
+   ============================================= */
+@keyframes journeyCirclePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(12px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes journeyPulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 16px rgba(45, 212, 191, 0.3), inset 0 0 8px rgba(45, 212, 191, 0.1);
+  }
+  50% {
+    opacity: 0.9;
+    box-shadow: 0 0 28px rgba(45, 212, 191, 0.5), inset 0 0 14px rgba(45, 212, 191, 0.15);
+  }
+}
+
+@keyframes journeyGlowLine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes journeyConnectorDraw {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes journeyFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.journey-circle-pop {
+  animation: journeyCirclePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.journey-pulse {
+  animation: journeyPulse 2.5s ease-in-out infinite;
+}
+
+.journey-glow-line {
+  background-size: 200% 100%;
+  animation: journeyGlowLine 4s linear infinite;
+}
+
+.journey-float {
+  animation: journeyFloat 3s ease-in-out infinite;
+}
+
+.journey-connector-draw {
+  animation: journeyConnectorDraw 0.6s ease-out both;
+}
+
+/* Stagger delays for journey circles */
+.journey-stagger-1 { animation-delay: 0.00s; }
+.journey-stagger-2 { animation-delay: 0.07s; }
+.journey-stagger-3 { animation-delay: 0.14s; }
+.journey-stagger-4 { animation-delay: 0.21s; }
+.journey-stagger-5 { animation-delay: 0.28s; }
+.journey-stagger-6 { animation-delay: 0.35s; }
+.journey-stagger-7 { animation-delay: 0.42s; }
+
+/* Light mode pulse override */
+:root:not(.dark) .journey-pulse {
+  animation-name: journeyPulseLight;
+}
+
+@keyframes journeyPulseLight {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(0, 115, 230, 0.2), inset 0 0 6px rgba(0, 115, 230, 0.08);
+  }
+  50% {
+    opacity: 0.95;
+    box-shadow: 0 0 22px rgba(0, 115, 230, 0.35), inset 0 0 10px rgba(0, 115, 230, 0.1);
+  }
+}
+
+/* =============================================
+   REDUCE MOTION (accesibilidad)
+   ============================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =============================================
+   DARK MODE - CSS Variables
+   ============================================= */
+:root {
+  --bg-color: #FFFFFF;
+  --bg-secondary: #F7FAFC;
+  --border-color: #E2E8F0;
+  --text-primary: #1A202C;
+  --text-secondary: #718096;
+  --card-bg: #FFFFFF;
+  --hover-bg: #F7FAFC;
+  color-scheme: light;
+}
+
+:root.dark {
+  --bg-color: #1A202C;
+  --bg-secondary: #2D3748;
+  --border-color: #4A5568;
+  --text-primary: #F7FAFC;
+  --text-secondary: #A0AEC0;
+  --card-bg: #2D3748;
+  --hover-bg: #4A5568;
+  color-scheme: dark;
+}
+
+/* Dark mode transitions */
+html {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark mode form styles */
+:root.dark .mobile-form-field input,
+:root.dark .mobile-form-field select,
+:root.dark .mobile-form-field textarea {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+:root.dark .mobile-card {
+  background-color: var(--card-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}

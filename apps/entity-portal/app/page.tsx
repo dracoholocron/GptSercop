@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, Button } from '@sercop/design-system';
+import { Card, Button, StatCard, FileText, BarChart3 } from '@sercop/design-system';
 import { api, setBaseUrl, setToken } from '@sercop/api-client';
 import { getToken, getEntityId } from './lib/auth';
 import Link from 'next/link';
@@ -34,37 +34,52 @@ export default function EntityDashboardPage() {
 
   return (
     <EntityShell activeId="inicio">
+      <section className="border-b border-neutral-200 bg-primary-light/50 py-6">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <h1 className="text-xl font-semibold text-text-primary">Portal entidad</h1>
+          <p className="mt-1 text-sm text-text-secondary">
+            {token && entityId ? 'Gestione PAC, procesos y evaluaciones.' : 'Inicie sesión para gestionar contratación.'}
+          </p>
+        </div>
+      </section>
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-        <h1 className="mb-6 text-2xl font-semibold">Portal entidad</h1>
         {!token ? (
           <Card title="Bienvenido" className="mb-8">
-            <p className="mb-4 text-gray-600">Para gestionar PAC, procesos y evaluación, inicie sesión.</p>
+            <p className="mb-4 text-text-secondary">Para gestionar PAC, procesos y evaluación, inicie sesión.</p>
             <Link href="/login"><Button>Iniciar sesión</Button></Link>
           </Card>
         ) : !entityId ? (
           <Card title="Entidad no seleccionada" className="mb-8">
-            <p className="text-gray-600">Inicie sesión y seleccione su entidad.</p>
+            <p className="text-text-secondary">Inicie sesión y seleccione su entidad.</p>
             <Link href="/login" className="mt-2 inline-block"><Button size="sm">Ir a login</Button></Link>
           </Card>
         ) : (
           <>
             <div className="mb-8 grid gap-4 sm:grid-cols-2">
-              <Card title="PAC activos">
-                {loading ? <p className="text-gray-500">Cargando…</p> : <p className="text-2xl font-semibold">{pac.length}</p>}
-                <Link href="/pac" className="mt-2 inline-block"><Button variant="outline" size="sm">Ver PAC</Button></Link>
-              </Card>
-              <Card title="Procesos">
-                {loading ? <p className="text-gray-500">Cargando…</p> : <p className="text-2xl font-semibold">{tenders.length}</p>}
-                <Link href="/procesos" className="mt-2 inline-block"><Button variant="outline" size="sm">Ver procesos</Button></Link>
-              </Card>
+              <StatCard
+                icon={<FileText className="h-5 w-5" />}
+                value={loading ? '—' : pac.length}
+                label="PAC activos"
+                href="/pac"
+                linkLabel="Ver PAC"
+              />
+              <StatCard
+                icon={<BarChart3 className="h-5 w-5" />}
+                value={loading ? '—' : tenders.length}
+                label="Procesos"
+                href="/procesos"
+                linkLabel="Ver procesos"
+              />
             </div>
             <Card title="Procesos recientes">
-              {loading ? <p className="text-gray-500">Cargando…</p> : tenders.length === 0 ? (
-                <p className="text-gray-500">No hay procesos. <Link href="/procesos/nuevo" className="text-blue-600 hover:underline">Crear proceso</Link></p>
+              {loading ? <p className="text-text-secondary">Cargando…</p> : tenders.length === 0 ? (
+                <p className="text-text-secondary">
+                  No hay procesos. <Link href="/procesos/nuevo" className="text-primary hover:underline">Crear proceso</Link>
+                </p>
               ) : (
                 <ul className="space-y-2">
                   {tenders.map((t) => (
-                    <li key={String(t.id)} className="flex items-center justify-between border-b border-gray-100 py-2 last:border-0">
+                    <li key={String(t.id)} className="flex items-center justify-between border-b border-neutral-100 py-2 last:border-0">
                       <span className="font-medium">{String(t.title)}</span>
                       <Link href={`/procesos/${t.id}/ofertas`}><Button size="sm" variant="outline">Ver ofertas</Button></Link>
                     </li>

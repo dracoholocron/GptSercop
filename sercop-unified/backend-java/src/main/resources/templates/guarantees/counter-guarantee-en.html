@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Counter Guarantee</title>
+    <style>
+        @page { size: letter; margin: 2.5cm 2cm; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.6; color: #000; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 20px; }
+        .bank-name { font-size: 18pt; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .guarantee-type { font-size: 14pt; font-weight: bold; margin-top: 20px; text-transform: uppercase; }
+        .reference { font-size: 11pt; margin-top: 10px; }
+        .section { margin-bottom: 20px; }
+        .section-title { font-weight: bold; margin-bottom: 10px; text-decoration: underline; }
+        .parties-table { width: 100%; margin-bottom: 20px; }
+        .parties-table td { vertical-align: top; padding: 10px; width: 50%; }
+        .amount-box { border: 2px solid #000; padding: 15px; margin: 20px 0; text-align: center; background-color: #f9f9f9; }
+        .amount { font-size: 16pt; font-weight: bold; }
+        .amount-words { font-size: 11pt; font-style: italic; margin-top: 5px; }
+        .legal-text { margin-top: 25px; text-align: justify; }
+        .legal-text p { margin-bottom: 15px; }
+        .quote-block { border-left: 3px solid #333; padding-left: 15px; margin: 20px 0; font-style: italic; }
+        .signature-section { margin-top: 50px; page-break-inside: avoid; }
+        .signature-line { border-top: 1px solid #000; width: 250px; margin-top: 50px; padding-top: 5px; text-align: center; }
+        .footer { margin-top: 30px; font-size: 9pt; text-align: center; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="bank-name">[[${issuingBankName}]]</div>
+        <div class="guarantee-type">COUNTER GUARANTEE</div>
+        <div class="reference">No. [[${numeroGarantia}]]</div>
+    </div>
+
+    <div class="section">
+        <table class="parties-table">
+            <tr>
+                <td><strong>Date of Issue:</strong> [[${fechaEmision}]]</td>
+                <td><strong>Expiry Date:</strong> [[${fechaVencimiento}]]</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <table class="parties-table">
+            <tr>
+                <td>
+                    <div class="section-title">ISSUING BANK (LOCAL GUARANTEE)</div>
+                    <p><strong>[[${counterGuarantorName}]]</strong></p>
+                </td>
+                <td>
+                    <div class="section-title">APPLICANT</div>
+                    <p><strong>[[${applicantName}]]</strong></p>
+                    <p>[[${applicantAddress}]]</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BENEFICIARY OF LOCAL GUARANTEE</div>
+        <p><strong>[[${beneficiaryName}]]</strong></p>
+        <p>[[${beneficiaryAddress}]]</p>
+    </div>
+
+    <div class="amount-box">
+        <div class="amount">[[${montoFormateado}]]</div>
+        <div class="amount-words">([[${montoLetras}]])</div>
+    </div>
+
+    <div class="legal-text">
+        <p>At the request of <strong>[[${applicantName}]]</strong>, please issue on our full responsibility and
+        against our counter guarantee no. <strong>[[${numeroGarantia}]]</strong> your guarantee for
+        <strong>[[${montoFormateado}]]</strong> in favour of:</p>
+
+        <p><strong>[[${beneficiaryName}]]</strong><br/>[[${beneficiaryAddress}]]</p>
+
+        <p>as follows:</p>
+
+        <div class="quote-block">
+            <p><strong>[[${tipoDescripcion}]] NO. [Your Reference]</strong></p>
+            <p>We have been informed that between you (Buyer) and <strong>[[${applicantName}]]</strong> (Seller),
+            a contract for [[${objetoContrato}]] in the total amount of [[${montoContratoFormateado}]] has been concluded.</p>
+            <p>We hereby issue this guarantee and irrevocably undertake to pay to you on your first written demand
+            any amount up to <strong>[[${montoFormateado}]]</strong> ([[${montoLetras}]]).</p>
+            <p>This guarantee will expire at the end of the business day of [[${fechaVencimiento}]].</p>
+        </div>
+
+        <p>In consideration of your issuing at our request a guarantee in favour of <strong>[[${beneficiaryName}]]</strong>
+        hereafter called the beneficiaries for the amount of <strong>[[${montoFormateado}]]</strong> as requested above,
+        we, <strong>[[${issuingBankName}]]</strong> hereby irrevocably and unconditionally undertake to indemnify you
+        against all losses, expenses or damages which may arise out of any claim made as result of you having given
+        such a guarantee, and we hereby undertake to reimburse you without delay, and at your first simple written demand,
+        any amount you may be called upon to pay under said guarantee, without it being necessary for you to produce
+        or adduce any proof(s) or any judicial or administrative proceedings whatsoever in support of your claim.</p>
+
+        <p>We further agree that any request made upon you by the beneficiaries for payment of any sum shall constitute
+        a sufficient authority to you for making such payment without any obligation on your part to inquire whether
+        such amount is in fact due to them.</p>
+
+        <p>While this indemnity covers payment by us to you in the event stated above, it must be understood that our
+        liability hereunder will not exceed the aggregate amount of <strong>[[${montoFormateado}]]</strong> plus your
+        commission and charges.</p>
+
+        <p>We finally agree that this indemnity as well as all matters connected therewith shall be construed and
+        decided in conformity with the applicable law and also the place of jurisdiction will be as agreed.</p>
+
+        <p>This counter guarantee is valid until <strong>[[${fechaVencimiento}]]</strong> and will be extended for
+        any period asked for by the beneficiaries. Should we not be in a position or do not agree to extend this
+        guarantee, then we undertake to pay the amount referred to above without further claim being necessary.</p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-line">
+            <p>Authorized Signature</p>
+            <p><strong>[[${issuingBankName}]]</strong></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Electronically generated document by GlobalCMX - [[${fechaActual}]]</p>
+        <p>SWIFT: [[${issuingBankSwift}]] | Reference: [[${numeroGarantia}]]</p>
+    </div>
+</body>
+</html>

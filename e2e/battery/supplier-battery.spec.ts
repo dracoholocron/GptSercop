@@ -30,6 +30,24 @@ test.describe('Proveedor – Carga de rutas', () => {
   }
 });
 
+test.describe('Proveedor – Dashboard', () => {
+  test.use({ baseURL: BASE });
+
+  test('S-dashboard: hero o tarjetas de resumen visibles', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('body')).toContainText(/Portal proveedores|Bienvenido|Mis ofertas|Procesos abiertos|Iniciar sesión/i);
+  });
+
+  test('S-dashboard: enlaces Ver todas / Ver procesos cuando hay sesión', async ({ page, request }) => {
+    await supplierLogin(page, BASE, request);
+    await page.goto('/');
+    const verTodas = page.getByRole('link', { name: /Ver todas/i });
+    const verProcesos = page.getByRole('link', { name: /Ver procesos/i });
+    const hasLink = (await verTodas.isVisible().catch(() => false)) || (await verProcesos.isVisible().catch(() => false));
+    expect(hasLink).toBe(true);
+  });
+});
+
 test.describe('Proveedor – Login', () => {
   test.use({ baseURL: BASE });
 
@@ -124,7 +142,7 @@ test.describe('Proveedor – Wizard oferta', () => {
     }
     await link.click();
     await page.getByRole('button', { name: /Siguiente/ }).click();
-    await expect(page.getByText(/Oferta económica|Económica|Monto|Modo/)).toBeVisible({ timeout: 6000 });
+    await expect(page.getByRole('heading', { name: /Oferta económica/i })).toBeVisible({ timeout: 6000 });
   });
 });
 

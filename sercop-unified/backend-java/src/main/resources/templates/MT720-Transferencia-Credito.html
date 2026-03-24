@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>MT720 - Transferencia de Carta de Crédito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            background-color: #FF9800;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin: 10px 0;
+        }
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 220px;
+        }
+        .field-value {
+            display: inline-block;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>TRANSFERENCIA DE CARTA DE CRÉDITO</h1>
+        <h2>SWIFT MT720</h2>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CRÉDITO ORIGINAL</div>
+        <div class="field">
+            <span class="field-label">Número de Crédito Original:</span>
+            <span class="field-value">[[${numeroCreditoOriginal}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Banco Emisor Original:</span>
+            <span class="field-value">[[${bancoEmisorOriginal}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Primer Beneficiario:</span>
+            <span class="field-value">[[${primerBeneficiario}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">TRANSFERENCIA</div>
+        <div class="field">
+            <span class="field-label">Banco Transferente:</span>
+            <span class="field-value">[[${bancoTransferente}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Transferencia:</span>
+            <span class="field-value">[[${fechaTransferencia}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Nuevo Beneficiario:</span>
+            <span class="field-value">[[${nuevoBeneficiario}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Dirección Nuevo Beneficiario:</span>
+            <span class="field-value">[[${direccionNuevoBeneficiario}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CONDICIONES TRANSFERIDAS</div>
+        <div class="field">
+            <span class="field-label">Monto Transferido:</span>
+            <span class="field-value">[[${moneda}]] [[${montoTransferido}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Porcentaje de Transferencia:</span>
+            <span class="field-value">[[${porcentajeTransferencia}]]%</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Nueva Fecha de Vencimiento:</span>
+            <span class="field-value">[[${nuevaFechaVencimiento}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Instrucciones Especiales:</span>
+            <span class="field-value">[[${instruccionesEspeciales}]]</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Documento generado automáticamente</p>
+        <p>GlobalCMX - Sistema de Gestión de Comercio Internacional</p>
+    </div>
+</body>
+</html>

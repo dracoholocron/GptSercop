@@ -866,6 +866,45 @@ export const api = {
   async getAnalyticsPublic(): Promise<{ tenders: number; tendersPublished: number; providers: number; contracts: number }> {
     return request('/api/v1/analytics/public');
   },
+  async getAnalyticsPublicDetail(params: {
+    metric: 'tenders' | 'published' | 'providers' | 'contracts';
+    page?: number;
+    pageSize?: number;
+    year?: number;
+  }): Promise<{ data: unknown[]; total: number; page: number; pageSize: number }> {
+    const q = new URLSearchParams();
+    q.set('metric', params.metric);
+    if (params.page != null) q.set('page', String(params.page));
+    if (params.pageSize != null) q.set('pageSize', String(params.pageSize));
+    if (params.year != null) q.set('year', String(params.year));
+    return request(`/api/v1/analytics/public/detail?${q}`);
+  },
+  async getAnalyticsPublicCharts(params?: { year?: number; method?: string }): Promise<{
+    processesByMonth: Array<{ month: string; total: number; publicados: number }>;
+    processesByType: Array<{ type: string; count: number }>;
+    providersByMonth: Array<{ month: string; count: number }>;
+    contractsByMonth: Array<{ month: string; count: number }>;
+  }> {
+    const q = new URLSearchParams();
+    if (params?.year != null) q.set('year', String(params.year));
+    if (params?.method) q.set('method', params.method);
+    return request(`/api/v1/analytics/public/charts${q.toString() ? `?${q}` : ''}`);
+  },
+  async getContractsPublic(params?: { page?: number; pageSize?: number }): Promise<{ data: Array<Record<string, unknown>>; total: number; page: number; pageSize: number }> {
+    const q = new URLSearchParams();
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.pageSize != null) q.set('pageSize', String(params.pageSize));
+    const qs = q.toString();
+    return request(`/api/v1/contracts/public${qs ? `?${qs}` : ''}`);
+  },
+  async getContractsAdmin(params?: { status?: string; page?: number; pageSize?: number }): Promise<{ data: Array<Record<string, unknown>>; total: number; page: number; pageSize: number }> {
+    const q = new URLSearchParams();
+    if (params?.status) q.set('status', params.status);
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.pageSize != null) q.set('pageSize', String(params.pageSize));
+    const qs = q.toString();
+    return request(`/api/v1/contracts${qs ? `?${qs}` : ''}`);
+  },
   async getAudit(params?: { limit?: number; offset?: number; action?: string; entityType?: string; contractingEntityId?: string }): Promise<{ data: unknown[]; total: number }> {
     const q = new URLSearchParams();
     if (params?.limit != null) q.set('limit', String(params.limit));

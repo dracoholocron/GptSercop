@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="mainBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a365d"/>
+      <stop offset="50%" style="stop-color:#2a4a7f"/>
+      <stop offset="100%" style="stop-color:#1e3a5f"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3182CE;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#48BB78;stop-opacity:0.2"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="20%" cy="30%" r="40%">
+      <stop offset="0%" style="stop-color:#3182CE;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#3182CE;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="80%" cy="70%" r="35%">
+      <stop offset="0%" style="stop-color:#48BB78;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#48BB78;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#mainBg)"/>
+
+  <!-- Subtle glows -->
+  <rect width="1920" height="1080" fill="url(#glow1)"/>
+  <rect width="1920" height="1080" fill="url(#glow2)"/>
+
+  <!-- Geometric pattern -->
+  <g opacity="0.04" fill="white">
+    <circle cx="200" cy="150" r="120"/>
+    <circle cx="1700" cy="900" r="150"/>
+    <circle cx="960" cy="540" r="200"/>
+    <rect x="100" y="800" width="300" height="300" rx="40" transform="rotate(-15 250 950)"/>
+    <rect x="1400" y="100" width="250" height="250" rx="30" transform="rotate(20 1525 225)"/>
+  </g>
+
+  <!-- Subtle grid lines -->
+  <g stroke="white" stroke-width="0.5" opacity="0.03">
+    <line x1="0" y1="270" x2="1920" y2="270"/>
+    <line x1="0" y1="540" x2="1920" y2="540"/>
+    <line x1="0" y1="810" x2="1920" y2="810"/>
+    <line x1="480" y1="0" x2="480" y2="1080"/>
+    <line x1="960" y1="0" x2="960" y2="1080"/>
+    <line x1="1440" y1="0" x2="1440" y2="1080"/>
+  </g>
+
+  <!-- Bottom accent bar -->
+  <rect x="0" y="1050" width="1920" height="30" fill="url(#accent)"/>
+
+  <!-- GlobalCMX Logo - bottom right watermark -->
+  <g transform="translate(1680, 950)" opacity="0.25">
+    <rect width="180" height="80" rx="16" fill="none" stroke="white" stroke-width="2"/>
+    <text x="90" y="38" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="3">GLOBAL</text>
+    <text x="90" y="60" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#48BB78" text-anchor="middle" letter-spacing="4">CMX</text>
+  </g>
+
+  <!-- Top left subtle branding -->
+  <g transform="translate(40, 30)" opacity="0.12">
+    <rect width="50" height="50" rx="10" fill="#3182CE"/>
+    <text x="25" y="38" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="bold" fill="white" text-anchor="middle">G</text>
+    <rect x="32" y="16" width="12" height="3" rx="1.5" fill="#48BB78"/>
+  </g>
+</svg>

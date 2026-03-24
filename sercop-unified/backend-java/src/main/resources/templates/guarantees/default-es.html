@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Garantía Bancaria</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 2.5cm 2cm;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+        }
+        .bank-name {
+            font-size: 18pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .guarantee-type {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+        .reference {
+            font-size: 11pt;
+            margin-top: 10px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+        .field {
+            margin-bottom: 8px;
+        }
+        .field-label {
+            font-weight: bold;
+        }
+        .amount {
+            font-size: 13pt;
+            font-weight: bold;
+        }
+        .amount-words {
+            font-style: italic;
+        }
+        .legal-text {
+            margin-top: 30px;
+            text-align: justify;
+        }
+        .signature-section {
+            margin-top: 60px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 250px;
+            margin-top: 60px;
+            padding-top: 5px;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 10pt;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="bank-name">[[${bancoGaranteNombre}]]</div>
+        <div class="guarantee-type">[[${tipoDescripcion}]]</div>
+        <div class="reference">Referencia: [[${numeroGarantia}]]</div>
+    </div>
+
+    <div class="section">
+        <p><strong>Fecha de Emisión:</strong> [[${fechaEmision}]]</p>
+        <p><strong>Fecha de Vencimiento:</strong> [[${fechaVencimiento}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BENEFICIARIO</div>
+        <p>[[${beneficiarioNombre}]]</p>
+        <p>[[${beneficiarioDireccion}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">ORDENANTE</div>
+        <p>[[${ordenanteNombre}]]</p>
+        <p>[[${ordenanteDireccion}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">MONTO GARANTIZADO</div>
+        <p class="amount">[[${montoFormateado}]]</p>
+        <p class="amount-words">([[${montoLetras}]])</p>
+    </div>
+
+    <div class="section" th:if="${numeroContrato != null and numeroContrato != ''}">
+        <div class="section-title">CONTRATO SUBYACENTE</div>
+        <p><strong>Número de Contrato:</strong> [[${numeroContrato}]]</p>
+        <p th:if="${objetoContrato != null and objetoContrato != ''}"><strong>Objeto:</strong> [[${objetoContrato}]]</p>
+        <p th:if="${montoContratoFormateado != null and montoContratoFormateado != ''}"><strong>Monto del Contrato:</strong> [[${montoContratoFormateado}]]</p>
+    </div>
+
+    <div class="legal-text">
+        <p>Por medio de la presente, <strong>[[${bancoGaranteNombre}]]</strong>, con domicilio en [[${bancoGaranteDireccion}]],
+        se constituye en garante solidario a favor de <strong>[[${beneficiarioNombre}]]</strong> (el "Beneficiario"),
+        por las obligaciones contraídas por <strong>[[${ordenanteNombre}]]</strong> (el "Ordenante").</p>
+
+        <p>El Banco Garante se compromete irrevocablemente a pagar al Beneficiario, a su primera demanda escrita,
+        cualquier suma hasta el monto máximo de <strong>[[${montoFormateado}]]</strong> ([[${montoLetras}]]),
+        sin necesidad de acreditar el incumplimiento del Ordenante.</p>
+
+        <p th:if="${condicionesEjecucion != null and condicionesEjecucion != ''}">
+            <strong>Condiciones de Ejecución:</strong> [[${condicionesEjecucion}]]
+        </p>
+
+        <p>Esta garantía es válida desde [[${fechaEmision}]] hasta [[${fechaVencimiento}]],
+        fecha en la cual expirará automáticamente si no se ha recibido ninguna demanda de pago conforme.</p>
+
+        <p>[[${textoLeyAplicable}]]</p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-line">
+            <p>Firma Autorizada</p>
+            <p>[[${bancoGaranteNombre}]]</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Documento generado electrónicamente - [[${fechaActual}]]</p>
+        <p>SWIFT: [[${bancoGaranteSwift}]]</p>
+    </div>
+</body>
+</html>

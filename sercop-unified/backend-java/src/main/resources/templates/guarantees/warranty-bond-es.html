@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Garantia de Calidad</title>
+    <style>
+        @page { size: letter; margin: 2.5cm 2cm; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; line-height: 1.6; color: #000; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 20px; }
+        .bank-name { font-size: 18pt; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .guarantee-type { font-size: 14pt; font-weight: bold; margin-top: 20px; text-transform: uppercase; }
+        .reference { font-size: 11pt; margin-top: 10px; }
+        .section { margin-bottom: 20px; }
+        .section-title { font-weight: bold; margin-bottom: 10px; text-decoration: underline; }
+        .parties-table { width: 100%; margin-bottom: 20px; }
+        .parties-table td { vertical-align: top; padding: 10px; width: 50%; }
+        .amount-box { border: 2px solid #000; padding: 15px; margin: 20px 0; text-align: center; background-color: #f9f9f9; }
+        .amount { font-size: 16pt; font-weight: bold; }
+        .amount-words { font-size: 11pt; font-style: italic; margin-top: 5px; }
+        .legal-text { margin-top: 25px; text-align: justify; }
+        .legal-text p { margin-bottom: 15px; }
+        .signature-section { margin-top: 50px; page-break-inside: avoid; }
+        .signature-line { border-top: 1px solid #000; width: 250px; margin-top: 50px; padding-top: 5px; text-align: center; }
+        .footer { margin-top: 30px; font-size: 9pt; text-align: center; color: #666; border-top: 1px solid #ccc; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="bank-name">[[${bancoGaranteNombre}]]</div>
+        <div class="guarantee-type">GARANTIA DE CALIDAD / BUEN FUNCIONAMIENTO</div>
+        <div class="reference">No. [[${numeroGarantia}]]</div>
+    </div>
+
+    <div class="section">
+        <table class="parties-table">
+            <tr>
+                <td><strong>Fecha de Emision:</strong> [[${fechaEmision}]]</td>
+                <td><strong>Fecha de Vencimiento:</strong> [[${fechaVencimiento}]]</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <table class="parties-table">
+            <tr>
+                <td>
+                    <div class="section-title">BENEFICIARIO (COMPRADOR)</div>
+                    <p><strong>[[${beneficiarioNombre}]]</strong></p>
+                    <p>[[${beneficiarioDireccion}]]</p>
+                </td>
+                <td>
+                    <div class="section-title">ORDENANTE (VENDEDOR)</div>
+                    <p><strong>[[${ordenanteNombre}]]</strong></p>
+                    <p>[[${ordenanteDireccion}]]</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="amount-box">
+        <div class="amount">[[${montoFormateado}]]</div>
+        <div class="amount-words">([[${montoLetras}]])</div>
+    </div>
+
+    <div class="section" th:if="${numeroContrato != null and numeroContrato != ''}">
+        <div class="section-title">CONTRATO SUBYACENTE</div>
+        <p><strong>Contrato No.:</strong> [[${numeroContrato}]]</p>
+        <p th:if="${objetoContrato != null and objetoContrato != ''}"><strong>Objeto:</strong> [[${objetoContrato}]]</p>
+        <p th:if="${montoContratoFormateado != null and montoContratoFormateado != ''}"><strong>Valor del Contrato:</strong> [[${montoContratoFormateado}]]</p>
+        <p th:if="${porcentajeFormateado != null and porcentajeFormateado != ''}"><strong>Porcentaje de Garantia:</strong> [[${porcentajeFormateado}]]</p>
+    </div>
+
+    <div class="legal-text">
+        <p>Nos ha sido informado que entre usted (Comprador) y <strong>[[${ordenanteNombre}]]</strong> (Vendedor),
+        se ha celebrado un contrato para [[${objetoContrato}]] con fecha [[${fechaEmision}]] por un monto total de
+        [[${montoContratoFormateado}]].</p>
+
+        <p>De acuerdo con los terminos del contrato, se requiere una garantia de calidad/buen funcionamiento por el
+        [[${porcentajeFormateado}]] del valor total de los bienes, valida durante el periodo de garantia.</p>
+
+        <p>Nosotros, <strong>[[${bancoGaranteNombre}]]</strong>, emitimos por medio de la presente esta garantia y
+        nos comprometemos irrevocablemente a pagarle, a su primer requerimiento escrito, cualquier suma hasta:</p>
+
+        <p style="text-align: center; font-weight: bold; font-size: 14pt;">
+            [[${montoFormateado}]]<br/>
+            <span style="font-size: 11pt; font-style: italic;">([[${montoLetras}]])</span>
+        </p>
+
+        <p>Su demanda escrita y confirmacion debera indicar que el Vendedor no ha cumplido con sus obligaciones
+        contractuales de garantia derivadas del contrato para [[${objetoContrato}]] con fecha [[${fechaEmision}]].</p>
+
+        <p>Su demanda escrita debera ser presentada a traves de un banco de operacion internacional con el
+        proposito de autenticacion, con la confirmacion del banco de que la(s) firma(s) en su demanda
+        es(son) legalmente vinculante(s) para usted.</p>
+
+        <p>Esta garantia expirara con la devolucion de este documento de garantia por usted o un tercero,
+        pero a mas tardar expirara, aunque este documento no nos sea devuelto, al final del dia habil del
+        <strong>[[${fechaVencimiento}]]</strong>, siempre que no hayamos recibido su demanda de pago en la
+        forma antes mencionada para esa fecha.</p>
+
+        <p>[[${textoLeyAplicable}]]</p>
+
+        <p>Al vencimiento o recurso, debera devolvernos el documento original de garantia sin demora.</p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-line">
+            <p>Firma Autorizada</p>
+            <p><strong>[[${bancoGaranteNombre}]]</strong></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Documento generado electronicamente por GlobalCMX - [[${fechaActual}]]</p>
+        <p>SWIFT: [[${bancoGaranteSwift}]] | Referencia: [[${numeroGarantia}]]</p>
+    </div>
+</body>
+</html>

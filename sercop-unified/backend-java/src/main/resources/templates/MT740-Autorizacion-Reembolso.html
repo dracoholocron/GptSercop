@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>MT740 - Autorización para Reembolso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #009688;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #009688;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            background-color: #009688;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin: 10px 0;
+        }
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 220px;
+        }
+        .field-value {
+            display: inline-block;
+        }
+        .reimbursement-box {
+            background-color: #e0f2f1;
+            border: 2px solid #009688;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AUTORIZACIÓN PARA REEMBOLSO</h1>
+        <h2>SWIFT MT740</h2>
+    </div>
+
+    <div class="section">
+        <div class="section-title">INFORMACIÓN DE LA AUTORIZACIÓN</div>
+        <div class="field">
+            <span class="field-label">Número de Autorización:</span>
+            <span class="field-value">[[${numeroAutorizacion}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Emisión:</span>
+            <span class="field-value">[[${fechaEmision}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Número de Crédito Relacionado:</span>
+            <span class="field-value">[[${numeroCreditoRelacionado}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BANCO AUTORIZADOR</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${bancoAutorizador}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Código SWIFT:</span>
+            <span class="field-value">[[${codigoSwiftAutorizador}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BANCO REEMBOLSADOR</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${bancoReembolsador}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Código SWIFT:</span>
+            <span class="field-value">[[${codigoSwiftReembolsador}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BANCO SOLICITANTE DEL REEMBOLSO</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${bancoSolicitante}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Código SWIFT:</span>
+            <span class="field-value">[[${codigoSwiftSolicitante}]]</span>
+        </div>
+    </div>
+
+    <div class="reimbursement-box">
+        <div class="section">
+            <div class="section-title">DETALLES DEL REEMBOLSO</div>
+            <div class="field">
+                <span class="field-label">Monto Autorizado:</span>
+                <span class="field-value" style="font-size: 18px; font-weight: bold;">[[${moneda}]] [[${montoAutorizado}]]</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Tolerancia:</span>
+                <span class="field-value">[[${tolerancia}]]</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Fecha de Vencimiento:</span>
+                <span class="field-value">[[${fechaVencimiento}]]</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CONDICIONES DE REEMBOLSO</div>
+        <p>[[${condicionesReembolso}]]</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">INSTRUCCIONES DE CARGO</div>
+        <div class="field">
+            <span class="field-label">Cuenta a Cargar:</span>
+            <span class="field-value">[[${cuentaCargo}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Instrucciones Especiales:</span>
+            <span class="field-value">[[${instruccionesEspeciales}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">DOCUMENTOS REQUERIDOS</div>
+        <p>[[${documentosRequeridos}]]</p>
+    </div>
+
+    <div class="footer">
+        <p>Documento generado automáticamente</p>
+        <p>GlobalCMX - Sistema de Gestión de Comercio Internacional</p>
+    </div>
+</body>
+</html>

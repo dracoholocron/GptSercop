@@ -1,0 +1,2 @@
+ALTER TABLE drools_rules_config_read_model
+ADD COLUMN source_file_content LONGBLOB NULL;

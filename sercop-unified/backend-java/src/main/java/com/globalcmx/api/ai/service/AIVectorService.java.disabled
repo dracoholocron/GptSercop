@@ -1,0 +1,156 @@
+package com.globalcmx.api.ai.service;
+
+import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.embedding.EmbeddingModel;
+// import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel; // DESHABILITADO: requiere librerías nativas
+import dev.langchain4j.store.embedding.EmbeddingStore;
+import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import dev.langchain4j.store.embedding.chroma.ChromaEmbeddingStore;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+// import org.springframework.stereotype.Service; // DESHABILITADO temporalmente
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Servicio para búsqueda vectorial y RAG (Retrieval Augmented Generation)
+ * Usa embeddings para búsqueda semántica de documentos
+ * Soporta almacenamiento en memoria (InMemory) o ChromaDB (persistente)
+ * 
+ * TEMPORALMENTE DESHABILITADO: El modelo de embeddings AllMiniLmL6V2EmbeddingModel
+ * requiere librerías nativas de ONNX Runtime (libstdc++.so.6) que no están disponibles
+ * en el contenedor Docker. Para habilitar:
+ * 1. Instalar libstdc++ en el Dockerfile
+ * 2. Descomentar @Service y el import de AllMiniLmL6V2EmbeddingModel
+ */
+// @Service  // Deshabilitado temporalmente hasta que se instalen las librerías nativas
+@Slf4j
+public class AIVectorService {
+
+    private EmbeddingModel embeddingModel;
+    private EmbeddingStore<TextSegment> embeddingStore;
+    private boolean initialized = false;
+
+    @Value("${ai.vector-store.provider:inmemory}")
+    private String vectorStoreProvider;
+
+    @Value("${ai.vector-store.chroma.url:http://localhost:8000}")
+    private String chromaUrl;
+
+    public AIVectorService() {
+        // Constructor vacío - la inicialización se hace en @PostConstruct
+        // para evitar que se cargue la clase AllMiniLmL6V2EmbeddingModel
+        // que requiere librerías nativas no disponibles
+    }
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        // TEMPORALMENTE DESHABILITADO: El modelo de embeddings requiere librerías nativas
+        // que no están disponibles en el contenedor Docker (libstdc++.so.6)
+        // Para habilitar, instalar las librerías en el Dockerfile o usar un modelo diferente
+        log.warn("AIVectorService: Embedding model initialization is disabled due to missing native libraries.");
+        log.warn("Vector search and RAG functionality will not be available.");
+        log.warn("To enable: Install libstdc++ in Dockerfile or use a different embedding model.");
+        this.embeddingModel = null;
+        this.embeddingStore = null;
+        this.initialized = false;
+        
+        /* Código comentado hasta que se instalen las librerías nativas:
+        try {
+            this.embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+            log.info("Embedding model initialized successfully");
+            
+            if ("chroma".equalsIgnoreCase(vectorStoreProvider)) {
+                try {
+                    this.embeddingStore = ChromaEmbeddingStore.builder()
+                        .baseUrl(chromaUrl)
+                        .collectionName("globalcmx-documents")
+                        .build();
+                    log.info("AIVectorService initialized with ChromaDB at: {}", chromaUrl);
+                } catch (Exception e) {
+                    log.warn("Failed to initialize ChromaDB, falling back to in-memory store: {}", e.getMessage());
+                    this.embeddingStore = new InMemoryEmbeddingStore<>();
+                }
+            } else {
+                this.embeddingStore = new InMemoryEmbeddingStore<>();
+            }
+            this.initialized = true;
+        } catch (Exception e) {
+            log.error("Error initializing AIVectorService: {}", e.getMessage(), e);
+            this.embeddingModel = null;
+            this.embeddingStore = null;
+            this.initialized = false;
+        }
+        */
+    }
+
+    /**
+     * Indexar un documento en el vector store
+     */
+    public void indexDocument(String content, String metadata) {
+        if (!initialized || embeddingModel == null || embeddingStore == null) {
+            log.debug("Vector service not initialized, skipping document indexing");
+            return;
+        }
+        try {
+            TextSegment segment = TextSegment.from(content);
+            Embedding embedding = embeddingModel.embed(segment).content();
+            embeddingStore.add(embedding, segment);
+            log.debug("Document indexed: {}", metadata);
+        } catch (Exception e) {
+            log.error("Error indexing document: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Buscar documentos similares a una consulta
+     */
+    public List<String> searchSimilar(String query, int maxResults) {
+        if (!initialized || embeddingModel == null || embeddingStore == null) {
+            log.debug("Vector service not initialized, returning empty results");
+            return new ArrayList<>();
+        }
+        try {
+            Embedding queryEmbedding = embeddingModel.embed(query).content();
+            List<dev.langchain4j.store.embedding.EmbeddingMatch<TextSegment>> matches = 
+                embeddingStore.findRelevant(queryEmbedding, maxResults);
+            
+            return matches.stream()
+                .map(match -> match.embedded().text())
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error searching similar documents: {}", e.getMessage(), e);
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Obtener contexto relevante para una consulta (para incluir en el prompt)
+     */
+    public String getRelevantContext(String query, int maxResults) {
+        List<String> relevantDocs = searchSimilar(query, maxResults);
+        if (relevantDocs.isEmpty()) {
+            return "";
+        }
+        
+        StringBuilder context = new StringBuilder();
+        context.append("=== DOCUMENTOS RELEVANTES ===\n");
+        for (int i = 0; i < relevantDocs.size(); i++) {
+            context.append(String.format("Documento %d:\n%s\n\n", i + 1, relevantDocs.get(i)));
+        }
+        context.append("=== FIN DE DOCUMENTOS RELEVANTES ===\n");
+        
+        return context.toString();
+    }
+
+    /**
+     * Indexar documentación del sistema (método para inicialización)
+     */
+    public void indexSystemDocumentation() {
+        // Por ahora, método vacío. Se puede implementar para indexar documentación existente
+        log.info("System documentation indexing not yet implemented");
+    }
+}

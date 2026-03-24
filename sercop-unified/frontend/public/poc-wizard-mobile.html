@@ -1,0 +1,2482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POC - LC Import Wizard MT700 - Optimizado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .tab:hover, .tab.active {
+            background: white;
+            color: #764ba2;
+        }
+
+        .proposal {
+            display: none;
+        }
+
+        .proposal.active {
+            display: block;
+        }
+
+        /* Shared compact styles */
+        .compact-input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .compact-input:focus {
+            border-color: #667eea;
+            background: white;
+        }
+
+        .compact-select {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            background: #fafafa;
+            cursor: pointer;
+        }
+
+        .compact-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            background: #fafafa;
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .field-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 5px;
+        }
+
+        .swift-badge {
+            font-size: 10px;
+            color: #667eea;
+            background: #f0f0ff;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .required-dot {
+            width: 6px;
+            height: 6px;
+            background: #e53935;
+            border-radius: 50%;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .field-group {
+            margin-bottom: 12px;
+        }
+
+        /* ========================================
+           PROPUESTA 1: Acordeones Colapsables
+           ======================================== */
+        .accordion-style {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .accordion-header {
+            padding: 14px 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .accordion-header:hover {
+            background: #f0f0f5;
+        }
+
+        .accordion-header.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .accordion-header.active .section-meta {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .accordion-header.completed {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .accordion-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accordion-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .accordion-header.active .accordion-icon {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .section-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .section-meta {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .accordion-arrow {
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        .accordion-header.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 16px;
+        }
+
+        .accordion-content.open {
+            max-height: 800px;
+            padding: 16px;
+        }
+
+        .accordion-footer {
+            padding: 16px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-submit-full {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #F9782D, #ff9a5a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Progress indicator */
+        .progress-summary {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .progress-text {
+            font-size: 13px;
+        }
+
+        .progress-bar-small {
+            width: 100px;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill-small {
+            height: 100%;
+            background: white;
+            width: 30%;
+            transition: width 0.3s;
+        }
+
+        /* ========================================
+           PROPUESTA 2: Campos Agrupados (Multi-step)
+           ======================================== */
+        .grouped-style {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .grouped-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .grouped-step-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .step-subtitle {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .step-progress {
+            display: flex;
+            gap: 4px;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e0e0e0;
+        }
+
+        .step-dot.active {
+            background: #667eea;
+        }
+
+        .step-dot.completed {
+            background: #4CAF50;
+        }
+
+        .grouped-fields {
+            margin-bottom: 20px;
+        }
+
+        .grouped-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-back {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* ========================================
+           PROPUESTA 3: Obligatorios Primero
+           ======================================== */
+        .required-first-style {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .required-section {
+            padding: 20px;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-badge.optional {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .required-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 0;
+        }
+
+        .optional-toggle {
+            padding: 14px 20px;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .optional-toggle-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .optional-count {
+            background: #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .optional-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+            background: #fafafa;
+        }
+
+        .optional-section.open {
+            max-height: 1000px;
+        }
+
+        .optional-content {
+            padding: 20px;
+        }
+
+        .quick-submit {
+            padding: 16px 20px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        /* ========================================
+           PROPUESTA 4: Tabs por Seccion
+           ======================================== */
+        .tabs-style {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .section-tabs {
+            display: flex;
+            overflow-x: auto;
+            background: #f8f9fa;
+            padding: 8px;
+            gap: 4px;
+            scrollbar-width: none;
+        }
+
+        .section-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section-tab {
+            flex-shrink: 0;
+            padding: 8px 14px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-tab:hover {
+            background: #e8e8e8;
+        }
+
+        .section-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .section-tab.completed::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #4CAF50;
+            border-radius: 50%;
+        }
+
+        .section-tab.active.completed::after {
+            background: white;
+        }
+
+        .tab-content {
+            padding: 20px;
+            min-height: 350px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-nav {
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tab-progress {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-tab-nav {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-tab-prev {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-tab-next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        /* ========================================
+           PROPUESTA 5: Asistente de Digitacion
+           ======================================== */
+        .assistant-style {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .assistant-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .assistant-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .assistant-title-icon {
+            font-size: 24px;
+        }
+
+        .assistant-title-text h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .assistant-title-text p {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            font-size: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.95);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #667eea;
+        }
+
+        .search-shortcut {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .suggestions-panel {
+            border-bottom: 1px solid #eee;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+            background: #f8f9ff;
+        }
+
+        .suggestion-item.selected {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border-left: 3px solid #667eea;
+        }
+
+        .suggestion-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .suggestion-icon.date { background: #e8f5e9; }
+        .suggestion-icon.money { background: #e3f2fd; }
+        .suggestion-icon.text { background: #fff3e0; }
+        .suggestion-icon.select { background: #fce4ec; }
+        .suggestion-icon.party { background: #f3e5f5; }
+
+        .suggestion-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .suggestion-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .suggestion-code {
+            font-size: 10px;
+            color: #667eea;
+            background: #f0f0ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .suggestion-desc {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .suggestion-section {
+            font-size: 10px;
+            color: #aaa;
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .no-suggestions {
+            padding: 30px 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        .no-suggestions-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .no-suggestions p {
+            font-size: 13px;
+        }
+
+        /* Input Panel */
+        .input-panel {
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 180px;
+        }
+
+        .input-panel-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 140px;
+            color: #888;
+        }
+
+        .input-panel-empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .input-panel-empty p {
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .active-field {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            animation: slideIn 0.2s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .active-field-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .active-field-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .active-field-title span:first-child {
+            font-size: 18px;
+        }
+
+        .active-field-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .active-field-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .active-field-close:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .active-field-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .active-field-input:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        .active-field-input.textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .active-field-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-field-action {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-field-skip {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-field-save {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-field-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* History Panel */
+        .history-panel {
+            border-top: 1px solid #eee;
+        }
+
+        .history-header {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        .history-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .history-count {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .history-toggle {
+            font-size: 12px;
+            color: #888;
+            transition: transform 0.2s;
+        }
+
+        .history-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+
+        .history-content.open {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 12px;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-item-field {
+            font-weight: 600;
+            color: #333;
+            min-width: 80px;
+        }
+
+        .history-item-value {
+            flex: 1;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-item-edit {
+            color: #667eea;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .history-item-edit:hover {
+            text-decoration: underline;
+        }
+
+        /* Stats bar */
+        .assistant-stats {
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-item strong {
+            color: #667eea;
+        }
+
+        .btn-finish {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #4CAF50, #66BB6A);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-finish:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Keyboard hints */
+        .keyboard-hints {
+            margin-top: 15px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .keyboard-hints p {
+            color: white;
+            font-size: 11px;
+            text-align: center;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .hints-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .hint kbd {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+
+            .section-tabs {
+                padding: 6px;
+            }
+
+            .section-tab {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LC Import Wizard - MT700</h1>
+        <p class="subtitle">5 Propuestas de UX Optimizadas</p>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showProposal('accordion')">Acordeones</button>
+            <button class="tab" onclick="showProposal('grouped')">Agrupados</button>
+            <button class="tab" onclick="showProposal('required')">Obligatorios</button>
+            <button class="tab" onclick="showProposal('tabbed')">Tabs</button>
+            <button class="tab" onclick="showProposal('assistant')" style="background: rgba(255,200,100,0.3);">&#9889; Asistente</button>
+        </div>
+
+        <!-- ================================================================
+             PROPUESTA 1: Acordeones Colapsables
+             ================================================================ -->
+        <div id="accordion" class="proposal active">
+            <div class="accordion-style">
+                <div class="progress-summary">
+                    <span class="progress-text">3 de 9 secciones completas</span>
+                    <div class="progress-bar-small">
+                        <div class="progress-fill-small" style="width: 33%"></div>
+                    </div>
+                </div>
+
+                <!-- Section 1: General -->
+                <div class="accordion-section">
+                    <div class="accordion-header completed active" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128203;</div>
+                            <div>
+                                <div class="section-name">Informacion General</div>
+                                <div class="section-meta">:20: :40A: :40E: :31C:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content open">
+                        <div class="field-group">
+                            <label class="field-label">
+                                Numero LC <span class="swift-badge">:20:</span> <span class="required-dot"></span>
+                            </label>
+                            <input type="text" class="compact-input" placeholder="LC-2024-001234" value="LC-2024-001234">
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Forma <span class="swift-badge">:40A:</span></label>
+                                <select class="compact-select">
+                                    <option>IRREVOCABLE</option>
+                                    <option>IRREV TRANSF</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Reglas <span class="swift-badge">:40E:</span></label>
+                                <select class="compact-select">
+                                    <option>UCP 600</option>
+                                    <option>eUCP</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Fecha Emision <span class="swift-badge">:31C:</span></label>
+                            <input type="date" class="compact-input">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Montos -->
+                <div class="accordion-section">
+                    <div class="accordion-header completed" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128176;</div>
+                            <div>
+                                <div class="section-name">Montos y Tolerancias</div>
+                                <div class="section-meta">:32B: :39A: :39C:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Moneda</label>
+                                <select class="compact-select">
+                                    <option>USD</option>
+                                    <option>EUR</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Monto <span class="swift-badge">:32B:</span> <span class="required-dot"></span></label>
+                                <input type="text" class="compact-input" placeholder="150,000.00">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Tolerancia + <span class="swift-badge">:39A:</span></label>
+                                <input type="text" class="compact-input" placeholder="10%">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Tolerancia -</label>
+                                <input type="text" class="compact-input" placeholder="10%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Fechas -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128197;</div>
+                            <div>
+                                <div class="section-name">Fechas y Vencimiento</div>
+                                <div class="section-meta">:31D: :44C: :48:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Vencimiento <span class="swift-badge">:31D:</span> <span class="required-dot"></span></label>
+                                <input type="date" class="compact-input">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Lugar</label>
+                                <input type="text" class="compact-input" placeholder="Miami, USA">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Ultimo Embarque <span class="swift-badge">:44C:</span></label>
+                                <input type="date" class="compact-input">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Dias Pres. <span class="swift-badge">:48:</span></label>
+                                <input type="number" class="compact-input" placeholder="21">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Partes -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128101;</div>
+                            <div>
+                                <div class="section-name">Partes</div>
+                                <div class="section-meta">:50: :59:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-group">
+                            <label class="field-label">Ordenante <span class="swift-badge">:50:</span> <span class="required-dot"></span></label>
+                            <input type="text" class="compact-input" placeholder="Nombre">
+                            <textarea class="compact-textarea" style="margin-top: 8px; min-height: 50px;" placeholder="Direccion"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Beneficiario <span class="swift-badge">:59:</span> <span class="required-dot"></span></label>
+                            <input type="text" class="compact-input" placeholder="Nombre">
+                            <textarea class="compact-textarea" style="margin-top: 8px; min-height: 50px;" placeholder="Direccion"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Pago -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128179;</div>
+                            <div>
+                                <div class="section-name">Disponibilidad/Pago</div>
+                                <div class="section-meta">:41a: :42C: :42a:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-group">
+                            <label class="field-label">Disponible por <span class="swift-badge">:41a:</span></label>
+                            <select class="compact-select">
+                                <option>BY PAYMENT</option>
+                                <option>BY ACCEPTANCE</option>
+                                <option>BY NEGOTIATION</option>
+                                <option>BY DEF PAYMENT</option>
+                            </select>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Giros <span class="swift-badge">:42C:</span></label>
+                                <input type="text" class="compact-input" placeholder="90 dias vista">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Girado <span class="swift-badge">:42a:</span></label>
+                                <input type="text" class="compact-input" placeholder="Banco">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 6: Embarque -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128674;</div>
+                            <div>
+                                <div class="section-name">Embarque</div>
+                                <div class="section-meta">:43P: :43T: :44A-F: :44I:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Parciales <span class="swift-badge">:43P:</span></label>
+                                <select class="compact-select">
+                                    <option>ALLOWED</option>
+                                    <option>NOT ALLOWED</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Transbordo <span class="swift-badge">:43T:</span></label>
+                                <select class="compact-select">
+                                    <option>ALLOWED</option>
+                                    <option>NOT ALLOWED</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Puerto Carga <span class="swift-badge">:44E:</span></label>
+                                <input type="text" class="compact-input" placeholder="Shanghai">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Puerto Desc. <span class="swift-badge">:44F:</span></label>
+                                <input type="text" class="compact-input" placeholder="Long Beach">
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Incoterms <span class="swift-badge">:44I:</span></label>
+                            <select class="compact-select">
+                                <option>FOB</option>
+                                <option>CIF</option>
+                                <option>CFR</option>
+                                <option>EXW</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7: Mercancias -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128230;</div>
+                            <div>
+                                <div class="section-name">Mercancias/Docs</div>
+                                <div class="section-meta">:45A: :46A: :47A:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-group">
+                            <label class="field-label">Mercancias <span class="swift-badge">:45A:</span> <span class="required-dot"></span></label>
+                            <textarea class="compact-textarea" placeholder="Descripcion de bienes"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Documentos <span class="swift-badge">:46A:</span> <span class="required-dot"></span></label>
+                            <textarea class="compact-textarea" placeholder="+1) Invoice&#10;+2) B/L&#10;+3) Packing List"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Condiciones <span class="swift-badge">:47A:</span></label>
+                            <textarea class="compact-textarea" placeholder="Condiciones adicionales"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 8: Bancos -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#127974;</div>
+                            <div>
+                                <div class="section-name">Bancos</div>
+                                <div class="section-meta">:53a: :57a: :49:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-group">
+                            <label class="field-label">Bco Reembolso <span class="swift-badge">:53a:</span></label>
+                            <input type="text" class="compact-input" placeholder="BIC">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Bco Avisador <span class="swift-badge">:57a:</span></label>
+                            <input type="text" class="compact-input" placeholder="BIC">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Confirmacion <span class="swift-badge">:49:</span></label>
+                            <select class="compact-select">
+                                <option>WITHOUT</option>
+                                <option>CONFIRM</option>
+                                <option>MAY ADD</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 9: Instrucciones -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div class="accordion-title">
+                            <div class="accordion-icon">&#128221;</div>
+                            <div>
+                                <div class="section-name">Instrucciones</div>
+                                <div class="section-meta">:71D: :78K: :72Z:</div>
+                            </div>
+                        </div>
+                        <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="field-group">
+                            <label class="field-label">Cargos <span class="swift-badge">:71D:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Cargos"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Instrucciones <span class="swift-badge">:78K:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Instrucciones al banco"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-footer">
+                    <button class="btn-submit-full">Emitir LC - MT700</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             PROPUESTA 2: Campos Agrupados (3-5 por paso)
+             ================================================================ -->
+        <div id="grouped" class="proposal">
+            <div class="grouped-style">
+                <div class="grouped-header">
+                    <div class="grouped-step-info">
+                        <div class="step-number">2</div>
+                        <div>
+                            <div class="step-title">Montos y Fechas</div>
+                            <div class="step-subtitle">:32B: :39A: :31D: :44C:</div>
+                        </div>
+                    </div>
+                    <div class="step-progress">
+                        <div class="step-dot completed"></div>
+                        <div class="step-dot active"></div>
+                        <div class="step-dot"></div>
+                        <div class="step-dot"></div>
+                        <div class="step-dot"></div>
+                    </div>
+                </div>
+
+                <div class="grouped-fields">
+                    <div class="field-row">
+                        <div class="field-group">
+                            <label class="field-label">Moneda</label>
+                            <select class="compact-select">
+                                <option>USD</option>
+                                <option>EUR</option>
+                                <option>GBP</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Monto <span class="swift-badge">:32B:</span> <span class="required-dot"></span></label>
+                            <input type="text" class="compact-input" placeholder="150,000.00">
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field-group">
+                            <label class="field-label">Tolerancia +/- <span class="swift-badge">:39A:</span></label>
+                            <input type="text" class="compact-input" placeholder="10/10">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Adicional <span class="swift-badge">:39C:</span></label>
+                            <input type="text" class="compact-input" placeholder="Seguro, flete">
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field-group">
+                            <label class="field-label">Vencimiento <span class="swift-badge">:31D:</span> <span class="required-dot"></span></label>
+                            <input type="date" class="compact-input">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Lugar Venc.</label>
+                            <input type="text" class="compact-input" placeholder="Miami, USA">
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field-group">
+                            <label class="field-label">Ult. Embarque <span class="swift-badge">:44C:</span></label>
+                            <input type="date" class="compact-input">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Dias Pres. <span class="swift-badge">:48:</span></label>
+                            <input type="number" class="compact-input" placeholder="21" value="21">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grouped-nav">
+                    <button class="btn-nav btn-back">Anterior</button>
+                    <button class="btn-nav btn-next">Siguiente</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                <p style="color: white; font-size: 12px; text-align: center;">
+                    <strong>5 pasos totales:</strong> General | Montos/Fechas | Partes | Embarque/Docs | Bancos
+                </p>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             PROPUESTA 3: Obligatorios Primero
+             ================================================================ -->
+        <div id="required" class="proposal">
+            <div class="required-first-style">
+                <div class="required-section">
+                    <div class="section-badge">
+                        <span class="required-dot"></span>
+                        Campos Obligatorios (8)
+                    </div>
+
+                    <div class="required-grid">
+                        <div class="field-group">
+                            <label class="field-label">Numero LC <span class="swift-badge">:20:</span></label>
+                            <input type="text" class="compact-input" placeholder="LC-2024-001234">
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Moneda/Monto <span class="swift-badge">:32B:</span></label>
+                                <div style="display: flex; gap: 6px;">
+                                    <select class="compact-select" style="width: 80px;">
+                                        <option>USD</option>
+                                        <option>EUR</option>
+                                    </select>
+                                    <input type="text" class="compact-input" placeholder="150,000">
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Vencimiento <span class="swift-badge">:31D:</span></label>
+                                <input type="date" class="compact-input">
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Ordenante <span class="swift-badge">:50:</span></label>
+                            <input type="text" class="compact-input" placeholder="Nombre y direccion">
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Beneficiario <span class="swift-badge">:59:</span></label>
+                            <input type="text" class="compact-input" placeholder="Nombre y direccion">
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Mercancias <span class="swift-badge">:45A:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 60px;" placeholder="Descripcion breve"></textarea>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Documentos <span class="swift-badge">:46A:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 60px;" placeholder="+1) Invoice +2) B/L"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="optional-toggle" onclick="toggleOptional()">
+                    <div class="optional-toggle-text">
+                        <span>&#9881;</span>
+                        <span>Campos Opcionales</span>
+                        <span class="optional-count">+25</span>
+                    </div>
+                    <span id="optional-arrow">&#9660;</span>
+                </div>
+
+                <div class="optional-section" id="optional-section">
+                    <div class="optional-content">
+                        <div class="section-badge optional">
+                            Opcionales - Expandir segun necesidad
+                        </div>
+
+                        <div class="required-grid">
+                            <div class="field-row">
+                                <div class="field-group">
+                                    <label class="field-label">Forma <span class="swift-badge">:40A:</span></label>
+                                    <select class="compact-select">
+                                        <option>IRREVOCABLE</option>
+                                        <option>IRREV TRANSF</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <label class="field-label">Reglas <span class="swift-badge">:40E:</span></label>
+                                    <select class="compact-select">
+                                        <option>UCP 600</option>
+                                        <option>eUCP</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field-group">
+                                    <label class="field-label">Tolerancia <span class="swift-badge">:39A:</span></label>
+                                    <input type="text" class="compact-input" placeholder="+10/-10">
+                                </div>
+                                <div class="field-group">
+                                    <label class="field-label">Disponible <span class="swift-badge">:41a:</span></label>
+                                    <select class="compact-select">
+                                        <option>BY PAYMENT</option>
+                                        <option>BY ACCEPTANCE</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field-group">
+                                    <label class="field-label">Parciales <span class="swift-badge">:43P:</span></label>
+                                    <select class="compact-select">
+                                        <option>ALLOWED</option>
+                                        <option>NOT ALLOWED</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <label class="field-label">Transbordo <span class="swift-badge">:43T:</span></label>
+                                    <select class="compact-select">
+                                        <option>ALLOWED</option>
+                                        <option>NOT ALLOWED</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field-group">
+                                    <label class="field-label">Pto Carga <span class="swift-badge">:44E:</span></label>
+                                    <input type="text" class="compact-input" placeholder="Puerto">
+                                </div>
+                                <div class="field-group">
+                                    <label class="field-label">Pto Descarga <span class="swift-badge">:44F:</span></label>
+                                    <input type="text" class="compact-input" placeholder="Puerto">
+                                </div>
+                            </div>
+
+                            <div class="field-group">
+                                <label class="field-label">Condiciones <span class="swift-badge">:47A:</span></label>
+                                <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Condiciones adicionales"></textarea>
+                            </div>
+
+                            <p style="font-size: 11px; color: #888; text-align: center; margin-top: 10px;">
+                                ... y 15 campos mas (Bancos, Instrucciones, etc.)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-submit">
+                    <button class="btn-submit-full">Emision Rapida - Solo Obligatorios</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             PROPUESTA 4: Tabs por Seccion
+             ================================================================ -->
+        <div id="tabbed" class="proposal">
+            <div class="tabs-style">
+                <div class="section-tabs">
+                    <button class="section-tab active completed" data-tab="tab-general">General</button>
+                    <button class="section-tab completed" data-tab="tab-montos">Montos</button>
+                    <button class="section-tab" data-tab="tab-fechas">Fechas</button>
+                    <button class="section-tab" data-tab="tab-partes">Partes</button>
+                    <button class="section-tab" data-tab="tab-pago">Pago</button>
+                    <button class="section-tab" data-tab="tab-embarque">Embarque</button>
+                    <button class="section-tab" data-tab="tab-docs">Docs</button>
+                    <button class="section-tab" data-tab="tab-bancos">Bancos</button>
+                    <button class="section-tab" data-tab="tab-instr">Instr.</button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Tab: General -->
+                    <div class="tab-panel active" id="tab-general">
+                        <div class="field-group">
+                            <label class="field-label">Numero LC <span class="swift-badge">:20:</span> <span class="required-dot"></span></label>
+                            <input type="text" class="compact-input" placeholder="LC-2024-001234">
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Forma Credito <span class="swift-badge">:40A:</span></label>
+                                <select class="compact-select">
+                                    <option>IRREVOCABLE</option>
+                                    <option>IRREVOCABLE TRANSFERABLE</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Reglas <span class="swift-badge">:40E:</span></label>
+                                <select class="compact-select">
+                                    <option>UCP LATEST VERSION</option>
+                                    <option>EUCPURR LATEST VERSION</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Fecha Emision <span class="swift-badge">:31C:</span></label>
+                            <input type="date" class="compact-input">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Ref Pre-Aviso <span class="swift-badge">:23:</span></label>
+                            <input type="text" class="compact-input" placeholder="PREADV/fecha">
+                        </div>
+                    </div>
+
+                    <!-- Tab: Montos -->
+                    <div class="tab-panel" id="tab-montos">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Moneda</label>
+                                <select class="compact-select">
+                                    <option>USD</option>
+                                    <option>EUR</option>
+                                    <option>GBP</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Monto <span class="swift-badge">:32B:</span> <span class="required-dot"></span></label>
+                                <input type="text" class="compact-input" placeholder="150,000.00">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Tolerancia + <span class="swift-badge">:39A:</span></label>
+                                <input type="text" class="compact-input" placeholder="10%">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Tolerancia -</label>
+                                <input type="text" class="compact-input" placeholder="10%">
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Montos Adicionales <span class="swift-badge">:39C:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 60px;" placeholder="Seguro, flete, intereses"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Fechas -->
+                    <div class="tab-panel" id="tab-fechas">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Fecha Venc. <span class="swift-badge">:31D:</span> <span class="required-dot"></span></label>
+                                <input type="date" class="compact-input">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Lugar Venc.</label>
+                                <input type="text" class="compact-input" placeholder="Miami, USA">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Ult. Embarque <span class="swift-badge">:44C:</span></label>
+                                <input type="date" class="compact-input">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Dias Pres. <span class="swift-badge">:48:</span></label>
+                                <input type="number" class="compact-input" placeholder="21">
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Periodo Embarque <span class="swift-badge">:44D:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Periodo de embarque"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Partes -->
+                    <div class="tab-panel" id="tab-partes">
+                        <div class="field-group">
+                            <label class="field-label">Ordenante <span class="swift-badge">:50:</span> <span class="required-dot"></span></label>
+                            <input type="text" class="compact-input" placeholder="Nombre" style="margin-bottom: 6px;">
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Direccion completa"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Beneficiario <span class="swift-badge">:59:</span> <span class="required-dot"></span></label>
+                            <input type="text" class="compact-input" placeholder="Nombre" style="margin-bottom: 6px;">
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Direccion completa"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Banco Ordenante <span class="swift-badge">:51a:</span></label>
+                            <input type="text" class="compact-input" placeholder="BIC del banco">
+                        </div>
+                    </div>
+
+                    <!-- Tab: Pago -->
+                    <div class="tab-panel" id="tab-pago">
+                        <div class="field-group">
+                            <label class="field-label">Disponible con/por <span class="swift-badge">:41a:</span></label>
+                            <select class="compact-select">
+                                <option>BY PAYMENT</option>
+                                <option>BY ACCEPTANCE</option>
+                                <option>BY NEGOTIATION</option>
+                                <option>BY DEF PAYMENT</option>
+                                <option>BY MIXED PYMT</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Giros a <span class="swift-badge">:42C:</span></label>
+                            <input type="text" class="compact-input" placeholder="90 dias vista">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Girado <span class="swift-badge">:42a:</span></label>
+                            <input type="text" class="compact-input" placeholder="Banco girado">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Detalles Pago <span class="swift-badge">:42P:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Detalles pago diferido"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Embarque -->
+                    <div class="tab-panel" id="tab-embarque">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Parciales <span class="swift-badge">:43P:</span></label>
+                                <select class="compact-select">
+                                    <option>ALLOWED</option>
+                                    <option>NOT ALLOWED</option>
+                                </select>
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Transbordo <span class="swift-badge">:43T:</span></label>
+                                <select class="compact-select">
+                                    <option>ALLOWED</option>
+                                    <option>NOT ALLOWED</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Pto Carga <span class="swift-badge">:44E:</span></label>
+                                <input type="text" class="compact-input" placeholder="Shanghai">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Pto Desc <span class="swift-badge">:44F:</span></label>
+                                <input type="text" class="compact-input" placeholder="Long Beach">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">Origen <span class="swift-badge">:44A:</span></label>
+                                <input type="text" class="compact-input" placeholder="Place of receipt">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Destino <span class="swift-badge">:44B:</span></label>
+                                <input type="text" class="compact-input" placeholder="Final destination">
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Incoterms <span class="swift-badge">:44I:</span></label>
+                            <select class="compact-select">
+                                <option>FOB</option>
+                                <option>CIF</option>
+                                <option>CFR</option>
+                                <option>EXW</option>
+                                <option>DDP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Documentos -->
+                    <div class="tab-panel" id="tab-docs">
+                        <div class="field-group">
+                            <label class="field-label">Mercancias <span class="swift-badge">:45A:</span> <span class="required-dot"></span></label>
+                            <textarea class="compact-textarea" placeholder="Descripcion de bienes y/o servicios"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Codigo HS <span class="swift-badge">:45H:</span></label>
+                            <input type="text" class="compact-input" placeholder="Codigo arancelario">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Documentos <span class="swift-badge">:46A:</span> <span class="required-dot"></span></label>
+                            <textarea class="compact-textarea" placeholder="+1) Commercial Invoice&#10;+2) Bill of Lading&#10;+3) Packing List"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Condiciones <span class="swift-badge">:47A:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Condiciones adicionales"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Bancos -->
+                    <div class="tab-panel" id="tab-bancos">
+                        <div class="field-group">
+                            <label class="field-label">Bco Reembolso <span class="swift-badge">:53a:</span></label>
+                            <input type="text" class="compact-input" placeholder="BIC del banco">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Bco Avisador <span class="swift-badge">:57a:</span></label>
+                            <input type="text" class="compact-input" placeholder="BIC del banco">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Confirmacion <span class="swift-badge">:49:</span></label>
+                            <select class="compact-select">
+                                <option>WITHOUT</option>
+                                <option>CONFIRM</option>
+                                <option>MAY ADD</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Bco Confirmador <span class="swift-badge">:58a:</span></label>
+                            <input type="text" class="compact-input" placeholder="BIC del banco">
+                        </div>
+                    </div>
+
+                    <!-- Tab: Instrucciones -->
+                    <div class="tab-panel" id="tab-instr">
+                        <div class="field-group">
+                            <label class="field-label">Cargos <span class="swift-badge">:71D:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Cargos al beneficiario"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Instrucciones <span class="swift-badge">:78K:</span></label>
+                            <textarea class="compact-textarea" placeholder="Instrucciones al banco pagador"></textarea>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Info Adicional <span class="swift-badge">:72Z:</span></label>
+                            <textarea class="compact-textarea" style="min-height: 50px;" placeholder="Sender to Receiver info"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-nav">
+                    <span class="tab-progress">Seccion 1 de 9</span>
+                    <div class="tab-buttons">
+                        <button class="btn-tab-nav btn-tab-prev">Ant</button>
+                        <button class="btn-tab-nav btn-tab-next">Sig</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             PROPUESTA 5: Asistente de Digitacion Rapida
+             ================================================================ -->
+        <div id="assistant" class="proposal">
+            <div class="assistant-style">
+                <!-- Header con busqueda -->
+                <div class="assistant-header">
+                    <div class="assistant-title">
+                        <span class="assistant-title-icon">&#9889;</span>
+                        <div class="assistant-title-text">
+                            <h3>Asistente de Digitacion</h3>
+                            <p>Busca por codigo SWIFT o descripcion</p>
+                        </div>
+                    </div>
+                    <div class="search-box">
+                        <span class="search-icon">&#128269;</span>
+                        <input type="text" class="search-input" id="field-search" placeholder="Ej: 31D, fecha, monto, beneficiario..." autocomplete="off">
+                        <span class="search-shortcut">Ctrl+K</span>
+                    </div>
+                </div>
+
+                <!-- Panel de sugerencias -->
+                <div class="suggestions-panel" id="suggestions-panel">
+                    <div class="suggestion-item selected" data-field="31D" data-type="date" data-name="Fecha y Lugar de Vencimiento">
+                        <div class="suggestion-icon date">&#128197;</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">
+                                Fecha y Lugar de Vencimiento
+                                <span class="suggestion-code">:31D:</span>
+                            </div>
+                            <div class="suggestion-desc">Date and Place of Expiry - Obligatorio</div>
+                        </div>
+                        <span class="suggestion-section">Fechas</span>
+                    </div>
+                    <div class="suggestion-item" data-field="31C" data-type="date" data-name="Fecha de Emision">
+                        <div class="suggestion-icon date">&#128197;</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">
+                                Fecha de Emision
+                                <span class="suggestion-code">:31C:</span>
+                            </div>
+                            <div class="suggestion-desc">Date of Issue</div>
+                        </div>
+                        <span class="suggestion-section">General</span>
+                    </div>
+                    <div class="suggestion-item" data-field="44C" data-type="date" data-name="Fecha Limite de Embarque">
+                        <div class="suggestion-icon date">&#128197;</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">
+                                Fecha Limite de Embarque
+                                <span class="suggestion-code">:44C:</span>
+                            </div>
+                            <div class="suggestion-desc">Latest Date of Shipment</div>
+                        </div>
+                        <span class="suggestion-section">Fechas</span>
+                    </div>
+                    <div class="suggestion-item" data-field="32B" data-type="money" data-name="Moneda y Monto">
+                        <div class="suggestion-icon money">&#128176;</div>
+                        <div class="suggestion-info">
+                            <div class="suggestion-name">
+                                Moneda y Monto
+                                <span class="suggestion-code">:32B:</span>
+                            </div>
+                            <div class="suggestion-desc">Currency Code, Amount - Obligatorio</div>
+                        </div>
+                        <span class="suggestion-section">Montos</span>
+                    </div>
+                </div>
+
+                <!-- Panel de entrada activa -->
+                <div class="input-panel" id="input-panel">
+                    <div class="active-field" id="active-field">
+                        <div class="active-field-header">
+                            <div class="active-field-title">
+                                <span>&#128197;</span>
+                                <span class="active-field-name">Fecha y Lugar de Vencimiento <span class="suggestion-code">:31D:</span></span>
+                            </div>
+                            <button class="active-field-close" onclick="clearActiveField()">&#10005;</button>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="date" class="active-field-input" style="flex: 1;" id="active-input-date">
+                            <input type="text" class="active-field-input" style="flex: 1;" placeholder="Lugar (ej: Miami, USA)" id="active-input-place">
+                        </div>
+                        <div class="active-field-actions">
+                            <button class="btn-field-action btn-field-skip" onclick="skipField()">Omitir</button>
+                            <button class="btn-field-action btn-field-save" onclick="saveField()">Guardar y Siguiente &#8594;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial de campos ingresados -->
+                <div class="history-panel">
+                    <div class="history-header" onclick="toggleHistory()">
+                        <div class="history-header-left">
+                            <span>&#128203;</span>
+                            <span>Campos ingresados</span>
+                            <span class="history-count" id="history-count">3</span>
+                        </div>
+                        <span class="history-toggle" id="history-toggle">&#9660;</span>
+                    </div>
+                    <div class="history-content" id="history-content">
+                        <div class="history-item">
+                            <span class="history-item-field">:20:</span>
+                            <span class="history-item-value">LC-2024-001234</span>
+                            <span class="history-item-edit">Editar</span>
+                        </div>
+                        <div class="history-item">
+                            <span class="history-item-field">:32B:</span>
+                            <span class="history-item-value">USD 150,000.00</span>
+                            <span class="history-item-edit">Editar</span>
+                        </div>
+                        <div class="history-item">
+                            <span class="history-item-field">:50:</span>
+                            <span class="history-item-value">ABC TRADING CO LTD - 123 MAIN ST, NEW YORK</span>
+                            <span class="history-item-edit">Editar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats y boton finalizar -->
+                <div class="assistant-stats">
+                    <div class="stats-info">
+                        <div class="stat-item">
+                            <span>&#9989;</span>
+                            <strong>3</strong>/8 obligatorios
+                        </div>
+                        <div class="stat-item">
+                            <span>&#128203;</span>
+                            <strong>3</strong>/45 total
+                        </div>
+                    </div>
+                    <button class="btn-finish">Ver Formulario Completo</button>
+                </div>
+            </div>
+
+            <!-- Hints de teclado -->
+            <div class="keyboard-hints">
+                <p><strong>Atajos de teclado:</strong></p>
+                <div class="hints-row">
+                    <div class="hint"><kbd>&#8593;</kbd><kbd>&#8595;</kbd> Navegar</div>
+                    <div class="hint"><kbd>Enter</kbd> Seleccionar</div>
+                    <div class="hint"><kbd>Tab</kbd> Siguiente campo</div>
+                    <div class="hint"><kbd>Esc</kbd> Limpiar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show proposal
+        function showProposal(id) {
+            document.querySelectorAll('.proposal').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+
+            // Focus search if assistant
+            if (id === 'assistant') {
+                setTimeout(() => document.getElementById('field-search').focus(), 100);
+            }
+        }
+
+        // Accordion toggle
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const wasOpen = content.classList.contains('open');
+
+            // Close all
+            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+            document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
+
+            // Open clicked if it was closed
+            if (!wasOpen) {
+                content.classList.add('open');
+                header.classList.add('active');
+            }
+        }
+
+        // Optional section toggle
+        function toggleOptional() {
+            const section = document.getElementById('optional-section');
+            const arrow = document.getElementById('optional-arrow');
+            section.classList.toggle('open');
+            arrow.style.transform = section.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+        }
+
+        // Tab navigation
+        document.querySelectorAll('.section-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+
+                // Update tabs
+                document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update panels
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+
+                // Update progress
+                const tabs = Array.from(document.querySelectorAll('.section-tab'));
+                const index = tabs.indexOf(this) + 1;
+                document.querySelector('.tab-progress').textContent = `Seccion ${index} de ${tabs.length}`;
+            });
+        });
+
+        // Tab nav buttons
+        document.querySelector('.btn-tab-next')?.addEventListener('click', function() {
+            const activeTab = document.querySelector('.section-tab.active');
+            const next = activeTab.nextElementSibling;
+            if (next && next.classList.contains('section-tab')) {
+                next.click();
+            }
+        });
+
+        document.querySelector('.btn-tab-prev')?.addEventListener('click', function() {
+            const activeTab = document.querySelector('.section-tab.active');
+            const prev = activeTab.previousElementSibling;
+            if (prev && prev.classList.contains('section-tab')) {
+                prev.click();
+            }
+        });
+
+        // ========================================
+        // ASSISTANT FUNCTIONALITY
+        // ========================================
+
+        // Field database
+        const swiftFields = [
+            { code: '20', name: 'Numero de Referencia LC', desc: 'Documentary Credit Number', type: 'text', section: 'General', required: true },
+            { code: '23', name: 'Referencia Pre-Aviso', desc: 'Reference to Pre-Advice', type: 'text', section: 'General', required: false },
+            { code: '31C', name: 'Fecha de Emision', desc: 'Date of Issue', type: 'date', section: 'General', required: false },
+            { code: '31D', name: 'Fecha y Lugar de Vencimiento', desc: 'Date and Place of Expiry', type: 'date-place', section: 'Fechas', required: true },
+            { code: '32B', name: 'Moneda y Monto', desc: 'Currency Code, Amount', type: 'money', section: 'Montos', required: true },
+            { code: '39A', name: 'Tolerancia Porcentaje', desc: 'Percentage Credit Amount Tolerance', type: 'text', section: 'Montos', required: false },
+            { code: '39C', name: 'Montos Adicionales Cubiertos', desc: 'Additional Amounts Covered', type: 'textarea', section: 'Montos', required: false },
+            { code: '40A', name: 'Forma del Credito', desc: 'Form of Documentary Credit', type: 'select', section: 'General', required: false, options: ['IRREVOCABLE', 'IRREVOCABLE TRANSFERABLE'] },
+            { code: '40E', name: 'Reglas Aplicables', desc: 'Applicable Rules', type: 'select', section: 'General', required: false, options: ['UCP LATEST VERSION', 'EUCPURR LATEST VERSION', 'OTHR'] },
+            { code: '41a', name: 'Disponible Con/Por', desc: 'Available With/By', type: 'select', section: 'Pago', required: false, options: ['BY PAYMENT', 'BY ACCEPTANCE', 'BY NEGOTIATION', 'BY DEF PAYMENT'] },
+            { code: '42C', name: 'Giros a', desc: 'Drafts at', type: 'text', section: 'Pago', required: false },
+            { code: '42a', name: 'Girado', desc: 'Drawee', type: 'text', section: 'Pago', required: false },
+            { code: '43P', name: 'Embarques Parciales', desc: 'Partial Shipments', type: 'select', section: 'Embarque', required: false, options: ['ALLOWED', 'NOT ALLOWED', 'CONDITIONAL'] },
+            { code: '43T', name: 'Transbordo', desc: 'Transshipment', type: 'select', section: 'Embarque', required: false, options: ['ALLOWED', 'NOT ALLOWED', 'CONDITIONAL'] },
+            { code: '44A', name: 'Lugar de Recepcion', desc: 'Place of Taking in Charge', type: 'text', section: 'Embarque', required: false },
+            { code: '44B', name: 'Destino Final', desc: 'Place of Final Destination', type: 'text', section: 'Embarque', required: false },
+            { code: '44C', name: 'Fecha Limite Embarque', desc: 'Latest Date of Shipment', type: 'date', section: 'Fechas', required: false },
+            { code: '44D', name: 'Periodo de Embarque', desc: 'Shipment Period', type: 'textarea', section: 'Embarque', required: false },
+            { code: '44E', name: 'Puerto de Carga', desc: 'Port of Loading', type: 'text', section: 'Embarque', required: false },
+            { code: '44F', name: 'Puerto de Descarga', desc: 'Port of Discharge', type: 'text', section: 'Embarque', required: false },
+            { code: '44I', name: 'Incoterms', desc: 'Incoterms Place/Named', type: 'select', section: 'Embarque', required: false, options: ['FOB', 'CIF', 'CFR', 'EXW', 'DDP', 'DAP'] },
+            { code: '45A', name: 'Descripcion de Mercancias', desc: 'Description of Goods and/or Services', type: 'textarea', section: 'Mercancias', required: true },
+            { code: '46A', name: 'Documentos Requeridos', desc: 'Documents Required', type: 'textarea', section: 'Mercancias', required: true },
+            { code: '47A', name: 'Condiciones Adicionales', desc: 'Additional Conditions', type: 'textarea', section: 'Mercancias', required: false },
+            { code: '48', name: 'Periodo de Presentacion', desc: 'Period for Presentation', type: 'text', section: 'Fechas', required: false },
+            { code: '49', name: 'Instrucciones Confirmacion', desc: 'Confirmation Instructions', type: 'select', section: 'Bancos', required: false, options: ['CONFIRM', 'MAY ADD', 'WITHOUT'] },
+            { code: '50', name: 'Ordenante', desc: 'Applicant', type: 'party', section: 'Partes', required: true },
+            { code: '53a', name: 'Banco de Reembolso', desc: 'Reimbursing Bank', type: 'text', section: 'Bancos', required: false },
+            { code: '57a', name: 'Banco Avisador', desc: 'Advise Through Bank', type: 'text', section: 'Bancos', required: false },
+            { code: '59', name: 'Beneficiario', desc: 'Beneficiary', type: 'party', section: 'Partes', required: true },
+            { code: '71D', name: 'Cargos', desc: 'Charges', type: 'textarea', section: 'Instrucciones', required: false },
+            { code: '78K', name: 'Instrucciones al Banco', desc: 'Instructions to Paying/Accepting/Negotiating Bank', type: 'textarea', section: 'Instrucciones', required: false },
+            { code: '72Z', name: 'Info Remitente a Receptor', desc: 'Sender to Receiver Information', type: 'textarea', section: 'Instrucciones', required: false },
+        ];
+
+        const typeIcons = {
+            'text': '&#128221;',
+            'date': '&#128197;',
+            'date-place': '&#128197;',
+            'money': '&#128176;',
+            'textarea': '&#128203;',
+            'select': '&#128205;',
+            'party': '&#128101;'
+        };
+
+        const typeColors = {
+            'text': 'text',
+            'date': 'date',
+            'date-place': 'date',
+            'money': 'money',
+            'textarea': 'text',
+            'select': 'select',
+            'party': 'party'
+        };
+
+        let currentSelectedIndex = 0;
+        let filteredFields = [...swiftFields];
+        let enteredFields = [];
+
+        // Search functionality
+        const searchInput = document.getElementById('field-search');
+        const suggestionsPanel = document.getElementById('suggestions-panel');
+
+        searchInput?.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+
+            if (query === '') {
+                filteredFields = [...swiftFields];
+            } else {
+                filteredFields = swiftFields.filter(field =>
+                    field.code.toLowerCase().includes(query) ||
+                    field.name.toLowerCase().includes(query) ||
+                    field.desc.toLowerCase().includes(query) ||
+                    field.section.toLowerCase().includes(query)
+                );
+            }
+
+            currentSelectedIndex = 0;
+            renderSuggestions();
+        });
+
+        // Keyboard navigation
+        searchInput?.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentSelectedIndex = Math.min(currentSelectedIndex + 1, filteredFields.length - 1);
+                renderSuggestions();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentSelectedIndex = Math.max(currentSelectedIndex - 1, 0);
+                renderSuggestions();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (filteredFields[currentSelectedIndex]) {
+                    selectField(filteredFields[currentSelectedIndex]);
+                }
+            } else if (e.key === 'Escape') {
+                this.value = '';
+                filteredFields = [...swiftFields];
+                currentSelectedIndex = 0;
+                renderSuggestions();
+            }
+        });
+
+        function renderSuggestions() {
+            if (filteredFields.length === 0) {
+                suggestionsPanel.innerHTML = `
+                    <div class="no-suggestions">
+                        <div class="no-suggestions-icon">&#128269;</div>
+                        <p>No se encontraron campos.<br>Intenta con otro termino.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            suggestionsPanel.innerHTML = filteredFields.slice(0, 5).map((field, index) => `
+                <div class="suggestion-item ${index === currentSelectedIndex ? 'selected' : ''}"
+                     onclick="selectField(swiftFields.find(f => f.code === '${field.code}'))">
+                    <div class="suggestion-icon ${typeColors[field.type]}">${typeIcons[field.type]}</div>
+                    <div class="suggestion-info">
+                        <div class="suggestion-name">
+                            ${field.name}
+                            <span class="suggestion-code">:${field.code}:</span>
+                        </div>
+                        <div class="suggestion-desc">${field.desc}${field.required ? ' - Obligatorio' : ''}</div>
+                    </div>
+                    <span class="suggestion-section">${field.section}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectField(field) {
+            const inputPanel = document.getElementById('input-panel');
+            let inputHtml = '';
+
+            switch (field.type) {
+                case 'date':
+                    inputHtml = `<input type="date" class="active-field-input" id="active-input">`;
+                    break;
+                case 'date-place':
+                    inputHtml = `
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" class="active-field-input" style="flex: 1;" id="active-input">
+                            <input type="text" class="active-field-input" style="flex: 1;" placeholder="Lugar (ej: Miami, USA)" id="active-input-2">
+                        </div>
+                    `;
+                    break;
+                case 'money':
+                    inputHtml = `
+                        <div style="display: flex; gap: 10px;">
+                            <select class="active-field-input" style="width: 100px;" id="active-input-currency">
+                                <option>USD</option>
+                                <option>EUR</option>
+                                <option>GBP</option>
+                            </select>
+                            <input type="text" class="active-field-input" style="flex: 1;" placeholder="150,000.00" id="active-input">
+                        </div>
+                    `;
+                    break;
+                case 'textarea':
+                    inputHtml = `<textarea class="active-field-input textarea" id="active-input" placeholder="Ingrese el texto..."></textarea>`;
+                    break;
+                case 'select':
+                    inputHtml = `
+                        <select class="active-field-input" id="active-input">
+                            ${field.options.map(opt => `<option>${opt}</option>`).join('')}
+                        </select>
+                    `;
+                    break;
+                case 'party':
+                    inputHtml = `
+                        <input type="text" class="active-field-input" style="margin-bottom: 10px;" placeholder="Nombre" id="active-input">
+                        <textarea class="active-field-input textarea" placeholder="Direccion completa" id="active-input-2"></textarea>
+                    `;
+                    break;
+                default:
+                    inputHtml = `<input type="text" class="active-field-input" id="active-input" placeholder="Ingrese el valor...">`;
+            }
+
+            inputPanel.innerHTML = `
+                <div class="active-field" id="active-field">
+                    <div class="active-field-header">
+                        <div class="active-field-title">
+                            <span>${typeIcons[field.type]}</span>
+                            <span class="active-field-name">${field.name} <span class="suggestion-code">:${field.code}:</span></span>
+                        </div>
+                        <button class="active-field-close" onclick="clearActiveField()">&#10005;</button>
+                    </div>
+                    ${inputHtml}
+                    <div class="active-field-actions">
+                        <button class="btn-field-action btn-field-skip" onclick="skipField()">Omitir</button>
+                        <button class="btn-field-action btn-field-save" onclick="saveField('${field.code}')">Guardar y Siguiente &#8594;</button>
+                    </div>
+                </div>
+            `;
+
+            // Focus the input
+            setTimeout(() => {
+                const input = document.getElementById('active-input');
+                if (input) input.focus();
+            }, 100);
+
+            // Clear search
+            searchInput.value = '';
+        }
+
+        function clearActiveField() {
+            const inputPanel = document.getElementById('input-panel');
+            inputPanel.innerHTML = `
+                <div class="input-panel-empty">
+                    <div class="input-panel-empty-icon">&#128269;</div>
+                    <p>Busca un campo arriba para<br>comenzar a ingresar datos</p>
+                </div>
+            `;
+            searchInput.focus();
+        }
+
+        function skipField() {
+            clearActiveField();
+        }
+
+        function saveField(fieldCode) {
+            const input = document.getElementById('active-input');
+            const input2 = document.getElementById('active-input-2');
+            const inputCurrency = document.getElementById('active-input-currency');
+
+            let value = input?.value || '';
+            if (input2) value += ' - ' + input2.value;
+            if (inputCurrency) value = inputCurrency.value + ' ' + value;
+
+            if (value.trim()) {
+                enteredFields.push({ code: fieldCode, value: value });
+                updateHistory();
+            }
+
+            clearActiveField();
+        }
+
+        function updateHistory() {
+            const historyContent = document.getElementById('history-content');
+            const historyCount = document.getElementById('history-count');
+
+            historyCount.textContent = enteredFields.length;
+
+            historyContent.innerHTML = enteredFields.map(field => `
+                <div class="history-item">
+                    <span class="history-item-field">:${field.code}:</span>
+                    <span class="history-item-value">${field.value}</span>
+                    <span class="history-item-edit">Editar</span>
+                </div>
+            `).join('');
+
+            // Update stats
+            const requiredCount = enteredFields.filter(f =>
+                swiftFields.find(sf => sf.code === f.code)?.required
+            ).length;
+
+            document.querySelector('.stats-info').innerHTML = `
+                <div class="stat-item">
+                    <span>&#9989;</span>
+                    <strong>${requiredCount}</strong>/8 obligatorios
+                </div>
+                <div class="stat-item">
+                    <span>&#128203;</span>
+                    <strong>${enteredFields.length}</strong>/45 total
+                </div>
+            `;
+        }
+
+        function toggleHistory() {
+            const content = document.getElementById('history-content');
+            const toggle = document.getElementById('history-toggle');
+            content.classList.toggle('open');
+            toggle.style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+        }
+
+        // Keyboard shortcut Ctrl+K
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                showProposal('assistant');
+                // Click on assistant tab
+                document.querySelectorAll('.tabs .tab').forEach(t => {
+                    if (t.textContent.includes('Asistente')) {
+                        t.classList.add('active');
+                    } else {
+                        t.classList.remove('active');
+                    }
+                });
+            }
+        });
+
+        // Initialize
+        renderSuggestions();
+    </script>
+</body>
+</html>

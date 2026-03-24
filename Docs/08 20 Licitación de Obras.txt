@@ -1,0 +1,2486 @@
+
+A nombre del servicio nacional, nombre de servicio nacional de contratación pública, les damos la más cordial bienvenida al seminario del día
+2:16
+de hoy, visitación de obras. Nuestra facilitadora del día de hoy es el economista Alexandraes, que nos va a dar
+2:23
+información en relación a este tema. Por favor, le por favor les recordamos que las consultas deben ser enfocadas a la
+2:31
+capacitación que estamos realizando el día de hoy. Eh, vamos a tener otros temas que ustedes pueden revisar nuestro
+2:37
+cronograma y de acuerdo a las fechas que estén establecidas pueden hacer su consulta. Alex, muy buenos días,
+2:42
+bienvenida. Hola, Anita. Muchas gracias. Gracias a las personas que se han dado cita en esta mañana para tratar este tema acerca
+2:49
+de la licitación de obras, que a propósito de las reformas normativas, claro, eh nos trae muchas inquietudes
+2:55
+cómo se está haciendo. Hay muchos de ustedes que, por ejemplo, preguntan todavía por la menor cuantía cotización
+3:02
+cuando sabemos que esos procesos ya eh no en este caso ya no se están utilizando, ¿verdad? debido a las
+3:07
+reformas justamente. Pero en el webinar de hoy esperamos solventar esas inquietudes no tanto de herramientas,
+3:14
+sino más bien de cómo debemos hacer, incluido también la cuestión del análisis de valor por dinero, que
+3:19
+sabemos que eh es una de las eh de las cosas o de las observaciones que uno
+3:25
+tiene cuando está realizando procedimientos de contratación en estos días.
+3:30
+Entonces, antes de empezar, por favor, ¿me puede indicar si es que es visible para usted en modo presentación la la el
+3:38
+material? Sí, gracias Andrés, muchísimas gracias.
+3:45
+Bien, entonces vamos a empezar con esto de licitación de obra. Como les decía, hay eh cuestiones muy
+3:53
+importantes que fueron reformuladas en el cambio de la ley y una de esas, claro, es la reducción de los procesos
+3:59
+de contratación, ¿verdad? Entonces, en cuestión de obras, usted hasta hace no mucho, usted recuerda que teníamos un
+4:05
+catálogo de procesos, teníamos, por ejemplo, menor cuantía, teníamos cotización
+4:11
+y e la el cambio normativo dijo, "No, eh, eliminemos estos procesos, ¿verdad?
+4:16
+con la intención de tener una simplicidad en el uso del mismo, tanto para entidades como para proveedores. Y
+4:22
+eso ha implicado, claro, que hoy estemos en un periodo de transición del que vamos a hablar también. Y en ese
+4:28
+sentido, pues eh poco a poco vamos adaptándonos y vamos ya eh estableciendo cómo vamos a utilizar la licitación de
+4:35
+obras y cómo debemos utilizarlo hoy en este periodo de transición. La capacitación que vamos a brindar en esta
+4:41
+mañana sobre esta herramienta tiene una duración eh bueno, en el tiempo de más o menos una una hora y
+4:48
+media, dos, pero en en cuanto a la vigencia como tal de la capacitación eh tiene una vigencia hasta que superemos
+4:55
+el periodo de transición. Una vez superemos el periodo de transición vamos a necesitar renovar nuevamente nuestros
+5:01
+conocimientos porque como le explico, tanto la normativa como la herramienta estamos caminando, ¿no es cierto?, hacia
+5:07
+un proceso de licitación de obra que eh cumpla con todas las características que está pidiendo la reforma normativa. Al
+5:14
+momento estamos caminando para allá. Bien, entonces para eh empezar vamos a
+5:20
+recordar es muy importante tener claro qué es una obra. Recuerde usted que este
+5:25
+concepto que antes estaba en los anexos de la normativa secundaria y ahora se encuentra ya dentro del reglamento, nos
+5:32
+habla claramente de lo que es una obra, ¿no es cierto? y nos ayuda con este concepto a distinguir y no confundirnos
+5:39
+entre lo que sería un servicio. Es muy importante distinguir el objeto de contratación. Entonces, ¿qué es lo que
+5:45
+dice el numeral 20 del artículo 1.2 del reglamento? Dice, "Una obra es toda
+5:52
+construcción, reconstrucción, remodelación, mantenimiento, mejoramiento, demolición, renovación,
+5:57
+ampliación, instalación, habilitación." Y aquí hay un concepto eh general que
+6:03
+también eh además de los estos ejemplos específicos que le han brindado que le brinda esta este esta normativa, le dice
+6:11
+en general cualquier trabajo material sobre bienes e inmuebles, obesuelo o subsuelo. Entonces, si tal vez algo de
+6:18
+lo que usted está haciendo no está nombrado dentro de estos conceptos específicos, pues hay una un concepto
+6:25
+más amplio y habrían que comparar si lo que vamos a hacer nosotros es un trabajo sobre bienes inmuebles o sobre suelo
+6:31
+suelo para que sea considerado como obra. Y luego esta eh esta definición
+6:36
+nos ayuda con nuevos ejemplos. dice, tales como edificaciones, túneles, puertos, sistemas de alcantarillado y
+6:43
+agua potable, presas, sistemas eléctricos y electrónicos, estructuras, excavaciones, perforaciones, carreteras
+6:50
+y puentes. Y nuevamente nos abre hacer una validación por si los ejemplos que
+6:55
+nos muestra la definición no son o no están dentro de lo que nosotros vamos a hacer. Y dice que para que sea obra,
+7:02
+entonces debe tener los siguientes elementos: una dirección técnica, un expediente técnico, mano de obra,
+7:09
+materiales y equipos. Entonces si reducimos el concepto de obra, ¿no es
+7:14
+cierto? Le hacemos aún más pequeño sin los ejemplos que nos da la definición, diríamos que es en general cualquier
+7:20
+trabajo material sobre bienes inmuebles o sobre suelo o subsuelo que requieran dirección técnica, expediente técnico,
+7:26
+mano de obra, materiales y equipos. Es muy importante que nosotros aprendamos
+7:32
+en este sentido a demostrar, ¿no es cierto?, que nuestro objeto de contratación cumple con estos requisitos
+7:37
+y debido a eso está definido como obra y no está definido como servicio porque
+7:42
+eso nos llevaría por caminos distintos. Entonces, al iniciar este webinar, por
+7:48
+favor, tenga la claridad sobre qué es lo que se considera obra. Bien, entonces vamos a empezar un poquito más y vamos
+7:55
+ahora sí ya al camino de la licitación. Entonces, la licitación de obras se
+8:00
+encuentra actualmente establecida para toda contratación de este objeto eh cuyo
+8:06
+valor sea mayor a los $10,000. Sí, ya no hay la menor cuantía, ya no hay la cotización, sino que directamente nos
+8:13
+vamos a lo que se considera como licitación de obras. E esto se encuentra
+8:19
+definido justamente en el artículo 49.1 uno del reglamento cuando hablamos de valor por dinero, nos saltamos un
+8:24
+poquito hacia allá porque ahí está eh justamente la determinación de que todo
+8:30
+proceso de obra, ¿verdad? Será eh llevado a través de licitación cuando el
+8:36
+valor sea mayor a $10,000. Y en ese sentido también influye en lo que vamos a ver más adelante, que es esto del
+8:42
+análisis de valor por dinero. Bien, entonces ahora tal vez esta es la
+8:48
+cuestión por la que eh muchos de ustedes se han convocado hoy y es que al
+8:54
+intentar, ¿no es cierto?, ya manejar la herramienta, eh dicen ustedes, pasa
+8:59
+algo, me está pidiendo la desagregación tecnológica, me está eh también hay una cuestión de subcontratación.
+9:06
+¿A qué se debe esto? Entonces, recordemos que luego de los cambios que se dieron en la ley, luego en el
+9:11
+reglamento, también tenemos la resolución cerca 2025153,
+9:16
+en el cual se establecen algunos algunos aspectos que se encuentran, como le decía yo, en transición. Inclusive el
+9:23
+gráfico que le presento es algo como que estamos caminando y estamos eh diseñando, ¿verdad?, el resto del camino
+9:28
+que nos toca. Entonces, ¿qué es lo que dice el artículo 4? El artículo 4 dice que los artículos 37 y tercero del
+9:35
+reglamento que justamente hablan de la desagregación tecnológica dice, estarán en régimen de transición. Para el
+9:42
+efecto, el CERCO parametrizará la herramienta correspondiente para viabilizar la aplicación de los estudios
+9:48
+de desagregación tecnológica en los procedimientos de licitación de obras en un término de 45 días. Mientras tanto,
+9:56
+el artículo 1 de esta misma resolución dice que mientras se encuentren en transición eh el en este sentido, pues
+10:04
+las herramientas o los artículos definidos funcionarán como han venido funcionando antes de la reforma. Por
+10:11
+tanto, cuando hablamos de licitación antes de la reforma, toda licitación, ¿qué es lo que tenía? Tenía
+10:17
+desagregación tecnológica y también contiene parámetros de evaluación de
+10:22
+subcontratación. Entonces mantiene su misma naturaleza. Si, por eso es que si
+10:29
+en este caso para obras mayores de 10000 hay que realizar la desagregación porque está manteniendo la naturaleza de lo que
+10:35
+es la licitación y también la evaluación en la subcontratación. Entonces ahora
+10:41
+todo proceso que se denomina licitación de obras, ¿no es cierto? Tiene estos dos agregados que venían de antes de la
+10:48
+reforma, desagregación y subcontratación. Esto va a quedar así para siempre. No,
+10:54
+porque la normativa aquí en la resolución 53 establece un término de 45
+11:00
+días, ¿no es cierto? ¿Para qué? Para que el CCOV adapte las herramientas en este
+11:05
+caso y estas herramientas ya soliciten desagregación tecnológica y evaluación
+11:10
+de subcontratación.
+11:24
+Sí. Eh, estimados participates, estamos con un pequeño una pequeña
+11:31
+intermitencia en internet, son unos minutos para rezar. Sí. Valores iguales o superiores al millón de dólares, que es lo que nos dicen las
+11:37
+reformas. Entonces, que en 45 días que aproximadamente no he hecho el cálculo exacto, pero aproximadamente es a
+11:42
+mediados de octubre, esta herramienta ya estará adaptada, ¿verdad? para que eh cumpla, como nos dice la norma, para
+11:49
+valores iguales o mayores a ,00ón. Bien, entonces pienso que eso es una de las
+11:55
+cuestiones por las que usted decidió inscribirse o registrarse a esto, decir, ¿cómo eh o por qué debo hacer eso? Es
+12:01
+porque estamos en transición. Nuevamente le explico, usted puede revisar el artículo 1 de la eh de la resolución 153
+12:09
+y le dice, mientras est transición se mantiene el funcionamiento como venía
+12:15
+antes de las reformas. Bien, ahora introduciéndonos un poco más en el mundo
+12:21
+de la licitación, vamos a hacer un camino o vamos a hacer un mapa de cómo se trabaja la preparatoria. Es verdad
+12:27
+que la preparatoria funciona así en este proceso y también puede funcionar en los
+12:33
+procesos de subasta inversa, de régimen especial, pero vamos a ver con ustedes ciertas diferencias que marcan una
+12:39
+licitación de obras. Entonces, el primer paso que damos en la preparatoria, claro, es que se encuentre dentro del
+12:45
+PAC. Luego tenemos la determinación de la necesidad que eh también eh en este
+12:51
+sentido ha venido ya vinculándose con criterios de cumplimiento de eh de
+12:57
+beneficio, ¿no es cierto? análisis de beneficio, deficiencia o efectividad y que como tal vez eh si usted me escuchó
+13:05
+en la charla de valor por dinero, le decía, ya nos venían preparando para este camino de aplicación de valor por
+13:10
+dinero, porque en la determinación de la necesidad, que es un paso importantísimo en todo proceso de contratación, la
+13:17
+entidad contratante ya reflexionaba y eh en este eh además reportaba a través de
+13:23
+este tipo de documento por qué hacía la contratación, o sea, cuál era el en este sentido
+13:29
+el beneficio que provoca una contratación. Desde el CERCOP nosotros pensamos que
+13:34
+toda contratación que hace una entidad contratante tiene un beneficio, si no no se le hiciera, ¿verdad? No, no es que
+13:40
+gastamos los recursos porque es necesario en este caso pues eh tener una
+13:46
+ejecución sobre ese presupuesto, sino porque este gasto tiene un beneficio directamente relacionado con los
+13:52
+objetivos institucionales. Nosotros tenemos una o debemos tener una línea base antes de la adquisición como tal y
+14:00
+establecer cuál es la expectativa que tiene la entidad contratante una vez que se obtenga este objeto de contratación
+14:07
+para mejorar o superar esa línea de base. Entonces ahí estaba el análisis de
+14:13
+beneficio que como le decía era necesario y ya nos venía preparando para el camino de aplicación de valor por
+14:18
+dinero. En cuanto a los otros elementos que son eficiencia y efectividad, el uno
+14:23
+se refiere, claro, a cómo estamos usando los recursos. Es decir, muchas veces, por ejemplo, contratamos ciertos
+14:30
+servicios que tal vez también hay en el internamente en la entidad, pero eh
+14:35
+vamos, los equipos puede ser que no estén totalmente con con eh en este sentido con mejoras tecnológicas,
+14:42
+¿verdad? o tal vez nuestro equipo interno de la entidad es muy pequeño y entonces necesitamos más personas para
+14:49
+que puedan elaborar ciertos servicios. Entonces hacemos un análisis de costo beneficio y decimos, "Bueno, por esta
+14:55
+vez vale contratar el servicio cualquiera que este sea, o vale contratar la obra, porque nosotros
+15:01
+necesitamos también tener un manejo, ¿no es cierto?, de recursos, tanto interno como externo, y demostramos la
+15:08
+eficiencia y la efectividad es lo que buscamos el grado de satisfacción en
+15:14
+este sentido que buscamos con la alternativa que hemos tomado en la adquisición. Entonces, la determinación
+15:19
+de la necesidad ya lo veníamos haciendo. Espero que muchos de ustedes lo hayan hecho como un ejercicio frente a a lo
+15:27
+que es la contratación y no simplemente como un cumplimiento de requisito, porque si estábamos así, ahí sí tenemos
+15:33
+conflicto. Eh, y en cómo ahora esto se adapta hacia el análisis de valor por dinero. En sí, la determinación de la
+15:40
+necesidad es la justificación de por qué vamos a utilizar los recursos del Estado
+15:45
+en una determinada contratación. Y en este sentido nos marca la medida de
+15:51
+mejora, la medida de satisfacción, la medida de uso de recursos que tenemos cuando utilizamos estos recursos. Bien,
+15:58
+luego teníamos eh una certificación que se denominaba PAC, que a la cuenta viene siendo un respaldo de que la línea que
+16:06
+vamos a trabajar ya se encuentra establecida dentro del plan anual de contratación. Y empezábamos con el tema
+16:11
+de estudios. En el tema de estudios tenemos eh la especificación técnica o término de
+16:17
+referencia. Aquí hay una diferencia, por ejemplo, en el siguiente que le menciono, porque en la licitación uno de
+16:23
+los estudios obligatorios es la desagregación tecnológica, efectivamente, ¿no es cierto? Y
+16:29
+obviamente la desagregación eh nos van a definir que era el objeto de contratación y está aliada con qué, con
+16:34
+los análisis de precio unitario. Esto tampoco es nuevo. En todo proceso de obra ya la norma venía exigiendo que
+16:42
+para la definición del presupuesto referencial, ¿no es cierto?, se construya a través de análisis de precio
+16:49
+unitario. Esto en concordancia con lo que establecen las normas internas de contraloría. Entonces, todo proyecto de
+16:56
+obra, sin importar su valor debe tener análisis de precio unitario. Y este es
+17:01
+el primer paso para luego construir la desagregación tecnológica. junto con la
+17:06
+determinación del presupuesto referencial, que en el caso de obras corresponde al análisis de precio
+17:12
+unitario, ahora se pide añadir el análisis de mejor valor por dinero.
+17:17
+Tenemos un ejemplo con ustedes para poderlo tratar, eh para que vean cómo se debe eh desarrollar, ¿no es cierto?,
+17:25
+esta parte en un ejemplo que les tenemos acerca de líneas de subtransmisión. Entonces, vamos a revisar. Hay ha habido
+17:33
+muchas preguntas y que dicen, ¿dónde debo yo realizar este análisis o dónde
+17:39
+se debe reflejar este análisis? Decían, tal vez en la determinación de la necesidad, tal vez en las
+17:44
+especificaciones técnicas. Y en este sentido, el 49.1 eh establece justamente que este
+17:51
+análisis debe darse, ¿no es cierto?, en relación al instrumento de presupuesto
+17:57
+referencial. Y en este caso es el análisis de precio unitario. Aquí es donde se debe plasmar esto de manera
+18:02
+fáctica. Sin embargo, el análisis de mejor valor por dinero, en realidad al
+18:07
+ser un principio, viene desarrollándose desde la determinación de la necesidad. Cuando usted establece beneficio,
+18:13
+eficiencia, efectividad, ya está usted estableciendo el camino del mejor valor por dinero. Bien, cuando usted establece
+18:20
+características de especificaciones técnicas, términos de referencia que sean funcionales, que en este sentido
+18:26
+tengan rendimiento, durabilidad, que adicionalmente a esto puedan tener
+18:32
+ciertos criterios de sostenibilidad que pueden ser aplicados por varios proveedores, también está ya
+18:38
+introduciendo eh criterios de mejor valor por dinero en en este tipo de estudios. Entonces, si bien de manera
+18:44
+fáctica se evidencia en la determinación del presupuesto referencial, o sea, en este caso de obras, análisis de precio
+18:50
+unitario, como un acápite puede ser de este estudio, recuerde que el valor por
+18:56
+dinero al ser un principio se debe ver reflejado en la determinación de la necesidad y se debe ver reflejado en las
+19:02
+especificaciones técnicas o términos de referencia. De hecho, si usted pensó en
+19:09
+buscar eh vamos a pensar, si usted siempre estaba buscando los mejores productos para su entidad en todo
+19:15
+momento, el valor por dinero simplemente le es un nombre distinto a una actividad que usted ya venía desarrollando. Sí, ya
+19:22
+no es algo nuevo porque es lo que hemos venido haciendo siempre, buscando la optimización de los recursos. Es decir,
+19:29
+que cada dólar que tenga la entidad nos rinda lo máximo, no solo en la compra
+19:35
+del producto. Ojalá eh también nos pueda añadir algunos otros beneficios en esta adquisición, ¿verdad? Eso veníamos
+19:41
+buscándolo. Ahora, con la existencia de análisis de valor por dinero y su consecuente evaluación nos permite
+19:48
+justamente eh darle ese reconocimiento a los proveedores que nos dan un poco más de
+19:55
+lo mínimo que nosotros hemos establecido en los estudios. Bien, entonces luego
+20:01
+tiene usted el paso de la certificación de disponibilidad de fondos. Esto no es nuevo. Siempre hemos hablado de que para
+20:07
+establecer compromisos con terceros, el Estado debe garantizar la existencia del dinero para pagar. Eh, también tenemos
+20:14
+la construcción del pliego, finalmente la resolución de inicio. Esto es un mapa bastante rápido de cómo se produce la
+20:20
+preparatoria en la licitación y le he marcado en otro color aquellos estudios que le distancian, ¿no es cierto?, de
+20:27
+procesos como subasta, procesos que eh por ejemplo de otros procesos especiales, porque hay características
+20:33
+definidas como la desagregación, ¿verdad? y también el análisis de precio unitario. Y ahora el análisis de valor
+20:39
+por dinero. Ahora vamos a ver para el
+20:45
+tenemos en el caso de análisis de valor por dinero, tenemos el análisis de precio unitario, como yo le decía, que
+20:51
+es parte de los instrumentos de e construcción, ¿no es cierto?, del
+20:57
+presupuesto referencial. Y esto de los APUS no es una cuestión solo que establece el CERCOP, sino que lo
+21:02
+establece en este sentido directamente las normas de control interno de la Contraloría General del Estado.
+21:09
+Entonces, cuando usted cumple con eh en este sentido establecer para cualquier
+21:14
+obra, para cualquier obra el análisis de precio unitario cumple con los requerimientos de ambas entidades, tanto
+21:20
+el CERCOP como en este sentido también la Contraloría General del Estado. Ahora bien, vamos al terreno del análisis de
+21:28
+valor por dinero, que está unido dentro de este estudio. Sí. Eh, lo que le pide la normativa en el 41.1 son tres tres
+21:37
+acápitas o tres puntos. Puede ser. El primero que se aplica solo para bienes y servicios, ¿verdad? Puede usted revisar
+21:43
+ahora mismo y diga, "Ah, pero aquí dice bienes y servicios." Entonces, esto de la estandarización, de revisar la
+21:48
+estandarización, no aplica en obras. Sí, porque únicamente está establecido para bienes y servicios. Mi sugerencia que lo
+21:56
+establezca y puede establecerlo dentro del estudio indicando que este primer punto solo en este sentido funciona para
+22:03
+bienes y servicios o se requiere para bienes y servicios. El segundo punto que
+22:08
+tiene que ver con el mercado competitivo de proveedores o contratistas eh previsiblemente cualificados, eso sí es
+22:14
+posible realizar en obras. Recuerde que a través del SOSE nosotros tenemos una
+22:20
+herramienta donde podemos consultar, ¿no es cierto?, la cantidad de proveedores que se encuentran registrados en el CPC
+22:26
+que vamos a utilizar. Entonces, también es fácil de realizar. Ya, de hecho, me
+22:31
+parece que esto ya lo veníamos haciendo en algún otro momento, ¿verdad?, cuando establecemos a la cantidad de
+22:36
+proveedores que pueden en este sentido receptar nuestra invitación y pues ojalá
+22:42
+ofertar frente a este pedido que hace la entidad. El punto tres eh es también se
+22:48
+puede realizar en obras porque habla de la evaluación acerca de la existencia de riesgos o necesidad de priorizar
+22:54
+atributos distinto al precio de los bienes o servicios a adquirirse. Entonces, voy a pasar un momentito, voy
+23:01
+a cambiar de eh de recurso para mostrarles cómo en este sentido quedaría
+23:08
+un eh análisis de valor por dinero. permítame salirme un ratito de la pantalla para cambiar de
+23:16
+recurso.
+23:23
+Vamos a ver. Sí, Alex, estamos teniendo alguna intermitencia con el internet que nos
+23:29
+está generando estos inconvenientes. Ay,
+23:36
+eh, Anita, ya tal vez me puedes indicar si hay algo que repetir, porque ahorita lo que iba a hacer es a cambiar de de
+23:42
+recurso. Ya. No, lo que nos estaban indicando que si tuvimos una pequeña
+23:49
+Se nos fue el audio justo fue en parte que hablabas de la desagregación tecnológica, me indican los
+23:59
+si hay algo que repetí porque lo que iba a hacer ahorita es mostrar el análisis de cómo quedaría el
+24:05
+análisis de valor por dinero. Ya, Neker nos estaba indicando eh que querían que le repita eh por favor si nos puede
+24:12
+indicar de qué parte era específicamente.
+24:20
+Se corta, Anita. Sí, es que se está cortando
+24:25
+eh la parte del tema de la desegregación tecnológica, ¿no es? A ver, déjame ver el chat y voy a voy a
+24:32
+a ver el chat. Dame un ratito. Ajá.
+24:45
+Creo que antes de mostrar el análisis, sí, sí me gustaría, déjame revisar
+24:52
+puede encontrar la grabación. Sí, nos indica Mónica que en la parte de
+24:58
+desagregación y lo de subcontratación se entrecortó un día
+25:03
+y también Naker cuando estaba hablando de la primera parte de la licitación.
+25:09
+A ver, ahí vamos a resolver algunas de las preguntas que hasta el momento se ha dado, porque yo sé que esto es un cambio fuerte que se dio en licitación y
+25:16
+también eh posiblemente muchos de ustedes eh hayan esperado que se diga
+25:22
+que no se haga desagregación y vemos que sí. Entonces, vamos a hacer una una un primer momento de respuestas, Anita,
+25:28
+antes de mostrar el análisis de valor por dinero. E solo déjeme ubicar desde cuándo están las preguntas y con gusto
+25:36
+le ayudo. Vamos a ver. Sí, por favor.
+25:45
+A ver, eh, para empezar hay una pregunta de John Freire que nos habla. La pregunta como tal es acerca de qué es
+25:52
+una obra, ¿verdad? Porque él me indica, estamos eh comprando en este Aló, Anita.
+25:59
+Sí, no, sí, sí te escucho, Alex. Ah, ya. Gracias. Perdón. Entonces, John,
+26:05
+para responder tu pregunta, porque tú dices, "Mire, estoy comprando algunos materiales de construcción, pero a la
+26:10
+vez también estoy comprando de mano mano de obra." Sí. Entonces, me entiendo que tu pregunta no está planteada así, pero
+26:17
+tal vez la inquietud es si es una obra. Recuerda el concepto de obra, un trabajo que se ha realizado sobre un bien
+26:23
+inmueble y que reúna los elementos que habíamos hablado, dirección técnica, materiales, equipos. Si no tiene esas
+26:29
+características, pues no es una obra. Sí, y es importante, sí, que que lo sepan ustedes establecer porque al
+26:36
+definir ustedes si es obra, saben el CPC que van a escoger y también el camino que vamos en este sentido a realizar. En
+26:44
+cuestión de servicios, usted tiene, por ejemplo, eh si son mayores a 10,000, tiene el camino de la subasta o el
+26:50
+camino de la licitación también de servicios. Entonces hay que establecer bien si es una obra o en este sentido es
+26:57
+un servicio. Ya. Eh, la pregunta de Víctor Solís, esa
+27:04
+es la que respondimos en función de que el artículo 4 de la resolución 153
+27:10
+establece, ¿no es cierto?, una periodo de transición para la aplicación del 47 del reglamento que habla de la
+27:16
+desagregación justamente. Y yo le decía, el artículo uno de esa resolución dice que todo lo que se encuentra en régimen
+27:22
+de transición funcionará como venía haciéndose antes de las reformas. Es por esta razón que actualmente la
+27:29
+herramienta de licitación está solicitando desagregación tecnológica y también la evaluación de la
+27:35
+subcontratación, ¿verdad? Ahora, una vez más, reitero, es importante, esto no va
+27:40
+a quedar así todo el tiempo. Recuerde que el CERCOP tiene 4, el término de 45 días para modificar la herramienta y en
+27:48
+este sentido pueda adaptarse para que la desagregación y la evaluación en la subconratación sea en este sentido
+27:55
+exclusivamente para los procesos que son iguales o mayores a ill00ón. Entonces, estamos en el periodo de transición.
+28:01
+¿Cuántos días dura este periodo? 45 días término contados. desde que se publicó
+28:08
+eh la resolución c eh en el en el registro oficial la resolución 153.
+28:14
+Lo que se me ha faltado en esta capacitación es calcular los días, eso me ha faltado, pero déjenme ver si en el
+28:19
+transcurso de la capacitación puedo puedo hacerlo, pero aproximadamente, ¿verdad? Estamos hablando de mediados de
+28:25
+octubre. Bien, entonces Víctor, gracias por tu pregunta que posiblemente fue veo que fue a las 8:56, que justo cuando
+28:32
+estábamos explicando, tal vez entraste un poquito después, pero ya queda resuelto para todos quienes eh hayan
+28:38
+ingresado un poco más tarde. Catherine Jaramillo nos dice si debe hacer una reforma PAX si tenía menor
+28:45
+cuantía. Realmente cuando eh yo les recomiendo
+28:50
+que la haga, puede ser, sí, para que tenga una consecuencia, ¿no es cierto?, de lo que van mostrando, sobre todo para
+28:57
+los análisis que puede hacerse posteriormente con la Contraloría General del Estado. Ahora, ya en
+29:03
+cuestiones de operatividad, eh si ustedes ya están realizando los procesos, pueden ver que eh el ya la
+29:09
+herramienta está como en este caso parametrizada, ya escoge los valores y establece campos como en blanco,
+29:15
+¿verdad? Entonces, mi recomendación, Catherine, si ustedes eh en este sentido también lo ven pertinente como entienda
+29:22
+contratante para mantener la consecuencia dentro de los expendientes es sí realizar esa reforma.
+29:33
+Eh, Fernando Campos se nos adelanta un poquito, pero bueno, lo respondemos, no hay problema. Dice, "¿Si es calificada
+29:39
+la subcontratación o tiene algún monto específico?" Sí, Fernando, la subcontratación también ha tenido un
+29:44
+cambio. Antes hablábamos de que para evaluar una subcontratación debería ser al menos del 10% y ahora se establece
+29:52
+que sea al menos del 15%. ¿Sí? Entonces, desde el 15 en ad hasta el 30 descalificado y la evaluación sigue
+29:59
+siendo de cinco puntos para quien alcance desde 15 al 30%. Bien.
+30:09
+Eh, María me pregunta de valor por dinero. Sí, María, ya esto, tu pregunta la resolvemos con el ejemplo que
+30:15
+detuvimos un segundo hasta contestar algunas de las preguntas eh que tuvimos
+30:21
+al inicio, justamente por esta explicación de la transitoria.
+30:27
+Marcos Ramírez nos dice, "¿Y qué hacemos con las preferencias?" Porque esto también está en transición.
+30:32
+Efectivamente está transición. Entonces, eh realmente al al momento, ¿no es cierto?, Es esas preferencias deben ser
+30:38
+automatizadas dentro del sistema. Por eso venimos trabajando con la misma naturaleza de eh la en este caso de la
+30:46
+subcontratación, de la licitación para evaluar la subcontratación y también la desagregación tecnológica.
+31:01
+Hay otra pregunta igual dice de a ver dice de Angélica Aguirre dice desagregación tecnológica y subcontratic
+31:09
+hasta que el CERCOP modifique las herramientas. Sí, Angélica, la
+31:15
+desagregación, recuerden, por favor, y esto esto es muy importante, prétenme mucha atención, me voy a adelantar un
+31:20
+poco, pero vale la pena. La desagregación tecnológica se solicitaba para todos los procesos de licitación y
+31:27
+es este estudio que hace la entidad contratante acerca de los rubros que se utilizan en los proyectos. ¿De acuerdo?
+31:32
+Bien, recuerde usted que antes de la reforma la desagregación tecnológica ya se estableció como un parámetro de
+31:38
+cumplimiento y no de evaluación, ¿verdad? Entonces, en este sentido, cuando usted evalúe las ofertas, tenga
+31:46
+en consideración que antes de la reforma la desagregación ya estaba considerada exclusivamente para cumplimiento. Bien,
+31:53
+ahora sobre la subcontratación, la subcontratación eh no es que todos los proveedores están obligados a
+31:59
+realizarla, solo aquellos proveedores que quieren tener en este punto o alcanzar los lo valoración adicional, lo
+32:06
+presentan. El el proveedor que no en este caso no requiera, puede seguir
+32:12
+participando. La única diferencia es que va a tener cero en esa variable.
+32:24
+Natalie nos hace una pregunta nuevamente acerca de la desagregación. Natalie, te explicaba que la naturaleza de la
+32:31
+licitación se mantiene debido a las transitorias, o sea, el funcionamiento como tal se mantiene, que eso es lo que
+32:37
+te dice el régimen de transición. Y en ese sentido, reitero, la herramienta está solicitando desagregación
+32:43
+tecnológica y evaluación de subcontratación. está solicitando al momento. Le repito una vez más el cuánto
+32:50
+tiempo eh la herramienta continuará así en este en esta transición. La normativa establece que un término de 45 días. Sí.
+33:01
+Ya. Andrés también tiene una pregunta de valor por dinero. ¿Qué se resuelve con el ejemplo que les voy a mostrar?
+33:26
+Ya, como eh a partir de las 9:11 eh veo que ya plantean preguntas, pero por
+33:33
+ejemplo acerca ya del valor por dinero, voy a abrir mi recurso que tengo, sí, para
+33:38
+revisarlo con ustedes. Ahora sí. Bien, vamos a ver a ver.
+34:53
+Bien, para iniciar esto del valor del análisis de valor por dinero, vamos a revisar con ustedes, vamos a darle
+35:00
+lectura al 49.1. Es cortito, así que espero que me pueda acompañar a través de la pantalla o tenga usted también
+35:06
+abierto este artículo. Lo que le dice acá es en los en el en los instrumentos
+35:12
+previstos en el artículo anterior, si revisamos el artículo anterior, se reviere justamente de los instrumentos
+35:18
+de cálculo de presupuesto referencial, determinación de presupuesto referencial. Y si hablamos de obras,
+35:24
+estos instrumentos se limitan al análisis de precio unitario. ¿Sí? Entonces, estamos, por favor, en esa
+35:29
+lógica. En este sentido, y para esta clase específica se leería en los APUS,
+35:35
+¿no es cierto?, que es el instrumento previsto para la determinación del presupuesto referencial. Se deberá
+35:41
+incluir el análisis para definir la estrategia de adquisición que incluya cómo evaluar la opción que permita
+35:46
+obtener el mejor valor por dinero. Y entonces eh existe un listado de elementos que debe al menos como un
+35:53
+mínimo tener este análisis. El primero, yo le decía, aplica para bienes y servicios porque dice que los bienes y
+36:00
+servicios a contratarse son estandarizados. ¿Sí? Entonces, para motivo de esta clase, este primer punto
+36:07
+no aplicaría porque lo que estamos tratando hoy que es obras, ¿verdad? Vamos con el segundo punto. Dice que
+36:12
+exista un mercado competitivo de proveedores o contratistas previsiblemente cualificados para
+36:19
+participar en el procedimiento de contratación que garanticen que el mismo será competitivo. Y aquí voy a hacer una
+36:25
+pausa para tener una interacción con ustedes. Entonces, cuando ustedes ya se encuentren realizando este análisis,
+36:33
+¿verdad?, y deban desarrollar el punto dos, ¿sí? Yo les di ya un tip para que ustedes puedan establecer cómo eh o qué
+36:42
+cantidad en este sentido de proveedores podrían e receptar su invitación, cómo
+36:48
+lo harían. Quisiera ver a través del chat si me escucharon, por favor, cómo resolverían este primer el punto dos. Ya
+36:56
+en la parte de redacción usted motiva, pone algún, pero yo quisiera que usted me explique o que me indique, ¿no es
+37:02
+cierto?, de lo que me escuchó, cómo lo haría. Muy bien, Mónica. Verificar el proveedor por CPC. A través de qué
+37:08
+herramienta? Muy bien, Yadira lo verificación de CPC. ¿En qué herramienta va a ser esa verificación?
+37:16
+Bien, muy bien. Texas. Ya.
+37:23
+Entonces, la herramienta a la que acudiríamos es al SOSE, ¿verdad? Cuando usted ingresa, Perfecto, Mónica,
+37:29
+gracias, Andrés. Entonces, a través del SOSE yo tengo, ¿no es cierto?, la posibilidad de establecer eh por CPC
+37:35
+cuántos proveedores se encuentran registrados y con esto más la motivación que debo realizar en el punto dos, pues
+37:42
+ya resuelvo el punto dos, ¿verdad? Ahora vamos por el punto tres. Dice, "La evaluación acerca de la existencia de
+37:48
+riesgos y o necesidad de priorizar atributos distintos del precio de los bienes o servicios a adquirirse. El
+37:54
+precio solo dice, no solo representa el mejor valor por dinero, sino que también podría priorizarse como parte de la
+38:01
+oferta. Bajamos un poco más y vamos a la parte importantísima eh que tenga que ver con obras, inclusive la voy a
+38:07
+resaltar y dice, "Para las contrataciones de obras siempre se optará por el procedimiento de
+38:12
+licitación, obviamente respetando los montos." Entonces, vamos a hacer con ustedes la revisión de este material una
+38:20
+vez que ya tienen la normativa. Eh, por favor, si me confirman si ya he cambiado de pantalla al al ejemplo de informe de
+38:27
+análisis de valor por dinero.
+38:33
+Aún no. Ya. Entonces, voy a salir y voy a
+38:38
+Ya, ahí sí debe estar ya.
+38:50
+Sí, gracias Diana Belén, gracias. Bueno, entonces vamos. Este es un ejemplo
+38:55
+didáctico. Sí, si les indico es importante porque eh es un una recurso
+39:01
+que tenemos en este sentido para capacitar, así que no lo debe tomar como que ya fuese el modelo que establece el
+39:07
+CERCO, ¿no? Es solo un modelo didáctico. Bien, entonces
+39:12
+tenemos, bueno, el título de todo informe, ¿no es cierto? Luego vamos a tener claro un índice de nuestro informe
+39:18
+y en una primera parte del informe estableceremos los datos del proceso. Yo
+39:23
+puse unos pocos nuevamente porque esto es un ejemplo eh didáctico nada más, pero obviamente en estos datos del
+39:29
+proceso usted puede poner más información. el nombre completo de la entidad. Si ustedes son una unidad
+39:35
+desconcentrada, descentralizada, vale también indicarlo. Eh, pueden poner las
+39:41
+áreas en este sentido que van a ser eh implicadas dentro de este proceso. Todo
+39:46
+eso va como datos del proceso. Lo mío es un cuadro simple que únicamente me servía para ejemplificar la primera
+39:53
+parte, ¿verdad? Luego, como en todo informe, nosotros tenemos una estructura que construir. El primer la construcción
+40:01
+viene de un antecedente en el que posiblemente vamos a establecer cómo eh vino el la determinación de la
+40:07
+necesidad, eh quién impulsa esta compra, quién está autorizando, todos los pasos
+40:13
+internos que debe haber una entidad para lanzar el proceso. base legal y en esta base legal va a estar claro la norma de
+40:20
+contratación pública, pero también muy importante, tiene que encontrarse esa eh
+40:26
+competencia eh con con base legal que por la que usted es o su entidad más que
+40:32
+usted, la entidad contratante puede realizar este proceso de contratación, ¿no es cierto? Y cuáles son los objetivos que van a cumplir todo eso en
+40:38
+base legal. Breve, una breve introducción puede ser acerca del proyecto. Sí. y lo que en este caso
+40:46
+causa la mayor inquietud del desarrollo como tal del análisis. Entonces, en un primer punto tenemos la determinación
+40:53
+del proceso de contratación. Como le hice leer en el 49.1, uno, en obras no
+40:58
+hay mucho que hacer porque ya la norma nos dice, si es obra mayor de 10,000 licitación, no hay que establecer
+41:06
+mayores eh en este caso análisis, sino que ya la norma lo dice y en este punto
+41:12
+lo claro lo que hacemos es referirnos a la normativa y qué es lo que nos está exigiendo que lo llevemos a través de
+41:18
+licitación. Ahora, en la evaluación del objeto de contratación, justamente
+41:23
+establecemos esto, por dice, para las contrataciones de obras siempre se optará por procedimientos de licitación, por tanto, la selección de licitación
+41:30
+está predeterminada por la naturaleza del objeto contractual. Eso es una justificación corta para el ejemplo
+41:37
+metodológico. Usted la puede ampliar, pero en realidad si ya la norma le dice, simplemente sería eh copiarlo de 49.1.
+41:45
+Viene luego la el punto de análisis de mercado competitivo. Usted ya me dijo, yo lo resolvería a través de consulta
+41:51
+del código clasificador de CPC con alguna cuestión adicional que posiblemente viene de la definición del
+41:57
+objeto de contratación. Está muy bien. Vamos con la parte que tal vez se les puede estar complicando un poco y es la
+42:04
+evaluación de riesgos y atributos distinto al precio, ¿no es cierto? Entonces, como sabemos en obras, ¿qué
+42:11
+proceso va? la licitación es lo que sí, pero es necesario también
+42:16
+hacer una evaluación de riesgos y priorización de atributos distintos del precio. Y entonces vamos a ver que un
+42:22
+riesgo a considerar, por ejemplo, en un proyecto de obra es la falta de experiencia o un enfoque deficiente en
+42:27
+la seguridad y la gestión ambiental, ¿verdad? Y esto, claro, puede redundar en multas, incumplimientos,
+42:33
+penalizaciones, etcétera. Entonces, vamos a tener un riesgo a considerar. Y yo por este atención porque estos
+42:39
+riesgos se van atando justamente a lo que la herramienta hoy por hoy está
+42:45
+evaluando, ¿sí? Porque también vamos a ver qué variables está evaluando la herramienta y vamos a hacer compatible
+42:51
+el análisis de valor por dinero con lo que consta en la herramienta. Entonces, luego tenemos atributos por priorizar.
+42:59
+Entonces tenemos, ya que hemos detectado riesgos, ya vamos a mitigar ese riesgo a
+43:05
+través de priorizar atributos como la experiencia específica, por ejemplo, del contratista, la capacidad técnica
+43:11
+demostrada y la sostenibilidad, ¿no es cierto? Y vamos un poquito más abajo. Este análisis le exige dos cosas. le
+43:18
+dice, le dice, identifique cuáles serían esas variables, esos atributos que pueden ser en este sentido eh evaluados
+43:25
+para irnos por el camino del valor por dinero y también establezca la estrategia de evaluación. Ambas cosas la
+43:31
+indica. Entonces, en una licitación va a haber siempre dos etapas y eso es lo que
+43:37
+usted también debe nuevamente establecer en su informe. Eh, hay una etapa de cumplimiento, ¿verdad?, de requisitos.
+43:43
+Esto no es nuevo, ya lo veníamos haciendo. Etapa de de requisitos mínimos habilitantes. Y usted puede poner aquí
+43:49
+una pequeña justificación. Y en la etapa de puntaje, que es donde se verifica justamente la aplicación de valor por
+43:56
+dinero, vamos a establecer, puede ver usted los atributos que la herramienta
+44:02
+al momento nos permite. Pasados los 45 días vamos a poder generar otras variables, pero hoy tenemos que trabajar
+44:08
+con lo que tenemos. Entonces, en el criterio de evaluación, ¿qué es lo que tiene actualmente? Usted tiene
+44:14
+experiencia general, experiencia específica, tiene la cuestión de precio o la cuestión de valor ofertado,
+44:19
+subcontratación, otros parámetros y la participación nacional. Bien, este mismo
+44:26
+cuadro lo vamos a mantener. ¿Qué es lo que le decía como riesgo? Bueno, uno de los riesgos puede ser, claro, que el
+44:32
+oferente eh por falta de experiencia puede ser no cumpla con la obra, ¿verdad? Entonces,
+44:39
+si ese es el riesgo, ¿no es cierto? y yo tengo que valorar la experiencia general y la experiencia específica, pues, ¿cómo
+44:45
+mitigo ese riesgo? Dándole un mayor porcentaje a la específica. Desde ese punto de vista, obviamente
+44:52
+usted en otro proyecto puede tener un punto de vista donde apoye más la experiencia general, ¿sí? En esta
+44:58
+elección de e puntajes que para nosotros no es nuevo, ya lo veníamos haciendo.
+45:04
+Usted establece hacia dónde le da la prioridad frente a la contratación. Bien, en el que yo le muestro, que es un
+45:11
+ejemplo metodológico para mitigar el riesgo que se se detecta en el ejemplo,
+45:16
+que es que un proveedor eh por falta de experiencia específica en el tema contratar, ¿verdad?, tenga eh en este
+45:24
+caso una valoración no adecuada, yo le aumento los puntos en la experiencia
+45:29
+específica y también valoro la general, pero le doy un menor puntaje. ¿Sí?
+45:35
+Entonces, ¿cuál sería la justificación de valor por dinero? Primero, la experiencia general eh se entrega a 10
+45:41
+puntos porque se evalúa la trayectoria y la capacidad del oferente en proyectos de infraestructura, minimizando el riesgo del cumplimiento. Y obviamente
+45:48
+este mismo eh esta misma justificación más enfocada hacia el objeto de contratación se establece dónde? En la
+45:55
+experiencia específica. Sí. Sí. Casi siempre nos interesa más alguien que haya desarrollado justo el objeto de
+46:02
+contratación que nosotros venimos solicitando, porque esa persona ya ha caminado, ¿no es cierto? ya si tiene su
+46:08
+experiencia, su conocimiento, posiblemente también ya ha superado ciertos errores en otros proyectos que
+46:13
+son iguales y por eso nos puede ayudar con ese bagaje de experiencia y conocimiento. Ahora bien, en cuestión de
+46:20
+de precio, en cuestión de de eh valorar por cuánto viene esa oferta,
+46:26
+sabemos que la herramienta nos da de 50 a 60 puntos. Usted escoge si nos iríamos
+46:32
+por un criterio de valor por dinero total, ¿no es cierto? posiblemente el precio no sea en este sentido o no
+46:39
+debería tener un peso tan alto, ¿verdad?, frente a otras variables, pero como la herramienta al momento está de
+46:46
+50 a 60, usted tiene, por ejemplo, la opción de tomarle solo por 50 puntos. Si para usted es importante que el precio
+46:53
+en este sentido no tenga tanto peso, solo la mitad, digámoslo así, ¿no es cierto? Y en este sentido pueda
+47:01
+distribuir eh los otros puntos en otras variables. Bien. Ahora, si usted dice,
+47:06
+"No, el precio sí, yo para, desde mi punto de vista tiene un peso, tiene una algo que sí eh afecta en el proceso de
+47:15
+contratación, usted puede ir hasta los 60 puntos. Usted escoge 50, 55, 52,
+47:20
+hasta 60. ¿Sí? Luego tenemos subcontratación. Como le decía, la
+47:26
+subcontratación sí establece también o prioriza la sostenibilidad, porque lo que estamos haciendo en este sentido es
+47:33
+eh favoreciendo a los emprendimientos que son locales, ¿verdad?, que son micropequeños y por eso es otro factor
+47:40
+de sostenibilidad. En este en esto de los cinco puntos usted no tiene mayor elección porque eso ya está por eh por
+47:47
+herramienta. Al momento está por herramienta. Bien. Ahora, en otros parámetros se puede dar hasta un punto.
+47:55
+En el ejemplo que le muestro, en otros parámetros se ha tomado en cuenta las mejoras en gestión ambiental y seguridad. Eso agrega valor a una
+48:02
+contratación en obra. ¿Sí? ¿Hasta dónde puedo dar por herramienta? Hasta un punto, ¿verdad? Pero entonces lo que se
+48:10
+establece como para que estos oferentes obtengan el punto es que ofrezcan ventajas adicionales, innovaciones o
+48:17
+mejoras que superen un plan básico que posiblemente está solicitando ya la entidad como un requisito de
+48:24
+cumplimiento. Ahora, es muy importante cuando la herramienta haya superado el
+48:31
+periodo de transición y en este sentido nosotros no solo
+48:36
+tengamos estas variables, sino que tengamos la oportunidad de agregar otras variables, como es el caso de mejoras de
+48:42
+gestión ambiental y seguridad. Sí, el trabajo no solo consiste en dar una idea
+48:48
+general de cómo vamos a evaluar, porque obviamente usted dirá, "A ver, si yo
+48:53
+pongo eh otras variables, como por ejemplo a durabilidad, resistencia de materiales o innovación, etcétera. Bien,
+49:00
+eh cómo sé cuándo dar el mayor puntaje a A y cuándo B. Para esto, cuando cada vez
+49:06
+tenga usted que crear nuevas variables, por cada variable tendrá que crear usted
+49:11
+algo muy parecido a lo que en en eh materia académica se llama rúbrica de
+49:17
+evaluación. ¿Sí? Entonces, le he traído el ejemplo aquí que es pequeñito ahorita
+49:23
+de otros parámetros porque es lo que nos permite la herramienta. Y cuando cada vez que usted establezca una nueva
+49:29
+herramienta, una nueva variable, perdón, que le pueda agregar valor a su contratación, deberá establecer cuándo
+49:36
+usted da cero puntos en el caso que le muestro y cuándo daría un punto.
+49:41
+Entonces, posiblemente usted ya comprendió, cuando me cumple justo lo que yo necesito, pues no hay no hay
+49:47
+incremento en ese valor por dinero. está dando lo que yo pido, nada más. Pero si
+49:53
+en cuestión de criterios ambientales, ¿no es cierto?, el oferente presenta un plan que demuestra un compromiso superior con la seguridad y
+49:59
+sostenibilidad superando los requisitos mínimos. En ese sentido, el punto puede
+50:04
+entregarse cuando el proveedor en la rúbrica que yo realice en el ejemplo cumpla al menos una de las siguientes
+50:11
+mejoras concretas. A eso debemos llegar, a la especificidad de saber cuándo y
+50:17
+cómo vamos a calificar a nuestros oferentes en las variables adicionales, ¿no es cierto?, al precio, porque ese es
+50:23
+el diferenciador de un proveedor que únicamente se eh seleccionaría por precio de otro, que además de ese precio
+50:30
+brinda eh como le decía beneficios. Entonces, en el caso de la rúbrica que
+50:35
+yo le muestro, se establece innovación tecnológica en seguridad. Dice, "Uso de tecnología avanzada para la reducción de
+50:40
+riesgos. por ejemplo, el uso de drones, inspección, con sensores de proximidad, es decir, brindar en este plan ambiental
+50:48
+algunos implementos tecnológicos adicionales que puedan tener una mejor
+50:53
+visualización del impacto que se está causando en la zona donde se está realizando la obra y en ese sentido se
+50:59
+pueda eh mostrar, ¿no es cierto?, qué es lo que se debe hacer como un plan de mejora de este lugar. Luego, medidas
+51:07
+sostenibles adicionales, propuesta de uso de materiales o equipos con certificación ambiental, plan de reforestación en la zona de influencia o
+51:14
+iniciativas que superen las normas de manejo de residuos. Esto que le muestro es una rúbrica, una rúbrica de cómo
+51:22
+vamos a evaluar a esos oferentes por cada parámetro que nosotros vayamos a crear. Hoy por hoy vamos a ponernos en
+51:30
+el día de hoy, por favor, en el día de hoy, ¿qué es lo que tenemos para evaluar en licitación de obras? Tenemos la
+51:36
+experiencia general, la experiencia específica, tenemos la situación aún del valor de la oferta, tenemos la
+51:43
+subcontratación y tenemos como otros parámetros que solo se puede llegar hasta un punto nada más. Entonces,
+51:50
+dentro de eso, eso se mantiene. Por favor, vaya justificando cómo haría, dónde se justifica el uso de valor por
+51:56
+dinero, en el manejo que da usted en los puntajes. Ahí se ve, ¿no es cierto?, cuál es la prioridad de la entidad
+52:03
+contratante, hacia qué se está orientando, ¿sí? ¿Qué riesgos puede estar mitigando con esta valoración?
+52:09
+Entonces, al momento es lo que tenemos, ¿no es cierto? En otros parámetros, yo le decía, "Aquí usted puede agregar algo
+52:15
+adicional para el ejemplo que le muestro, son mejoras en la gestión ambiental." Y nuevamente le explico, si
+52:20
+usted va a utilizar otros parámetros, tendrá que crear una rúbrica de evaluación para saber cómo va a valorar
+52:26
+las ofertas que vengan con el cumplimiento mínimo y aquellas que ofrezcan un poco más. Ahora bien, sobre
+52:33
+la participación nacional, conocida también como desagregación tecnológica, esta mantiene eh una evaluación de 10
+52:40
+puntos en la herramienta. Le repito, la desagregación tecnológica antes de la reforma ya se establecía como un eh
+52:48
+requisito solo de cumplimiento. Es verdad que la herramienta mantiene esta evaluación, pero cuando usted califique
+52:55
+tendrá que hacer una evaluación manal restando estos 10 puntos porque ya no se solicitaba antes de las reformas, no se
+53:03
+solicitaba, simplemente era de cumplimiento obligatorio por parte en
+53:08
+este caso, de quien salga adjudicado. Bien, entonces puede usted revisar la
+53:13
+revisión anterior, la la versión anterior del reglamento, encontrar justamente el 47 y usted veía que ya la
+53:19
+desagregación estaba definido como un parámetro de cumplimiento, más no de eh
+53:26
+priorización en el puntaje. Ya no estaba así. Entonces, si bien la herramienta aún mantiene este criterio, cuando usted
+53:33
+evalúe, tendrá que restar ese valor porque no eh suma dentro del valor de
+53:38
+puntaje. Bien, entonces, ¿qué es lo que hemos mostrado en este
+53:44
+ejemplo de análisis de valor por dinero? Nuevamente, una estructura, ¿no es
+53:49
+cierto?, de un informe con cuestiones que usted posiblemente ya tomaba en cuenta en los informes que hacía, datos,
+53:56
+antecedentes, base legal, introducción. En el desarrollo, como le he mostrado, es la justificación de porque estamos
+54:02
+haciendo licitación de obra, la cual está acorde a la normativa. Eh, también tenemos el análisis del mercado
+54:08
+competitivo y tenemos la evaluación de riesgos complementado o adaptado a los
+54:14
+parámetros que hoy por hoy maneja este proceso de licitación. Sí, porque
+54:20
+nuevamente la herramienta está en transición. De pronto usted dice, "Me gustaría haber agregado en estas
+54:25
+variables otra, por ejemplo, que hable de la resistencia de materiales." Sí, pero todavía no nos es posible porque el
+54:32
+único parámetro en el que nosotros podemos al momento inferir es mejoras en la gestión. Con los otros parámetros los
+54:39
+mantenemos, experiencia general específica, tenemos la situación del precio, la subcontratación y si usted
+54:46
+decide ya utilizar estos otros parámetros, oriéntelos siempre en la aplicación de valor por dinero. De
+54:51
+hecho, todo está orientado valor por dinero. En el precio, ¿qué es lo que nos dice en este sentido? Valor por dinero.
+54:58
+Sobre el precio, ¿no es cierto? O o tomando en cuenta también el precio, pero valore otras cuestiones. ¿Qué es lo
+55:05
+que nos permite hoy la herramienta valorar? la experiencia general, la experiencia específica. En este sentido,
+55:10
+¿qué es lo que hacen ambas experiencias? Mitigar el riesgo de que los proveedores, ¿no es cierto?, puedan eh
+55:16
+por por desconocimiento, ¿no es cierto?, por justamente la falta de de experiencia en esto puedan eh tener
+55:22
+problemas en la ejecución. Entonces, voy estableciendo eh puntajes con el que yo
+55:28
+voy en este sentido mitigando estos riesgos. Solo mitigando. Sí.
+55:35
+Bien. y el enseñado también sobre la necesidad de crear rúbricas. Esto más adelante
+55:41
+vamos a hacerlo eh cuando ya tengamos una herramienta totalmente implementada, usted por cada variable que vaya
+55:48
+estableciendo dentro de la valoración, claro, tendrá que crear una rúbrica de evaluación y también en esta rúbrica
+55:55
+deberá establecer cuáles son esos documentos de respaldo, con lo que los proveedores pueden ir obteniendo un
+56:01
+puntaje que puede priorizar la participación de un oferente hacia otro. Y finalmente, como en todo análisis
+56:07
+deberá haber una conclusión, la primera parte de esta conclusión se refiere a que de acuerdo a la norma estamos
+56:13
+haciendo una licitación, ¿no es cierto? Y la segunda parte estableciendo cuáles son esas variables y cómo hemos manejado
+56:19
+los puntajes para encontrarnos orientados en la evaluación de valor por
+56:24
+dinero. Bien, entonces es el recurso que teníamos. Vamos asimismo, Anita, resolver algunas de las inquietudes que
+56:30
+tienen nuestros participantes antes de mostrar el siguiente recurso.
+56:39
+Listo, Alex. Eh, por favor, si le podría revisar el chat porque tuve un inconveniente con internet y no tengo
+56:44
+todas las consultas al momento. Uy, ya. Déjame ver si es que yo sí lo puedo hacer.
+57:03
+Eh, mientras lo revisas, por favor, solo recordarles a nuestros participantes que la presentación eh no se comparte porque
+57:10
+es de uso interno de la institución y que ustedes pueden revisar este video eh
+57:15
+a partir del mediodía en nuestro canal de YouTube @cercapacita.
+57:21
+A ver, tengo algunas preguntas acerca de las experiencias, cómo estamos evaluando
+57:27
+experiencias. Entonces, eso también está dentro de esta capacitación. Solo déjenme ver si hay algunas preguntas
+57:34
+sobre el modelo. Les recuerdo que es un modelo didáctico, por favor. Hm.
+57:43
+Erika, eh, sé que lo que nos pide Erika posiblemente es algo que también ustedes
+57:48
+requieran, que es eh que podamos compartir el modelo. Sí, eso nosotros necesitamos evaluarlo luego de la del
+57:55
+evento, por favor, eh porque es un modelo didáctico. Recuerde que estamos en proceso de construcción del
+58:01
+instructivo de valor por dinero y en este sentido, pues no quisiéramos confundir a las personas pensando que ya
+58:07
+este es el modelo, ¿no? Cuando este solo es un modelo didáctico, nada más. Entonces, Erika, voy a transmitir tu
+58:13
+inquietud. Eh, como ustedes están registrados en nuestra en nuestra plataforma, pues podríamos contactarnos
+58:19
+con ustedes para informarles la decisión.
+58:42
+A ver, para efectos de determinación de vinculaciones. Ya, aquí hay una pregunta de Marcos que no tiene que ver mucho con
+58:48
+el análisis, pero sí con el proceso como tal y nos habla también de las vinculaciones.
+58:54
+Entonces, en cuestión de vinculaciones, lo que establece la normativa es que
+59:00
+la interconexión con otras plataformas se encuentra también dentro de este
+59:06
+régimen de transición, porque obviamente usted comprenderá que es un trabajo no solo del CCOP, sino también de
+59:11
+establecerlo con otras entidades. Entonces, no es la
+59:17
+misma lógica, muy parecida esta de del de la de la implicación justamente de la desagregación tecnológica.
+59:23
+lo que está en transición, ¿no es cierto? ¿Cómo trabajamos? Trabajamos con la normativa o lo que teníamos antes de
+59:30
+la transición. En cuestión de vinculaciones, ¿qué es lo que tenemos? El anexo 5. Entonces, con esto mismo
+59:36
+continuamos.
+59:43
+Eh, tengo una pregunta de Omar Benavidez que nos habla de la subcontratación y la desagregación. ¿Qué fue lo primero que
+59:51
+enfocamos en esta capacitación? Yo sé, todos sabemos que la normativa establece que para valores, en este caso igual son
+59:58
+mayores a ,illón de dólares, pero habíamos conversado, Omar, tal vez
+1:00:03
+ingresaste un poquito después, que la el artículo 4, ¿no es cierto?, de la 153
+1:00:09
+establece que se encuentra en régimen de transición. Por tanto, ¿no es cierto? Eh, todo lo que se encuentra en régimen
+1:00:15
+de transición funciona, opera como venía haciéndose antes de la reforma. En ese
+1:00:21
+sentido, la licitación venía exigiendo desagregación y evaluación en la subcontratación. Sí.
+1:00:57
+Omar, eh me parece me parece que tú vienes como proveedor porque por la
+1:01:04
+forma en la que me me la nos preguntas, ¿no es cierto? Bueno, el análisis de precio unitario debe ser efectivamente
+1:01:10
+realizado por las entidades contratantes. Eh, lo que establece la normativa para los APUS es que se ha
+1:01:16
+tomado en cuenta únicamente para establecer una diferencia en la evaluación de precio, ¿verdad? En todos
+1:01:22
+los casos, dice, los APUS establecidos por la entidad contratante deben acoger deben acogerse por parte del proveedor
+1:01:29
+ya o ya en este caso del adjudicado cuando ya estamos en ese momento de la contratación y deben ser cumplidos de
+1:01:35
+esa manera.
+1:01:48
+Diego Yahuana nos hace una pregunta que entiendo y comprendo. Dice, "¿Cómo resto los 10 puntos en la herramienta?" No,
+1:01:54
+Diego, en la herramienta no vas a poder restar. No tiene esa funcionalidad. Y estamos hablando de los 10 puntos de la
+1:02:00
+participación ecuatoriana de segregación tecnológica, no se resta, sino que en el informe que ustedes hacen de
+1:02:06
+calificación, ahí donde ustedes sí pueden establecer, hay que justificar con el 47 del reglamento antes de la
+1:02:13
+reforma donde se establecía que esto solo es de cumplimiento y no de valoración y entonces no tomas en cuenta
+1:02:19
+el puntaje que te está dando la herramienta. Bien, no es en la herramienta que restan. Ahora bien, la
+1:02:25
+siguiente pregunta que puede aparecerte, Diego, es lo que sucede es que me va a aparecer un proveedor que tiene 90
+1:02:30
+puntos y posiblemente gane uno que tenga un inferior puntaje. Sí, eso ha pasado
+1:02:35
+en la licitación, eh, y pudo haber eh y no es nuevo porque el combo de selección, ¿no es cierto?,
+1:02:42
+de la licitación no te obliga a tomar el que tiene el mayor puntaje. Si usted ha hecho licitación, ¿no es cierto?, sabe
+1:02:48
+que podía escoger en este caso de los proveedores evaluados y entonces usted puede escoger a otro que no sea el que
+1:02:55
+tenga el mayor puntaje. Bien, ahora es importante justificar con qué, con el informe de calificación de evaluación de
+1:03:02
+la licitación, ¿no es cierto? ¿Por qué restamos y por qué escogemos a un proveedor? Sí.
+1:03:17
+Fernando dice, "En el caso de no presentar el parámetro de valor por dinero, eh, no es motivo de
+1:03:22
+descalificación." Cuando estás analizando valor por dinero, lo estás haciendo en la parte de
+1:03:27
+puntaje, no en la de cumplimientos. Sí, en el en la en el factor de cumplimiento
+1:03:33
+lo que hacemos es una revisión de requisitos. Entonces, queda determinado que si pasa la etapa de cumplimiento,
+1:03:39
+¿verdad?, Lo siguiente es la valoración y diferenciación por puntaje.
+1:03:54
+Ya la pregunta de Neker ya quedó respondido con lo que le indiqué a Diego.
+1:04:26
+Eh, Víctor Solís, ¿tienes una pregunta en la que el dice, "Explica el valor de la oferta económica varía." Sin embargo,
+1:04:33
+en lo referente a mano de obra usted manda corregir. Todavía no hemos hablado de eso, Víctor. No sé si me puedes
+1:04:38
+ampliar tu inquietud, por favor.
+1:04:50
+Referente al modelo de pliegos, Cristina, eh estamos manteniendo el modelo de pliegos que estaba vigente
+1:04:56
+hasta antes de la reforma, ¿cierto? Entonces igual la herramienta también, como pueden ver, tiene algunas
+1:05:02
+cuestiones que está atrayendo de antes de la reforma. No hemos cambiado aún, estamos en proceso, por eso se encuentra
+1:05:08
+en transición.
+1:05:18
+Vanessa nos hace una pregunta reiterativa nuevamente. Nos dice, "El informe de mejor valor por dinero, ¿es
+1:05:23
+un documento aparte o se integra en el estudio de mercado?" Informe de necesidad. Bueno, Vanessa, primero e el
+1:05:29
+estudio de mercado solo se utiliza para bienes y servicios. El instrumento de determinación de presupuesto referencial
+1:05:35
+adecuado para obras se denomina análisis de precio unitario. El 49.1 dice que el
+1:05:41
+análisis valor por dinero venga junto con esto. ¿Sí? Ahora, al ser un
+1:05:46
+principio, el valor por dinero se toma en cuenta desde que creas la determinación de la necesidad. No es que
+1:05:53
+exista una cápite para eso, una una un análisis distinto, sino que en la forma
+1:05:58
+en que concibes el el determinación de la necesidad, ya estás pensando en valor
+1:06:03
+por dinero. Cuando estableces el beneficio, la eficiencia, la efectividad, ya estás pensando en valor
+1:06:09
+por dinero. Cuando determinas las especificaciones técnicas, también las estás orientando bajo esta misma visión
+1:06:16
+y simplemente junto con el instrumento de determinación de presupuesto referencial que en obras es análisis de
+1:06:22
+precio unitario, aquí si haces un un adicional a este informe donde agregas
+1:06:28
+cuestiones que pudiste ver ejemplificadas en lo que mostré anteriormente.
+1:06:45
+Luis Rojas nos pregunta justamente de subcontratación. En cuanto a la subcontratación eh se establece que los
+1:06:53
+eh se debe subcontratar con micros, pequeñas EPS de la localidad donde se establece en este sentido el proyecto,
+1:07:00
+¿verdad? Entonces, estos datos los toma eh del SOS, los toma directamente y
+1:07:07
+son evaluados estos automáticamente. Lo que hace la entidad contratante en este sentido es revisar nada más que esté
+1:07:14
+coherente la información exista dentro de la de la herramienta porque esta parte, como le había indicado, tiene una
+1:07:20
+calificación automática por parte del SOS.
+1:07:39
+Ah, verán, me encanta la participación de de Elías Wambo. Es la última pregunta que vamos a hacer antes de continuar, si
+1:07:45
+no nos quedamos hasta el mediodía y a mí me gustaría porque realmente nosotros de cada capacitación que tenemos con
+1:07:51
+ustedes nos retroalimentamos. Esto es eh esto estos este periodo de transición, ¿no es cierto? presenta sus
+1:07:57
+complejidades para ustedes y para nosotros. Sí, pero eh espero también comprendan nuestro sentido de ir todo el
+1:08:04
+tiempo ampliando, mejorando las capacitaciones, tratando de en este sentido, brindarles mayor claridad, ¿sí?
+1:08:10
+Y no vamos a a descansar de esto de todas las semanas ir mejorando nuestros materiales para que para ustedes pueda
+1:08:16
+ser mejor comprensible, más llevable este tema de transición. Ahora bien, les
+1:08:22
+decía, me gusta la participación de Elías Wam porque dice, "¿A qué se refiere cuando dice que se debe restar los 10 puntos de evaluación por puntaje
+1:08:28
+en la desagregación tecnológica?" Dice, "¿Aplicaría lo mismo para la subcontratación?"
+1:08:34
+Entonces, Elías, vamos a resolver la primera parte de tu pregunta. Eh, la desagregación tecnológica antes de la
+1:08:40
+reforma no era ya parte de puntaje, era únicamente de cumplimiento, ¿verdad? Y
+1:08:46
+por eso al venir a este régimen de transición lo que hacemos es mantener este mismo criterio únicamente
+1:08:52
+cumplimiento. Por eso restamos el puntaje. La subcontratación no fue así.
+1:08:58
+La subcontratación sí se venía evaluando y acá en este momento también se debe evaluar. Luego de esto le contesta Grey
+1:09:05
+Grey Tamara Arroyo y dice, "Entonces, la calificación sería sobre 90." Efectivamente,
+1:09:11
+sí, efectivamente, la calificación, porque no vamos a tomar en cuenta, por favor, el puntaje que se entregue por
+1:09:17
+desagregación tecnológica. ¿Por qué? Porque este requisito antes de las reformas, ¿verdad? Antes de las reformas
+1:09:24
+ya era exclusivamente de cumplimiento. Entonces está se estaba, entiendo yo, ya trabajando en ese cambio. Vino las
+1:09:31
+reformas normativas y hemos tenido que ponernos en algo más grande todavía. Pasados los 45 días, vamos a solventar
+1:09:38
+todas estas cuestiones que sé que nos traen incomodidades y por eso la idea de explicar lo más claro que sea posible.
+1:09:45
+Bien,
+1:09:52
+sí, Lady, eh, tu apreciación es correcta, dice, pero lo que pasa es que si yo a través del informe, ¿no es
+1:09:59
+cierto?, le eh sale una nota distinta, va a haber una nota distinta de la del sistema. Efectivamente, ¿cuál es nuestro
+1:10:06
+argumento para eso? tomar, por favor, el 47 anterior del reglamento donde decía que solo es de cumplimiento y por eso va
+1:10:12
+a haber distinto. Pero no va a tener usted problema en la adjudicación, por favor, porque ya repito nuevamente en la
+1:10:18
+herramienta de licitación no es que el primer el puntaje más alto es obligatoriamente el adjudicado, no, sino
+1:10:25
+que existe un combo de selección donde usted de acuerdo al informe de calificación establece en este sentido
+1:10:31
+cuál es el el ganador en función de todos los puntajes que usted evalúe.
+1:10:39
+A ver, ¿dónde hay otro? Janet Roballo nos dice, "El análisis de
+1:10:45
+mejor valor por dinero es un anexo del informe de necesidad." No, Janet, no. Eh, revisamos nuevamente el 49.1 uno y
+1:10:53
+te dice que el análisis, o sea, la parte, por eso yo le digo la parte fáctica, la parte donde se ve, eh debe
+1:11:00
+estar junto con el instrumento de de determinación del presupuesto referencial, que en el caso de las obras
+1:11:06
+es análisis de precio unitario, pero por favor, es ahí donde se ve. Ahora, no piense usted que en el resto de
+1:11:12
+situaciones dejo yo de aplicar, porque el valor por dinero es un cambio en la
+1:11:17
+idea del comprador. Por tanto, ese cambio se ve reflejado desde el informe de la determinación de la necesidad. No
+1:11:24
+es una cápite aparte, es una forma, es es como concibes la contratación como tal. Y por eso les decíamos, si usted ya
+1:11:32
+venía haciendo un trabajo eh como pedía la norma acerca de pensar cómo mi contratación establece un beneficio,
+1:11:38
+cómo mi contratación es eficiente o cómo vuelva mi contratación efectiva, usted ya venía creando valor por dinero. ¿Sí?
+1:11:45
+Entonces, manténgase en esa misma línea de pensamiento distinto, no en llenar requisitos, sino en pensar cómo esa
+1:11:51
+contratación colabora en el cumplimiento de sus objetivos institucionales y eso
+1:11:56
+plásmelo. Ahora, el análisis de valor por dinero, ya visto, eh la norma nos
+1:12:02
+establece que debe venir junto con la determinación del presupuesto referencial. Repito, en obras, ¿cómo se
+1:12:08
+llama ese instrumento? No me diga estudios de mercado, porque estudio de mercado solo es para bienes y
+1:12:13
+servicios. en obras. La determinación del presupuesto referencial se realiza a través de análisis de precios unitarios.
+1:12:36
+Ya. Bueno, las otras preguntas, eh, a ver qué
+1:12:45
+ah, hay una pregunta que no es en sí del
+1:12:50
+análisis, sino más bien de la regularización de procesos y dice, "Bueno, ¿y quién firma este informe?"
+1:12:57
+Todos los informes deben venir con tres tres de acuerdo a como eh tenga usted la
+1:13:02
+la organización en su entidad, pero todo informe debe tener al menos eh tres firmas. ¿Cuáles son esas firmas? No, no,
+1:13:07
+no mínimo, sino debe tener tres. ¿Cuáles son? ¿Quién elabora, quien revisa, quien aprueba? ¿Sí? Entonces, yo le podría dar
+1:13:14
+el ejemplo del CERCOP. Cuando nosotros aquí realizamos contrataciones, ¿no es cierto? Claro, haya una unidad
+1:13:20
+requirente quien elabora, hay un revisado que generalmente es el jefe de esa unidad requirente y el autorizado,
+1:13:26
+que en este caso suele ser el área de compras públicas o planificación de acuerdo a unos montos que existen. Así
+1:13:33
+se maneja en el CCO, pero eh cada entidad es distinta, tienen procesos distintos y en ese sentido tendrán
+1:13:39
+formas distintas de firmas, pero siempre debe haber las tres. por favor, quien elabora, quien revisa, quién aprueba
+1:13:56
+[Música]
+1:14:03
+Miguel nos preguntaba por un proceso de $900,000 si tenía que hacer desagregación. Voy a plantearles a
+1:14:09
+ustedes la pregunta de Miguel y sí y y para ver eh también vamos observando la
+1:14:14
+comprensión del tema. Ya. Entonces, Miguel nos pone un caso y dice, "Para un proceso de licitación de obra de
+1:14:20
+$900,000", dice la entidad contratante, primera pregunta, la entidad contratante debe hacer desagregación tecnológica.
+1:14:29
+Vamos a ver que nos responden a través del chat, por favor.
+1:14:36
+Sí. Sí. Perfecto. La siguiente pregunta.
+1:14:41
+¿Deboar la subcontratación? Sí, por la transición. Gracias, Diego.
+1:14:47
+Clarísima la respuesta. Sí, por la transición. Me gusta esa respuesta porque además de dar el sí como tal, nos
+1:14:53
+hace pensar que esto solo es temporal, solo es transición. ¿Cuántos días
+1:14:59
+término, ¿no es cierto? Nos vamos a mantener bajo esta esta forma de funcionar. ¿Cuántos días? Sí, por 45
+1:15:07
+días término. Ya me gusta, me gusta su interacción y su respuesta. Estamos atentos. Ya. 45 días, no se olvide, eh,
+1:15:15
+que es muy importante término porque 45 días así no más es pronto, pero 45 días
+1:15:20
+términos ya se nos extiende un poquito más. Ya estamos muy bien. Vamos entonces a continuar con la presentación y vamos
+1:15:28
+a hacer eh eh vamos a revisar algunos aspectos también de la
+1:15:35
+experiencia, que es otra de las cosas que nos estaban preguntando.
+1:15:46
+Vamos a ver. Hemos explicado un poco de la preparatoria, ¿no es cierto? Y como parte de la preparatoria nos hemos
+1:15:52
+centrado en esos puntos que son un poquito más álgidos, que tienen que ver con el análisis de valor por dinero y la
+1:15:59
+desagregación de los puntajes, la compatibilidad que debemos hacer con la herramienta cómo está funcionando, todo
+1:16:05
+eso lo hemos visto. Entonces, vamos a ir caminemos un poco más en el proceso y vamos hacia la precontractual desde la
+1:16:11
+publicación, ¿no es cierto? Entonces, como todo proceso de contratación tiene su convocatoria, obviamente se
+1:16:17
+socializa, se comunica los pliegos. Eh, tenemos claro la resolución de inicio que comenzó todo esto, análisis de
+1:16:23
+precio unitario y la desagregación tecnológica. Eso como elementos eh a mo
+1:16:30
+precontractual. Entonces, vamos a hacer así un caminito como el que hicimos con la preparatoria, vamos a hacer en la
+1:16:36
+precontractual. Entonces, vamos con la etapa de preguntas y respuestas y la presentación de ofertas. Aquí le pido
+1:16:42
+por favor preste mucha atención porque una de las mejores que ya tiene la herramienta es que se ha acoplado a los tiempos mínimos establecidos para cada
+1:16:49
+uno de estos procesos en la normativa. Entonces eh las personas aquí en el
+1:16:55
+CERCOP efectivamente están haciendo todos los cambios que nos pide la norma y ya dentro de preguntas, respuestas y
+1:17:01
+presentación de ofertas sabemos que tenemos tiempos, entonces los mínimos ya están establecidos. Sí, si usted quiere
+1:17:07
+poner un tiempo inferior a lo que establece la norma por monto, le va a rechazar la herramienta. Entonces, es
+1:17:12
+por eso, porque ya está parametrizado. ¿Qué más? Luego tenemos la apertura de ofertas, tenemos la la etapa de
+1:17:18
+integridad de la de las ofertas, ¿no es cierto?, donde revisamos. Y esta integridad de las ofertas es una primera
+1:17:26
+revisión de eh los documentos que nos envían, ¿no es cierto? Y la que nos da el pie. Esta etapa nos da pie justamente
+1:17:33
+para realizar una convalidación si fuese necesario. Entonces, acuérdese, la
+1:17:38
+integridad viene primero, integridad de la oferta. Esto que le enseño es muy importante, sobre todo cuando le toman los exámenes, porque a veces confundimos
+1:17:45
+integridad con evaluación y son tiempos distintos. la integridad de luego de la apertura recibo las ofertas, abro las
+1:17:52
+ofertas y reviso si hay documentos o algunas cuestiones que deban ser convalidables y luego cuando ya me
+1:17:59
+respondan la convalidación entonces procedo a la evaluación. O sea, ya viene
+1:18:05
+la etapa, en este caso, de calificación, luego viene la adjudicación y luego, claro, viene la suscripción del
+1:18:11
+contrato. Esto es como un mapa pequeñito de la precontractual. Ahora bien, vamos a hablar de la experiencia porque dado
+1:18:17
+que ahí posiblemente radique en estos días nuestra orientación para evaluar valor por dinero, tenemos que saber
+1:18:24
+claro cómo vamos a manejar el tema de las experiencias. Entonces, en cuestión de experiencia, eh el el se sigue
+1:18:31
+manteniendo el criterio de que se defina exactamente qué tipo de contrataciones se aceptarán como experiencia general y
+1:18:38
+como experiencia específica. Sí, tenga en consideración. Muchas veces hay problemas cuando los pliegos no están
+1:18:44
+construidos con esta diferenciación, esta línea clara entre lo uno y lo otro. Y hay proveedores que presentan lo mismo
+1:18:50
+en el uno y en el otro lado, ¿no? Y luego la entidad dice, "No sé cómo resolver, estoy en este dilema."
+1:18:56
+Entonces, desde un principio, en la creación del pliego, se debe establecer qué se acepta como experiencia general y
+1:19:02
+que como específica. Y en esto la normativa ya tiene una una mejora, digamos, una especificidad y dice, a
+1:19:09
+ver, experiencia general será igual a las contrataciones con el mismo CPC a
+1:19:14
+nivel de cuatro, a nivel CPC 4. Sí, ahí. Entonces, todo lo que venga respaldado
+1:19:20
+en eso mismo se considera como experiencia general. Ahora, la experiencia específica deberá
+1:19:27
+estar directamente relacionada con el objeto de contratación, lo más similar posible. Sí. eh posible el mismo objeto
+1:19:35
+contractual, pero no siempre puede darse. Entonces, lo más relacionado, lo más directo tenemos este cambio. Ahora,
+1:19:41
+en la determinación de la experiencia vamos a tener también en cuenta algunas cosas. Esto cuando ya estemos evaluando.
+1:19:46
+Recuerde que cuando hicimos nuestro mapa o nuestro análisis de valor por dinero, ahí ya nosotros estábamos estableciendo
+1:19:52
+qué variables vamos a evaluar, ¿verdad? Entonces, ya cuando necesitemos evaluar, vamos a tomar en cuenta lo siguiente. La
+1:19:59
+acreditación de la experiencia no está sujeta, por favor, al número de contratos o instrumentos presentados. Es
+1:20:05
+mucho tiempo que la norma viene diciendo esto y sin embargo, aún vemos entidades que dice, "Cumpla con dos contratos que
+1:20:13
+tengan estos valores y no es por el número de contratos o instrumentos, sino cumplimiento de montos mínimos
+1:20:20
+requeridos para cada tipo de experiencia, por favor." Luego, si con la presentación de un
+1:20:25
+contrato o instrumento que acredite la experiencia mínima específica el proveedor cumpliere el monto mínimo
+1:20:31
+solicitado para la experiencia general, este contrato o instrumento será considerado como válido para acreditar
+1:20:37
+los dos tipos de experiencia. Pero note por favor que la norma lo que habla son de monto mínimo de cumplimiento. Por
+1:20:44
+tanto, si solo cubre el monto mínimo ya no me sirve para puntaje.
+1:20:49
+Digo, dice la temporalidad en la que se eh permite la entrega o el respaldo de experiencia. Dice esta experiencia de al
+1:20:56
+menos 20 años contados hasta la fecha límite de presentación de las ofertas.
+1:21:01
+Esto se mantiene con la idea justamente de que el mayor número de oferentes puedan entregar o respaldar esta
+1:21:08
+variable. ¿Qué más ahora? Sobre la experiencia de la persona jurídica podrá ser acreditada de la siguiente manera.
+1:21:15
+Dice, "A través de una tercera persona natural en relación de dependencia con la persona jurídica por un tiempo que no
+1:21:22
+sea menor a 12 meses consecutivos a partir de la presentación de la oferta." Entonces, si una persona eh que esté en
+1:21:30
+una empresa, que tenga una relación de dependencia, podemos utilizar la experiencia de esta persona,
+1:21:35
+efectivamente lo podemos usar siempre que mantengamos esta relación laboral de dependencia y esta persona pertenezca o
+1:21:42
+sea parte de esa empresa en 12 meses consecutivos. Obviamente si usted quiere que se le tome en cuenta, deberá mostrar
+1:21:49
+los respaldos, por ejemplo, los roles, ¿no es cierto? o el en este caso los registros que tiene la seguridad social,
+1:21:56
+donde se demuestre que esta eh persona, tercera persona, está respaldando garantía y cumple con los requisitos
+1:22:01
+establecidos. Luego, en el caso de la persona eh de que la persona jurídica
+1:22:07
+posea un tiempo de constitución menor a los 12 meses, la experiencia podrá ser
+1:22:12
+acreditada por sus accionistas representante legal o personal en relación de dependencia, siempre que se
+1:22:17
+demuestre, ¿no es cierto?, esta relación. Bien, sobre la determinación de la experiencia, estos criterios no
+1:22:24
+han cambiado, esto se sigue manteniendo desde ya nosotros ya teníamos esto en en
+1:22:29
+los pliegos anteriores. Dice, "La experiencia será acreditable y aceptada siempre que se encuentre dentro del
+1:22:35
+territorio." ¿Cuándo aceptamos experiencia eh fuera del territorio?
+1:22:41
+bajo la el análisis de la entidad contratante, si la entidad contratante detecta que no es posible contar con
+1:22:47
+esta experiencia a nivel nacional, pues permite o se abre a recibir experiencia que tengan las empresas fuera del
+1:22:54
+territorio nacional. Y obviamente existe un proceso donde una máxima autoridad de la entidad eh está de acuerdo, o sea,
+1:23:02
+recibe los informes técnicos, aprueba esta situación y con eso se permite la valoración de esa experiencia obtenida
+1:23:08
+fuera del territorio. En cuanto al método de evaluación de ofertas,
+1:23:14
+recuerde, ya habíamos hablado de esto en en el análisis de valor por dinero, ya nos habíamos anticipado. La licitación
+1:23:20
+tiene dos momentos, el momento cumple, no cumple y luego tenemos el momento por puntaje, ¿no es cierto? No se olvide que
+1:23:28
+se mantienen algunas condiciones por las que la sola presentación del formulario
+1:23:33
+de compromiso de cumplimiento de parámetro contractual ya nos habla de
+1:23:39
+que está cumplida la primera etapa. Entonces, ¿cuáles son esas esas variables? Solo le recuerdo, porque esto
+1:23:46
+ya lo venía manejando, cuáles son esas variables que solo con la presentación de este formulario ya se encuentran eh
+1:23:52
+como establecidas cumplidas. Son personal técnico mínimo y su experiencia mínima. No será necesario que se anuncie
+1:23:59
+o detalle en la oferta estos requisitos, ya que bastarán con adjuntar un compromiso de cumplimiento de dichos
+1:24:04
+parámetros en la ejecución contractual de la obra. Y a la norma le dice muy claro, basta con que presente el
+1:24:10
+formulario, no es necesario adicionar. Otra información dice, una vez suscrito el contrato y esta parte es importante
+1:24:16
+porque dice al final quién termina revisando este cumplimiento. Esto se lo hace ya en la contractual y lo revisa
+1:24:24
+quién, el fiscalizador. ¿Sí? Ahora,
+1:24:30
+hablando también del método de evaluación de las ofertas, que es una pregunta que me parece estaba anticipada
+1:24:36
+y de los APUS, dice, "Los APUS serán utilizados exclusivamente para evaluar el parámetro de oferta económica bajo la
+1:24:43
+metodología por puntaje. No podrá eh no se podrá evaluar este
+1:24:48
+componente en la oferta bajo la metodología cumple, no cumple, ¿no es cierto?" y dice, "Como parte del
+1:24:53
+análisis de integridad de la oferta, los oferentes declaran su adhesión y compromiso de cumplimiento de las
+1:24:59
+especificaciones técnicas aprobadas por la entidad contratante. Entonces, en
+1:25:05
+realidad en la el lo mínimo que hace eh el oferente es adherirse, ¿no es cierto?
+1:25:10
+Y de ahí la otra valoración que se tiene es por precio en relación a que pueda entregar lo establecido posiblemente
+1:25:17
+bajo un precio menor para tener una eh digamos una posibilidad más grande de
+1:25:23
+ganar ese concurso. Bien, ahora de existir diferencias entre los detalles de los rubros o de las unidades de obras
+1:25:30
+previstas en el análisis de precio unitario y el de especificaciones técnicas prevalecerán qué las
+1:25:35
+especificaciones técnicas. por favor. Vamos al otro punto que eh posiblemente
+1:25:42
+a ustedes les cause alguna inquietud y está en relación con claro, la
+1:25:47
+desagregación tecnológica, porque eh esto lo veíamos siempre para los procesos grandes de obra, pero ahora en
+1:25:55
+en tanto estemos en el régimen de transición todos debemos hacer eh cuando los procesos son mayores a 10,000 ya
+1:26:01
+tenemos que hacer esto de la desagregación tecnológica. Entonces voy a sacar así mismo otro recurso que
+1:26:06
+tenemos para poderle indicar. Sí, denme un segundito.
+1:27:36
+Sí, estimados participantes, por favor, si le dan un minuto a Alex está preparando el material para continuar con la capacitación.
+1:27:44
+Gracias, Anita. Sí, me mantenía en silencio porque son unos archivos que son un poquito pesados.
+1:27:52
+A ver, vamos a abrir el primero. Vamos a ver algunos recursos que tenemos
+1:27:58
+para ustedes. Ah, algo más acerca de la experiencia. Eh, hm, sí está. por favor,
+1:28:05
+me confirma si es que ya es visible para usted un cuadro en Excel, eh, donde
+1:28:10
+vamos a hacer el ejercicio de la cálculo de las experiencias. Nos están confirmando que sí.
+1:28:16
+Ya, gracias, Anita. Bueno, vamos. Gracias también a las personas que nos colaboran a través del chat. Bien,
+1:28:22
+entonces sobre la experiencia lo que nos faltó agregar es que eh la experiencia no es
+1:28:27
+que se pide, ¿no es cierto?, a en este caso a criterio de la entidad, sino que tenemos un cuadro y este cuadro igual se
+1:28:34
+encuentra también dentro del reglamento y eh también se encuentra dentro de los pliegos y es el que nos va guiando para
+1:28:41
+saber cuál sería el valor de experiencia general y experiencia específica que nosotros eh podemos solicitar en cada
+1:28:48
+proceso. Entonces, tenemos eh para ejemplo, les he realizado este ejemplo,
+1:28:53
+cuando tenemos un presupuesto referencial de 2,650, ¿no es cierto? Voy a señalar en este
+1:29:00
+sentido, pues la línea en la que nos encontramos, que sería esta de aquí.
+1:29:08
+Voy a subrayar con amarillito, ya porque esto va desde cero. Tome en cuenta, por
+1:29:13
+favor. Aquí le voy a resaltar. Va desde cero hasta 72,000. Sí. Eh, claro, la los
+1:29:20
+pliegos lo que le dan es los es los valores o los porcentajes que
+1:29:26
+deben ser multiplicados por el presupuesto inicial. Lo que nosotros tenemos acá ya para el ejemplo es la
+1:29:31
+multiplicación de esos valores. Ah, algo bueno es que este o una noticia también adicional es que ya el CERCOP supongo
+1:29:38
+que esta semana lanza esta herramienta de cálculo que no es muy complicada, donde le va a ayudar también a calcular
+1:29:44
+las experiencias, aunque creo que usted ya lo hace bien desde hace mucho tiempo, pero no está por demás tener una
+1:29:52
+herramienta que nos colabore, ¿verdad? Entonces, ya. Entonces, como son 12,000 y me ubico aquí, ¿qué es lo que nos dice
+1:29:58
+este cuadro? Dice, bueno, si estás ubicado en este rango, el monto de experiencia general mínima en relación
+1:30:04
+al presupuesto no puede ser mayor al 10% y en cuanto a la experiencia específica,
+1:30:10
+no mayor al 5%. ¿Verdad? Entonces, lo que usted me imagino ya está
+1:30:15
+considerando es ah entonces está muy difícil, lo que hago es multiplicar el presupuesto referencial, ¿no es cierto? Por el porcentaje que me establece el
+1:30:23
+cuadro. Y el cuadro dice, "No mayor al 10%." Para el ejemplo, yo utilicé lo
+1:30:28
+máximo, que es el 10%. Pero usted si eh gusta podría utilizar
+1:30:34
+un 3%. Claro, podría hacerlo sin ningún problema. Un 2%, un 1%, por supuesto.
+1:30:40
+Ahora, lo que sí debemos estar claro es entre yo utilizo un porcentaje más pequeño, lo que significa es que lo que
+1:30:47
+voy a pedir es menos, ¿sí? un valor menor. Hay hay cosas buenas y cosas que
+1:30:53
+tal vez usted considere que te parece se siente inseguro al pedir menos valor de experiencia. ¿Por qué? Porque dice,
+1:31:00
+cuando yo vi el análisis de valor por dinero, ¿no es cierto? Yo vi que algo importante eh para estos días va a ser
+1:31:06
+la valoración de la experiencia, o sea, cómo yo oriento ese esa cálculo de valor por dinero. Entonces, si es que, por
+1:31:12
+ejemplo, yo pido una experiencia muy pequeña, ¿qué sería lo bueno? Lo bueno sería que los muchos oferentes me envían
+1:31:18
+sus ofertas porque pueden cumplir, que sería lo tal vez eh limitado. Lo
+1:31:23
+limitado sería que tal vez estas personas, ¿no es cierto?, eh no cumplen con este rigurosidad que yo estoy
+1:31:29
+exigiendo de que tengan experiencia en lo máximo posible, ¿sí me entiende? Pero hay cosas, esto ya queda a criterio de
+1:31:35
+ustedes. Eso es la discrecionalidad que se le permite a la entidad contratante en función de lo que tengan como
+1:31:41
+objetivo en sus contrataciones. Lo puede hacer para el ejemplo. Nuevamente al decir que no es mayor al 10%, yo he
+1:31:48
+tomado para el ejemplo lo máximo que es el 10. Si usted gusta también lo puede hacer, pero si usted quiere tomar 1 2 3
+1:31:54
+5 7 es puede hacerlo, no hay problema. Entonces, lo que se hace es la multiplicación del presupuesto por este
+1:32:00
+porcentaje que usted escoja y ya tiene el valor de experiencia general. Luego tiene la experiencia específica, que en
+1:32:06
+cambio le dice no mayor al cinco. En mi caso yo he tomado lo máximo que cinco y
+1:32:11
+asimismo multiplico el presupuesto por el 5%. Ahora viene otra cuestión. Le
+1:32:16
+recuerdo la el respaldo que los proveedores hacen de experiencia no se
+1:32:22
+hace por número de contratos o de instrumentos, sino por montos mínimos de
+1:32:27
+cumplimiento. Es decir, los proveedores, si usted pone, por ejemplo, que requiere, en este caso, para mi ejemplo,
+1:32:33
+1265 en experiencia, ¿verdad? Eh, puede ser que en un contrato eh tenga este
+1:32:39
+valor o puede ser que reuniendo contratos más pequeños logre este valor, la sumatoria de ese valor, eso se
+1:32:46
+permite. Lo que usted puede determinar, si bien no es el número, es el monto mínimo por el que sumaría esos
+1:32:52
+contratos, o sea, y en este caso, para eso nos sirve la última casilla que tiene este componente que dice monto
+1:32:59
+mínimo requerido por cada contrato en relación al monto denominado de experiencia mínima general o específica,
+1:33:04
+¿no es cierto? Y para el caso que el ejemplo que les llevo dice no mayor al 5%. Entonces, ¿qué es lo que debo hacer?
+1:33:12
+Debo desde el monto que calculado de la experiencia general multiplicar por 5% y
+1:33:18
+en este caso me da 63,25. ¿Qué significa este 6325?
+1:33:24
+Significa que si el oferente me quiere sumar contratos, está bien, pero estos
+1:33:29
+contratos deben ser eh menos iguales o superiores a 63.25. 25. Desde ahí me
+1:33:35
+sirve. Si me presento un contrato inferior de $50, pues no lo puedo tomar en cuenta porque lo que se le permite la
+1:33:42
+entidad establecer el monto mínimo. ¿Sí? Lo mismo sucede con la experiencia específica, como es un solo porcentaje,
+1:33:49
+vuelvo a multiplicar por 5% y en este caso me sale 31,63.
+1:33:54
+Le repito, ¿qué significa este 31.63 para respaldar experiencia específica?
+1:34:00
+Significa que el proveedor me puede ir sumando, ¿no es cierto?, contratos hasta llegar al monto de 632.51.
+1:34:09
+¿Me puede sumar? Yo como entidad no obligo en número de contratos, pero sí
+1:34:14
+los montos, reviso los montos. Entonces, si tiene un contrato ya de $31, está bien, se puede ir una factura, un
+1:34:21
+contrato, un instrumento se puede ir sumando, ¿no es cierto? Pero eh si tengo algo inferior, ese no me contaría porque
+1:34:28
+lo que está normado es el monto mínimo por el que se van sumando esos contratos. Bien, ese es el uno de los
+1:34:34
+recursos que tenía para mostrar y finalizar con la cuestión de la experiencia. Lo voy a cerrar, lo voy a
+1:34:40
+guardar como está y vamos a ver otro otra cuestión.
+1:34:47
+Esta es un poquito más técnica. Entonces vamos a revisar con ustedes
+1:34:57
+el análisis de precio unitario. Mm.
+1:35:06
+Aquí está.
+1:35:25
+Ya. Eh, ahora vamos a revisar en cambio e la construcción del de no del análisis
+1:35:33
+porque eso ya lo venía haciendo usted y lo sabe hacer porque recordemos la necesidad de establecer el presupuesto
+1:35:40
+referencial en obras a través del análisis de precio unitario estaba mucho antes de las reformas, ¿verdad?
+1:35:46
+Entonces, le voy a pintar la parte que usted ya venía haciendo y es
+1:35:53
+hasta aquí.
+1:35:58
+Sí, esta parte, la parte que usted ve de celeste. Ah, me olvidé de confirmar. Anita, por favor, estamos revisando el
+1:36:05
+Excel del análisis de precio unitario. Le voy a cambiar de color para que lo puedas detectar.
+1:36:10
+Sí, sí, lo pusiste en el amarillo en este momento. Eso ya. Entonces, estamos muy bien. La parte que está en celeste usted ya la
+1:36:17
+venía realizando, ¿cierto? Entonces ahora vamos a complementar con lo que
+1:36:23
+nos faltaría para que se establezca la desagregación tecnológica. Entonces, el
+1:36:28
+análisis de precio unitario, como sabíamos, es el estudio que se hace rubro a rubro por cada uno de los
+1:36:34
+proyectos, ¿cierto? Y eh se, ¿qué es lo que nosotros analizamos? analizamos el
+1:36:39
+equipo, la mano de obra, la utilización de materiales, ¿sí? Y el transporte. Eso
+1:36:45
+es lo que vamos analizando. Y de cada uno de estos nosotros íbamos estableciendo eh en este sentido pues la
+1:36:52
+cantidad, la tarifa, el costo de hora, el rendimiento y establecíamos el costo
+1:36:57
+por cada uno de estos elementos y luego estos elementos, ¿no es cierto?, se iban a sumar a lo que establecemos como costo
+1:37:05
+directo, la sumatoria de cuánto íbamos nosotros a en este caso a a gastar en
+1:37:12
+qué, en los elementos de equipo, mano de obra, materiales, transporte. Entonces
+1:37:17
+tiene usted, mire, aquí equipo. Le voy a pintar igual para que me pueda ir siguiendo. Yo sé que esto eh para
+1:37:23
+quienes no lo manejan puede ser un poco complejo, pero eh
+1:37:29
+hoy por hoy, por favor, lo que es importante no es que aprenda todo, sino que aprenda el la idea, el concepto
+1:37:35
+general. Quienes manejan obra, esto ya lo saben de memoria. Entonces,
+1:37:40
+déjenme ver qué otro recurso en video podemos sacar para hacer una clase posiblemente más
+1:37:47
+eh como más despacito acerca de esta construcción. Déjme pensar qué vamos a hacer, pero
+1:37:54
+mientras tanto le explico porque lo que me interesa es que comprenda la idea central, ¿no? Entonces yo le decía
+1:38:01
+el análisis de precio unitario, aquí usted ve en colores, todos los en este caso elementos que constituyen un rubro,
+1:38:07
+equipo, mano de obra, material y transporte, ¿no es cierto? Y por cada
+1:38:12
+uno, eh, por ejemplo, en este caso yo quiero trabajar en un rubro que se llama suministro a carreo y montaje de poste
+1:38:18
+de hormigón armado y con las características. Entonces digo, a ver, para realizar este rubro, el suministro
+1:38:25
+a carreo, montaje de poste de hormigón, ¿qué equipo necesito? Entonces viene ahí
+1:38:30
+en la herramienta, ¿no es cierto?, con unas características, una grúa y también pongo las características. Por cada una
+1:38:37
+voy estableciendo cantidad, tarifa, costo, rendimiento. Bien. y voy estableciendo por este variable equipo
+1:38:43
+cuál sería el valor, ¿sí?, en este caso 203. Luego voy al siguiente punto, la
+1:38:49
+mano de obra. ¿Qué tipo de mano de obra? ¿Qué eh y en este sentido, cuánto me
+1:38:54
+costaría la mano de obra nuevamente para el suministro a carreo y montaje del de este poste de hormigón? Entonces, en
+1:38:59
+este caso, yo necesito un maestro eléctrico linero, un técnico linero eléctrico,
+1:39:05
+eh, y dos peones, ¿no? Y voy así mismo poniendo la cantidad que uso. Recuerde que los valores que se establecen aquí
+1:39:12
+en mano de obra deben ser tomado de eh lo que define la Contraloría General del Estado. El resto de cuestiones de
+1:39:18
+rendimientos pues se maneja a través de distintas instituciones o de Bademe Mecoms, por ejemplo, el de la Cámara de
+1:39:24
+la de Comercio puede ser un referente. Tenemos varios referentes, por eso le decía quienes manejan obras, pues ya
+1:39:30
+esta parte la la las conocen y la saben. De hecho, es un estudio que generalmente está orientado para que lo realicen
+1:39:36
+profesionales en ingeniería civil y arquitectura. Entonces, luego tenemos
+1:39:41
+el siguiente punto de análisis. Asimismo, me pongo en el sentido de para el suministro, acarreo y montaje de
+1:39:47
+poste, ¿qué tipo de eh materiales requiere? Obviamente el poste, ¿no es cierto? Y aquí establezco la unidad, la
+1:39:54
+cantidad y el precio. Y finalmente el transporte, cuánto me costaría, lo
+1:39:59
+establezco y costeo, ¿no es cierto? Tengo costo directo, indirecto, utilidad, costo total de rublo y el
+1:40:06
+valor unitario. El valor, tome en cuenta, es del primer rubro.
+1:40:12
+Este mismo análisis debo hacerlo en todos los rubros que tengan los proyectos. Sí, para el ejemplo yo solo
+1:40:19
+he hecho cuatro rubros, pero obviamente una una obra es de muchos más rubros.
+1:40:25
+Claro que sí. Entonces, para el ejemplo hemos hecho este mismo análisis. Ahora le voy a pintar así mismo de otro color
+1:40:31
+la parte en cambio que tenga que ver con la desagregación tecnológica.
+1:40:39
+La desagregación tecnológica eh aparece con base a la obtención de análisis de
+1:40:45
+precio unitario. Por eso lo uno no puede venir sin lo otro. Primero el análisis de precio unitario y luego la
+1:40:50
+desagregación tecnológica. No sé si pintarle de este color. Anita, ¿me puedes identificar si es que sí se
+1:40:57
+ve la diferencia? Sí. O o cambio. Sí, tienes en celeste y en amarillo tu
+1:41:03
+tu ex. Ya. Ya. La la idea de esto es que usted diferencie. En celeste está la parte que
+1:41:08
+usted venía haciendo de análisis de presión unitario. Ahora, en eh este color amarillo tiene usted lo que
+1:41:15
+constituye la desagregación tecnológica. Entonces, para la desagregación, ¿qué es lo que
+1:41:21
+debemos analizar? Como en el análisis de precio unitario ya tenemos lo que nos
+1:41:26
+cuesta eh en este caso el costo directo del rubro, lo que hacemos es establecer
+1:41:31
+el peso de cada uno de estos elementos, ¿no es cierto?, sobre el total del rubro
+1:41:37
+y a eso le denominamos peso relativo. Una cuestión eh que se hace adicional es
+1:41:43
+la identificación del CPC, es decir, por cada uno de los rubros yo debo identificar a qué CPC pertenece,
+1:41:50
+¿cierto? Y esto eh vamos a parar un segundito aquí porque tenemos así mismo otra herramienta donde usted va
+1:41:56
+identificando esos CPCs. Ya le muestro. Entonces voy a salirme de aquí un ratito para mostrarle eh la página del CCOP.
+1:42:27
+Ya. Entonces, me confirma, por favor. Estamos eh buscando la página del CCOP. Esa es la pantalla que deben ustedes
+1:42:33
+reflejar.
+1:42:39
+Sí, nos están confirmando nuestros participantes. Muchas gracias. Entonces, ¿por qué hemos
+1:42:45
+ingresado a la página del Cerco? Porque ya estamos en proceso de construcción de la desagregación tecnológica y un
+1:42:51
+elemento importante es la identificación del CPC que vamos a utilizar. Entonces
+1:42:56
+vamos a buscar en la página de CCOP dónde podemos obtener este listado. Bien, entonces vamos aquí a a la página,
+1:43:04
+vamos a menú, nos vamos a, espero me esté siguiendo, hemos entrado
+1:43:09
+a la página del CCOP, vamos a programas y servicios.
+1:43:15
+Sí. Y aquí en programas y servicios vamos a escoger eh esto de producción
+1:43:21
+nacional.
+1:43:27
+Entonces está aquí, miren, está producción nacional. ¿Dónde está Producción Nacional? Está ubicado en el
+1:43:32
+cuarto lugar del menú de programas y servicios. Damos clic en programa
+1:43:37
+producción nacional. Y en producción nacional usted tiene un
+1:43:43
+un viñeta que se llama listado de CPC con umbrales. Aquí es donde usted se va
+1:43:49
+a descargar, ¿no? Como es un poco pesado, yo ya lo tenía descargado. Lo voy a abrir en este momento.
+1:44:00
+Sí. Ya. Entonces, este es el listado que tenemos, ¿no es cierto? con el CPC, la
+1:44:07
+descripción y el umbral de BAE.E. Entonces, de aquí vamos a obtener justamente lo que nos pide en la
+1:44:14
+desagregación, que es ubicar cada CPC. Le voy a pintar el CPC que está aquí con
+1:44:20
+el umbral de BAE que está pintado al otro lado. ¿Sí? Entonces, como tiene usted un filtro aquí va a buscar, les
+1:44:27
+recuerdo el más relacionado, siempre el más relacionado, ¿cierto? No vamos a
+1:44:32
+tener los mismos. Y en cuestión de elaboración de desagregación tecnológica, eh posiblemente sea más
+1:44:39
+evidente que no van a ver los mismos. Eso se vamos a a ubicar el más
+1:44:45
+relacionado y lo que hacemos en este caso es ir eh encontrando, déjenme ver,
+1:44:51
+por ejemplo, ponemos su hormigón, ¿no es cierto? y tiene usted estos CPCs
+1:44:59
+y aquí usted escoge. Vamos a pensar que como lo que estamos trabajando es en este poste de hormigón con estas
+1:45:05
+características, aquí tiene usted el CPC y aquí tiene el CPC que el umbral que le debería corresponder a la desagregación.
+1:45:12
+Y eso, estos valores usted va copiando dónde? En la desagregación tecnológica.
+1:45:18
+Sí. Voy a cambiar rápidamente de pantalla para que usted pueda continuar revisando esta parte.
+1:45:24
+Entonces, lo que tengo acá en la pantalla ya es la ubicación justamente del CPC con el buy,
+1:45:33
+que de dónde viene del listado que le mostré anteriormente, por favor. Si le marca cero ese listado, usted lo que
+1:45:39
+hace es únicamente copiar ese cero. Bien, después hacemos una multiplicación
+1:45:45
+entre el peso relativo, ¿no es cierto?, y el valor del BAE y tenemos el BAE del elemento. Entonces, usted puede ver que
+1:45:52
+es un estudio minucioso acerca de cada elemento, cómo se va agregando by. El BU
+1:45:58
+lo voy tomando de ese listado, ¿no es cierto? Y luego voy al final a hacer una sumatoria de todos los baes de cada
+1:46:06
+elemento para obtener el BAE del rubro. Sí, eso del rubro. Así se va
+1:46:11
+construyendo la desagregación tecnológica. Entonces, es lo que tenemos que hacer.
+1:46:17
+Le he mostrado el listado para que porque posiblemente su duda es de dónde saco este CPC, del listado que le mostré
+1:46:23
+ingresando a la página del CCOP. ¿Qué es el peso relativo? El peso relativo es la
+1:46:28
+división de lo que me cuesta cada eh cada elemento, ¿no es cierto? Dividido para el costo directo. Esta metodología
+1:46:37
+se establece en alguna parte. si se establece en la en el anexo número tres,
+1:46:42
+que todavía se encuentra vigente por el régimen de transición. Ahí existe la
+1:46:47
+metodología, que es lo que le estoy mostrando en ese momento. Entonces, esto es en cuanto a la construcción de
+1:46:53
+análisis de precio unitario, ¿no es cierto? y también de cómo en la parte amarilla se va haciendo la
+1:46:58
+desagregación, que la desagregación es la ubicación del valor agregado de cada elemento que constituye un rubro para
+1:47:06
+tener un valor por cada rubro. Ahora bien, vamos a hacer un paso adicional antes de hablar de la redistribución de
+1:47:13
+obras, que es algo que se mantiene también, y es eh la verificación de cómo se realiza esta eh esta subida de
+1:47:22
+desagregación en el sistema, porque tal vez eso también es una inquietud, por ejemplo, de personas que estaban
+1:47:27
+llevando menores cuantías donde no se hacía esto, ¿no es cierto? Acuérdese, la desagregación tecnológica es un proceso
+1:47:34
+que debe realizarse como parte de la preparatoria en la herramienta también. Entonces, voy a hacer con ustedes
+1:47:43
+un ejemplo en el sistema. Voy a salirme de esto también.
+1:47:49
+Bien, me voy a demorar un poquito por si acaso. Piensen ustedes que estamos en silencio y es que voy a abrir el portal.
+1:49:07
+Bien, Anita, estamos en el en el portal, ¿cierto? Es lo que se puede ver.
+1:49:13
+Sí, estás en en nuestra plataforma de capacitación del del portal del socio.
+1:49:20
+Gracias. ¿Ya? Entonces, eh estamos utilizando, le hago notar, estamos utilizando la plataforma de eh
+1:49:26
+capacitación donde simulamos los procesos, no es no es un uso del del
+1:49:32
+ambiente de producción que nosotros le decimos que como sabemos pues no se no se podría jamás utilizar el ambiente de
+1:49:38
+producción para hacer práctica. Bien, entonces vamos a establecer justamente
+1:49:43
+cómo eh subimos la desagregación tecnológica, cómo la aprobamos antes de comenzar con la elaboración de un
+1:49:50
+pliego. Entonces, vamos a loguearnos.
+1:50:04
+Sí.
+1:50:30
+Ya, entonces hemos ingresado al portal y como les decía, sobre todo para quienes
+1:50:35
+no han hecho licitación, eh posiblemente digan, "¿Y cómo hago esto de la desagregación?" Vamos, entidad
+1:50:42
+contratante, usted despliega el menú y vamos a encontrar aquí desagregación
+1:50:47
+tecnológica y aquí vamos a crear nueva desagregación tecnológica. ¿Sí?
+1:50:54
+Entonces, tenemos ya algunas eh algunos ejemplos realizados. Vamos a hacer con ustedes uno nuevo. Empezamos a darle
+1:51:01
+clic aquí en nuevo proceso de desagregación. Y aquí necesito que me presten mucha
+1:51:06
+atención porque en esta parte de la desagregación tenemos el formato de
+1:51:12
+desagregación que hay que descargar, ¿no? Lo voy a descargar con ustedes este ratito, ¿sí? Para que lo vean cómo es
+1:51:19
+vacío. Entonces voy a cambiar de pantallas porque sé que cada vez que hacemos Excel.
+1:51:26
+Entonces, denme un ratito. Ya, aquí está. Entonces puede ver usted
+1:51:31
+cuando usted le da clic a ese botón aparece este formato. ¿Sí? Entonces este formato ya queda establecido. Aquí hay
+1:51:38
+que establecer el número del rubro. Aquí el código CPC. Eso ya lo hemos venido trabajando. Ya sabe usted de dónde tener
+1:51:45
+ese listado de CPC. Entonces usted pone el CPC que toque, ¿no es cierto? Luego pone usted la descripción del CPC, lo
+1:51:51
+puede copiar de ese mismo listado. Sí. La descripción del rubro desde aquí en adelante ya no sirve. nuestro análisis
+1:51:58
+de presión unitario porque le hemos dado el nombre. ¿Se acuerda que el nuestro era suministro? Nuestro ejemplo era, por
+1:52:04
+ejemplo, suministro y acarreo. Acarreo y montaje, creo que
+1:52:12
+acarreo y montaje. ¿Qué se recomienda en este formato? Se
+1:52:19
+no utilizar caracteres especiales, ¿verdad? Entre otras cosas. Eh, de ahí es editable. La cantidad la copiamos de
+1:52:26
+nuestro análisis de precio unitario, unidad, precio del rubro lo copiamos del análisis de precio unitario, el precio
+1:52:32
+global y los otros ya son formatos que el mismo la misma hoja ya tiene
+1:52:38
+calculados. Bien, entonces este es el formato vacío. Lo vamos a hacer un ratito y vamos a volver a la
+1:52:44
+herramienta.
+1:53:00
+Estamos aquí en la herramienta. Sí, ya
+1:53:05
+entiendo que ya para ustedes es nuevamente visible. ¿Qué es lo que habría hace un momento? Habría el formato de desagregación tecnológica.
+1:53:11
+Eso es lo que vio usted vacío y le indicaba eh cómo se debe llenar los campos y para qué nos sirve el análisis
+1:53:18
+de preso unitario, porque lo que vamos descopiando acá, ¿no? Muy importante, por favor, que le dé lectura al
+1:53:23
+instructivo de desagregación tecnológica y también tiene usted aquí la base de clasificación central de producto para
+1:53:29
+que se pueda ayudar además del listado que le mostré anteriormente, ¿no? Entonces, en el instructivo lo voy a
+1:53:35
+abrir en este momento. ¿Por qué es importante el instructivo? Porque en este instructivo que le voy a mostrar a
+1:53:42
+continuación y se descarga de la misma herramienta, le indica cómo debemos llenar este formato con el número, el
+1:53:49
+código, CPC, la descripción, la descripción del rubro, pero por sobre todo préstele muchísima atención a cómo
+1:53:56
+usted debe digitar las unidades, porque eh hay muchas veces en que quieren subir
+1:54:01
+el formato, no está de acuerdo a este tipo de unidades y entonces vamos a tener eh problemas, errores. y le avisa
+1:54:09
+en qué línea está el error. Entonces, tiene usted todo estas
+1:54:14
+consideraciones previo a realizar la desagregación y estos instructivos. ¿Dónde lo encuentra? Nuevamente les
+1:54:20
+recuerdo, estamos en el SOS, ¿no? Si usted me pregunta cómo llegó ahí, le
+1:54:27
+recuerdo, nos fuimos a entidad contratante, bajamos por desagregación y nos pusimos en crear nueva desagregación
+1:54:34
+tecnológica. Bien, ahora lo que hemos hecho es eh permítame
+1:54:41
+abrirle un formato que nosotros ya tenemos establecido antes de continuar.
+1:55:29
+Ya tengo aquí el formulario que le mostré, pero con datos, ya tiene información. Entonces, voy a tratar de
+1:55:35
+hacerle más grandecito porque eh los caracteres son pequeños y tal vez no se
+1:55:40
+logren observar. Entonces, vamos a ver. Acuérdese que yo le mostré un ejemplo de APU. Yo le decía únicamente hice cuatro
+1:55:47
+para esta capacitación, a pesar de que sabemos que una obra tiene más, pero para cuatro, con cuatro ya nos nos da un
+1:55:53
+ejemplo. Entonces en la parte de número usted va a poner el secuencial 1 2 3 4
+1:55:58
+hasta que eh la cantidad de rubros que fuera necesario. El código de CPC ya sabe usted de dónde obtenerlo, ¿no es
+1:56:05
+cierto? Asimismo, la descripción, por favor tome la descripción que está en el listado dentro de la herramienta de
+1:56:11
+desagregación también tiene usted un listado para consultar. La descripción del rubro, la toma del análisis de
+1:56:18
+precio unitario. Recuerde que cada rubro tiene su propio nombre y desde este campo ya nos sirve todo lo que hemos
+1:56:24
+venido trabajando en análisis de precio unitario. La cantidad uno aquí en la unidad es super
+1:56:31
+importante que usted tome en cuenta el instructivo. Por ejemplo, unidad obviamente la tenemos como la u Uscula.
+1:56:38
+Sí, inclusive si la pone mayúscula le puede dar un error, ¿sí? Es más, voy a ponerle mayúscula de adred.
+1:56:45
+Fíjese que le he puesto la U mayúscula, ¿no? Bueno, vamos. Entonces, luego tenemos precio unitario del rubro. Lo
+1:56:52
+tomo del análisis de precio unitario, ¿no es cierto? Eh, es igual al precio global, el precio relativo y
+1:57:00
+automáticamente el sistema me calcula el relativo, el agregado ecuatoriano y el ponderado. Eso no necesita cálculo
+1:57:06
+porque el formato ya viene con esas estos cálculos establecidos. Sí. Entonces vamos completando rubro a
+1:57:13
+rubro, por favor, porque ya hemos podido revisar algunos de los procesos de licitación que han subido y hay
+1:57:20
+entidades que no están completando este trabajo, entonces podría ser causal de una observación.
+1:57:27
+Vamos completando uno a uno cada uno de estos y este archivo lo va a guardar.
+1:57:32
+Sí, vamos a guardarlo aquí en este equipo mismo.
+1:57:38
+Usted puede poner el nombre, por ejemplo, le ponemos ecuatoriano, ejemplo. Sí,
+1:57:44
+procure y le recuerdo nada de caracteres especiales para establecer los nombres.
+1:57:52
+Lo estoy guardando. Si tal vez la pantalla se ha ido a otra parte, estoy guardando el Excel nada más. Ahora bien,
+1:57:59
+me regreso al SOSE.
+1:58:17
+Aquí estamos en el SOS. Ya. Entonces me dice descripción del proceso. Haga una
+1:58:22
+descripción breve. En este caso estábamos trabajando en un proyecto eh de línea línea de subtransmisión.
+1:58:39
+Sí, no utilizo caracteres especiales. El presupuesto referencial tiene que ser el
+1:58:44
+mismo presupuesto que vimos en la página de Excel. Ya le le recuerdo yo cuánto es
+1:58:50
+lo que teníamos.
+1:59:02
+Sí, en el caso de nuestro ejemplo es 12650,10. Entonces, lo mismo lo ponemos aquí.
+1:59:12
+6600.
+1:59:36
+Ya me fue un numerito mal.
+1:59:43
+Una vez que tenemos completado esto, vamos a subir el formato de desagregación.
+1:59:48
+Este formato que estoy señalando en este momento debe ser completado. Usted no puede subir otros formatos porque le va
+1:59:54
+a dar un error, ¿verdad? De hecho, hay un error en nuestro formato justamente para que usted evidencie cómo aparece
+2:00:00
+cuando tenemos alguna algo que corregir. Entonces, vamos a ver. Aquí damos clic
+2:00:06
+en examinar. y tomamos del archivo que le teníamos
+2:00:13
+grabado.
+2:00:30
+Hasta el momento que hemos hecho, hemos descargado el formato, completado con las cuatro líneas que teníamos, ¿no es
+2:00:36
+cierto? Vamos a hemos subido este formato y vamos a dar clic en guardar
+2:00:41
+proceso. Damos clic en aceptar y yo le decía, ¿se acuerda que e de AD
+2:00:47
+pusimos la U mayúscula en lugar de lo que dice el instructivo que es la U minúscula? Entonces aparecen mensajes
+2:00:54
+como este que dice se encontró errores, no se subió el archivo en Excel. Entonces, aquí usted le da clic y va a
+2:01:01
+darse cuenta. Dice línea siete, error en la columna unidad, revisar instructivo. Así le da o la indicación de qué es lo
+2:01:07
+que necesita ser mejorado. Entonces volvemos en este caso al archivo para corregir el
+2:01:14
+error que nos está alertando la herramienta. Sí, voy a corregir con ustedes para que puedan evidenciar cómo
+2:01:22
+lo teníamos y por qué nos da este conflicto. Lo teníamos aquí, ¿se acuerda? En la
+2:01:27
+primera yo le dije para demostrar lo importante de revisar el instructivo en la definición de unidades. Unidad debe
+2:01:34
+escribirse con minúscula de acuerdo al instructiv. Entonces aquí estaba con mayúscula. Usted lo puede ver. Borramos,
+2:01:40
+¿no es cierto? Ponemos la U minúscula y volvemos a grabar.
+2:01:45
+Grabamos, cerramos. Otra vez va.
+2:03:20
+Estimados participantes, Eh, tuvimos una intermitencia de internet. Por favor, si nos dan unos momentos hasta
+2:03:26
+restablecerlo nuevamente, les agradecemos mucho. Realizando la subida. Ah, se grabó otra
+2:03:33
+vez. Ya habíamos estado realizando, como les decía, la grabación de cómo se hace
+2:03:39
+la subida a la desagregación tecnológica. Entonces, llenamos o completamos el formulario que nos
+2:03:44
+descarga la herramienta. Eh, y recuerda que en el eh yo le había recomendado,
+2:03:50
+por favor, que previo a llenar eh lea el instructivo porque y sobre todo
+2:03:55
+pongámosle mucha atención a la forma en la que llenamos las unidades. Eso nos puede traer conflicto al momento de la
+2:04:01
+subida. Y intencionalmente pues utilizamos en lugar de en unidad, en
+2:04:09
+lugar de la u minúscula, una u mayúscula, ¿sí? Con la idea de que nos salga este error, que es lo que vimos,
+2:04:15
+¿se acuerda? Línea siete, error en la columna, revisar instructivo. Entonces, para que evite usted esto que pasó,
+2:04:21
+leamos el instructivo y lo que vamos a hacer ahorita es nuevamente cargar el la
+2:04:27
+desagregación. Entonces, permítame, vamos a regresar al sistema. Hasta ahí nos quedamos. eh previo a la situación
+2:04:34
+de que tuvimos un problema con el internet, ¿cierto? Entonces vamos a volver,
+2:04:41
+vamos otra vez a volver a loguearnos.
+2:05:11
+Sí, vamos a hacer un nuevo intento de subida. Con eso, las personas que no
+2:05:16
+hayan visto cómo llegamos al menú de desagregación, les recuerdo entidad contratante, desplegamos el menú, vamos
+2:05:22
+a desagregación tecnológica, creamos una desagregación, vamos a nuevo proceso, damos clic y
+2:05:29
+estamos en la misma pantalla. Como se nos fue el internet, pues tenemos que volver a poner. Le ponemos el título a
+2:05:36
+nuestro proyecto. Sí, vamos a hacerlo rapidito. Vamos a poner proyecto.
+2:05:42
+Sí, esto es solo por la demostración. Aquí deberíamos poner un nombre sucinto
+2:05:48
+al proyecto que vamos a hacer. Eh, recuerde cuál era nuestro presupuesto. En el ejemplo que llevábamos era el que
+2:05:55
+está aquí, ¿no? 12650 con10. Bien. Y una vez que hemos se ha corregido de la
+2:06:02
+unidad de la U minúscula a la mayúscula, vamos a cargarlo nuevamente. Damos clic en guardar el proceso
+2:06:11
+y usted puede notar que esta vez al haber corregido la unidad ya tenemos,
+2:06:16
+¿no es cierto?, aquí en la pantalla una descripción de todos los rubros que hemos subido. Cuatro. Hay que desplegar,
+2:06:23
+por favor, el display para poder ver hasta donde dice agregado ecuatoriano ponderado. Aquí ya en la herramienta le
+2:06:30
+va a aparecer el presupuesto referencial y el porcentaje mínimo ecuatoriano, que para este caso es 36.08.
+2:06:37
+Y también vamos a subir aquí el análisis de precio unitario. Entonces,
+2:06:42
+examinamos. A ver, déjenme ver si lo tengo grabado.
+2:06:47
+Creo que no había grabado mi análisis de precio unitario. Aquí está.
+2:07:02
+Lo voy a subir. ¿Qué formato le pide para a los appus que sea Excel? No, eso es todo. Y aquí
+2:07:10
+ponemos análisis de precio unitario.
+2:07:21
+Eh, para el proyecto creo que le pusimos así. Ya le pongo un nombre. No utilice,
+2:07:28
+por favor, nuevamente caracteres especiales en las descripciones para evitar problemas o conflictos con la
+2:07:34
+herramienta. Entonces le escribimos así y subimos. Queda subido, como usted
+2:07:39
+puede ver en pantalla. Sí, permítame ver.
+2:07:47
+[Música] Ya. Entonces, subimos y enviamos. Damos
+2:07:55
+clic en enviar. Aceptamos. Bueno, mensajes, alertas.
+2:08:01
+Usted enviado exitosamente su estudio de desagregación, aceptar. Hasta ahí la subida de desagregación.
+2:08:07
+Pero recuerde que dice la norma, la entidad deberá aprobar. Entonces, la aprobación en documentos
+2:08:15
+efectivamente la puede realizar la máxima autoridad, ¿no es cierto? Así es como yo he visto en muchas entidades que
+2:08:20
+tienen su flujo de proceso donde la máxima autoridad o el delegado de acuerdo al monto en documentos dice eh a
+2:08:28
+continuación solicito se registre la aprobación en el sistema. Por tanto, vamos a hacer el registro en el sistema.
+2:08:34
+Vamos así mismo entidad. Ah, previo a eso, le hago notar, voy a
+2:08:40
+hacer inclusive más grande, que de la participación que acabamos de subir es existe un código, en este caso es 6150.
+2:08:48
+Sí, estos son las eh desagregaciones que se hacen y se encuentran pendientes de
+2:08:54
+aprobación, las que están resaltadas con azul. Entonces, nuevamente vamos a entidad contratante,
+2:09:00
+vamos a desagregación, aprobamos. Existe una normativa aquí que
+2:09:06
+justamente le habla de la desagregación y aquí tiene usted, mire, la entidad y
+2:09:11
+el código. Sí, la que está en azul es la que está pendiente de aprobación.
+2:09:17
+Sí. Entonces, los otros que están en color negro ya en este sentido han sido aprobados. Entonces, vamos a dar clic
+2:09:24
+aquí. Usted puede volver a ver todo lo que el registro como tal y aparecen los
+2:09:30
+botones claves, no objetar u objetar. Sí.
+2:09:59
+Le decía que aparecen estos dos botones.
+2:10:05
+Y lo que hacemos en este caso es dar clic en no objetar.
+2:10:29
+Bien, la leyenda a continuación nos dice, "Se ha guardado exitosamente." Damos clic en aceptar y el letrero en
+2:10:36
+verde nos dice el proceso se encuentra en estado no objeción. Y ya tenemos aprobada la desagregación
+2:10:44
+tecnológica para empezar nuestro pliego. Sí.
+2:11:34
+Bueno, hemos vuelto a nuestra presentación. Anita, por favor, me confirmas si se escucha.
+2:11:41
+Sí, se te escucha. Claro, está en modo PPT la presentación. Ya. Entonces, una vez que hemos concluido el proceso de
+2:11:48
+subida de la desagregación tecnológica y aprobación en el SOCE, vamos a recordar algunas cosas sobre los parámetros de
+2:11:55
+calificación y revisar algo más sobre la redistribución y con eso terminaríamos para revisar las preguntas. Entonces, en
+2:12:02
+cuanto a los parámetros de calificación, Alex, y usted sí me escuchas e no está en modo
+2:12:07
+presentación, está en modo PPT. Ah, ya, ya, ya. Ahí, ahí,
+2:12:13
+ahí sí. Ah, ya, ya. Entonces, estamos trabajando nuevamente en valor
+2:12:20
+por dinero. Esa es la idea, el principio que debemos tener pendiente en todo el proceso de contratación. Lo hemos dicho
+2:12:25
+en esta capacitación muchas veces, valor por dinero significa eh una forma
+2:12:31
+distinta de elaborar los mismos documentos que veníamos elaborando, ¿cierto? Con una visión que tenga un
+2:12:38
+alcance distinto. Por eso les hablaba de la determinación de la necesidad. Pasamos luego por el análisis de valor
+2:12:45
+por dinero, el ejemplo que le hicimos y ahí pudimos comprobar que como la herramienta está en transición, claro,
+2:12:50
+nosotros debemos compatibilizar lo que está en la herramienta con este análisis. Por tanto, los parámetros de
+2:12:56
+calificación se mantienen al momento, experiencia general específica, otros
+2:13:01
+parámetros hasta un punto, oferta económica, subcontratación, participación ecuatoriana. Ahora bien,
+2:13:07
+aquí una pregunta para ustedes. Esta este cuadro que tiene usted aquí a continuación
+2:13:14
+va a cambiar y en cuánto tiempo va a cambiar. Sí, quisiera que ustedes respondan a través del chat.
+2:13:23
+En su criterio, este cuadro sí, perfecto. Sí va a cambiar, ¿no es cierto? En 45 días. Por eso les decía,
+2:13:30
+esta capacitación también es de transición, ¿cierto? Luego de este término vamos a hacer otra capacitación
+2:13:37
+cuando ya podamos tener nuevas variables, pero al momento trabajamos con lo que tenemos. Entonces, gracias.
+2:13:44
+Muchas gracias, Neeker, María, Patricio, gracias Yadira. Efectivamente, en 45
+2:13:49
+días términos, pero por ahora recuerde estamos evaluando experiencia general específica, por eso también hicimos un
+2:13:54
+ejercicio de cómo se calcula, ¿cierto? Eh, tenemos eh otros parámetros que
+2:14:00
+cuando ya nosotros tengamos en este sentido las variables, acuérdese de este trabajo de encontrar variables, crear
+2:14:07
+rúbricas, etcétera, tenemos la oferta económica que al momento va de 50 a 60 y
+2:14:12
+hasta aquí debería darnos, ¿cuánto? 85 puntos. Esto, como le digo, es al momento. ¿Sí? Luego la subcontratación
+2:14:20
+tenemos que se evalúa en cinco puntos y la participación ecuatoriana. Actualmente la herramienta continúa
+2:14:26
+evaluando hasta 10 puntos, pero como hemos conversado, esto antes de la reforma ya se tomó como una variable de
+2:14:33
+cumplimiento y en ese sentido deberíamos descartar, no tomar en cuenta en nuestra calificación que no hacemos en la
+2:14:39
+herramienta. Por favor, que he visto también preguntas de es que no puedo restar en la herramienta. Efectivamente,
+2:14:44
+no se puede. Es en el informe, en la calificación que ustedes hacen, en el informe eh que luego firman eh lo las
+2:14:52
+partes. justamente puede ser la comisión técnica o la persona que lleva adelante el proceso de contratación y por eso
+2:14:58
+dice junto a participación. Este parámetro no será objeto de puntajes adicionales ni de verificación en la
+2:15:04
+fase precontractual. Sí, porque esto va a ser cuándo de cumplimiento obligatorio. En la contractual. Bien,
+2:15:10
+entonces ya eh ya ya para ir cerrando el tema, eh
+2:15:16
+la licitación tiene tiempos que como vimos hicimos un camino preparatorial, hicimos un camino en la precontractual y
+2:15:23
+eh en este sentido pues establece que a partir de la apertura de ofertas existe término máximo de hasta 30 días para
+2:15:30
+emitir la actuación que pone e fin a la etapa de calificación y de la calificación tenemos mínimo 3 días,
+2:15:37
+máximo ocho. Les recuerdo que son término contados a partir de la fecha.
+2:15:59
+Perdón, tuve que aclararme un poco la garganta, se me está yendo la voz. le decía, mínimo 3 días, máximo 8 días,
+2:16:04
+términos contados a partir de la fecha de la emisión de la actuación que pone fin a la calificación y vamos con la
+2:16:10
+resolución de adjudicación. Esto es de manera eh ya general los tiempos del
+2:16:16
+proceso, recorriendo todos esos eh caminos que vimos tanto en la preparatoria como en la precontractual.
+2:16:23
+Para finalizar, les recuerdo que está vigente el criterio de redistribución de
+2:16:28
+obras. En este sentido, el proador eh que haya sido adjudicado previamente en
+2:16:33
+un contrato, en una licitación de obras, no podrá obtener la adjudicación de un nuevo contrato de obra en la misma
+2:16:39
+entidad, por favor, es importante, no es en todas, es en la misma entidad
+2:16:44
+contratante por el mismo procedimiento de contratación, estamos hablando de licitación, sea por adjudicación directa
+2:16:51
+a consorcio hasta que obtenga la reción provisional de la obra anterior. Entonces, esto para finalizar en cuanto
+2:16:57
+a la redistribución de obras. Bien, Anita, ahora sí podemos pasar ya a la etapa de nuevas preguntas, a pesar que
+2:17:04
+ya hemos ido resolviendo varias, ¿cierto? Nos vamos a ver si tenemos preguntas. Eh, sí, de lo que he estado revisando de
+2:17:11
+las consultas que te han ido eh ingresando en el chat, has ido ya
+2:17:16
+solventando. Sí, como se me fue el internet, se me ha perdido el chat. Yo solo tengo las los las últimas
+2:17:22
+participaciones cuando me contestaron que los 45 días.
+2:17:28
+Déjame ver porque si te veo hace un momento el inconveniente, pero eh
+2:17:34
+tengo una de Alberto, déjame leer una ahorita, una de Alberto Pasmiño, que tiene que ver con la
+2:17:40
+subcontratación, que es importante indicar. Dice Alberto, nos pregunta acerca de la asignación del puntaje de
+2:17:45
+la subcontratación y nos establece, claro, la forma anterior de eh que funcione la
+2:17:51
+subcontratación. Decía, primero el porcentaje era distinto porque decía, si ya se establece el 10%, ya en este
+2:17:58
+sentido se considera para tomarlo en cuenta en una evaluación superior, ¿verdad? Pero no, el porcentaje subido,
+2:18:05
+Alberto, ya no es el 10, ahora es el 15. Ahora dice del 15 al 30. La forma de
+2:18:10
+llevar anteriormente era, por ejemplo, si teníamos eh en ese sentido al menos
+2:18:16
+el 10, ¿no es cierto? Y alguien presentaba un 25% de su contratación, se le daba la nota más alta, que en este
+2:18:22
+caso sería cinco, y a los demás se les daba de manera prorrateada. Así funcionaba. Hoy por hoy ya no funciona
+2:18:28
+así. La norma dice que si ya eh se establece el 15% se le otorga los cinco
+2:18:34
+puntos. ¿Qué pasa si tengo 25? Se le otorga los cinco puntos. ¿Qué está? Lo que pasa si llego hasta el 30 se le
+2:18:40
+sigue otorgando los cinco puntos. Entonces de 15 a 30 el puntaje sigue siendo cinco. Sin importar en este
+2:18:47
+sentido si es 15, 20, 25. Siempre va a los cinco puntos. Eso, Alberto, para indicarte cómo está funcionando hoy la
+2:18:53
+herramienta, que es distinto a como funcionaba antes.
+2:19:00
+Mientras tanto, ¿te parece si en este momento puedo poner a disposición de nuestros participantes de encuesta para
+2:19:05
+que nos ayuden llenándola? Sí, por favor. Sí, sí. Hay tengo dos
+2:19:11
+preguntas muy similares o en el sentido similares de Miguel eh Angos y Natalie
+2:19:16
+Neira y nos pregunta en sí si debemos realizar la desagregación tecnológica.
+2:19:22
+Creo que lo hemos respondido varias veces, ¿sí? Eh, acuérdese de la transición que nosotros estamos
+2:19:29
+utilizando la misma naturaleza de licitación que obligaba, que en ese sentido exigía la desagregación
+2:19:35
+tecnológica. Entonces, debemos realizarlas, ¿sí? Para todo proceso que sea mayor a $10,000 debemos realizarla.
+2:19:42
+La metodología se establece en el anexo 3. Hay una sola metodología para esta desagregación, no hay más. Entonces, la
+2:19:49
+metodología les hemos indicado hoy y también en la parte de normativa de
+2:19:54
+CERCOP usted la puede desplegar para que se pueda guiar. Déjeme ver si hasta el
+2:19:59
+finalizar yo le muestro dónde está el anexo también para que pueda descargarlo. Bueno, Alberto me envió la
+2:20:05
+pregunta dos veces, ya está respondido. Lady eh Lady nos pregunta nuevamente si
+2:20:13
+el análisis de valor por dinero dentro del estudio de mercado ya es obligatorio. Volvemos a corregir, por
+2:20:18
+favor, en obras. No decimos estudio de mercado, se llama análisis de precio unitario, pero eh si tú quieres
+2:20:24
+preguntarme por bienes y servicios, sí, de la misma manera como viste el ejemplo hoy para obras, una cápite adicional
+2:20:31
+debe hablarte del análisis de valor por dinero. En el caso de de bienes y servicios, ayer ya dieron la
+2:20:37
+capacitación de subasta inversa y digamos que en esa situación el análisis es más cortito porque al final la
+2:20:44
+decisión de la entidad es que por ser un producto estandarizado, por no un mercado competitivo, nos vamos por
+2:20:49
+precio, ¿no es cierto? en licitación de bienes y servicios que se va a dar la semana que viene. En cambio ahí se
+2:20:54
+pueden ver otras variables, pero en líneas generales te puedo indicar que es
+2:20:59
+como lo que vimos en obras, ¿no? Hay cuestiones de la herramienta que nos obligan a compatibilizar la aplicación
+2:21:05
+de este análisis.
+2:21:11
+Eh, Verónica, los tiempos del proceso se debe establecer en cronograma. Claro, Vero, como hemos tenido los procesos. La
+2:21:17
+diferencia en los en los tiempos es la mejora que existe en la herramienta, por cuanto ya se considera los mínimos en
+2:21:23
+cada en tiempos, preguntas, respuestas y entrega de ofertas. Esa es la diferencia. Pero igual como veníamos
+2:21:29
+haciendo el cronograma.
+2:21:35
+Eh, una consulta que nos hace Diego es que si en la licitación de obras se va a manejar que igual que en menor cuantía
+2:21:41
+que deben ser mínimo tres proveedores, ¿no? Ya de la de la menor cuantidad de
+2:21:47
+la cotización, por favor. Ya. Eh, son cosas que han quedado eh ya en este caso
+2:21:53
+no están vigentes. Sí, olvidémonos, por favor. La licitación es la naturaleza de
+2:21:58
+la licitación. ¿Cuál es la naturaleza de la licitación? en la que puede ofertar está abierta la participación, ¿verdad?,
+2:22:06
+de todo tipo de oferente en tanto tenga su CPC. Bien, entonces ya en trate de no
+2:22:11
+pensar mucho en la menor cuenta y cotización porque se puede confundir. Piensa solo en licitación.
+2:22:21
+Eh, Sebastián
+2:22:31
+con una institución, una persona que forma parte de dicho consorcio puede pensar oferta por otra obra en la misma
+2:22:36
+institución, o sea, es partícipe en dos, ¿no? Tendríamos que revisar el anexo, por favor, de vinculación y ahí
+2:22:41
+tendríamos un inconveniente. Sebastián. Eh, recordemos que en el formulario de la oferta claramente se establece que no
+2:22:47
+estamos participando eh de manera abierta u oculta, ¿no es cierto?, en relación con otros proveedores que
+2:22:53
+podrían en el sentido traer una eh un impacto negativo en el mercado.
+2:22:59
+Entonces, no.
+2:23:09
+Carla, Carla nos hace una pregunta muy interesante que entiendo. Ay, se puede internet. Ah, no, no, ya volvió. Dice,
+2:23:17
+"Si se adjudicó un proceso de cotización o menor cuantidad, tampoco puede, ¿verdad? Carla, entiendo que te refieres
+2:23:22
+a lo a la redistribución. Entonces, la regla es clara, dice, si ya se le adjudicó un proceso de obra, eso se
+2:23:28
+puede haber sido antes de las reformas, ese proceso todavía se encuentra en ejecución. Es decir, todavía no tenemos
+2:23:34
+los provisionales, ¿no? Esa persona no podría en la misma institución presentarse a un nuevo proceso. Tenemos
+2:23:40
+que cumplir eso y ahí sí ya. Pero recuerde, esta restricción es solo en en la misma institución. en otra
+2:23:46
+institución. Claro que puede hacerse.
+2:23:59
+tiene que si es que la obra contempla la entrega de algún tipo de bien, eh, o
+2:24:05
+sea, de la misma manera en como has venido desarrollando el valor por dinero, estableciendo en este sentido
+2:24:12
+por qué por qué se realiza la obra más la entrega de un bien, o sea, cuál es
+2:24:17
+esta ventaja que se tiene también e de acuerdo al al valor del presupuesto, se
+2:24:23
+establece si va a ser en este sentido una obra más entrega de un bien o lo contrario, ¿no es cierto? No, no, no.
+2:24:29
+prevista, digamos, mayor complejidad al respecto. Y bueno, si ya vamos a tener el bien, recuerda que vas a tener la
+2:24:36
+necesidad de exigir la garantía técnica.
+2:24:42
+Ah, Belén nos hace una un comentario muy muy directo frente a la redistribución de obras y nos dice, o sea, ya
+2:24:48
+prácticamente ningún contratista de obra podrá tener dos obras o más al mismo tiempo en la misma institución, Belén,
+2:24:54
+¿no? O sea, dos obras abiertas en plena ejecución, no. Tendría que terminar la
+2:25:00
+una para participar en una nueva. Pero recordemos que estamos hablando dentro de la misma institución.
+2:25:11
+E Liliana nos pregunta si se puede hacer obras por ferias. No, Lili, la las
+2:25:17
+reformas a la normativa y establece que la feria solo la vamos en este sentido a utilizar para la adquisión de bienes y
+2:25:23
+servicios. Para obras tú tienes por valores menores a a 10,000 tienes la ínfima,
+2:25:30
+superiores tienes la licitación.
+2:25:39
+Ah, bueno, bueno. Anita, hay una pregunta, me parece que es acerca de la certificación. Nos preguntan acerca de gestor de contratación,
+2:25:46
+que tal vez tú me puedes ayudar a través del chat. Sí, ya la estaba revisando, pero justo
+2:25:52
+se perdió. Ya la voy a responder en el chat. Ah, Luis, Luis nos envía Huh?
+2:26:29
+la calificación, por favor. En estos casos sí
+2:26:38
+Alex te está escuchando entrecortado.
+2:26:44
+No sé. Sí, nuevamente tuvimos un inconveniente con el internet de Alex. Por favor, le hagamos unos minutos para
+2:26:51
+solventar.
+2:26:59
+Ya. Eh, sí, les agradecemos mucho a las personas que estuvieron, como les indicamos, tuvimos un pequeño inconveniente de
+2:27:07
+eh un pequeño inconveniente con el internet. Eh, vamos a arquivar todas las consultas
+2:27:12
+y no las vamos a analizar. Les agradecemos a las personas que realizaron la encuesta. Por favor,
+2:27:18
+recuerden que eh pueden revisar nuestro cronograma de capacitaciones que se
+2:27:23
+encuentra en el portal institucional del SECOP en la parte de servicios, capacitación y certificación que es
+2:27:29
+nuestro micrositio en ofertas de seminarios en les agradecemos mucho por su participación el día de hoy. Voy a
+2:27:36
+finalizar la encuesta. Les agradezco también a las personas que nos ayudaron llenando la misma y les esperamos el día
+2:27:41
+de mañana que tenemos una microcápsula sobre la aplicación de multas de acuerdo al nuevo régimen. Les agradecemos mucho.
+2:27:55
+Que tengan muy buenos días.

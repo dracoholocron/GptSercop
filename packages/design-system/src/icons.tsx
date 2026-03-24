@@ -10,4 +10,5 @@ export {
   ChevronDown,
   X,
   ChevronRight,
+  HelpCircle,
 } from 'lucide-react';

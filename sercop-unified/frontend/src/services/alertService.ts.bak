@@ -1,0 +1,543 @@
+/**
+ * Alert Service
+ * Handles user alerts, agenda, and business requests operations
+ */
+import { get, post, put } from '../utils/apiClient';
+import { ALERT_ROUTES, BUSINESS_REQUEST_ROUTES, buildUrlWithParams } from '../config/api.routes';
+
+// ============================================================================
+// TYPES - Alerts
+// ============================================================================
+
+export type AlertType =
+  | 'FOLLOW_UP'
+  | 'REMINDER'
+  | 'DEADLINE'
+  | 'TASK'
+  | 'DOCUMENT_REVIEW'
+  | 'CLIENT_CONTACT'
+  | 'OPERATION_UPDATE'
+  | 'COMPLIANCE_CHECK';
+
+export type AlertPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+
+export type AlertStatus = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED' | 'SNOOZED';
+
+export type AlertSourceType =
+  | 'OPERATION_APPROVAL'
+  | 'SCHEDULED_JOB'
+  | 'AI_EXTRACTION'
+  | 'BUSINESS_REQUEST'
+  | 'MANUAL';
+
+export interface AlertResponse {
+  alertId: string;
+  userId: string;
+  userName?: string;
+  assignedBy?: string;
+  title: string;
+  description?: string;
+  alertType: AlertType;
+  alertTypeLabel?: string;
+  alertTypeIcon?: string;
+  alertTypeColor?: string;
+  priority: AlertPriority;
+  sourceType: AlertSourceType;
+  sourceId?: string;
+  sourceReference?: string;
+  sourceModule?: string;
+  operationId?: string;
+  requestId?: string;
+  draftId?: string;
+  clientId?: string;
+  clientName?: string;
+  scheduledDate: string;
+  scheduledTime?: string;
+  dueDate?: string;
+  status: AlertStatus;
+  processedAt?: string;
+  processedBy?: string;
+  processingNotes?: string;
+  originalScheduledDate?: string;
+  rescheduleCount?: number;
+  overdue: boolean;
+  dueToday: boolean;
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+}
+
+export interface AlertCreateRequest {
+  title: string;
+  description?: string;
+  alertType: AlertType;
+  priority?: AlertPriority;
+  scheduledDate: string;
+  scheduledTime?: string;
+  assignToUserId?: string;
+  operationId?: string;
+  clientId?: string;
+  clientName?: string;
+  draftId?: string;
+  requestId?: string;
+}
+
+export interface AlertRescheduleRequest {
+  newDate: string;
+  newTime?: string;
+  notes?: string;
+}
+
+export interface AlertCompleteRequest {
+  notes?: string;
+}
+
+export interface AgendaSummary {
+  totalAlerts: number;
+  pendingAlerts: number;
+  completedAlerts: number;
+  overdueAlerts: number;
+  todayAlerts: number;
+  urgentAlerts: number;
+  highPriorityAlerts: number;
+  alertsByType: Record<string, number>;
+}
+
+export interface AgendaResponse {
+  startDate: string;
+  endDate: string;
+  viewType: 'DAY' | 'WEEK' | 'MONTH';
+  alertsByDate: Record<string, AlertResponse[]>;
+  summary: AgendaSummary;
+}
+
+export interface AlertPreview {
+  alertId: string;
+  title: string;
+  alertType: string;
+  priority: string;
+  scheduledTime?: string;
+  clientName?: string;
+  overdue: boolean;
+  icon?: string;
+  color?: string;
+}
+
+export interface TodayAlertsWidgetResponse {
+  totalToday: number;
+  pendingToday: number;
+  completedToday: number;
+  overdueTotal: number;
+  hasUrgent: boolean;
+  urgentCount: number;
+  topAlerts: AlertPreview[];
+}
+
+export interface AlertTypeConfig {
+  id: number;
+  typeCode: string;
+  labelEs: string;
+  labelEn: string;
+  descriptionEs?: string;
+  descriptionEn?: string;
+  icon?: string;
+  color?: string;
+  defaultPriority: AlertPriority;
+  isActive: boolean;
+  displayOrder: number;
+}
+
+export interface AlertHistoryEntry {
+  id: number;
+  historyId: string;
+  alertId: string;
+  actionType: string;
+  previousStatus?: AlertStatus;
+  newStatus?: AlertStatus;
+  previousDate?: string;
+  newDate?: string;
+  notes?: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+// ============================================================================
+// TYPES - Business Requests
+// ============================================================================
+
+export type RequestSourceType = 'AI_EXTRACTION' | 'MANUAL' | 'CLIENT_PORTAL' | 'EMAIL_PARSER';
+
+export type RequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'CONVERTED' | 'CANCELLED';
+
+export interface AlertConfig {
+  alertType: string;
+  title: string;
+  description?: string;
+  priority?: string;
+  assignToUserId?: string;
+  daysFromNow?: number;
+  scheduledTime?: string;
+}
+
+export interface BusinessRequestResponse {
+  requestId: string;
+  requestNumber: string;
+  sourceType: RequestSourceType;
+  extractionId?: string;
+  title: string;
+  description?: string;
+  extractedData?: Record<string, any>;
+  clientId?: string;
+  clientName?: string;
+  operationType?: string;
+  status: RequestStatus;
+  rejectionReason?: string;
+  alertsConfig?: AlertConfig[];
+  convertedToDraftId?: string;
+  convertedToOperationId?: string;
+  convertedAt?: string;
+  createdAt?: string;
+  createdBy?: string;
+  approvedAt?: string;
+  approvedBy?: string;
+  rejectedAt?: string;
+  rejectedBy?: string;
+}
+
+export interface BusinessRequestCreateRequest {
+  title: string;
+  description?: string;
+  extractionId?: string;
+  extractedData?: Record<string, any>;
+  clientId?: string;
+  clientName?: string;
+  operationType?: string;
+  alertsConfig?: AlertConfig[];
+}
+
+// ============================================================================
+// ALERT SERVICE FUNCTIONS
+// ============================================================================
+
+/**
+ * Get agenda view for a specific date range
+ */
+export const getAgenda = async (
+  date?: string,
+  range: 'DAY' | 'WEEK' | 'MONTH' = 'WEEK',
+  lang: string = 'es'
+): Promise<AgendaResponse> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.AGENDA, { date, range, lang });
+  return get<AgendaResponse>(url);
+};
+
+/**
+ * Get calendar counts for date range
+ */
+export const getCalendarCounts = async (
+  startDate: string,
+  endDate: string
+): Promise<Record<string, number>> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.CALENDAR, { startDate, endDate });
+  return get<Record<string, number>>(url);
+};
+
+/**
+ * Get today's alerts
+ */
+export const getTodayAlerts = async (): Promise<AlertResponse[]> => {
+  return get<AlertResponse[]>(ALERT_ROUTES.TODAY);
+};
+
+/**
+ * Get upcoming alerts
+ */
+export const getUpcomingAlerts = async (days: number = 7): Promise<AlertResponse[]> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.UPCOMING, { days });
+  return get<AlertResponse[]>(url);
+};
+
+/**
+ * Get overdue alerts
+ */
+export const getOverdueAlerts = async (): Promise<AlertResponse[]> => {
+  return get<AlertResponse[]>(ALERT_ROUTES.OVERDUE);
+};
+
+/**
+ * Get today's widget data for TopBar
+ */
+export const getTodayWidget = async (lang: string = 'es'): Promise<TodayAlertsWidgetResponse> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.WIDGET, { lang });
+  return get<TodayAlertsWidgetResponse>(url);
+};
+
+/**
+ * Get alert counts for dashboard
+ */
+export const getAlertCounts = async (): Promise<Record<string, number>> => {
+  return get<Record<string, number>>(ALERT_ROUTES.COUNTS);
+};
+
+/**
+ * Search alerts
+ */
+export const searchAlerts = async (
+  query: string,
+  lang: string = 'es',
+  page: number = 0,
+  size: number = 20
+): Promise<{ content: AlertResponse[]; totalElements: number; totalPages: number }> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.SEARCH, { q: query, lang, page, size });
+  return get(url);
+};
+
+/**
+ * Get single alert by ID
+ */
+export const getAlert = async (alertId: string): Promise<AlertResponse> => {
+  return get<AlertResponse>(ALERT_ROUTES.BY_ID(alertId));
+};
+
+/**
+ * Get alert history
+ */
+export const getAlertHistory = async (alertId: string): Promise<AlertHistoryEntry[]> => {
+  return get<AlertHistoryEntry[]>(ALERT_ROUTES.HISTORY(alertId));
+};
+
+/**
+ * Create a new alert
+ */
+export const createAlert = async (request: AlertCreateRequest): Promise<AlertResponse> => {
+  return post<AlertResponse>(ALERT_ROUTES.BASE, request);
+};
+
+/**
+ * Complete an alert
+ */
+export const completeAlert = async (
+  alertId: string,
+  request?: AlertCompleteRequest
+): Promise<AlertResponse> => {
+  return post<AlertResponse>(ALERT_ROUTES.COMPLETE(alertId), request || {});
+};
+
+/**
+ * Reschedule an alert
+ */
+export const rescheduleAlert = async (
+  alertId: string,
+  request: AlertRescheduleRequest
+): Promise<AlertResponse> => {
+  return post<AlertResponse>(ALERT_ROUTES.RESCHEDULE(alertId), request);
+};
+
+/**
+ * Snooze an alert
+ */
+export const snoozeAlert = async (
+  alertId: string,
+  days: number = 1
+): Promise<AlertResponse> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.SNOOZE(alertId), { days });
+  return post<AlertResponse>(url, {});
+};
+
+/**
+ * Cancel an alert
+ */
+export const cancelAlert = async (
+  alertId: string,
+  reason?: string
+): Promise<AlertResponse> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.CANCEL(alertId), { reason });
+  return post<AlertResponse>(url, {});
+};
+
+/**
+ * Get alerts by operation
+ */
+export const getAlertsByOperation = async (
+  operationId: string,
+  lang: string = 'es'
+): Promise<AlertResponse[]> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.BY_OPERATION(operationId), { lang });
+  return get<AlertResponse[]>(url);
+};
+
+/**
+ * Get alerts by client
+ */
+export const getAlertsByClient = async (
+  clientId: string,
+  lang: string = 'es'
+): Promise<AlertResponse[]> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.BY_CLIENT(clientId), { lang });
+  return get<AlertResponse[]>(url);
+};
+
+/**
+ * Get available alert types
+ */
+export const getAlertTypes = async (activeOnly: boolean = true): Promise<AlertTypeConfig[]> => {
+  const url = buildUrlWithParams(ALERT_ROUTES.TYPES, { activeOnly });
+  return get<AlertTypeConfig[]>(url);
+};
+
+// ============================================================================
+// BUSINESS REQUEST SERVICE FUNCTIONS
+// ============================================================================
+
+/**
+ * Get all pending business requests
+ */
+export const getPendingRequests = async (): Promise<BusinessRequestResponse[]> => {
+  return get<BusinessRequestResponse[]>(BUSINESS_REQUEST_ROUTES.PENDING);
+};
+
+/**
+ * Get pending requests with pagination
+ */
+export const getPendingRequestsPaged = async (
+  page: number = 0,
+  size: number = 20
+): Promise<{ content: BusinessRequestResponse[]; totalElements: number; totalPages: number }> => {
+  const url = buildUrlWithParams(BUSINESS_REQUEST_ROUTES.PENDING_PAGED, { page, size });
+  return get(url);
+};
+
+/**
+ * Get my pending requests
+ */
+export const getMyPendingRequests = async (): Promise<BusinessRequestResponse[]> => {
+  return get<BusinessRequestResponse[]>(BUSINESS_REQUEST_ROUTES.MY_PENDING);
+};
+
+/**
+ * Search business requests
+ */
+export const searchBusinessRequests = async (
+  query: string,
+  page: number = 0,
+  size: number = 20
+): Promise<{ content: BusinessRequestResponse[]; totalElements: number; totalPages: number }> => {
+  const url = buildUrlWithParams(BUSINESS_REQUEST_ROUTES.SEARCH, { q: query, page, size });
+  return get(url);
+};
+
+/**
+ * Get single business request by ID
+ */
+export const getBusinessRequest = async (requestId: string): Promise<BusinessRequestResponse> => {
+  return get<BusinessRequestResponse>(BUSINESS_REQUEST_ROUTES.BY_ID(requestId));
+};
+
+/**
+ * Get business request by number
+ */
+export const getBusinessRequestByNumber = async (
+  requestNumber: string
+): Promise<BusinessRequestResponse> => {
+  return get<BusinessRequestResponse>(BUSINESS_REQUEST_ROUTES.BY_NUMBER(requestNumber));
+};
+
+/**
+ * Count pending requests
+ */
+export const countPendingRequests = async (): Promise<{ pending: number }> => {
+  return get<{ pending: number }>(BUSINESS_REQUEST_ROUTES.COUNT);
+};
+
+/**
+ * Create a new business request
+ */
+export const createBusinessRequest = async (
+  request: BusinessRequestCreateRequest
+): Promise<BusinessRequestResponse> => {
+  return post<BusinessRequestResponse>(BUSINESS_REQUEST_ROUTES.BASE, request);
+};
+
+/**
+ * Approve a business request
+ */
+export const approveBusinessRequest = async (
+  requestId: string,
+  draftId?: string,
+  operationId?: string
+): Promise<BusinessRequestResponse> => {
+  const url = buildUrlWithParams(BUSINESS_REQUEST_ROUTES.APPROVE(requestId), {
+    draftId,
+    operationId,
+  });
+  return post<BusinessRequestResponse>(url, {});
+};
+
+/**
+ * Reject a business request
+ */
+export const rejectBusinessRequest = async (
+  requestId: string,
+  reason: string
+): Promise<BusinessRequestResponse> => {
+  const url = buildUrlWithParams(BUSINESS_REQUEST_ROUTES.REJECT(requestId), { reason });
+  return post<BusinessRequestResponse>(url, {});
+};
+
+/**
+ * Cancel a business request
+ */
+export const cancelBusinessRequest = async (
+  requestId: string
+): Promise<BusinessRequestResponse> => {
+  return post<BusinessRequestResponse>(BUSINESS_REQUEST_ROUTES.CANCEL(requestId), {});
+};
+
+/**
+ * Update alerts configuration for a pending request
+ */
+export const updateBusinessRequestAlertsConfig = async (
+  requestId: string,
+  alertsConfig: AlertConfig[]
+): Promise<BusinessRequestResponse> => {
+  return put<BusinessRequestResponse>(BUSINESS_REQUEST_ROUTES.ALERTS_CONFIG(requestId), alertsConfig);
+};
+
+// ============================================================================
+// EXPORT DEFAULT
+// ============================================================================
+
+export default {
+  // Alerts
+  getAgenda,
+  getCalendarCounts,
+  getTodayAlerts,
+  getUpcomingAlerts,
+  getOverdueAlerts,
+  getTodayWidget,
+  getAlertCounts,
+  searchAlerts,
+  getAlert,
+  getAlertHistory,
+  createAlert,
+  completeAlert,
+  rescheduleAlert,
+  snoozeAlert,
+  cancelAlert,
+  getAlertsByOperation,
+  getAlertsByClient,
+  getAlertTypes,
+  // Business Requests
+  getPendingRequests,
+  getPendingRequestsPaged,
+  getMyPendingRequests,
+  searchBusinessRequests,
+  getBusinessRequest,
+  getBusinessRequestByNumber,
+  countPendingRequests,
+  createBusinessRequest,
+  approveBusinessRequest,
+  rejectBusinessRequest,
+  cancelBusinessRequest,
+  updateBusinessRequestAlertsConfig,
+};

@@ -1,0 +1,265 @@
+{
+  "version": "1.0",
+  "tables": [
+    {
+      "id": "participantes",
+      "name": "Participantes",
+      "description": "Información de clientes, proveedores y contrapartes",
+      "relatedTables": ["cuenta_bancaria"],
+      "columns": [
+        {"id": "codigo", "name": "Código", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "nombre", "name": "Nombre", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "pais", "name": "País", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "ciudad", "name": "Ciudad", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipoParticipante", "name": "Tipo", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "activo", "name": "Activo", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "plantillas",
+      "name": "Plantillas SWIFT",
+      "description": "Plantillas de mensajes SWIFT configuradas",
+      "relatedTables": [],
+      "columns": [
+        {"id": "codigo", "name": "Código", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "nombre", "name": "Nombre", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipoPlantilla", "name": "Tipo SWIFT", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "activa", "name": "Activa", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "createdBy", "name": "Creado Por", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "monedas",
+      "name": "Monedas",
+      "description": "Catálogo de monedas y divisas",
+      "relatedTables": ["cotizaciones", "cuenta_bancaria"],
+      "columns": [
+        {"id": "codigo", "name": "Código ISO", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "nombre", "name": "Nombre", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "simbolo", "name": "Símbolo", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "activa", "name": "Activa", "type": "BOOLEAN", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "cotizaciones",
+      "name": "Cotizaciones",
+      "description": "Tipos de cambio históricos",
+      "relatedTables": ["monedas"],
+      "columns": [
+        {"id": "monedaOrigen", "name": "Moneda Origen", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "monedaDestino", "name": "Moneda Destino", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipoCambio", "name": "Tipo de Cambio", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "fecha", "name": "Fecha", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "activa", "name": "Activa", "type": "BOOLEAN", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "cuenta_bancaria",
+      "name": "Cuentas Bancarias",
+      "description": "Cuentas bancarias de participantes",
+      "relatedTables": ["participantes", "monedas"],
+      "columns": [
+        {"id": "numeroCuenta", "name": "Número de Cuenta", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "banco", "name": "Banco", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "swift", "name": "Código SWIFT", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "moneda", "name": "Moneda", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "participanteCodigo", "name": "Código Participante", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "activa", "name": "Activa", "type": "BOOLEAN", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "reglas_eventos",
+      "name": "Reglas de Negocio",
+      "description": "Reglas DRL por eventos del sistema",
+      "relatedTables": [],
+      "columns": [
+        {"id": "codigo", "name": "Código", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "nombre", "name": "Nombre", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipoOperacion", "name": "Tipo Operación", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "eventoTrigger", "name": "Evento", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "prioridad", "name": "Prioridad", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "activo", "name": "Activa", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "instituciones_financieras",
+      "name": "Instituciones Financieras",
+      "description": "Bancos y entidades financieras",
+      "relatedTables": ["carta_credito", "cobranza_documentaria", "garantia_bancaria"],
+      "columns": [
+        {"id": "codigo", "name": "Código", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "nombre", "name": "Nombre", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "swiftCode", "name": "SWIFT", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "pais", "name": "País", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "ciudad", "name": "Ciudad", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipo", "name": "Tipo", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "rating", "name": "Rating", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "esCorresponsal", "name": "Corresponsal", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "activo", "name": "Activo", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "plantillas_correo",
+      "name": "Plantillas de Correo",
+      "description": "Plantillas de notificaciones por email",
+      "relatedTables": [],
+      "columns": [
+        {"id": "codigo", "name": "Código", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "nombre", "name": "Nombre", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "asunto", "name": "Asunto", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipoOperacion", "name": "Tipo Operación", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "activo", "name": "Activo", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "createdBy", "name": "Creado Por", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "catalogos_personalizados",
+      "name": "Catálogos Personalizados",
+      "description": "Catálogos definidos por el usuario",
+      "relatedTables": [],
+      "columns": [
+        {"id": "codigo", "name": "Código", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "nombre", "name": "Nombre", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "categoria", "name": "Categoría", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "valor", "name": "Valor", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "activo", "name": "Activo", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "carta_credito",
+      "name": "Cartas de Crédito",
+      "description": "Operaciones de cartas de crédito documentarias",
+      "relatedTables": ["participantes", "instituciones_financieras", "monedas"],
+      "columns": [
+        {"id": "numeroOperacion", "name": "Número Operación", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipoLc", "name": "Tipo L/C", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "modalidad", "name": "Modalidad", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "formaPago", "name": "Forma Pago", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "estado", "name": "Estado", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "moneda", "name": "Moneda", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "monto", "name": "Monto", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "montoUtilizado", "name": "Monto Utilizado", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "fechaEmision", "name": "Fecha Emisión", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "fechaVencimiento", "name": "Fecha Vencimiento", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "incoterm", "name": "Incoterm", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "fechaCreacion", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "cobranza_documentaria",
+      "name": "Cobranzas Documentarias",
+      "description": "Operaciones de cobranza documentaria",
+      "relatedTables": ["participantes", "instituciones_financieras", "monedas"],
+      "columns": [
+        {"id": "numeroOperacion", "name": "Número Operación", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipo", "name": "Tipo", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "modalidad", "name": "Modalidad", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "estado", "name": "Estado", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "moneda", "name": "Moneda", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "monto", "name": "Monto", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "fechaEmision", "name": "Fecha Emisión", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "fechaVencimiento", "name": "Fecha Vencimiento", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "garantia_bancaria",
+      "name": "Garantías Bancarias",
+      "description": "Garantías y avales bancarios",
+      "relatedTables": ["participantes", "instituciones_financieras", "monedas"],
+      "columns": [
+        {"id": "numeroGarantia", "name": "Número Garantía", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipo", "name": "Tipo", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "estado", "name": "Estado", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "moneda", "name": "Moneda", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "monto", "name": "Monto", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "fechaEmision", "name": "Fecha Emisión", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "fechaVencimiento", "name": "Fecha Vencimiento", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "contragarantia", "name": "Contragarantía", "type": "BOOLEAN", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "financiamiento_cx",
+      "name": "Financiamientos CX",
+      "description": "Financiamientos de comercio exterior",
+      "relatedTables": ["participantes", "monedas"],
+      "columns": [
+        {"id": "numeroOperacion", "name": "Número Operación", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipo", "name": "Tipo", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "estado", "name": "Estado", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "moneda", "name": "Moneda", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "monto", "name": "Monto", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "tasaInteres", "name": "Tasa Interés", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "fechaDesembolso", "name": "Fecha Desembolso", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "fechaVencimiento", "name": "Fecha Vencimiento", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    },
+    {
+      "id": "linea_credito",
+      "name": "Líneas de Crédito",
+      "description": "Líneas de crédito para comercio exterior",
+      "relatedTables": ["participantes", "monedas"],
+      "columns": [
+        {"id": "codigo", "name": "Código", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "tipo", "name": "Tipo", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "estado", "name": "Estado", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "moneda", "name": "Moneda", "type": "STRING", "filterable": true, "sortable": true},
+        {"id": "montoAutorizado", "name": "Monto Autorizado", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "montoUtilizado", "name": "Monto Utilizado", "type": "NUMBER", "filterable": true, "sortable": true},
+        {"id": "fechaAprobacion", "name": "Fecha Aprobación", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "fechaVencimiento", "name": "Fecha Vencimiento", "type": "DATE", "filterable": true, "sortable": true},
+        {"id": "createdAt", "name": "Fecha Creación", "type": "DATE", "filterable": true, "sortable": true}
+      ]
+    }
+  ],
+  "filterOperators": {
+    "STRING": [
+      {"id": "EQUALS", "label": "Igual a", "requiresValue": true},
+      {"id": "CONTAINS", "label": "Contiene", "requiresValue": true},
+      {"id": "STARTS_WITH", "label": "Comienza con", "requiresValue": true},
+      {"id": "ENDS_WITH", "label": "Termina con", "requiresValue": true},
+      {"id": "IS_NULL", "label": "Es nulo", "requiresValue": false},
+      {"id": "IS_NOT_NULL", "label": "No es nulo", "requiresValue": false}
+    ],
+    "NUMBER": [
+      {"id": "EQUALS", "label": "Igual a", "requiresValue": true},
+      {"id": "GREATER_THAN", "label": "Mayor que", "requiresValue": true},
+      {"id": "LESS_THAN", "label": "Menor que", "requiresValue": true},
+      {"id": "BETWEEN", "label": "Entre", "requiresValue": true, "requiresTwoValues": true},
+      {"id": "IS_NULL", "label": "Es nulo", "requiresValue": false},
+      {"id": "IS_NOT_NULL", "label": "No es nulo", "requiresValue": false}
+    ],
+    "DATE": [
+      {"id": "EQUALS", "label": "Igual a", "requiresValue": true},
+      {"id": "AFTER", "label": "Después de", "requiresValue": true},
+      {"id": "BEFORE", "label": "Antes de", "requiresValue": true},
+      {"id": "BETWEEN", "label": "Entre", "requiresValue": true, "requiresTwoValues": true},
+      {"id": "IS_NULL", "label": "Es nulo", "requiresValue": false},
+      {"id": "IS_NOT_NULL", "label": "No es nulo", "requiresValue": false}
+    ],
+    "BOOLEAN": [
+      {"id": "EQUALS", "label": "Igual a", "requiresValue": true}
+    ]
+  },
+  "exportFormats": [
+    {"id": "EXCEL", "label": "Excel (.xlsx)", "extension": "xlsx"},
+    {"id": "CSV", "label": "CSV (.csv)", "extension": "csv"},
+    {"id": "PDF", "label": "PDF (.pdf)", "extension": "pdf"},
+    {"id": "JSON", "label": "JSON (.json)", "extension": "json"}
+  ],
+  "aggregationFunctions": [
+    {"id": "COUNT", "label": "Contar", "description": "Cuenta el número de registros"},
+    {"id": "SUM", "label": "Suma", "description": "Suma los valores numéricos"},
+    {"id": "AVG", "label": "Promedio", "description": "Calcula el promedio de valores numéricos"},
+    {"id": "MAX", "label": "Máximo", "description": "Obtiene el valor máximo"},
+    {"id": "MIN", "label": "Mínimo", "description": "Obtiene el valor mínimo"}
+  ]
+}

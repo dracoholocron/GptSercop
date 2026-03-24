@@ -31,6 +31,24 @@ test.describe('Entidad – Carga de rutas', () => {
   }
 });
 
+test.describe('Entidad – Dashboard', () => {
+  test.use({ baseURL: BASE });
+
+  test('E-dashboard: hero o tarjetas de resumen visibles', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('body')).toContainText(/Portal entidad|Bienvenido|PAC|Procesos|Inicie sesión/i);
+  });
+
+  test('E-dashboard: enlaces Ver PAC / Ver procesos cuando hay sesión', async ({ page, request }) => {
+    await entityLogin(page, BASE, request);
+    await page.goto('/');
+    const verPac = page.getByRole('link', { name: /Ver PAC/i });
+    const verProcesos = page.getByRole('link', { name: /Ver procesos/i });
+    const hasLink = (await verPac.isVisible().catch(() => false)) || (await verProcesos.isVisible().catch(() => false));
+    expect(hasLink).toBe(true);
+  });
+});
+
 test.describe('Entidad – Login', () => {
   test.use({ baseURL: BASE });
 

@@ -1,0 +1,42 @@
+{
+  "name": "GlobalCMX - Trade Finance",
+  "short_name": "GlobalCMX",
+  "description": "Sistema de gestión de comercio exterior y trade finance",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3182CE",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Workbox",
+      "short_name": "Workbox",
+      "description": "Ver operaciones pendientes",
+      "url": "/workbox/lc-imports",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Nueva LC",
+      "short_name": "Nueva LC",
+      "description": "Crear nueva carta de crédito",
+      "url": "/lc-imports/issuance-wizard",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    }
+  ]
+}

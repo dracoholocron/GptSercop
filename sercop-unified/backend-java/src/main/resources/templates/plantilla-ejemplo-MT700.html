@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>MT700 - Emisión de Carta de Crédito de Importación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            background-color: #f0f0f0;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin: 10px 0;
+        }
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 200px;
+        }
+        .field-value {
+            display: inline-block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CARTA DE CRÉDITO DE IMPORTACIÓN</h1>
+        <h2>SWIFT MT700</h2>
+    </div>
+
+    <!-- Información General -->
+    <div class="section">
+        <div class="section-title">INFORMACIÓN GENERAL</div>
+        <div class="field">
+            <span class="field-label">Número de Operación:</span>
+            <span class="field-value">[[${numeroOperacion}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Emisión:</span>
+            <span class="field-value">[[${fechaEmision}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha de Vencimiento:</span>
+            <span class="field-value">[[${fechaVencimiento}]]</span>
+        </div>
+    </div>
+
+    <!-- Ordenante -->
+    <div class="section">
+        <div class="section-title">ORDENANTE (IMPORTADOR)</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${ordenanteNombre}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Dirección:</span>
+            <span class="field-value">[[${ordenanteDireccion}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">País:</span>
+            <span class="field-value">[[${ordenantePais}]]</span>
+        </div>
+    </div>
+
+    <!-- Beneficiario -->
+    <div class="section">
+        <div class="section-title">BENEFICIARIO (EXPORTADOR)</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${beneficiarioNombre}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Dirección:</span>
+            <span class="field-value">[[${beneficiarioDireccion}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">País:</span>
+            <span class="field-value">[[${beneficiarioPais}]]</span>
+        </div>
+    </div>
+
+    <!-- Detalles de la Operación -->
+    <div class="section">
+        <div class="section-title">DETALLES DE LA OPERACIÓN</div>
+        <div class="field">
+            <span class="field-label">Monto:</span>
+            <span class="field-value">[[${moneda}]] [[${monto}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Tolerancia:</span>
+            <span class="field-value">[[${tolerancia}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Banco Emisor:</span>
+            <span class="field-value">[[${bancoEmisor}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Banco Confirmador:</span>
+            <span class="field-value">[[${bancoConfirmador}]]</span>
+        </div>
+    </div>
+
+    <!-- Tabla de Documentos Requeridos (Sección con múltiples registros) -->
+    <div class="section">
+        <div class="section-title">DOCUMENTOS REQUERIDOS</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Cantidad de Copias</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="doc : ${documentos}">
+                    <td>[[${doc.nombre}]]</td>
+                    <td>[[${doc.cantidad}]]</td>
+                    <td>[[${doc.observaciones}]]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Descripción de Mercancía -->
+    <div class="section">
+        <div class="section-title">DESCRIPCIÓN DE MERCANCÍA</div>
+        <p>[[${descripcionMercancia}]]</p>
+    </div>
+
+    <!-- Condiciones de Embarque -->
+    <div class="section">
+        <div class="section-title">CONDICIONES DE EMBARQUE</div>
+        <div class="field">
+            <span class="field-label">Puerto de Embarque:</span>
+            <span class="field-value">[[${puertoEmbarque}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Puerto de Destino:</span>
+            <span class="field-value">[[${puertoDestino}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Último Día de Embarque:</span>
+            <span class="field-value">[[${fechaLimiteEmbarque}]]</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Documento generado automáticamente</p>
+        <p>GlobalCMX - Sistema de Gestión de Comercio Internacional</p>
+    </div>
+</body>
+</html>

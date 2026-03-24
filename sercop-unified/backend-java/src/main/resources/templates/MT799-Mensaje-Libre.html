@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>MT799 - Mensaje de Texto Libre</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #607d8b;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #607d8b;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            background-color: #607d8b;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin: 10px 0;
+        }
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 180px;
+        }
+        .field-value {
+            display: inline-block;
+        }
+        .message-content {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MENSAJE DE TEXTO LIBRE</h1>
+        <h2>SWIFT MT799</h2>
+    </div>
+
+    <div class="section">
+        <div class="section-title">INFORMACIÓN DEL MENSAJE</div>
+        <div class="field">
+            <span class="field-label">Número de Referencia:</span>
+            <span class="field-value">[[${numeroReferencia}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Fecha:</span>
+            <span class="field-value">[[${fecha}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Asunto:</span>
+            <span class="field-value">[[${asunto}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BANCO REMITENTE</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${bancoRemitente}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Código SWIFT:</span>
+            <span class="field-value">[[${codigoSwiftRemitente}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">BANCO DESTINATARIO</div>
+        <div class="field">
+            <span class="field-label">Nombre:</span>
+            <span class="field-value">[[${bancoDestinatario}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Código SWIFT:</span>
+            <span class="field-value">[[${codigoSwiftDestinatario}]]</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">CONTENIDO DEL MENSAJE</div>
+        <div class="message-content">[[${contenidoMensaje}]]</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">INFORMACIÓN RELACIONADA</div>
+        <div class="field">
+            <span class="field-label">Referencia Relacionada:</span>
+            <span class="field-value">[[${referenciaRelacionada}]]</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Tipo de Operación:</span>
+            <span class="field-value">[[${tipoOperacion}]]</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Documento generado automáticamente</p>
+        <p>GlobalCMX - Sistema de Gestión de Comercio Internacional</p>
+        <p><em>Este es un mensaje informativo de texto libre según estándar SWIFT MT799</em></p>
+    </div>
+</body>
+</html>

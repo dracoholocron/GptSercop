@@ -1,0 +1,141 @@
+# =============================================================================
+# CONFIGURACION PRODUCCION - GlobalCMX API
+# =============================================================================
+# Este perfil es para despliegues en produccion con configuracion segura
+# Activar con: -Dspring.profiles.active=prod
+#
+# IMPORTANTE: Este perfil debe combinarse con un perfil de cloud provider:
+#   -Dspring.profiles.active=prod,aws
+#   -Dspring.profiles.active=prod,azure
+#   -Dspring.profiles.active=prod,gcp
+# =============================================================================
+
+# Database Configuration - REQUIERE variables de entorno (sin defaults)
+spring:
+  datasource:
+    eventstore:
+      jdbc-url: ${DB_EVENTSTORE_URL}
+      username: ${DB_EVENTSTORE_USER}
+      password: ${DB_EVENTSTORE_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        maximum-pool-size: ${DB_POOL_SIZE:10}
+        minimum-idle: ${DB_MIN_IDLE:2}
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+    readmodel:
+      jdbc-url: ${DB_READMODEL_URL}
+      username: ${DB_READMODEL_USER}
+      password: ${DB_READMODEL_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        maximum-pool-size: ${DB_POOL_SIZE:10}
+        minimum-idle: ${DB_MIN_IDLE:2}
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        generate_statistics: false
+
+# Secure Logging Configuration for Production
+# Override via ENV vars: LOG_LEVEL_ROOT, LOG_LEVEL_APP, etc.
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:WARN}
+    com.globalcmx: ${LOG_LEVEL_APP:INFO}
+    org.springframework.kafka: ${LOG_LEVEL_KAFKA:WARN}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:WARN}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:WARN}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${LOG_LEVEL_SQL_PARAMS:WARN}
+    org.springframework.web: WARN
+    # Suprimir logging sensible en produccion
+    org.springframework.security.oauth2: WARN
+    com.zaxxer.hikari: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE_PATH:/var/log/globalcmx/application.log}
+    max-size: ${LOG_FILE_MAX_SIZE:100MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:30}
+
+# Security - Actuator endpoints (RESTRICTED for production)
+management:
+  endpoints:
+    web:
+      base-path: ${ACTUATOR_BASE_PATH:/internal/actuator}
+      exposure:
+        # Solo health y prometheus para monitoreo - NO info ni metrics sensibles
+        include: ${ACTUATOR_ENDPOINTS:health,prometheus}
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      show-details: ${ACTUATOR_HEALTH_SHOW_DETAILS:never}
+      probes:
+        enabled: true
+    prometheus:
+      enabled: true
+    # Explicitamente deshabilitar endpoints sensibles
+    env:
+      enabled: false
+    beans:
+      enabled: false
+    configprops:
+      enabled: false
+    mappings:
+      enabled: false
+    threaddump:
+      enabled: false
+    heapdump:
+      enabled: false
+  server:
+    port: ${ACTUATOR_PORT:8081}
+
+# Rate Limiting - More restrictive in production
+security:
+  rate-limiting:
+    enabled: true
+    requests-per-minute: ${RATE_LIMIT_PER_MINUTE:60}
+  # Security headers and protections
+  headers:
+    hsts:
+      enabled: ${SECURITY_HSTS_ENABLED:true}
+      max-age: 31536000
+      include-subdomains: true
+    content-security-policy: ${SECURITY_CSP:default-src 'self'}
+    x-frame-options: ${SECURITY_X_FRAME_OPTIONS:DENY}
+    x-content-type-options: nosniff
+    x-xss-protection: "1; mode=block"
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
+    include-exception: false
+  # Secure session configuration
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: ${SESSION_COOKIE_SECURE:true}
+        same-site: ${SESSION_COOKIE_SAMESITE:strict}
+  tomcat:
+    remoteip:
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto
+
+# JWT Configuration - REQUIERE variable de entorno (sin default)
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}

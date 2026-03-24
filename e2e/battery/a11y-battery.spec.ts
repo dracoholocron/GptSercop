@@ -19,6 +19,17 @@ const axeWcag = (page: Page) =>
     .disableRules(['color-contrast', 'link-in-text-block'])
     .analyze();
 
+test.describe('A11y – Página 404', () => {
+  test.use({ baseURL: PUBLIC_BASE });
+
+  test('AX00: 404 muestra mensaje y enlaces útiles', async ({ page }) => {
+    const res = await page.goto('/ruta-inexistente-404-test');
+    expect(res?.status()).toBe(404);
+    await expect(page.locator('body')).toContainText(/Página no encontrada|no existe/i);
+    await expect(page.getByRole('link', { name: /Inicio|Buscar procesos/i }).first()).toBeVisible();
+  });
+});
+
 test.describe('A11y – Portal público', () => {
   test.use({ baseURL: PUBLIC_BASE });
 

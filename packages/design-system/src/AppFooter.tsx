@@ -13,12 +13,19 @@ export interface AppFooterProps {
 
 export function AppFooter({ links = [], copyright, className = '' }: AppFooterProps) {
   return (
-    <footer className={`border-t border-neutral-200 bg-white py-6 ${className}`}>
+    <footer
+      className={`mt-auto border-t border-neutral-200 bg-neutral-50 py-8 ${className}`}
+      role="contentinfo"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {links.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-4">
+          <div className="mb-6 flex flex-wrap gap-6">
             {links.map((link) => (
-              <a key={link.href} href={link.href} className="text-sm text-text-secondary hover:text-primary">
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm text-text-secondary underline-offset-2 transition-colors hover:text-primary hover:underline"
+              >
                 {link.label}
               </a>
             ))}

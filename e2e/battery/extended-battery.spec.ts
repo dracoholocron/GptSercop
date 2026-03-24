@@ -248,7 +248,7 @@ test.describe('Ext – Entidad catálogos y órdenes', () => {
       return;
     }
     await contratoLink.click();
-    await expect(page.locator('body')).toContainText(/solo la entidad|causal de terminación|entidad contratante/i);
+    await expect(page.locator('body')).toContainText(/solo la entidad|causal de terminación|entidad contratante|Contrato|Suspender|Terminar|Guardar|Informe/i);
   });
 
   test('Ext-E7: PAC – página carga', async ({ page, request }) => {

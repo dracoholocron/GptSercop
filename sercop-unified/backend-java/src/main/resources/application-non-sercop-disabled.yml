@@ -1,0 +1,5 @@
+# Perfil explícito para aislamiento de módulos fuera de alcance SERCOP (Phase-1)
+app:
+  module-isolation:
+    sercop-mode: true
+    non-sercop-modules-enabled: false

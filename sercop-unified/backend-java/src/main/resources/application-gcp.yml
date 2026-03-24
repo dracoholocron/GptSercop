@@ -1,0 +1,207 @@
+# =============================================================================
+# CONFIGURACIÓN PARA GOOGLE CLOUD PLATFORM
+# =============================================================================
+# Este perfil se activa con: -Dspring.profiles.active=gcp
+#
+# IMPORTANTE: Para usar Pub/Sub en lugar de Kafka, solo necesitas activar
+# este perfil. La configuración de messaging.provider se sobrescribe
+# automáticamente a PUBSUB.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Sistema de Mensajería - GCP usa Pub/Sub
+# -----------------------------------------------------------------------------
+messaging:
+  # Cambiar el proveedor a PUBSUB para GCP
+  provider: PUBSUB
+
+  enabled: true
+
+  # Los topics son los mismos, solo cambia el proveedor
+  # (heredados de application.yml)
+
+  # Configuración específica de Pub/Sub
+  pubsub:
+    project-id: ${GCP_PROJECT_ID:globalcmx-prod}
+    credentials-location: ${GOOGLE_APPLICATION_CREDENTIALS:}
+    subscription-suffix: -subscription
+    executor-threads: 4
+    max-ack-extension-period: 600
+
+spring:
+  application:
+    name: globalcmx-api
+
+  # Multi-DataSource Configuration para GCP
+  datasource:
+    # Event Store (Cloud SQL PostgreSQL)
+    eventstore:
+      jdbc-url: jdbc:postgresql://${DB_POSTGRES_HOST:localhost}:5432/globalcmx_eventstore
+      username: ${DB_POSTGRES_USER:postgres}
+      password: ${DB_POSTGRES_PASSWORD:postgres123}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+    # Read Model (Cloud SQL MySQL)
+    readmodel:
+      jdbc-url: jdbc:mysql://${DB_MYSQL_HOST:localhost}:3306/globalcmx_read?createDatabaseIfNotExist=true&useSSL=true&requireSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      username: ${DB_MYSQL_USER:globalcmx}
+      password: ${DB_MYSQL_PASSWORD:globalcmx123}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 2
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+  # JPA Configuration
+  jpa:
+    show-sql: false  # Desactivar en producción
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: true
+    out-of-order: false
+
+  # Cloud Pub/Sub Configuration
+  cloud:
+    gcp:
+      project-id: ${messaging.pubsub.project-id}
+      credentials:
+        location: ${messaging.pubsub.credentials-location}
+      pubsub:
+        enabled: true
+        subscriber:
+          parallel-pull-count: 1
+          executor-threads: ${messaging.pubsub.executor-threads}
+          max-ack-extension-period: ${messaging.pubsub.max-ack-extension-period}
+
+  integration:
+    poller:
+      fixed-delay: 1000
+
+# Server Configuration
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+    connection-timeout: 20000
+    max-connections: 10000
+
+# Actuator Configuration para GCP Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      environment: gcp
+
+# Logging Configuration para Cloud Logging
+logging:
+  level:
+    root: INFO
+    com.globalcmx: INFO
+    org.springframework: INFO
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /var/log/globalcmx/application.log
+    max-size: 10MB
+    max-history: 30
+
+# NOTA: Los topics ahora se configuran en la sección 'messaging' (heredados de application.yml)
+
+# Event Sourcing Configuration
+eventsourcing:
+  snapshot:
+    frequency: 10
+    enabled: true
+
+# CQRS Configuration
+cqrs:
+  eventual-consistency-delay: 100
+  projection-retry:
+    max-attempts: 3
+    backoff-delay: 1000
+
+# Plantillas Configuration - Cloud Storage
+plantillas:
+  storage:
+    path: gs://${GCP_PROJECT_ID:globalcmx-prod}-plantillas
+    type: gcs  # Google Cloud Storage
+
+# Accounting Rules Configuration - Cloud Storage
+accounting:
+  rules:
+    storage:
+      path: gs://${GCP_PROJECT_ID:globalcmx-prod}-accounting-rules
+      type: gcs
+
+# Security Configuration para GCP
+security:
+  cors:
+    allowed-origins:
+      - ${CORS_ALLOWED_ORIGIN_1:http://34.30.32.157}
+      - ${CORS_ALLOWED_ORIGIN_2:http://172.193.245.114}
+      - ${CORS_ALLOWED_ORIGIN_3:https://globalcmx.com}
+
+# Document Storage Configuration - Google Cloud Storage
+documents:
+  storage:
+    provider: GCS
+    gcs:
+      enabled: true
+      bucket: ${GCP_PROJECT_ID:globalcmx-prod}-documents
+      project-id: ${GCP_PROJECT_ID:globalcmx-prod}
+      use-workload-identity: true  # Use Workload Identity on GKE
+      signed-url-expiration-minutes: 60
+
+# =============================================================================
+# Real-Time Notifications - GCP Pub/Sub
+# =============================================================================
+globalcmx:
+  realtime:
+    enabled: ${REALTIME_ENABLED:true}
+    provider: PUBSUB
+    pubsub:
+      project-id: ${GCP_PROJECT_ID:globalcmx-prod}
+      topic: ${REALTIME_PUBSUB_TOPIC:realtime-notifications}
+      push-endpoint: ${REALTIME_PUSH_ENDPOINT:}
