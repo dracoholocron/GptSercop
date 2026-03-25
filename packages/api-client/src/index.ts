@@ -150,6 +150,9 @@ export type GptSercopCitation = {
 
 export type GptSercopAnalysis = {
   contractVersion: 'gptsercop.analysis.v1' | string;
+  mode: 'deterministic' | 'hybrid';
+  isFallback: boolean;
+  fallbackReason?: 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
   summary: string;
   confidence: number;
   riskFlags: string[];

@@ -21,7 +21,7 @@ npm run dev
 - Analítica: `GET /api/v1/analytics/dashboard` (protegido; conteos tenders, providers, contracts, documents)
 - CPC: `GET /api/v1/cpc/suggestions?q=&limit=` (stub; en producción integrar con servicio SRI/correlacionador para validar actividades del proveedor)
 - RAG: `GET /api/v1/rag/search?q=...`; `POST /api/v1/rag/ask` (body: `{ question }`)
-- GPTsercop integración: `POST /api/v1/gptsercop/analyze-procurement` (body: `{ tenderId?, question? }`)
+- GPTsercop integración: `POST /api/v1/gptsercop/analyze-procurement` (body: `{ tenderId?, question? }`, respuesta con contrato versionado y fallback determinístico)
 
 ## Base de datos
 
@@ -30,7 +30,7 @@ npm run dev
 
 ## Variables de entorno
 
-En la raíz, `.env` con `DATABASE_URL`. Recomendado: `JWT_SECRET` (>=16). Opcional: `REDIS_URL`, `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_BUCKET`. `AUTH_DISABLED=true` solo para desarrollo local temporal. Ver `.env.example`.
+En la raíz, `.env` con `DATABASE_URL`. Recomendado: `JWT_SECRET` (>=16). Opcional: `REDIS_URL`, `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_BUCKET`. `AUTH_DISABLED=true` solo para desarrollo local temporal. Para IA: `AI_ENABLED`, `RAG_ENABLED`, `AI_MODE=hybrid|deterministic`. Ver `.env.example`.
 
 ## Pruebas
 

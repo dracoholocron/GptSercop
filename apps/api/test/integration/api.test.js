@@ -293,12 +293,16 @@ test('POST /api/v1/gptsercop/analyze-procurement returns analysis payload', asyn
     body: JSON.stringify({ question: 'Analiza riesgos normativos para una contratacion publica' }),
   });
   if (res.status === 404) return; // API antigua sin endpoint
-  if (res.status === 503) return; // AI deshabilitada por entorno
   if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
   const body = await res.json();
   assert.strictEqual(body.contractVersion, 'gptsercop.analysis.v1');
+  assert.ok(['deterministic', 'hybrid'].includes(body.mode));
+  assert.strictEqual(typeof body.isFallback, 'boolean');
+  if (body.fallbackReason !== undefined) {
+    assert.ok(['AI_DISABLED', 'AI_MODE_DETERMINISTIC', 'AI_ERROR', 'RAG_DISABLED', 'RAG_ERROR'].includes(body.fallbackReason));
+  }
   assert.ok(typeof body.summary === 'string');
-  assert.ok(typeof body.confidence === 'number');
+  assert.strictEqual(typeof body.confidence, 'number');
   assert.ok(body.confidence >= 0 && body.confidence <= 1);
   assert.ok(Array.isArray(body.riskFlags));
   assert.ok(Array.isArray(body.recommendations));

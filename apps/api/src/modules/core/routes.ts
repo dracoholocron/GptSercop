@@ -7,6 +7,98 @@ import { searchRag } from '../../rag.js';
 
 const GPTSERCOP_ANALYSIS_CONTRACT_VERSION = 'gptsercop.analysis.v1';
 
+type AiMode = 'deterministic' | 'hybrid';
+
+function envFlag(name: string, defaultValue: boolean): boolean {
+  const raw = process.env[name];
+  if (raw == null || raw.trim() === '') return defaultValue;
+  const value = raw.trim().toLowerCase();
+  return value === 'true' || value === '1' || value === 'yes';
+}
+
+function getAiMode(): AiMode {
+  const raw = String(process.env.AI_MODE ?? 'hybrid').trim().toLowerCase();
+  return raw === 'deterministic' ? 'deterministic' : 'hybrid';
+}
+
+type AnalysisProcess = {
+  id: string;
+  title: string;
+  status: string;
+  entity: { name: string; code: string | null } | null;
+} | null;
+
+function buildDeterministicAnalysis(params: {
+  tender: {
+    id: string;
+    title: string;
+    status: string;
+    estimatedAmount: unknown;
+    questionsDeadlineAt: Date | null;
+    bidsDeadlineAt: Date | null;
+    description?: string | null;
+    procurementPlan?: { entity?: { name: string; code: string | null } | null } | null;
+  } | null;
+  ragResults: Array<{ id: string; title: string; source: string; snippet: string | null }>;
+  mode: AiMode;
+  fallbackReason?: 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
+}): {
+  contractVersion: string;
+  mode: AiMode;
+  isFallback: boolean;
+  fallbackReason?: 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
+  summary: string;
+  confidence: number;
+  riskFlags: string[];
+  recommendations: string[];
+  citations: Array<{ id: string; title: string; source: string; snippet: string | null }>;
+  process: AnalysisProcess;
+} {
+  const { tender, ragResults, mode, fallbackReason } = params;
+
+  const riskFlags: string[] = [];
+  if (tender?.estimatedAmount != null && Number(tender.estimatedAmount) > 500000) {
+    riskFlags.push('MONTO_ALTO_REQUIERE_VALIDACIONES');
+  }
+  if (!tender?.questionsDeadlineAt || !tender?.bidsDeadlineAt) {
+    riskFlags.push('CRONOGRAMA_INCOMPLETO');
+  }
+
+  const recommendations = [
+    'Verificar consistencia entre presupuesto referencial y criterios de evaluacion.',
+    'Confirmar que el cronograma publicado cumple tiempos minimos normativos.',
+  ];
+  if (riskFlags.includes('MONTO_ALTO_REQUIERE_VALIDACIONES')) {
+    recommendations.push('Incluir validacion juridica y tecnica reforzada por monto alto.');
+  }
+  if (fallbackReason === 'RAG_DISABLED' || fallbackReason === 'RAG_ERROR') {
+    recommendations.push('Completar revision con normativa institucional al no disponer de contexto RAG completo.');
+  }
+
+  const summary = tender
+    ? `Analisis GPTsercop para "${tender.title}" con ${ragResults.length} referencias normativas encontradas.`
+    : `Analisis GPTsercop basado en consulta libre con ${ragResults.length} referencias normativas.`;
+
+  return {
+    contractVersion: GPTSERCOP_ANALYSIS_CONTRACT_VERSION,
+    mode,
+    isFallback: Boolean(fallbackReason),
+    fallbackReason,
+    summary,
+    confidence: ragResults.length >= 3 ? 0.82 : 0.64,
+    riskFlags,
+    recommendations,
+    citations: ragResults.map((r) => ({ id: r.id, title: r.title, source: r.source, snippet: r.snippet })),
+    process: tender
+      ? {
+          id: tender.id,
+          title: tender.title,
+          status: tender.status,
+          entity: tender.procurementPlan?.entity ? { name: tender.procurementPlan.entity.name, code: tender.procurementPlan.entity.code } : null,
+        }
+      : null,
+  };
+}
 export const coreRoutes: FastifyPluginAsync = async (app) => {
   // Documents (uploads)
   app.post('/api/v1/documents/upload', async (req, reply) => {
@@ -142,66 +234,84 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
 
   // GPTsercop: analisis asistido sobre proceso de compra + contexto normativo (RAG)
   app.post<{ Body: { tenderId?: string; question?: string } }>('/api/v1/gptsercop/analyze-procurement', async (req, reply) => {
-    const aiEnabled = String(process.env.AI_ENABLED ?? 'true').toLowerCase();
-    if (aiEnabled === 'false' || aiEnabled === '0') {
-      return reply.status(503).send({ error: 'AI deshabilitada', code: 'AI_DISABLED' });
-    }
+    const aiEnabled = envFlag('AI_ENABLED', true);
+    const ragEnabled = envFlag('RAG_ENABLED', true);
+    const aiMode = getAiMode();
     const tenderId = typeof req.body?.tenderId === 'string' ? req.body.tenderId.trim() : '';
     const question = typeof req.body?.question === 'string' ? req.body.question.trim() : '';
     if (!tenderId && !question) return reply.status(400).send({ error: 'tenderId o question es obligatorio' });
+
+    let tender: {
+      id: string;
+      title: string;
+      status: string;
+      estimatedAmount: unknown;
+      description?: string | null;
+      questionsDeadlineAt: Date | null;
+      bidsDeadlineAt: Date | null;
+      procurementPlan?: { entity?: { name: string; code: string | null } | null } | null;
+    } | null = null;
     try {
-      const tender = tenderId
-        ? await prisma.tender.findUnique({
-            where: { id: tenderId },
-            include: {
-              procurementPlan: { include: { entity: { select: { id: true, name: true, code: true } } } },
-            },
-          })
-        : null;
-      if (tenderId && !tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
-
-      const contextQuery = question || (tender ? `${tender.title} ${tender.description || ''}` : '');
-      const ragResults = contextQuery ? await searchRag(contextQuery, 5) : [];
-
-      const riskFlags: string[] = [];
-      if (tender?.estimatedAmount != null && Number(tender.estimatedAmount) > 500000) {
-        riskFlags.push('MONTO_ALTO_REQUIERE_VALIDACIONES');
+      if (tenderId) {
+        tender = await prisma.tender.findUnique({
+          where: { id: tenderId },
+          include: {
+            procurementPlan: { include: { entity: { select: { id: true, name: true, code: true } } } },
+          },
+        });
       }
-      if (!tender?.questionsDeadlineAt || !tender?.bidsDeadlineAt) {
-        riskFlags.push('CRONOGRAMA_INCOMPLETO');
-      }
-
-      const recommendations = [
-        'Verificar consistencia entre presupuesto referencial y criterios de evaluacion.',
-        'Confirmar que el cronograma publicado cumple tiempos minimos normativos.',
-      ];
-      if (riskFlags.includes('MONTO_ALTO_REQUIERE_VALIDACIONES')) {
-        recommendations.push('Incluir validacion juridica y tecnica reforzada por monto alto.');
-      }
-
-      const summary = tender
-        ? `Analisis GPTsercop para "${tender.title}" con ${ragResults.length} referencias normativas encontradas.`
-        : `Analisis GPTsercop basado en consulta libre con ${ragResults.length} referencias normativas.`;
-
-      return {
-        contractVersion: GPTSERCOP_ANALYSIS_CONTRACT_VERSION,
-        summary,
-        confidence: ragResults.length >= 3 ? 0.82 : 0.64,
-        riskFlags,
-        recommendations,
-        citations: ragResults.map((r) => ({ id: r.id, title: r.title, source: r.source, snippet: r.snippet })),
-        process: tender
-          ? {
-              id: tender.id,
-              title: tender.title,
-              status: tender.status,
-              entity: tender.procurementPlan?.entity ? { name: tender.procurementPlan.entity.name, code: tender.procurementPlan.entity.code } : null,
-            }
-          : null,
-      };
     } catch (e) {
       req.log.error(e);
-      return reply.status(500).send({ error: 'Error en analisis GPTsercop' });
+      return reply.status(500).send({ error: 'Error consultando proceso' });
+    }
+    if (tenderId && !tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
+
+    const contextQuery = question || (tender ? `${tender.title} ${tender.description || ''}` : '');
+    let ragResults: Array<{ id: string; title: string; source: string; snippet: string | null }> = [];
+    let ragFallbackReason: 'RAG_DISABLED' | 'RAG_ERROR' | undefined;
+    if (!ragEnabled) {
+      ragFallbackReason = 'RAG_DISABLED';
+    } else if (contextQuery) {
+      try {
+        ragResults = await searchRag(contextQuery, 5);
+      } catch (e) {
+        req.log.warn({ err: e }, 'RAG unavailable; using deterministic fallback context');
+        ragFallbackReason = 'RAG_ERROR';
+      }
+    }
+
+    if (!aiEnabled) {
+      return buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: 'AI_DISABLED',
+      });
+    }
+    if (aiMode === 'deterministic') {
+      return buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: 'AI_MODE_DETERMINISTIC',
+      });
+    }
+
+    try {
+      return buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: ragFallbackReason,
+      });
+    } catch (e) {
+      req.log.error(e);
+      return buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: 'AI_ERROR',
+      });
     }
   });
 
