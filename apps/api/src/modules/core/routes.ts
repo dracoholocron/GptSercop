@@ -5,6 +5,8 @@ import crypto from 'crypto';
 import { isStorageConfigured, ensureBucket, uploadStream, getUploadUrl, getDownloadUrl } from '../../storage.js';
 import { searchRag } from '../../rag.js';
 
+const GPTSERCOP_ANALYSIS_CONTRACT_VERSION = 'gptsercop.analysis.v1';
+
 export const coreRoutes: FastifyPluginAsync = async (app) => {
   // Documents (uploads)
   app.post('/api/v1/documents/upload', async (req, reply) => {
@@ -182,6 +184,7 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
         : `Analisis GPTsercop basado en consulta libre con ${ragResults.length} referencias normativas.`;
 
       return {
+        contractVersion: GPTSERCOP_ANALYSIS_CONTRACT_VERSION,
         summary,
         confidence: ragResults.length >= 3 ? 0.82 : 0.64,
         riskFlags,

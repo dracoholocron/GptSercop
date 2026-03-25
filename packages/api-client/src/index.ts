@@ -149,8 +149,9 @@ export type GptSercopCitation = {
 };
 
 export type GptSercopAnalysis = {
+  contractVersion: 'gptsercop.analysis.v1' | string;
   summary: string;
-  confidence?: number;
+  confidence: number;
   riskFlags: string[];
   recommendations: string[];
   citations: GptSercopCitation[];
