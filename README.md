@@ -71,6 +71,7 @@ Tras cambios en el schema (p. ej. Fase 1): `npm run db:generate` y `npm run db:p
 - **Analítica:** `GET /api/v1/analytics/dashboard` (protegido)
 - **RAG:** `GET /api/v1/rag/search?q=...`, `POST /api/v1/rag/ask` (normativa/manuales)
 - **GPTsercop (integración base):** `POST /api/v1/gptsercop/analyze-procurement` (análisis asistido con contrato versionado y fallback determinístico)
+- **GPTsercop métricas:** `GET /api/v1/gptsercop/metrics` (latencia agregada + conteos éxito/fallback/error)
 - **Auth:** `POST /api/v1/auth/login` con `{ "email", "role" }` → JWT. Rutas de escritura requieren `Authorization: Bearer <token>`. Configure `JWT_SECRET` (>=16). Use `AUTH_DISABLED=true` solo en desarrollo local temporal. **Gateway:** `http://localhost:8080` (rate limit).
 - **Flags IA:** `AI_ENABLED`, `RAG_ENABLED`, `AI_MODE` (`hybrid|deterministic`) para controlar capa IA/RAG sin romper contrato de respuesta.
 
