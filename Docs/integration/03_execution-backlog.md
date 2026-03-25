@@ -34,5 +34,5 @@
 ## PR-06
 
 - Limpieza final:
-  - Mover artefactos/documentacion historica a `Docs/archive` (si aplica).
-  - Decidir eliminacion o migracion final de `contract-ui-track-c`.
+  - [x] Mover artefactos/documentacion historica a `Docs/archive` (si aplica).
+  - [x] Decidir eliminacion o migracion final de `contract-ui-track-c` (se conserva como artefacto historico fuera del workspace activo).
