@@ -2,7 +2,7 @@
  * Plugin Fastify: rutas públicas vs protegidas, extracción y verificación JWT, RBAC básico.
  */
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { verify, bearerFromHeader, hasJwtSecret, type JwtPayload } from './auth.js';
+import { verify, bearerFromHeader, hasJwtSecret, isAuthDisabled, type JwtPayload } from './auth.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -52,9 +52,22 @@ async function authHook(req: FastifyRequest, reply: FastifyReply): Promise<void>
   }
 }
 
+async function authUnavailableHook(req: FastifyRequest, reply: FastifyReply): Promise<void> {
+  if (isPublic(req.method, req.url)) return;
+  return reply.status(503).send({
+    error: 'Auth no configurado',
+    message: 'Configure JWT_SECRET (>=16) o establezca AUTH_DISABLED=true solo para desarrollo local',
+  });
+}
+
 export async function authPlugin(app: FastifyInstance): Promise<void> {
+  if (isAuthDisabled()) {
+    app.log.warn('AUTH_DISABLED=true; auth disabled for local development only.');
+    return;
+  }
   if (!hasJwtSecret()) {
-    app.log.warn('JWT_SECRET not set or too short; auth disabled (all routes public). Set JWT_SECRET in production.');
+    app.log.error('JWT_SECRET not set or too short; protected routes will return 503 until configured.');
+    app.addHook('preHandler', authUnavailableHook);
     return;
   }
   app.addHook('preHandler', authHook);

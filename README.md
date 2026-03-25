@@ -50,7 +50,7 @@ Luego podrás usar: **API** 3080, **Gateway** 8080, **Portal público** 3005 (Do
 # Instalar dependencias
 npm install
 
-# Levantar toda la infra (Postgres 5432, Redis 6379, MinIO 9000/9001, API 3080)
+# Levantar toda la infra (Postgres 5432, Redis 6380->6379, MinIO 9000/9001, API 3080)
 npm run docker:up
 
 # Crear esquema y datos de prueba (solo la primera vez, con los contenedores ya arriba)
@@ -70,7 +70,7 @@ Tras cambios en el schema (p. ej. Fase 1): `npm run db:generate` y `npm run db:p
 - **Documentos (Fase 4):** `POST /api/v1/documents/upload` (multipart), `GET /api/v1/documents?ownerType=&ownerId=`
 - **Analítica:** `GET /api/v1/analytics/dashboard` (protegido)
 - **RAG:** `GET /api/v1/rag/search?q=...`, `POST /api/v1/rag/ask` (normativa/manuales)
-- **Auth:** `POST /api/v1/auth/login` con `{ "email", "role" }` → JWT. Rutas de escritura requieren `Authorization: Bearer <token>`. **Gateway:** `http://localhost:8080` (rate limit).
+- **Auth:** `POST /api/v1/auth/login` con `{ "email", "role" }` → JWT. Rutas de escritura requieren `Authorization: Bearer <token>`. Configure `JWT_SECRET` (>=16). Use `AUTH_DISABLED=true` solo en desarrollo local temporal. **Gateway:** `http://localhost:8080` (rate limit).
 
 Para desarrollo local sin Docker: copia `.env.example` a `.env`, configura `DATABASE_URL`, ejecuta `npm run db:setup` y `npm run dev` (API en puerto **3080**).
 
