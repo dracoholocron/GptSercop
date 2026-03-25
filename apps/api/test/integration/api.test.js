@@ -307,6 +307,12 @@ test('POST /api/v1/gptsercop/analyze-procurement returns analysis payload', asyn
   assert.ok(Array.isArray(body.riskFlags));
   assert.ok(Array.isArray(body.recommendations));
   assert.ok(Array.isArray(body.citations));
+  for (const citation of body.citations) {
+    assert.ok(typeof citation.id === 'string');
+    assert.ok(typeof citation.title === 'string');
+    assert.ok(typeof citation.source === 'string');
+    assert.ok(citation.snippet == null || typeof citation.snippet === 'string');
+  }
 });
 
 async function getAdminToken() {

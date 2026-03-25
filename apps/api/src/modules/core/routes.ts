@@ -99,7 +99,6 @@ function buildDeterministicAnalysis(params: {
       : null,
   };
 }
-
 export const coreRoutes: FastifyPluginAsync = async (app) => {
   // Documents (uploads)
   app.post('/api/v1/documents/upload', async (req, reply) => {
