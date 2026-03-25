@@ -5,6 +5,162 @@ import crypto from 'crypto';
 import { isStorageConfigured, ensureBucket, uploadStream, getUploadUrl, getDownloadUrl } from '../../storage.js';
 import { searchRag } from '../../rag.js';
 
+const GPTSERCOP_ANALYSIS_CONTRACT_VERSION = 'gptsercop.analysis.v1';
+
+type AiMode = 'deterministic' | 'hybrid';
+type FallbackReason = 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
+type RouteOutcome = 'success' | 'fallback' | 'error';
+
+type AnalyzeMetrics = {
+  total: number;
+  success: number;
+  fallback: number;
+  error: number;
+  latencyMsTotal: number;
+  latencyMsMax: number;
+  fallbackReasons: Record<FallbackReason, number>;
+};
+
+const gptsercopAnalyzeMetrics: AnalyzeMetrics = {
+  total: 0,
+  success: 0,
+  fallback: 0,
+  error: 0,
+  latencyMsTotal: 0,
+  latencyMsMax: 0,
+  fallbackReasons: {
+    AI_DISABLED: 0,
+    AI_MODE_DETERMINISTIC: 0,
+    AI_ERROR: 0,
+    RAG_DISABLED: 0,
+    RAG_ERROR: 0,
+  },
+};
+
+function envFlag(name: string, defaultValue: boolean): boolean {
+  const raw = process.env[name];
+  if (raw == null || raw.trim() === '') return defaultValue;
+  const value = raw.trim().toLowerCase();
+  return value === 'true' || value === '1' || value === 'yes';
+}
+
+function getAiMode(): AiMode {
+  const raw = String(process.env.AI_MODE ?? 'hybrid').trim().toLowerCase();
+  return raw === 'deterministic' ? 'deterministic' : 'hybrid';
+}
+
+function detectSensitiveSignals(input: string): string[] {
+  const signals: string[] = [];
+  if (!input) return signals;
+  if (/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(input)) signals.push('EMAIL');
+  if (/\b(?:\+?\d[\d\s\-().]{7,}\d)\b/.test(input)) signals.push('PHONE');
+  if (/\b\d{10,13}\b/.test(input)) signals.push('IDENTIFIER');
+  return signals;
+}
+
+function sanitizeSensitiveInput(input: string): string {
+  if (!input) return input;
+  return input
+    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[REDACTED_EMAIL]')
+    .replace(/\b(?:\+?\d[\d\s\-().]{7,}\d)\b/g, '[REDACTED_PHONE]')
+    .replace(/\b\d{10,13}\b/g, '[REDACTED_ID]');
+}
+
+function shortHash(value: string): string {
+  return crypto.createHash('sha256').update(value).digest('hex').slice(0, 16);
+}
+
+function recordAnalyzeMetrics(params: { durationMs: number; outcome: RouteOutcome; fallbackReason?: FallbackReason }): void {
+  gptsercopAnalyzeMetrics.total += 1;
+  gptsercopAnalyzeMetrics.latencyMsTotal += params.durationMs;
+  gptsercopAnalyzeMetrics.latencyMsMax = Math.max(gptsercopAnalyzeMetrics.latencyMsMax, params.durationMs);
+  gptsercopAnalyzeMetrics[params.outcome] += 1;
+  if (params.fallbackReason) gptsercopAnalyzeMetrics.fallbackReasons[params.fallbackReason] += 1;
+}
+
+type AnalysisProcess = {
+  id: string;
+  title: string;
+  status: string;
+  entity: { name: string; code: string | null } | null;
+} | null;
+
+function buildDeterministicAnalysis(params: {
+  tender: {
+    id: string;
+    title: string;
+    status: string;
+    estimatedAmount: unknown;
+    questionsDeadlineAt: Date | null;
+    bidsDeadlineAt: Date | null;
+    description?: string | null;
+    procurementPlan?: { entity?: { name: string; code: string | null } | null } | null;
+  } | null;
+  ragResults: Array<{ id: string; title: string; source: string; snippet: string | null }>;
+  mode: AiMode;
+  fallbackReason?: FallbackReason;
+  hadSensitiveInput?: boolean;
+}): {
+  contractVersion: string;
+  mode: AiMode;
+  isFallback: boolean;
+  fallbackReason?: FallbackReason;
+  summary: string;
+  confidence: number;
+  riskFlags: string[];
+  recommendations: string[];
+  citations: Array<{ id: string; title: string; source: string; snippet: string | null }>;
+  process: AnalysisProcess;
+} {
+  const { tender, ragResults, mode, fallbackReason, hadSensitiveInput } = params;
+
+  const riskFlags: string[] = [];
+  if (tender?.estimatedAmount != null && Number(tender.estimatedAmount) > 500000) {
+    riskFlags.push('MONTO_ALTO_REQUIERE_VALIDACIONES');
+  }
+  if (!tender?.questionsDeadlineAt || !tender?.bidsDeadlineAt) {
+    riskFlags.push('CRONOGRAMA_INCOMPLETO');
+  }
+
+  const recommendations = [
+    'Verificar consistencia entre presupuesto referencial y criterios de evaluacion.',
+    'Confirmar que el cronograma publicado cumple tiempos minimos normativos.',
+  ];
+  if (riskFlags.includes('MONTO_ALTO_REQUIERE_VALIDACIONES')) {
+    recommendations.push('Incluir validacion juridica y tecnica reforzada por monto alto.');
+  }
+  if (fallbackReason === 'RAG_DISABLED' || fallbackReason === 'RAG_ERROR') {
+    recommendations.push('Completar revision con normativa institucional al no disponer de contexto RAG completo.');
+  }
+  if (hadSensitiveInput) {
+    riskFlags.push('DATOS_SENSIBLES_REDACTADOS');
+    recommendations.push('Validar manualmente los datos sensibles redactados antes de decisiones finales.');
+  }
+
+  const summary = tender
+    ? `Analisis GPTsercop para "${tender.title}" con ${ragResults.length} referencias normativas encontradas.`
+    : `Analisis GPTsercop basado en consulta libre con ${ragResults.length} referencias normativas.`;
+
+  return {
+    contractVersion: GPTSERCOP_ANALYSIS_CONTRACT_VERSION,
+    mode,
+    isFallback: Boolean(fallbackReason),
+    fallbackReason,
+    summary,
+    confidence: ragResults.length >= 3 ? 0.82 : 0.64,
+    riskFlags,
+    recommendations,
+    citations: ragResults.map((r) => ({ id: r.id, title: r.title, source: r.source, snippet: r.snippet })),
+    process: tender
+      ? {
+          id: tender.id,
+          title: tender.title,
+          status: tender.status,
+          entity: tender.procurementPlan?.entity ? { name: tender.procurementPlan.entity.name, code: tender.procurementPlan.entity.code } : null,
+        }
+      : null,
+  };
+}
 export const coreRoutes: FastifyPluginAsync = async (app) => {
   // Documents (uploads)
   app.post('/api/v1/documents/upload', async (req, reply) => {
@@ -140,66 +296,185 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
 
   // GPTsercop: analisis asistido sobre proceso de compra + contexto normativo (RAG)
   app.post<{ Body: { tenderId?: string; question?: string } }>('/api/v1/gptsercop/analyze-procurement', async (req, reply) => {
-    const aiEnabled = String(process.env.AI_ENABLED ?? 'true').toLowerCase();
-    if (aiEnabled === 'false' || aiEnabled === '0') {
-      return reply.status(503).send({ error: 'AI deshabilitada', code: 'AI_DISABLED' });
-    }
+    const startedAtMs = Date.now();
+    const aiEnabled = envFlag('AI_ENABLED', true);
+    const ragEnabled = envFlag('RAG_ENABLED', true);
+    const aiMode = getAiMode();
     const tenderId = typeof req.body?.tenderId === 'string' ? req.body.tenderId.trim() : '';
-    const question = typeof req.body?.question === 'string' ? req.body.question.trim() : '';
+    const question = typeof req.body?.question === 'string' ? req.body.question.trim().slice(0, 2000) : '';
+    const sensitiveSignals = detectSensitiveSignals(question);
+    const hadSensitiveInput = sensitiveSignals.length > 0;
+    const sanitizedQuestion = sanitizeSensitiveInput(question);
     if (!tenderId && !question) return reply.status(400).send({ error: 'tenderId o question es obligatorio' });
+
+    const finish = async (params: {
+      outcome: RouteOutcome;
+      fallbackReason?: FallbackReason;
+      ragResultCount: number;
+      payload: unknown;
+    }) => {
+      const durationMs = Date.now() - startedAtMs;
+      recordAnalyzeMetrics({ durationMs, outcome: params.outcome, fallbackReason: params.fallbackReason });
+      req.log.info(
+        {
+          aiMode,
+          aiEnabled,
+          ragEnabled,
+          outcome: params.outcome,
+          fallbackReason: params.fallbackReason,
+          durationMs,
+          tenderId: tenderId || null,
+          hadSensitiveInput,
+          sensitiveSignals,
+          ragResultCount: params.ragResultCount,
+        },
+        'GPTsercop analyze completed'
+      );
+      await audit({
+        action: 'gptsercop.analyze',
+        entityType: 'AIAnalysis',
+        entityId: tenderId || undefined,
+        payload: {
+          mode: aiMode,
+          aiEnabled,
+          ragEnabled,
+          outcome: params.outcome,
+          fallbackReason: params.fallbackReason ?? null,
+          durationMs,
+          tenderId: tenderId || null,
+          questionHash: question ? shortHash(question) : null,
+          questionLength: question.length,
+          hadSensitiveInput,
+          sensitiveSignals,
+          ragResultCount: params.ragResultCount,
+        },
+      });
+      return params.payload;
+    };
+
+    let tender: {
+      id: string;
+      title: string;
+      status: string;
+      estimatedAmount: unknown;
+      description?: string | null;
+      questionsDeadlineAt: Date | null;
+      bidsDeadlineAt: Date | null;
+      procurementPlan?: { entity?: { name: string; code: string | null } | null } | null;
+    } | null = null;
     try {
-      const tender = tenderId
-        ? await prisma.tender.findUnique({
-            where: { id: tenderId },
-            include: {
-              procurementPlan: { include: { entity: { select: { id: true, name: true, code: true } } } },
-            },
-          })
-        : null;
-      if (tenderId && !tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
-
-      const contextQuery = question || (tender ? `${tender.title} ${tender.description || ''}` : '');
-      const ragResults = contextQuery ? await searchRag(contextQuery, 5) : [];
-
-      const riskFlags: string[] = [];
-      if (tender?.estimatedAmount != null && Number(tender.estimatedAmount) > 500000) {
-        riskFlags.push('MONTO_ALTO_REQUIERE_VALIDACIONES');
+      if (tenderId) {
+        tender = await prisma.tender.findUnique({
+          where: { id: tenderId },
+          include: {
+            procurementPlan: { include: { entity: { select: { id: true, name: true, code: true } } } },
+          },
+        });
       }
-      if (!tender?.questionsDeadlineAt || !tender?.bidsDeadlineAt) {
-        riskFlags.push('CRONOGRAMA_INCOMPLETO');
-      }
-
-      const recommendations = [
-        'Verificar consistencia entre presupuesto referencial y criterios de evaluacion.',
-        'Confirmar que el cronograma publicado cumple tiempos minimos normativos.',
-      ];
-      if (riskFlags.includes('MONTO_ALTO_REQUIERE_VALIDACIONES')) {
-        recommendations.push('Incluir validacion juridica y tecnica reforzada por monto alto.');
-      }
-
-      const summary = tender
-        ? `Analisis GPTsercop para "${tender.title}" con ${ragResults.length} referencias normativas encontradas.`
-        : `Analisis GPTsercop basado en consulta libre con ${ragResults.length} referencias normativas.`;
-
-      return {
-        summary,
-        confidence: ragResults.length >= 3 ? 0.82 : 0.64,
-        riskFlags,
-        recommendations,
-        citations: ragResults.map((r) => ({ id: r.id, title: r.title, source: r.source, snippet: r.snippet })),
-        process: tender
-          ? {
-              id: tender.id,
-              title: tender.title,
-              status: tender.status,
-              entity: tender.procurementPlan?.entity ? { name: tender.procurementPlan.entity.name, code: tender.procurementPlan.entity.code } : null,
-            }
-          : null,
-      };
     } catch (e) {
       req.log.error(e);
-      return reply.status(500).send({ error: 'Error en analisis GPTsercop' });
+      const durationMs = Date.now() - startedAtMs;
+      recordAnalyzeMetrics({ durationMs, outcome: 'error' });
+      await audit({
+        action: 'gptsercop.analyze',
+        entityType: 'AIAnalysis',
+        entityId: tenderId || undefined,
+        payload: {
+          mode: aiMode,
+          aiEnabled,
+          ragEnabled,
+          outcome: 'error',
+          errorCode: 'TENDER_LOOKUP_ERROR',
+          durationMs,
+          tenderId: tenderId || null,
+          questionHash: question ? shortHash(question) : null,
+          questionLength: question.length,
+          hadSensitiveInput,
+          sensitiveSignals,
+          ragResultCount: 0,
+        },
+      });
+      return reply.status(500).send({ error: 'Error consultando proceso' });
     }
+    if (tenderId && !tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
+
+    const safeTenderContext = tender ? sanitizeSensitiveInput(`${tender.title} ${tender.description || ''}`) : '';
+    const contextQuery = sanitizedQuestion || safeTenderContext;
+    let ragResults: Array<{ id: string; title: string; source: string; snippet: string | null }> = [];
+    let ragFallbackReason: 'RAG_DISABLED' | 'RAG_ERROR' | undefined;
+    if (!ragEnabled) {
+      ragFallbackReason = 'RAG_DISABLED';
+    } else if (contextQuery) {
+      try {
+        ragResults = await searchRag(contextQuery, 5);
+      } catch (e) {
+        req.log.warn({ err: e }, 'RAG unavailable; using deterministic fallback context');
+        ragFallbackReason = 'RAG_ERROR';
+      }
+    }
+
+    if (!aiEnabled) {
+      const payload = buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: 'AI_DISABLED',
+        hadSensitiveInput,
+      });
+      return finish({ outcome: 'fallback', fallbackReason: 'AI_DISABLED', ragResultCount: ragResults.length, payload });
+    }
+    if (aiMode === 'deterministic') {
+      const payload = buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: 'AI_MODE_DETERMINISTIC',
+        hadSensitiveInput,
+      });
+      return finish({ outcome: 'fallback', fallbackReason: 'AI_MODE_DETERMINISTIC', ragResultCount: ragResults.length, payload });
+    }
+
+    try {
+      const payload = buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: ragFallbackReason,
+        hadSensitiveInput,
+      });
+      return finish({
+        outcome: ragFallbackReason ? 'fallback' : 'success',
+        fallbackReason: ragFallbackReason,
+        ragResultCount: ragResults.length,
+        payload,
+      });
+    } catch (e) {
+      req.log.error(e);
+      const payload = buildDeterministicAnalysis({
+        tender,
+        ragResults,
+        mode: aiMode,
+        fallbackReason: 'AI_ERROR',
+        hadSensitiveInput,
+      });
+      return finish({ outcome: 'fallback', fallbackReason: 'AI_ERROR', ragResultCount: ragResults.length, payload });
+    }
+  });
+
+  app.get('/api/v1/gptsercop/metrics', async () => {
+    const avgLatencyMs = gptsercopAnalyzeMetrics.total > 0
+      ? Number((gptsercopAnalyzeMetrics.latencyMsTotal / gptsercopAnalyzeMetrics.total).toFixed(2))
+      : 0;
+    return {
+      route: '/api/v1/gptsercop/analyze-procurement',
+      total: gptsercopAnalyzeMetrics.total,
+      success: gptsercopAnalyzeMetrics.success,
+      fallback: gptsercopAnalyzeMetrics.fallback,
+      error: gptsercopAnalyzeMetrics.error,
+      avgLatencyMs,
+      maxLatencyMs: gptsercopAnalyzeMetrics.latencyMsMax,
+      fallbackReasons: gptsercopAnalyzeMetrics.fallbackReasons,
+    };
   });
 
   app.get<{ Querystring: any }>('/api/v1/rag/chunks', async (req, reply) => {
