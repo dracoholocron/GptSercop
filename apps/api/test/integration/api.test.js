@@ -296,9 +296,19 @@ test('POST /api/v1/gptsercop/analyze-procurement returns analysis payload', asyn
   if (res.status === 503) return; // AI deshabilitada por entorno
   if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
   const body = await res.json();
+  assert.strictEqual(body.contractVersion, 'gptsercop.analysis.v1');
   assert.ok(typeof body.summary === 'string');
+  assert.ok(typeof body.confidence === 'number');
+  assert.ok(body.confidence >= 0 && body.confidence <= 1);
+  assert.ok(Array.isArray(body.riskFlags));
   assert.ok(Array.isArray(body.recommendations));
   assert.ok(Array.isArray(body.citations));
+  for (const citation of body.citations) {
+    assert.ok(typeof citation.id === 'string');
+    assert.ok(typeof citation.title === 'string');
+    assert.ok(typeof citation.source === 'string');
+    assert.ok(citation.snippet == null || typeof citation.snippet === 'string');
+  }
 });
 
 async function getAdminToken() {
