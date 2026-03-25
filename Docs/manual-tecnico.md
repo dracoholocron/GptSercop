@@ -93,7 +93,7 @@ gptSercop/
 ├── scripts/                 # start-all.js, smoke.js, crawler, etc.
 ├── Docs/                    # Documentación (este manual, brechas, backlog)
 ├── docker-compose.yml       # Postgres, Redis, MinIO, API, gateway, public-portal
-├── package.json             # Workspaces npm (apps/*, packages/*)
+├── package.json             # Workspaces npm (apps seleccionadas, packages/*)
 └── .env.example             # Variables de entorno de ejemplo
 ```
 

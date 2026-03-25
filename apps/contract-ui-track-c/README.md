@@ -1,5 +1,8 @@
 # Contract/UI Track C — query -> detail -> GPT summary
 
+> Estado: **archivado para referencia histórica**.  
+> Este módulo no forma parte del workspace activo ni del flujo principal de entrega del monorepo SERCOP/GPTsercop.
+
 Implementación mínima full-stack alineada al contrato unificado (`openapi/sercop-core-v1.yaml`) para el flujo:
 
 1. `GET /v1/public/search?q=...`

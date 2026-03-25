@@ -61,4 +61,4 @@
 - Lo ya implementado cubre la mayor parte de los temas del transcript (principios, denuncias, reclamos, BAE, liberación, preferencia territorial, administrador, plan contingencia, convalidación, plazos licitación).
 - Las sugerencias anteriores son mejoras de texto (ayuda, certificación, plazos), visibilidad de campos existentes (informe de resultado, plazo reclamos) y, si se desea, un flujo opcional de objeción al administrador de contrato.
 - La interoperabilidad con SRI (CPC) se deja como referencia para una fase posterior.
-- **Experiencia general y específica** (art. 28 Reglamento): no implementada; queda documentada en [Docs/brechas-licitacion-experiencia.md](brechas-licitacion-experiencia.md) con opciones para una fase posterior.
+- **Experiencia general y específica** (art. 28 Reglamento): no implementada; queda documentada en [Docs/brechas-licitacion-experiencia.md](../brechas-licitacion-experiencia.md) con opciones para una fase posterior.
