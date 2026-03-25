@@ -141,6 +141,27 @@ export type RagAskResponse = {
   sources: Array<{ title: string; id: string }>;
 };
 
+export type GptSercopCitation = {
+  id: string;
+  title: string;
+  source: string;
+  snippet?: string | null;
+};
+
+export type GptSercopAnalysis = {
+  summary: string;
+  confidence?: number;
+  riskFlags: string[];
+  recommendations: string[];
+  citations: GptSercopCitation[];
+  process?: {
+    id: string;
+    title: string;
+    status?: string;
+    entity?: { name?: string; code?: string | null } | null;
+  } | null;
+};
+
 export type OfferDraft = {
   id: string;
   processId: string;
@@ -503,6 +524,13 @@ export const api = {
   },
   async getTender(id: string): Promise<Tender & { procurementPlan?: unknown }> {
     return request(`/api/v1/tenders/${id}`);
+  },
+  async analyzeProcurement(data: { tenderId?: string; question?: string }): Promise<GptSercopAnalysis> {
+    return request('/api/v1/gptsercop/analyze-procurement', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
   },
   async getProviders(params?: { identifier?: string }): Promise<{ data: Provider[] }> {
     const q = params?.identifier ? `?identifier=${encodeURIComponent(params.identifier)}` : '';

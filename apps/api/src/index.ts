@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
-import { hasJwtSecret } from './auth.js';
+import { hasJwtSecret, isAuthDisabled } from './auth.js';
 import { authPlugin } from './authPlugin.js';
 import { registerCoreFlowRoutes } from './sercop/core-flow-routes.js';
 import { observabilityRoutes } from './modules/observability/routes.js';
@@ -51,10 +51,16 @@ await app.register(coreRoutes);
 const host = process.env.HOST ?? '0.0.0.0';
 const port = Number(process.env.PORT ?? 3080);
 
-// Producción: exigir JWT_SECRET (mín. 16 caracteres) para no arrancar con auth desactivado
-if (process.env.NODE_ENV === 'production' && !hasJwtSecret()) {
-  app.log.error('En producción JWT_SECRET es obligatorio y debe tener al menos 16 caracteres. No se inicia la API.');
-  process.exit(1);
+// Producción: exigir JWT_SECRET y bloquear AUTH_DISABLED
+if (process.env.NODE_ENV === 'production') {
+  if (isAuthDisabled()) {
+    app.log.error('En producción AUTH_DISABLED no está permitido. Quite AUTH_DISABLED y configure JWT_SECRET.');
+    process.exit(1);
+  }
+  if (!hasJwtSecret()) {
+    app.log.error('En producción JWT_SECRET es obligatorio y debe tener al menos 16 caracteres. No se inicia la API.');
+    process.exit(1);
+  }
 }
 
 export { app };

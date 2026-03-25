@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AdminShell } from '../../../components/AdminShell';
 import { Card, Button, Input } from '@sercop/design-system';
-import { api, setBaseUrl, setToken } from '@sercop/api-client';
+import { api, setBaseUrl, setToken, type GptSercopAnalysis } from '@sercop/api-client';
 import { getToken } from '../../../lib/auth';
 
 setBaseUrl(process.env.NEXT_PUBLIC_API_URL || '');
@@ -22,6 +22,8 @@ export default function AdminOfertasProcesoPage() {
   const [clarSubject, setClarSubject] = useState('');
   const [clarMessage, setClarMessage] = useState('');
   const [clarifications, setClarifications] = useState<Array<any>>([]);
+  const [analysis, setAnalysis] = useState<GptSercopAnalysis | null>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -47,6 +49,15 @@ export default function AdminOfertasProcesoPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenderId, token]);
 
+  useEffect(() => {
+    if (!tenderId) return;
+    setAnalysisLoading(true);
+    api.analyzeProcurement({ tenderId })
+      .then((r) => setAnalysis(r))
+      .catch(() => setAnalysis(null))
+      .finally(() => setAnalysisLoading(false));
+  }, [tenderId]);
+
   return (
     <AdminShell activeId="procesos">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -54,6 +65,23 @@ export default function AdminOfertasProcesoPage() {
         <h1 className="mb-4 text-2xl font-semibold">Ofertas del proceso</h1>
         {!tender ? <p>Cargando…</p> : (
           <Card title={String((tender as any).title)}>
+            <div className="mb-4 rounded-lg border border-primary/30 bg-primary-light p-3">
+              <div className="mb-1 text-sm font-semibold text-text-primary">GPTsercop · Análisis asistido</div>
+              {analysisLoading ? (
+                <p className="text-sm text-text-secondary">Generando análisis…</p>
+              ) : !analysis ? (
+                <p className="text-sm text-text-secondary">Análisis no disponible para este entorno.</p>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-sm text-text-secondary">{analysis.summary}</p>
+                  {analysis.riskFlags.length > 0 && (
+                    <p className="text-xs text-text-secondary">
+                      Riesgos: {analysis.riskFlags.join(', ')}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
             {loading ? <p>Cargando…</p> : offers.length === 0 ? (
               <p className="text-text-secondary">No hay ofertas.</p>
             ) : (

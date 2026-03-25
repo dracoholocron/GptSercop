@@ -16,6 +16,11 @@ export interface JwtPayload {
   exp: number;
 }
 
+export function isAuthDisabled(): boolean {
+  const raw = process.env.AUTH_DISABLED?.trim().toLowerCase();
+  return raw === 'true' || raw === '1' || raw === 'yes';
+}
+
 export function hasJwtSecret(): boolean {
   const s = process.env.JWT_SECRET;
   return !!s && s.length >= 16;

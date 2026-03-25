@@ -91,11 +91,11 @@ export default function CifrasPage() {
         .getTenders({ page, pageSize })
         .then((res) =>
           setDetailData({
-            data: res.data || [],
-            total: res.total || 0,
-            page: res.page || page,
-            pageSize: res.pageSize || pageSize,
-          }),
+            data: res.data,
+            total: res.total ?? res.data.length,
+            page: res.page ?? page,
+            pageSize: res.pageSize ?? pageSize,
+          })
         )
         .catch(() => setDetailData(null))
         .finally(() => setDetailLoading(false));
@@ -263,7 +263,7 @@ export default function CifrasPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {detailData.data.map((row: any, i: number) => (
+                          {(detailData.data as Array<Record<string, unknown>>).map((row, i) => (
                             <tr key={(row.id as string) || i} className="border-b border-neutral-100">
                               {selectedMetric === 'tenders' || selectedMetric === 'published' ? (
                                 <>

@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Card, Button, Breadcrumb, EmptyState, Skeleton, SummarySheet } from '@sercop/design-system';
-import { api, setBaseUrl, type TenderClarification } from '@sercop/api-client';
+import { api, setBaseUrl, type TenderClarification, type GptSercopAnalysis } from '@sercop/api-client';
 import Link from 'next/link';
 import { PublicShell } from '../../components/PublicShell';
 
@@ -15,6 +15,9 @@ export default function TenderDetailPage() {
   const id = params.id as string;
   const [tender, setTender] = useState<Record<string, unknown> | null>(null);
   const [clarifications, setClarifications] = useState<TenderClarification[]>([]);
+  const [analysis, setAnalysis] = useState<GptSercopAnalysis | null>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState('');
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -25,6 +28,16 @@ export default function TenderDetailPage() {
   useEffect(() => {
     if (!id) return;
     api.listTenderClarifications(id).then((r) => setClarifications(r.data)).catch(() => setClarifications([]));
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    setAnalysisLoading(true);
+    setAnalysisError('');
+    api.analyzeProcurement({ tenderId: id })
+      .then((r) => setAnalysis(r))
+      .catch((e) => setAnalysisError(e instanceof Error ? e.message : 'No se pudo generar análisis GPTsercop'))
+      .finally(() => setAnalysisLoading(false));
   }, [id]);
 
   const title = tender ? String(tender.title) : 'Proceso';
@@ -149,6 +162,49 @@ export default function TenderDetailPage() {
                 </ul>
               </Card>
             )}
+
+            <Card title="Análisis asistido (GPTsercop)" variant="outline" className="mt-6">
+              {analysisLoading ? (
+                <Skeleton variant="lines" />
+              ) : analysisError ? (
+                <p className="text-sm text-text-secondary">Análisis no disponible en este entorno.</p>
+              ) : !analysis ? (
+                <p className="text-sm text-text-secondary">Sin análisis por el momento.</p>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm text-text-primary">{analysis.summary}</p>
+                  {analysis.riskFlags.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">Riesgos detectados</p>
+                      <ul className="mt-1 list-disc pl-5 text-sm text-text-secondary">
+                        {analysis.riskFlags.map((r) => <li key={r}>{r}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {analysis.recommendations.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">Recomendaciones</p>
+                      <ul className="mt-1 list-disc pl-5 text-sm text-text-secondary">
+                        {analysis.recommendations.map((r) => <li key={r}>{r}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  {analysis.citations.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">Fuentes</p>
+                      <ul className="mt-1 space-y-2 text-sm text-text-secondary">
+                        {analysis.citations.slice(0, 3).map((c) => (
+                          <li key={c.id}>
+                            <span className="font-medium text-text-primary">{c.title}</span>
+                            {c.snippet ? <span className="block">{c.snippet}</span> : null}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </Card>
           </>
         )}
       </div>

@@ -19,6 +19,7 @@ Toda la documentación del proyecto (investigación, arquitectura, especificacio
 | [02_architecture](02_architecture/) | Arquitectura propuesta (API Gateway, microservicios, PostgreSQL, Redis, S3, K8s) |
 | [03_technical_specs](03_technical_specs/) | Especificaciones técnicas: contexto, módulos, APIs, modelo de datos, infra, seguridad |
 | [04_devops](04_devops/) | DevOps: Docker, Kubernetes, Terraform, GitHub Actions |
+| [integration](integration/) | Plan de integracion GPTsercop sobre base SERCOP (alcance, matriz y backlog de ejecucion) |
 | [05_starter_kit](05_starter_kit/) | Base: monorepo Node.js, APIs base, health checks |
 | [06_runnable_v0_1](06_runnable_v0_1/) | Primera versión ejecutable: API backoffice/pública, PostgreSQL, Docker Compose |
 | [07_runnable_v0_2](07_runnable_v0_2/) | Versión extendida: RBAC, auditoría, tenders, documentos, tests |

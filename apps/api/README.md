@@ -8,7 +8,7 @@ Desde la raíz del monorepo:
 
 ```bash
 npm install
-npm run docker:up          # PostgreSQL + MinIO
+npm run docker:up          # PostgreSQL + Redis + MinIO + API
 cp .env.example .env       # y revisar DATABASE_URL
 npm run db:setup           # crear tablas + seed
 npm run dev
@@ -21,6 +21,7 @@ npm run dev
 - Analítica: `GET /api/v1/analytics/dashboard` (protegido; conteos tenders, providers, contracts, documents)
 - CPC: `GET /api/v1/cpc/suggestions?q=&limit=` (stub; en producción integrar con servicio SRI/correlacionador para validar actividades del proveedor)
 - RAG: `GET /api/v1/rag/search?q=...`; `POST /api/v1/rag/ask` (body: `{ question }`)
+- GPTsercop integración: `POST /api/v1/gptsercop/analyze-procurement` (body: `{ tenderId?, question? }`)
 
 ## Base de datos
 
@@ -29,7 +30,7 @@ npm run dev
 
 ## Variables de entorno
 
-En la raíz, `.env` con `DATABASE_URL`. Opcional: `JWT_SECRET`, `REDIS_URL`, `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_BUCKET`. Ver `.env.example`.
+En la raíz, `.env` con `DATABASE_URL`. Recomendado: `JWT_SECRET` (>=16). Opcional: `REDIS_URL`, `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_BUCKET`. `AUTH_DISABLED=true` solo para desarrollo local temporal. Ver `.env.example`.
 
 ## Pruebas
 
