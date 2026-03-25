@@ -315,6 +315,32 @@ test('POST /api/v1/gptsercop/analyze-procurement returns analysis payload', asyn
   }
 });
 
+test('POST /api/v1/gptsercop/analyze-procurement redacts sensitive input signals', async () => {
+  const res = await fetch(`${baseUrl}/api/v1/gptsercop/analyze-procurement`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: 'Mi correo es proveedor@test.com y telefono +593 99 123 4567' }),
+  });
+  if (res.status === 404) return;
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  const body = await res.json();
+  assert.ok(Array.isArray(body.riskFlags));
+  assert.ok(body.riskFlags.includes('DATOS_SENSIBLES_REDACTADOS'));
+});
+
+test('GET /api/v1/gptsercop/metrics returns latency/error counters', async () => {
+  const token = await getAdminToken();
+  if (!token) return;
+  const res = await fetch(`${baseUrl}/api/v1/gptsercop/metrics`, { headers: { Authorization: `Bearer ${token}` } });
+  if (res.status === 404) return;
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  const body = await res.json();
+  assert.strictEqual(body.route, '/api/v1/gptsercop/analyze-procurement');
+  assert.strictEqual(typeof body.total, 'number');
+  assert.strictEqual(typeof body.avgLatencyMs, 'number');
+  assert.strictEqual(typeof body.maxLatencyMs, 'number');
+});
+
 async function getAdminToken() {
   const res = await fetch(`${baseUrl}/api/v1/auth/login`, {
     method: 'POST',

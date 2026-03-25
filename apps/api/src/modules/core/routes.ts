@@ -8,6 +8,34 @@ import { searchRag } from '../../rag.js';
 const GPTSERCOP_ANALYSIS_CONTRACT_VERSION = 'gptsercop.analysis.v1';
 
 type AiMode = 'deterministic' | 'hybrid';
+type FallbackReason = 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
+type RouteOutcome = 'success' | 'fallback' | 'error';
+
+type AnalyzeMetrics = {
+  total: number;
+  success: number;
+  fallback: number;
+  error: number;
+  latencyMsTotal: number;
+  latencyMsMax: number;
+  fallbackReasons: Record<FallbackReason, number>;
+};
+
+const gptsercopAnalyzeMetrics: AnalyzeMetrics = {
+  total: 0,
+  success: 0,
+  fallback: 0,
+  error: 0,
+  latencyMsTotal: 0,
+  latencyMsMax: 0,
+  fallbackReasons: {
+    AI_DISABLED: 0,
+    AI_MODE_DETERMINISTIC: 0,
+    AI_ERROR: 0,
+    RAG_DISABLED: 0,
+    RAG_ERROR: 0,
+  },
+};
 
 function envFlag(name: string, defaultValue: boolean): boolean {
   const raw = process.env[name];
@@ -19,6 +47,35 @@ function envFlag(name: string, defaultValue: boolean): boolean {
 function getAiMode(): AiMode {
   const raw = String(process.env.AI_MODE ?? 'hybrid').trim().toLowerCase();
   return raw === 'deterministic' ? 'deterministic' : 'hybrid';
+}
+
+function detectSensitiveSignals(input: string): string[] {
+  const signals: string[] = [];
+  if (!input) return signals;
+  if (/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(input)) signals.push('EMAIL');
+  if (/\b(?:\+?\d[\d\s\-().]{7,}\d)\b/.test(input)) signals.push('PHONE');
+  if (/\b\d{10,13}\b/.test(input)) signals.push('IDENTIFIER');
+  return signals;
+}
+
+function sanitizeSensitiveInput(input: string): string {
+  if (!input) return input;
+  return input
+    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[REDACTED_EMAIL]')
+    .replace(/\b(?:\+?\d[\d\s\-().]{7,}\d)\b/g, '[REDACTED_PHONE]')
+    .replace(/\b\d{10,13}\b/g, '[REDACTED_ID]');
+}
+
+function shortHash(value: string): string {
+  return crypto.createHash('sha256').update(value).digest('hex').slice(0, 16);
+}
+
+function recordAnalyzeMetrics(params: { durationMs: number; outcome: RouteOutcome; fallbackReason?: FallbackReason }): void {
+  gptsercopAnalyzeMetrics.total += 1;
+  gptsercopAnalyzeMetrics.latencyMsTotal += params.durationMs;
+  gptsercopAnalyzeMetrics.latencyMsMax = Math.max(gptsercopAnalyzeMetrics.latencyMsMax, params.durationMs);
+  gptsercopAnalyzeMetrics[params.outcome] += 1;
+  if (params.fallbackReason) gptsercopAnalyzeMetrics.fallbackReasons[params.fallbackReason] += 1;
 }
 
 type AnalysisProcess = {
@@ -41,12 +98,13 @@ function buildDeterministicAnalysis(params: {
   } | null;
   ragResults: Array<{ id: string; title: string; source: string; snippet: string | null }>;
   mode: AiMode;
-  fallbackReason?: 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
+  fallbackReason?: FallbackReason;
+  hadSensitiveInput?: boolean;
 }): {
   contractVersion: string;
   mode: AiMode;
   isFallback: boolean;
-  fallbackReason?: 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
+  fallbackReason?: FallbackReason;
   summary: string;
   confidence: number;
   riskFlags: string[];
@@ -54,7 +112,7 @@ function buildDeterministicAnalysis(params: {
   citations: Array<{ id: string; title: string; source: string; snippet: string | null }>;
   process: AnalysisProcess;
 } {
-  const { tender, ragResults, mode, fallbackReason } = params;
+  const { tender, ragResults, mode, fallbackReason, hadSensitiveInput } = params;
 
   const riskFlags: string[] = [];
   if (tender?.estimatedAmount != null && Number(tender.estimatedAmount) > 500000) {
@@ -73,6 +131,10 @@ function buildDeterministicAnalysis(params: {
   }
   if (fallbackReason === 'RAG_DISABLED' || fallbackReason === 'RAG_ERROR') {
     recommendations.push('Completar revision con normativa institucional al no disponer de contexto RAG completo.');
+  }
+  if (hadSensitiveInput) {
+    riskFlags.push('DATOS_SENSIBLES_REDACTADOS');
+    recommendations.push('Validar manualmente los datos sensibles redactados antes de decisiones finales.');
   }
 
   const summary = tender
@@ -234,12 +296,61 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
 
   // GPTsercop: analisis asistido sobre proceso de compra + contexto normativo (RAG)
   app.post<{ Body: { tenderId?: string; question?: string } }>('/api/v1/gptsercop/analyze-procurement', async (req, reply) => {
+    const startedAtMs = Date.now();
     const aiEnabled = envFlag('AI_ENABLED', true);
     const ragEnabled = envFlag('RAG_ENABLED', true);
     const aiMode = getAiMode();
     const tenderId = typeof req.body?.tenderId === 'string' ? req.body.tenderId.trim() : '';
-    const question = typeof req.body?.question === 'string' ? req.body.question.trim() : '';
+    const question = typeof req.body?.question === 'string' ? req.body.question.trim().slice(0, 2000) : '';
+    const sensitiveSignals = detectSensitiveSignals(question);
+    const hadSensitiveInput = sensitiveSignals.length > 0;
+    const sanitizedQuestion = sanitizeSensitiveInput(question);
     if (!tenderId && !question) return reply.status(400).send({ error: 'tenderId o question es obligatorio' });
+
+    const finish = async (params: {
+      outcome: RouteOutcome;
+      fallbackReason?: FallbackReason;
+      ragResultCount: number;
+      payload: unknown;
+    }) => {
+      const durationMs = Date.now() - startedAtMs;
+      recordAnalyzeMetrics({ durationMs, outcome: params.outcome, fallbackReason: params.fallbackReason });
+      req.log.info(
+        {
+          aiMode,
+          aiEnabled,
+          ragEnabled,
+          outcome: params.outcome,
+          fallbackReason: params.fallbackReason,
+          durationMs,
+          tenderId: tenderId || null,
+          hadSensitiveInput,
+          sensitiveSignals,
+          ragResultCount: params.ragResultCount,
+        },
+        'GPTsercop analyze completed'
+      );
+      await audit({
+        action: 'gptsercop.analyze',
+        entityType: 'AIAnalysis',
+        entityId: tenderId || undefined,
+        payload: {
+          mode: aiMode,
+          aiEnabled,
+          ragEnabled,
+          outcome: params.outcome,
+          fallbackReason: params.fallbackReason ?? null,
+          durationMs,
+          tenderId: tenderId || null,
+          questionHash: question ? shortHash(question) : null,
+          questionLength: question.length,
+          hadSensitiveInput,
+          sensitiveSignals,
+          ragResultCount: params.ragResultCount,
+        },
+      });
+      return params.payload;
+    };
 
     let tender: {
       id: string;
@@ -262,11 +373,33 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
       }
     } catch (e) {
       req.log.error(e);
+      const durationMs = Date.now() - startedAtMs;
+      recordAnalyzeMetrics({ durationMs, outcome: 'error' });
+      await audit({
+        action: 'gptsercop.analyze',
+        entityType: 'AIAnalysis',
+        entityId: tenderId || undefined,
+        payload: {
+          mode: aiMode,
+          aiEnabled,
+          ragEnabled,
+          outcome: 'error',
+          errorCode: 'TENDER_LOOKUP_ERROR',
+          durationMs,
+          tenderId: tenderId || null,
+          questionHash: question ? shortHash(question) : null,
+          questionLength: question.length,
+          hadSensitiveInput,
+          sensitiveSignals,
+          ragResultCount: 0,
+        },
+      });
       return reply.status(500).send({ error: 'Error consultando proceso' });
     }
     if (tenderId && !tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
 
-    const contextQuery = question || (tender ? `${tender.title} ${tender.description || ''}` : '');
+    const safeTenderContext = tender ? sanitizeSensitiveInput(`${tender.title} ${tender.description || ''}`) : '';
+    const contextQuery = sanitizedQuestion || safeTenderContext;
     let ragResults: Array<{ id: string; title: string; source: string; snippet: string | null }> = [];
     let ragFallbackReason: 'RAG_DISABLED' | 'RAG_ERROR' | undefined;
     if (!ragEnabled) {
@@ -281,38 +414,67 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
     }
 
     if (!aiEnabled) {
-      return buildDeterministicAnalysis({
+      const payload = buildDeterministicAnalysis({
         tender,
         ragResults,
         mode: aiMode,
         fallbackReason: 'AI_DISABLED',
+        hadSensitiveInput,
       });
+      return finish({ outcome: 'fallback', fallbackReason: 'AI_DISABLED', ragResultCount: ragResults.length, payload });
     }
     if (aiMode === 'deterministic') {
-      return buildDeterministicAnalysis({
+      const payload = buildDeterministicAnalysis({
         tender,
         ragResults,
         mode: aiMode,
         fallbackReason: 'AI_MODE_DETERMINISTIC',
+        hadSensitiveInput,
       });
+      return finish({ outcome: 'fallback', fallbackReason: 'AI_MODE_DETERMINISTIC', ragResultCount: ragResults.length, payload });
     }
 
     try {
-      return buildDeterministicAnalysis({
+      const payload = buildDeterministicAnalysis({
         tender,
         ragResults,
         mode: aiMode,
         fallbackReason: ragFallbackReason,
+        hadSensitiveInput,
+      });
+      return finish({
+        outcome: ragFallbackReason ? 'fallback' : 'success',
+        fallbackReason: ragFallbackReason,
+        ragResultCount: ragResults.length,
+        payload,
       });
     } catch (e) {
       req.log.error(e);
-      return buildDeterministicAnalysis({
+      const payload = buildDeterministicAnalysis({
         tender,
         ragResults,
         mode: aiMode,
         fallbackReason: 'AI_ERROR',
+        hadSensitiveInput,
       });
+      return finish({ outcome: 'fallback', fallbackReason: 'AI_ERROR', ragResultCount: ragResults.length, payload });
     }
+  });
+
+  app.get('/api/v1/gptsercop/metrics', async () => {
+    const avgLatencyMs = gptsercopAnalyzeMetrics.total > 0
+      ? Number((gptsercopAnalyzeMetrics.latencyMsTotal / gptsercopAnalyzeMetrics.total).toFixed(2))
+      : 0;
+    return {
+      route: '/api/v1/gptsercop/analyze-procurement',
+      total: gptsercopAnalyzeMetrics.total,
+      success: gptsercopAnalyzeMetrics.success,
+      fallback: gptsercopAnalyzeMetrics.fallback,
+      error: gptsercopAnalyzeMetrics.error,
+      avgLatencyMs,
+      maxLatencyMs: gptsercopAnalyzeMetrics.latencyMsMax,
+      fallbackReasons: gptsercopAnalyzeMetrics.fallbackReasons,
+    };
   });
 
   app.get<{ Querystring: any }>('/api/v1/rag/chunks', async (req, reply) => {
