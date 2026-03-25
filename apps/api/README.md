@@ -21,6 +21,7 @@ npm run dev
 - Analítica: `GET /api/v1/analytics/dashboard` (protegido; conteos tenders, providers, contracts, documents)
 - CPC: `GET /api/v1/cpc/suggestions?q=&limit=` (stub; en producción integrar con servicio SRI/correlacionador para validar actividades del proveedor)
 - RAG: `GET /api/v1/rag/search?q=...`; `POST /api/v1/rag/ask` (body: `{ question }`)
+- GPTsercop integración: `POST /api/v1/gptsercop/analyze-procurement` (body: `{ tenderId?, question? }`)
 
 ## Base de datos
 

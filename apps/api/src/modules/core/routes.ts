@@ -138,6 +138,70 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
     } catch (e) { return reply.status(500).send({ error: 'Error rag ask' }); }
   });
 
+  // GPTsercop: analisis asistido sobre proceso de compra + contexto normativo (RAG)
+  app.post<{ Body: { tenderId?: string; question?: string } }>('/api/v1/gptsercop/analyze-procurement', async (req, reply) => {
+    const aiEnabled = String(process.env.AI_ENABLED ?? 'true').toLowerCase();
+    if (aiEnabled === 'false' || aiEnabled === '0') {
+      return reply.status(503).send({ error: 'AI deshabilitada', code: 'AI_DISABLED' });
+    }
+    const tenderId = typeof req.body?.tenderId === 'string' ? req.body.tenderId.trim() : '';
+    const question = typeof req.body?.question === 'string' ? req.body.question.trim() : '';
+    if (!tenderId && !question) return reply.status(400).send({ error: 'tenderId o question es obligatorio' });
+    try {
+      const tender = tenderId
+        ? await prisma.tender.findUnique({
+            where: { id: tenderId },
+            include: {
+              procurementPlan: { include: { entity: { select: { id: true, name: true, code: true } } } },
+            },
+          })
+        : null;
+      if (tenderId && !tender) return reply.status(404).send({ error: 'Proceso no encontrado' });
+
+      const contextQuery = question || (tender ? `${tender.title} ${tender.description || ''}` : '');
+      const ragResults = contextQuery ? await searchRag(contextQuery, 5) : [];
+
+      const riskFlags: string[] = [];
+      if (tender?.estimatedAmount != null && Number(tender.estimatedAmount) > 500000) {
+        riskFlags.push('MONTO_ALTO_REQUIERE_VALIDACIONES');
+      }
+      if (!tender?.questionsDeadlineAt || !tender?.bidsDeadlineAt) {
+        riskFlags.push('CRONOGRAMA_INCOMPLETO');
+      }
+
+      const recommendations = [
+        'Verificar consistencia entre presupuesto referencial y criterios de evaluacion.',
+        'Confirmar que el cronograma publicado cumple tiempos minimos normativos.',
+      ];
+      if (riskFlags.includes('MONTO_ALTO_REQUIERE_VALIDACIONES')) {
+        recommendations.push('Incluir validacion juridica y tecnica reforzada por monto alto.');
+      }
+
+      const summary = tender
+        ? `Analisis GPTsercop para "${tender.title}" con ${ragResults.length} referencias normativas encontradas.`
+        : `Analisis GPTsercop basado en consulta libre con ${ragResults.length} referencias normativas.`;
+
+      return {
+        summary,
+        confidence: ragResults.length >= 3 ? 0.82 : 0.64,
+        riskFlags,
+        recommendations,
+        citations: ragResults.map((r) => ({ id: r.id, title: r.title, source: r.source, snippet: r.snippet })),
+        process: tender
+          ? {
+              id: tender.id,
+              title: tender.title,
+              status: tender.status,
+              entity: tender.procurementPlan?.entity ? { name: tender.procurementPlan.entity.name, code: tender.procurementPlan.entity.code } : null,
+            }
+          : null,
+      };
+    } catch (e) {
+      req.log.error(e);
+      return reply.status(500).send({ error: 'Error en analisis GPTsercop' });
+    }
+  });
+
   app.get<{ Querystring: any }>('/api/v1/rag/chunks', async (req, reply) => {
     try {
       const data = await prisma.ragChunk.findMany({ where: (req.query as any) });

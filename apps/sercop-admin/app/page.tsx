@@ -39,7 +39,14 @@ export default function AdminDashboardPage() {
     if (metric === 'tenders' || metric === 'published') {
       api
         .getTenders({ page, pageSize })
-        .then((res) => setDetailData({ data: res.data, total: res.total, page: res.page, pageSize: res.pageSize }))
+        .then((res) =>
+          setDetailData({
+            data: res.data,
+            total: res.total ?? res.data.length,
+            page: res.page ?? page,
+            pageSize: res.pageSize ?? pageSize,
+          })
+        )
         .catch(() => setDetailData(null))
         .finally(() => setDetailLoading(false));
       return;
@@ -205,7 +212,7 @@ export default function AdminDashboardPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {detailData.data.map((row: Record<string, unknown>, i: number) => (
+                          {(detailData.data as Array<Record<string, unknown>>).map((row, i) => (
                             <tr key={(row.id as string) || i} className="border-b border-neutral-100">
                               {selectedMetric === 'tenders' || selectedMetric === 'published' ? (
                                 <>

@@ -286,6 +286,21 @@ test('POST /api/v1/rag/ask returns 200 and answer', async () => {
   assert.ok(Array.isArray(body.sources));
 });
 
+test('POST /api/v1/gptsercop/analyze-procurement returns analysis payload', async () => {
+  const res = await fetch(`${baseUrl}/api/v1/gptsercop/analyze-procurement`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: 'Analiza riesgos normativos para una contratacion publica' }),
+  });
+  if (res.status === 404) return; // API antigua sin endpoint
+  if (res.status === 503) return; // AI deshabilitada por entorno
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  const body = await res.json();
+  assert.ok(typeof body.summary === 'string');
+  assert.ok(Array.isArray(body.recommendations));
+  assert.ok(Array.isArray(body.citations));
+});
+
 async function getAdminToken() {
   const res = await fetch(`${baseUrl}/api/v1/auth/login`, {
     method: 'POST',

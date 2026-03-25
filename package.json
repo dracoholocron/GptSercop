@@ -4,7 +4,11 @@
   "private": true,
   "description": "SERCOP V2 – Plataforma de contratación pública",
   "workspaces": [
-    "apps/*",
+    "apps/api",
+    "apps/public-portal",
+    "apps/supplier-portal",
+    "apps/entity-portal",
+    "apps/sercop-admin",
     "packages/*"
   ],
   "scripts": {
