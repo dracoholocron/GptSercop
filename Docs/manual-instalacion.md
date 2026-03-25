@@ -68,7 +68,7 @@ Desde la **raíz** del proyecto:
 npm install
 ```
 
-Esto instala dependencias de todos los workspaces (`apps/*`, `packages/*`).
+Esto instala dependencias de todos los workspaces activos definidos en `package.json` (apps seleccionadas + `packages/*`).
 
 *[FIG: Terminal mostrando npm install en la raíz del proyecto.]*
 

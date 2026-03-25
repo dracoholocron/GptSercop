@@ -20,7 +20,7 @@ gptSercop/
 ├── scripts/smoke.js         # Smoke test
 ├── docker-compose.yml       # Postgres, Redis, MinIO, API
 ├── .env.example
-├── package.json             # Workspaces: apps/*, packages/*
+├── package.json             # Workspaces: apps seleccionadas + packages/*
 └── README.md
 ```
 
