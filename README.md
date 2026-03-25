@@ -70,8 +70,9 @@ Tras cambios en el schema (p. ej. Fase 1): `npm run db:generate` y `npm run db:p
 - **Documentos (Fase 4):** `POST /api/v1/documents/upload` (multipart), `GET /api/v1/documents?ownerType=&ownerId=`
 - **Analítica:** `GET /api/v1/analytics/dashboard` (protegido)
 - **RAG:** `GET /api/v1/rag/search?q=...`, `POST /api/v1/rag/ask` (normativa/manuales)
-- **GPTsercop (integración base):** `POST /api/v1/gptsercop/analyze-procurement` (análisis asistido con contexto de proceso + RAG)
+- **GPTsercop (integración base):** `POST /api/v1/gptsercop/analyze-procurement` (análisis asistido con contrato versionado y fallback determinístico)
 - **Auth:** `POST /api/v1/auth/login` con `{ "email", "role" }` → JWT. Rutas de escritura requieren `Authorization: Bearer <token>`. Configure `JWT_SECRET` (>=16). Use `AUTH_DISABLED=true` solo en desarrollo local temporal. **Gateway:** `http://localhost:8080` (rate limit).
+- **Flags IA:** `AI_ENABLED`, `RAG_ENABLED`, `AI_MODE` (`hybrid|deterministic`) para controlar capa IA/RAG sin romper contrato de respuesta.
 
 Para desarrollo local sin Docker: copia `.env.example` a `.env`, configura `DATABASE_URL`, ejecuta `npm run db:setup` y `npm run dev` (API en puerto **3080**).
 
