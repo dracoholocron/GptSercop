@@ -141,6 +141,29 @@ const getRoleBasedPermissions = (roles: string[]): Set<string> => {
   // Define default permissions per role
   const rolePermissions: Record<string, string[]> = {
     'ROLE_ADMIN': ['*'], // Admin has all
+    'ROLE_CP_SUPERVISOR': [
+      'CP_AI_ASSISTANT', 'CP_AI_LEGAL_HELP', 'CP_AI_PRICE_ANALYSIS', 'CP_AI_RISK_ANALYSIS',
+      'GPT_ASSISTANT_VIEW', 'GPT_ASSISTANT_USE',
+      'GPT_LEGAL_VIEW', 'GPT_LEGAL_USE',
+      'GPT_PRICING_VIEW', 'GPT_PRICING_USE',
+      'GPT_RISK_VIEW', 'GPT_RISK_USE',
+      'GPT_SEARCH_VIEW', 'GPT_SEARCH_USE',
+      'GPT_ADMIN_VIEW',
+    ],
+    'ROLE_CP_ANALISTA': [
+      'CP_AI_ASSISTANT', 'CP_AI_LEGAL_HELP', 'CP_AI_PRICE_ANALYSIS',
+      'GPT_ASSISTANT_VIEW', 'GPT_ASSISTANT_USE',
+      'GPT_LEGAL_VIEW', 'GPT_LEGAL_USE',
+      'GPT_PRICING_VIEW', 'GPT_PRICING_USE',
+      'GPT_RISK_VIEW',
+      'GPT_SEARCH_VIEW', 'GPT_SEARCH_USE',
+    ],
+    'ROLE_CP_JURIDICO': [
+      'CP_AI_ASSISTANT', 'CP_AI_LEGAL_HELP',
+      'GPT_ASSISTANT_VIEW', 'GPT_ASSISTANT_USE',
+      'GPT_LEGAL_VIEW', 'GPT_LEGAL_USE',
+      'GPT_SEARCH_VIEW', 'GPT_SEARCH_USE',
+    ],
     'ROLE_MANAGER': [
       'CAN_VIEW_LC_IMPORT', 'CAN_CREATE_LC_IMPORT', 'CAN_EDIT_LC_IMPORT', 'CAN_APPROVE_LC_IMPORT',
       'CAN_VIEW_LC_EXPORT', 'CAN_CREATE_LC_EXPORT', 'CAN_EDIT_LC_EXPORT', 'CAN_APPROVE_LC_EXPORT',
@@ -160,6 +183,7 @@ const getRoleBasedPermissions = (roles: string[]): Set<string> => {
     'ROLE_USER': [
       'CAN_VIEW_LC_IMPORT', 'CAN_VIEW_LC_EXPORT', 'CAN_VIEW_GUARANTEE',
       'CAN_VIEW_COLLECTION', 'CAN_VIEW_SWIFT', 'CAN_VIEW_REPORTS',
+      'GPT_ASSISTANT_VIEW', 'GPT_SEARCH_VIEW',
     ],
   };
 

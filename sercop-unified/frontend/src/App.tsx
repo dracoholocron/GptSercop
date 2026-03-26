@@ -11,6 +11,7 @@ import { CorporationProvider } from './contexts/CorporationContext';
 import { SystemConfigProvider } from './contexts/SystemConfigContext';
 import { ResponsiveProvider } from './hooks/useResponsive';
 import { Toaster } from './components/ui/toaster';
+import { usePermissions } from './hooks/usePermissions';
 import ScheduleBlockedPage from './pages/ScheduleBlockedPage';
 import './styles/mobile.css';
 import { Login } from './pages/Login';
@@ -132,6 +133,41 @@ const ScheduleGate = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
+// -- Permission Route --
+const PermissionRoute = ({
+  anyOf,
+  children,
+}: {
+  anyOf: string[];
+  children: ReactNode;
+}) => {
+  const { hasAnyPermission, isLoading } = usePermissions();
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minH="50vh">
+        <Spinner size="lg" />
+      </Box>
+    );
+  }
+
+  if (!hasAnyPermission(anyOf)) {
+    return (
+      <Box p={8}>
+        <VStack align="start" gap={3}>
+          <Text fontSize="xl" fontWeight="bold">Acceso restringido</Text>
+          <Text color="gray.500">
+            Tu usuario no tiene permisos para acceder a este modulo.
+          </Text>
+          <Button onClick={() => window.history.back()}>Volver</Button>
+        </VStack>
+      </Box>
+    );
+  }
+
+  return <>{children}</>;
+};
+
 // -- App Router --
 function AppRouter() {
   return (
@@ -170,12 +206,14 @@ function AppRouter() {
       <Route path="/cp/processes" element={<ProtectedRoute><Dashboard><CPProcessListPage /></Dashboard></ProtectedRoute>} />
       <Route path="/cp/budget" element={<ProtectedRoute><Dashboard><CPBudgetPage /></Dashboard></ProtectedRoute>} />
       <Route path="/cp/market" element={<ProtectedRoute><Dashboard><CPMarketStudyPage /></Dashboard></ProtectedRoute>} />
-      <Route path="/cp/risk" element={<ProtectedRoute><Dashboard><CPRiskDashboardPage /></Dashboard></ProtectedRoute>} />
-      <Route path="/cp/ai-assistant" element={<ProtectedRoute><Dashboard><CPAIAssistantPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/risk" element={<ProtectedRoute><PermissionRoute anyOf={['CP_AI_RISK_ANALYSIS', 'GPT_RISK_VIEW']}><Dashboard><CPRiskDashboardPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/cp/ai-assistant" element={<ProtectedRoute><PermissionRoute anyOf={['CP_AI_ASSISTANT', 'GPT_ASSISTANT_VIEW']}><Dashboard><CPAIAssistantPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/cp/ai-assistant/extraction" element={<ProtectedRoute><PermissionRoute anyOf={['GPT_SEARCH_VIEW', 'CP_AI_ASSISTANT']}><Navigate to="/cp/ai-assistant?tab=extraction" replace /></PermissionRoute></ProtectedRoute>} />
+      <Route path="/cp/ai-assistant/generator" element={<ProtectedRoute><PermissionRoute anyOf={['GPT_ASSISTANT_USE', 'CP_AI_ASSISTANT']}><Navigate to="/cp/ai-assistant?tab=generator" replace /></PermissionRoute></ProtectedRoute>} />
 
       {/* GptSercop integration routes */}
-      <Route path="/cp/infima-cuantia" element={<ProtectedRoute><Dashboard><InfimaCuantiaPage /></Dashboard></ProtectedRoute>} />
-      <Route path="/search" element={<ProtectedRoute><Dashboard><AdvancedSearchPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/infima-cuantia" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_PROCESSES', 'GPT_SEARCH_VIEW']}><Dashboard><InfimaCuantiaPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/search" element={<ProtectedRoute><PermissionRoute anyOf={['CP_AI_ASSISTANT', 'GPT_SEARCH_VIEW']}><Dashboard><AdvancedSearchPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
 
       {/* Legacy-First routes (menu compatibility) */}
       <Route path="/workbox" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="LC_IMPORT" titleKey="menu.workbox" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />

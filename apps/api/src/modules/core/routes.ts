@@ -9,23 +9,51 @@ const GPTSERCOP_ANALYSIS_CONTRACT_VERSION = 'gptsercop.analysis.v1';
 
 type AiMode = 'deterministic' | 'hybrid';
 type FallbackReason = 'AI_DISABLED' | 'AI_MODE_DETERMINISTIC' | 'AI_ERROR' | 'RAG_DISABLED' | 'RAG_ERROR';
-type RouteOutcome = 'success' | 'fallback' | 'error';
+type RouteOutcome = 'success' | 'fallback' | 'error' | 'denied';
 
 type AnalyzeMetrics = {
   total: number;
   success: number;
   fallback: number;
   error: number;
+  denied: number;
   latencyMsTotal: number;
   latencyMsMax: number;
   fallbackReasons: Record<FallbackReason, number>;
 };
+
+function forbiddenPayload(params: {
+  code: 'PERMISSION_DENIED' | 'ROLE_FORBIDDEN';
+  route: string;
+  required: string[];
+  role?: string;
+}) {
+  return {
+    error: 'Forbidden',
+    errorCode: params.code,
+    message: 'You do not have permissions for this module action',
+    route: params.route,
+    requiredPermissions: params.required,
+    userRole: params.role ?? null,
+  };
+}
+
+function hasGptModuleAccess(role: string | undefined): boolean {
+  if (!role) return true; // AUTH disabled / dev mode
+  return role === 'admin' || role === 'entity' || role === 'supplier';
+}
+
+function isAdminRole(role: string | undefined): boolean {
+  if (!role) return true; // AUTH disabled / dev mode
+  return role === 'admin';
+}
 
 const gptsercopAnalyzeMetrics: AnalyzeMetrics = {
   total: 0,
   success: 0,
   fallback: 0,
   error: 0,
+  denied: 0,
   latencyMsTotal: 0,
   latencyMsMax: 0,
   fallbackReasons: {
@@ -297,6 +325,36 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
   // GPTsercop: analisis asistido sobre proceso de compra + contexto normativo (RAG)
   app.post<{ Body: { tenderId?: string; question?: string } }>('/api/v1/gptsercop/analyze-procurement', async (req, reply) => {
     const startedAtMs = Date.now();
+    if (!hasGptModuleAccess(req.user?.role)) {
+      const durationMs = Date.now() - startedAtMs;
+      recordAnalyzeMetrics({ durationMs, outcome: 'denied' });
+      req.log.warn(
+        {
+          module: 'gptsercop.assistant',
+          route: '/api/v1/gptsercop/analyze-procurement',
+          outcome: 'denied',
+          userRole: req.user?.role ?? null,
+        },
+        'GPTsercop analyze denied by role'
+      );
+      await audit({
+        action: 'gptsercop.analyze.denied',
+        entityType: 'AIAnalysis',
+        payload: {
+          route: '/api/v1/gptsercop/analyze-procurement',
+          durationMs,
+          userRole: req.user?.role ?? null,
+          requiredPermissions: ['GPT_ASSISTANT_USE'],
+        },
+      });
+      return reply.status(403).send(forbiddenPayload({
+        code: 'ROLE_FORBIDDEN',
+        route: '/api/v1/gptsercop/analyze-procurement',
+        required: ['GPT_ASSISTANT_USE'],
+        role: req.user?.role,
+      }));
+    }
+
     const aiEnabled = envFlag('AI_ENABLED', true);
     const ragEnabled = envFlag('RAG_ENABLED', true);
     const aiMode = getAiMode();
@@ -461,7 +519,25 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
     }
   });
 
-  app.get('/api/v1/gptsercop/metrics', async () => {
+  app.get('/api/v1/gptsercop/metrics', async (req, reply) => {
+    if (!isAdminRole(req.user?.role)) {
+      req.log.warn(
+        {
+          module: 'gptsercop.metrics',
+          route: '/api/v1/gptsercop/metrics',
+          outcome: 'denied',
+          userRole: req.user?.role ?? null,
+        },
+        'GPTsercop metrics denied by role'
+      );
+      return reply.status(403).send(forbiddenPayload({
+        code: 'ROLE_FORBIDDEN',
+        route: '/api/v1/gptsercop/metrics',
+        required: ['GPT_ADMIN_VIEW'],
+        role: req.user?.role,
+      }));
+    }
+
     const avgLatencyMs = gptsercopAnalyzeMetrics.total > 0
       ? Number((gptsercopAnalyzeMetrics.latencyMsTotal / gptsercopAnalyzeMetrics.total).toFixed(2))
       : 0;
@@ -471,6 +547,7 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
       success: gptsercopAnalyzeMetrics.success,
       fallback: gptsercopAnalyzeMetrics.fallback,
       error: gptsercopAnalyzeMetrics.error,
+      denied: gptsercopAnalyzeMetrics.denied,
       avgLatencyMs,
       maxLatencyMs: gptsercopAnalyzeMetrics.latencyMsMax,
       fallbackReasons: gptsercopAnalyzeMetrics.fallbackReasons,

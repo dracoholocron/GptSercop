@@ -3,7 +3,7 @@
  * Panel integrado con todos los módulos de IA del sistema
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Container,
@@ -35,11 +35,15 @@ import {
 import { LuScale, LuSparkles, LuBrain, LuLightbulb } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
+import { usePermissions } from '../hooks/usePermissions';
 
 // Componentes de IA
 import CPLegalHelpPanel from '../components/compras-publicas/ai/CPLegalHelpPanel';
 import CPPriceAnalysisCard from '../components/compras-publicas/ai/CPPriceAnalysisCard';
 import CPRiskAnalysisPanel from '../components/compras-publicas/ai/CPRiskAnalysisPanel';
+import CPRagDocumentPanel from '../components/compras-publicas/ai/CPRagDocumentPanel';
+import CPDraftGeneratorPanel from '../components/compras-publicas/ai/CPDraftGeneratorPanel';
 
 const MotionBox = motion.create(Box as any);
 const MotionCard = motion.create(Card.Root as any);
@@ -98,8 +102,27 @@ const aiModules = [
 
 export const CPAIAssistantPage: React.FC = () => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
+  const enableCpApi = import.meta.env.VITE_ENABLE_CP_API !== 'false';
+  const { hasAnyPermission } = usePermissions();
+
+  const canLegal = hasAnyPermission(['CP_AI_LEGAL_HELP', 'GPT_LEGAL_VIEW']);
+  const canPrices = hasAnyPermission(['CP_AI_PRICE_ANALYSIS', 'GPT_PRICING_VIEW']);
+  const canRisks = hasAnyPermission(['CP_AI_RISK_ANALYSIS', 'GPT_RISK_VIEW']);
+  const canExtraction = hasAnyPermission(['GPT_SEARCH_VIEW', 'CP_AI_ASSISTANT']);
+  const canGenerator = hasAnyPermission(['GPT_ASSISTANT_USE', 'CP_AI_ASSISTANT']);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (!tab) return;
+    const supported = new Set(['overview', 'legal', 'prices', 'risks', 'extraction', 'generator']);
+    if (supported.has(tab)) {
+      setActiveTab(tab);
+      setSelectedModule(tab);
+    }
+  }, [searchParams]);
 
   const bgGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
   const cardBg = 'white';
@@ -124,7 +147,23 @@ export const CPAIAssistantPage: React.FC = () => {
         transition={{ delay: index * 0.1 }}
         whileHover={{ scale: 1.02, y: -5 }}
         cursor="pointer"
-        onClick={() => setSelectedModule(module.id)}
+        onClick={() => {
+          setSelectedModule(module.id);
+          const tabByModule: Record<string, string> = {
+            legal: 'legal',
+            prices: 'prices',
+            risks: 'risks',
+            extraction: 'extraction',
+            generator: 'generator',
+          };
+          const nextTab = tabByModule[module.id] || 'overview';
+          setActiveTab(nextTab);
+          setSearchParams((prev) => {
+            const clone = new URLSearchParams(prev);
+            clone.set('tab', nextTab);
+            return clone;
+          });
+        }}
         bg={cardBg}
         borderWidth="2px"
         borderColor={selectedModule === module.id ? colors.border : borderColor}
@@ -289,24 +328,53 @@ export const CPAIAssistantPage: React.FC = () => {
 
       {/* Main Content */}
       <Container maxW="container.xl" py={8}>
-        <Tabs.Root defaultValue="overview">
+        {!enableCpApi ? (
+          <Card.Root mb={6} borderWidth="1px" borderColor="orange.300" bg="orange.50">
+            <Card.Body>
+              <Text fontSize="sm" color="orange.800">
+                Los servicios de IA de Compras Publicas estan deshabilitados en este entorno.
+                Se muestra una vista segura con fallbacks para mantener navegacion estable.
+              </Text>
+            </Card.Body>
+          </Card.Root>
+        ) : null}
+
+        <Tabs.Root
+          value={activeTab}
+          onValueChange={(e) => {
+            setActiveTab(e.value);
+            setSearchParams((prev) => {
+              const clone = new URLSearchParams(prev);
+              clone.set('tab', e.value);
+              return clone;
+            });
+          }}
+        >
           <Tabs.List mb={6}>
             <Tabs.Trigger value="overview">
               <Icon as={LuBrain} mr={2} />
               Visión General
             </Tabs.Trigger>
-            <Tabs.Trigger value="legal">
+            {canLegal ? <Tabs.Trigger value="legal">
               <Icon as={LuScale} mr={2} />
               Asistente Legal
-            </Tabs.Trigger>
-            <Tabs.Trigger value="prices">
+            </Tabs.Trigger> : null}
+            {canPrices ? <Tabs.Trigger value="prices">
               <Icon as={FiBarChart2} mr={2} />
               Análisis de Precios
-            </Tabs.Trigger>
-            <Tabs.Trigger value="risks">
+            </Tabs.Trigger> : null}
+            {canRisks ? <Tabs.Trigger value="risks">
               <Icon as={FiShield} mr={2} />
               Detección de Riesgos
-            </Tabs.Trigger>
+            </Tabs.Trigger> : null}
+            {canExtraction ? <Tabs.Trigger value="extraction">
+              <Icon as={FiSearch} mr={2} />
+              Inteligencia Documental
+            </Tabs.Trigger> : null}
+            {canGenerator ? <Tabs.Trigger value="generator">
+              <Icon as={FiFileText} mr={2} />
+              Generador Avanzado
+            </Tabs.Trigger> : null}
           </Tabs.List>
 
           {/* Overview Tab */}
@@ -365,6 +433,7 @@ export const CPAIAssistantPage: React.FC = () => {
 
           {/* Legal Tab */}
           <Tabs.Content value="legal">
+            {!canLegal ? <Card.Root><Card.Body><Text>No tienes permisos para este modulo.</Text></Card.Body></Card.Root> : (
             <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={6}>
               <VStack align="stretch" gap={4}>
                 <Heading size="md">Solicitar Ayuda Legal</Heading>
@@ -399,10 +468,12 @@ export const CPAIAssistantPage: React.FC = () => {
                 budget={50000}
               />
             </Grid>
+            )}
           </Tabs.Content>
 
           {/* Prices Tab */}
           <Tabs.Content value="prices">
+            {!canPrices ? <Card.Root><Card.Body><Text>No tienes permisos para este modulo.</Text></Card.Body></Card.Root> : (
             <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={6}>
               <CPPriceAnalysisCard />
 
@@ -447,10 +518,12 @@ export const CPAIAssistantPage: React.FC = () => {
                 </Card.Body>
               </Card.Root>
             </Grid>
+            )}
           </Tabs.Content>
 
           {/* Risks Tab */}
           <Tabs.Content value="risks">
+            {!canRisks ? <Card.Root><Card.Body><Text>No tienes permisos para este modulo.</Text></Card.Body></Card.Root> : (
             <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={6}>
               <CPRiskAnalysisPanel
                 processCode="SIE-2024-001234"
@@ -510,6 +583,23 @@ export const CPAIAssistantPage: React.FC = () => {
                 </Card.Body>
               </Card.Root>
             </Grid>
+            )}
+          </Tabs.Content>
+
+          <Tabs.Content value="extraction">
+            {!canExtraction ? (
+              <Card.Root><Card.Body><Text>No tienes permisos para este modulo.</Text></Card.Body></Card.Root>
+            ) : (
+              <CPRagDocumentPanel />
+            )}
+          </Tabs.Content>
+
+          <Tabs.Content value="generator">
+            {!canGenerator ? (
+              <Card.Root><Card.Body><Text>No tienes permisos para este modulo.</Text></Card.Body></Card.Root>
+            ) : (
+              <CPDraftGeneratorPanel />
+            )}
           </Tabs.Content>
         </Tabs.Root>
       </Container>

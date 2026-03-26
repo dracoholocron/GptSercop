@@ -43,12 +43,24 @@ async function authHook(req: FastifyRequest, reply: FastifyReply): Promise<void>
 
   const token = bearerFromHeader(req.headers.authorization);
   if (!token) {
-    return reply.status(401).send({ error: 'Unauthorized', message: 'Missing or invalid Authorization header' });
+    return reply.status(401).send({
+      error: 'Unauthorized',
+      errorCode: 'AUTH_HEADER_MISSING',
+      message: 'Missing or invalid Authorization header',
+      path: req.url,
+      status: 401,
+    });
   }
   try {
     req.user = verify(token);
   } catch {
-    return reply.status(401).send({ error: 'Unauthorized', message: 'Invalid or expired token' });
+    return reply.status(401).send({
+      error: 'Unauthorized',
+      errorCode: 'TOKEN_INVALID_OR_EXPIRED',
+      message: 'Invalid or expired token',
+      path: req.url,
+      status: 401,
+    });
   }
 }
 
@@ -56,7 +68,10 @@ async function authUnavailableHook(req: FastifyRequest, reply: FastifyReply): Pr
   if (isPublic(req.method, req.url)) return;
   return reply.status(503).send({
     error: 'Auth no configurado',
+    errorCode: 'AUTH_NOT_CONFIGURED',
     message: 'Configure JWT_SECRET (>=16) o establezca AUTH_DISABLED=true solo para desarrollo local',
+    path: req.url,
+    status: 503,
   });
 }
 
