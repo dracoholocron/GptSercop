@@ -1,0 +1,36 @@
+services:
+  postgres-eventstore:
+    container_name: globalcmx-postgres-eventstore-compare
+    ports:
+      - "55432:5432"
+
+  mysql-readmodel:
+    container_name: globalcmx-mysql-readmodel-compare
+    ports:
+      - "33306:3306"
+
+  zookeeper:
+    container_name: globalcmx-zookeeper-compare
+    ports:
+      - "32181:2181"
+
+  kafka:
+    container_name: globalcmx-kafka-compare
+    ports:
+      - "39092:9092"
+      - "39093:29092"
+
+  kafka-ui:
+    container_name: globalcmx-kafka-ui-compare
+    ports:
+      - "18090:8080"
+
+  chromadb:
+    container_name: globalcmx-chromadb-compare
+    ports:
+      - "18002:8000"
+
+  backend-api:
+    container_name: globalcmx-backend-api-compare
+    ports:
+      - "18080:8080"

@@ -3,6 +3,44 @@
 -- Migrates all Doka guarantee templates to GlobalCMX
 -- =====================================================
 
+CREATE TABLE IF NOT EXISTS template_read_model (
+    id BIGINT NOT NULL PRIMARY KEY,
+    code VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(1000),
+    document_type VARCHAR(50),
+    file_name VARCHAR(255),
+    file_path VARCHAR(500),
+    file_size BIGINT,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at DATETIME,
+    updated_at DATETIME,
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100),
+    aggregate_id VARCHAR(100),
+    variables TEXT,
+    version BIGINT DEFAULT 0,
+    INDEX idx_template_code (code),
+    INDEX idx_template_active (active),
+    INDEX idx_template_doc_type (document_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET @template_has_version := (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'template_read_model'
+      AND column_name = 'version'
+);
+SET @template_version_sql := IF(
+    @template_has_version = 0,
+    'ALTER TABLE template_read_model ADD COLUMN version BIGINT DEFAULT 0',
+    'SELECT 1'
+);
+PREPARE stmt_template_version FROM @template_version_sql;
+EXECUTE stmt_template_version;
+DEALLOCATE PREPARE stmt_template_version;
+
 -- Insert guarantee document templates
 INSERT INTO template_read_model (id, code, name, description, document_type, file_name, file_path, file_size, active, created_at, created_by, aggregate_id, variables, version) VALUES
 -- Advance Payment Guarantee

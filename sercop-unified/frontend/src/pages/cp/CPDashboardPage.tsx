@@ -93,12 +93,20 @@ export const CPDashboardPage: React.FC = () => {
   const [processes, setProcesses] = useState<CPProcessData[]>([]);
   const [paas, setPaas] = useState<CPPAA[]>([]);
   const [loading, setLoading] = useState(true);
+  const enableCpApi = import.meta.env.VITE_ENABLE_CP_API !== 'false';
 
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
+    if (!enableCpApi) {
+      setProcesses([]);
+      setPaas([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const [procResult, paaResult] = await Promise.allSettled([
@@ -106,8 +114,18 @@ export const CPDashboardPage: React.FC = () => {
         listPAAs('EC', new Date().getFullYear()),
       ]);
 
-      if (procResult.status === 'fulfilled') setProcesses(procResult.value.content || []);
-      if (paaResult.status === 'fulfilled') setPaas(paaResult.value || []);
+      if (procResult.status === 'fulfilled') {
+        const content = Array.isArray(procResult.value?.content) ? procResult.value.content : [];
+        setProcesses(content);
+      } else {
+        setProcesses([]);
+      }
+
+      if (paaResult.status === 'fulfilled') {
+        setPaas(Array.isArray(paaResult.value) ? paaResult.value : []);
+      } else {
+        setPaas([]);
+      }
     } catch {
       // Silently handle - dashboard shows empty state
     } finally {
@@ -139,7 +157,9 @@ export const CPDashboardPage: React.FC = () => {
     completed: processes.filter(p => p.status === 'FINALIZADO').length,
   };
 
-  const totalPAABudget = paas.reduce((sum, p) => sum + (p.totalBudget || 0), 0);
+  const totalPAABudget = Array.isArray(paas)
+    ? paas.reduce((sum, p) => sum + (p.totalBudget || 0), 0)
+    : 0;
 
   // Quick access modules
   const modules = [

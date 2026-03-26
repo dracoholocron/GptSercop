@@ -33,9 +33,9 @@ Con esto, **con la BD en Docker y sin `.env`**, el flujo E2E ya puede usar la BD
    ```
    (O `docker compose up -d` si quieres todos los servicios.)
 
-2. **Ejecutar la batería E2E:**
+2. **Ejecutar la batería E2E full (local puro):**
    ```bash
-   npm run test:e2e:battery
+   npm run test:e2e:battery:full
    ```
    - El config carga `.env` si existe; si no, usa los valores por defecto de Docker.  
    - El global setup hace `db:push` y `db:seed` contra `localhost:5432`.  
@@ -53,5 +53,7 @@ Así puedes cambiar usuario, contraseña o puerto sin tocar el código. Los valo
 
 ## Resumen
 
-- **Base de datos en Docker** (postgres en 5432, usuario `sercop`, BD `sercop`) + **`npm run test:e2e:battery`** debería ser suficiente para que la API arranque, el seed cargue procesos y los tests que necesitan datos en la UI se ejecuten.  
+- **Base de datos en Docker** (postgres en 5432, usuario `sercop`, BD `sercop`) + **`npm run test:e2e:battery:full`** debería ser suficiente para que la API arranque, el seed cargue procesos y los tests que necesitan datos en la UI se ejecuten.  
 - Si algo falla, revisar que `docker compose up -d postgres` esté en marcha y que el puerto 5432 esté libre y accesible desde el host.
+
+Para entorno híbrido/remoto (sin topología local completa), usar `npm run test:e2e:battery` (core). Ver `Docs/qa/E2E-battery-modes.md`.

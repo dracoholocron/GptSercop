@@ -3,7 +3,7 @@
  * Automatically includes JWT token from localStorage in all requests.
  */
 
-import { API_BASE_URL, TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from '../config/api.config';
+import { API_BASE_URL, NODE_API_BASE_URL, TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from '../config/api.config';
 import { attemptTokenRefresh } from './tokenRefresh';
 
 interface RequestOptions extends RequestInit {
@@ -72,17 +72,16 @@ export const apiClient = async (endpoint: string, options: RequestOptions = {}):
 
   // Build URL: avoid duplicating /api prefix
   let url: string;
-  // Multi-Backend Gateway Router
+  // Multi-backend router: legacy Java + GPTsercop Fastify (/v1)
   const isNodeApi = endpoint.includes('/v1/');
-  const NODE_API_URL = 'http://localhost:3000'; // Hardcoded Fastify endpoint just for DEV routing
 
   if (endpoint.startsWith('http')) {
     url = endpoint;
   } else if (isNodeApi) {
-    // Force direct connection to Node API for /v1/ routes (bypassing Vite proxy which goes to Java 8080)
+    // Route /v1 through GPTsercop API to embed AI capabilities in legacy UI.
     url = endpoint.startsWith('/api') 
-      ? `${NODE_API_URL}${endpoint}` 
-      : `${NODE_API_URL}/api${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+      ? `${NODE_API_BASE_URL}${endpoint}` 
+      : `${NODE_API_BASE_URL}/api${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
   } else if (endpoint.startsWith('/api')) {
     if (import.meta.env.DEV) {
       url = endpoint; // Runs through vite proxy -> java 8080

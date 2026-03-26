@@ -69,6 +69,7 @@ export interface BudgetByDepartment {
 // ============================================================================
 
 const BASE_URL = '/api/compras-publicas/paa';
+const ENABLE_CP_API = import.meta.env.VITE_ENABLE_CP_API !== 'false';
 
 export const createPAA = async (data: {
   entityRuc: string;
@@ -89,10 +90,20 @@ export const listPAAs = async (
   countryCode: string = 'EC',
   fiscalYear?: number
 ): Promise<CPPAA[]> => {
+  if (!ENABLE_CP_API) return [];
   const searchParams = new URLSearchParams({ countryCode });
   if (fiscalYear) searchParams.append('fiscalYear', String(fiscalYear));
   const response = await get(`${BASE_URL}?${searchParams.toString()}`);
-  return response.json();
+  if (!response.ok) {
+    // Compare/hybrid mode may not expose CP endpoints for all roles.
+    return [];
+  }
+
+  const payload = await response.json();
+  if (Array.isArray(payload)) return payload as CPPAA[];
+  if (Array.isArray(payload?.data)) return payload.data as CPPAA[];
+  if (Array.isArray(payload?.content)) return payload.content as CPPAA[];
+  return [];
 };
 
 export const addPAAItem = async (

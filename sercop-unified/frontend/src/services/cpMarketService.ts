@@ -60,10 +60,25 @@ export interface InflationAdjustedPrice {
 // ============================================================================
 
 const BASE_URL = '/api/compras-publicas/market';
+const ENABLE_CP_API = import.meta.env.VITE_ENABLE_CP_API !== 'false';
+
+const safeJson = async (response: Response): Promise<any> => {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+};
 
 export const getInflationIndices = async (countryCode: string = 'EC'): Promise<CPInflationIndex[]> => {
+  if (!ENABLE_CP_API) return [];
   const response = await get(`${BASE_URL}/inflation/${countryCode}`);
-  return response.json();
+  if (!response.ok) return [];
+  const payload = await safeJson(response);
+  if (Array.isArray(payload)) return payload as CPInflationIndex[];
+  if (Array.isArray(payload?.data)) return payload.data as CPInflationIndex[];
+  if (Array.isArray(payload?.content)) return payload.content as CPInflationIndex[];
+  return [];
 };
 
 export const getInflationAdjustedPrice = async (
@@ -72,11 +87,30 @@ export const getInflationAdjustedPrice = async (
   toMonth: string,
   countryCode: string = 'EC'
 ): Promise<InflationAdjustedPrice> => {
+  if (!ENABLE_CP_API) {
+    return {
+      originalPrice: price,
+      adjustedPrice: price,
+      fromMonth,
+      toMonth,
+      adjustmentFactor: 1,
+    };
+  }
   const searchParams = new URLSearchParams({
     price: String(price), fromMonth, toMonth, countryCode,
   });
   const response = await get(`${BASE_URL}/inflation/adjust-price?${searchParams.toString()}`);
-  return response.json();
+  if (!response.ok) {
+    return {
+      originalPrice: price,
+      adjustedPrice: price,
+      fromMonth,
+      toMonth,
+      adjustmentFactor: 1,
+    };
+  }
+  const payload = await safeJson(response);
+  return (payload?.data ?? payload) as InflationAdjustedPrice;
 };
 
 export const createRFI = async (data: {
@@ -94,8 +128,15 @@ export const createRFI = async (data: {
 };
 
 export const getRFI = async (id: string): Promise<CPRFI> => {
+  if (!ENABLE_CP_API) {
+    throw new Error('CP API disabled');
+  }
   const response = await get(`${BASE_URL}/rfi/${id}`);
-  return response.json();
+  if (!response.ok) {
+    throw new Error(`RFI ${id} not available`);
+  }
+  const payload = await safeJson(response);
+  return (payload?.data ?? payload) as CPRFI;
 };
 
 export const addRFIResponse = async (
@@ -114,8 +155,21 @@ export const addRFIResponse = async (
 };
 
 export const getRFIStatistics = async (rfiId: string): Promise<RFIStatistics> => {
+  if (!ENABLE_CP_API) {
+    return { averagePrice: 0, minPrice: 0, maxPrice: 0, medianPrice: 0, responseCount: 0 };
+  }
   const response = await get(`${BASE_URL}/rfi/${rfiId}/statistics`);
-  return response.json();
+  if (!response.ok) {
+    return { averagePrice: 0, minPrice: 0, maxPrice: 0, medianPrice: 0, responseCount: 0 };
+  }
+  const payload = await safeJson(response);
+  return ((payload?.data ?? payload) || {
+    averagePrice: 0,
+    minPrice: 0,
+    maxPrice: 0,
+    medianPrice: 0,
+    responseCount: 0,
+  }) as RFIStatistics;
 };
 
 // ============================================================================

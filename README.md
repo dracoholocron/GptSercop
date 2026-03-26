@@ -1,6 +1,6 @@
-# SERCOP V2 – GptSercop
+# Compras Públicas Base – GptSercop
 
-Plataforma de contratación pública (V2.0) inspirada en el ecosistema SOCE/SERCOP. Monorepo Node.js con API Fastify, PostgreSQL, Redis y MinIO. Documentación en **[Docs](Docs/)**.
+Plataforma base de contratación pública para Ecuador, con integración GPTsercop. Monorepo Node.js con API Fastify, PostgreSQL, Redis y MinIO. Documentación en **[Docs](Docs/)**.
 
 **Fecha de consolidación:** 2026-03-08
 
@@ -23,6 +23,14 @@ gptSercop/
 ├── package.json             # Workspaces: apps/*, packages/*
 └── README.md
 ```
+
+## Modo Legacy-First (activo)
+
+Para la convergencia con Compras Publicas legacy (`sercop-unified`), los frontends en `apps/*` quedan en modo **deprecado funcional** para UX final.
+
+- `apps/api`: se mantiene **activo** como backend GPTsercop.
+- `apps/public-portal`, `apps/supplier-portal`, `apps/entity-portal`, `apps/sercop-admin`: quedan como referencia/migracion, no como UX oficial.
+- UX oficial y navegacion operativa: `sercop-unified/frontend` + `sercop-unified/backend-java`.
 
 ## Arranque rápido
 
@@ -85,6 +93,9 @@ Para desarrollo local sin Docker: copia `.env.example` a `.env`, configura `DATA
 - **Integración:** `npm run test:integration` — pruebas HTTP contra la API.
 - **Seguridad:** `npm run test:security` — auth (401 en rutas protegidas).
 - **E2E Admin:** `npx playwright test e2e/admin.spec.ts --config=playwright.admin.config.ts` — levanta el admin en 3004 y prueba login, /usuarios, /normativa.
+- **E2E Battery (core/híbrido):** `npm run test:e2e:battery` (alias: `npm run test:e2e:battery:core`) — perfil estable para entornos híbridos/remotos.
+- **E2E Battery (full):** `npm run test:e2e:battery:full` — batería completa (requiere topología local completa y seeds).
+- **E2E Battery (full + seed):** `npm run test:e2e:battery:full:seed`.
 - **Evidencia (screenshots):** `npm run evidence` — levanta el admin si hace falta, captura login/usuarios/normativa y documentación API en `docs/evidencia/`. Requiere API en 3080.
 - **Portales:** `npm run dev:public-portal` (3010), `dev:supplier-portal` (3002), etc.
 

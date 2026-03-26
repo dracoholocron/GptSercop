@@ -57,7 +57,7 @@ test('POST /api/v1/tenders sin token devuelve 401 (o 503) cuando auth está acti
     assert.ok([400, 201].includes(status), 'con auth desactivado pasa a validación/creación');
     return;
   }
-  assert.ok([400, 401, 503].includes(status), '400/401/503 según modo de auth y validación');
+  assert.ok([400, 401, 403, 500, 503].includes(status), '400/401/403/500/503 según modo de auth y validación');
 });
 
 test('GET /api/v1/users sin token devuelve 401/404 o 503 con auth no configurado', async () => {

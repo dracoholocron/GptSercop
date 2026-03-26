@@ -15,18 +15,21 @@ export const Footer = () => {
   const { t } = useTranslation();
   const { getColors } = useTheme();
   const [swiftVersionInfo, setSwiftVersionInfo] = useState<SpecVersionsInfo | null>(null);
+  const showSwiftVersion = import.meta.env.VITE_ENABLE_SWIFT_VERSION !== 'false';
 
   useEffect(() => {
+    if (!showSwiftVersion) return;
+
     const loadSwiftVersion = async () => {
       try {
         const info = await swiftFieldConfigService.getSpecVersions('MT700');
         setSwiftVersionInfo(info);
       } catch (error) {
-        console.error('Error loading SWIFT version info:', error);
+        // Compare mode can run without SWIFT config tables/endpoints.
       }
     };
     loadSwiftVersion();
-  }, []);
+  }, [showSwiftVersion]);
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '';

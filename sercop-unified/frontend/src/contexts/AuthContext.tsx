@@ -93,15 +93,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, message: errorMessage, reasonKey };
       }
 
-      const data = await response.json();
+      const raw = await response.json();
+      const data = raw?.data ?? raw;
+      if (!data?.token) {
+        return {
+          success: false,
+          message: raw?.message || 'Respuesta de autenticacion invalida',
+        };
+      }
+      const roles = Array.isArray(data.roles) ? data.roles : [];
 
       // Crear objeto User
       const authenticatedUser: User = {
         id: data.id,
         username: data.username,
         email: data.email,
-        roles: data.roles,
-        role: mapRolesToUserRole(data.roles),
+        roles,
+        role: mapRolesToUserRole(roles),
         userType: data.userType,
         participantId: data.participantId,
         participantName: data.participantName,
@@ -123,7 +131,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error instanceof TypeError && error.message.includes('fetch')) {
         console.error('No se pudo conectar al servidor. Verifica que el backend esté corriendo en http://localhost:8080');
       }
-      return false;
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'No se pudo conectar al servidor',
+      };
     } finally {
       setIsLoading(false);
     }

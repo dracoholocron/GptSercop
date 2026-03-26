@@ -119,12 +119,18 @@ export const CPMarketStudyPage: React.FC = () => {
   const [inflationIndices, setInflationIndices] = useState<CPInflationIndex[]>([]);
   const [inflationLoading, setInflationLoading] = useState(false);
   const [indicesLoading, setIndicesLoading] = useState(false);
+  const enableCpApi = import.meta.env.VITE_ENABLE_CP_API !== 'false';
 
   // ============================================================================
   // RFI Data loading
   // ============================================================================
 
   const loadRfiList = useCallback(async () => {
+    if (!enableCpApi) {
+      setRfiList([]);
+      setRfiLoading(false);
+      return;
+    }
     setRfiLoading(true);
     try {
       const promises = DEMO_RFI_IDS.map((id) => getRFI(id).catch(() => null));
@@ -141,7 +147,7 @@ export const CPMarketStudyPage: React.FC = () => {
     } finally {
       setRfiLoading(false);
     }
-  }, [t]);
+  }, [enableCpApi, t]);
 
   const loadRfiDetails = useCallback(
     async (rfi: CPRFI) => {
@@ -170,10 +176,15 @@ export const CPMarketStudyPage: React.FC = () => {
   // ============================================================================
 
   const loadInflationIndices = useCallback(async () => {
+    if (!enableCpApi) {
+      setInflationIndices([]);
+      setIndicesLoading(false);
+      return;
+    }
     setIndicesLoading(true);
     try {
       const data = await getInflationIndices('EC');
-      setInflationIndices(data);
+      setInflationIndices(Array.isArray(data) ? data : []);
     } catch (error) {
       toaster.create({
         title: t('common.error', 'Error'),
@@ -184,9 +195,13 @@ export const CPMarketStudyPage: React.FC = () => {
     } finally {
       setIndicesLoading(false);
     }
-  }, [t]);
+  }, [enableCpApi, t]);
 
   const handleCalculateInflation = useCallback(async () => {
+    if (!enableCpApi) {
+      setInflationResult(null);
+      return;
+    }
     const price = parseFloat(originalPrice);
     if (isNaN(price) || price <= 0) {
       toaster.create({
@@ -221,7 +236,7 @@ export const CPMarketStudyPage: React.FC = () => {
     } finally {
       setInflationLoading(false);
     }
-  }, [originalPrice, fromMonth, toMonth, t]);
+  }, [enableCpApi, originalPrice, fromMonth, toMonth, t]);
 
   // ============================================================================
   // Effects

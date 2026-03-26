@@ -47,6 +47,7 @@ export interface ProcessListResponse {
 // ============================================================================
 
 const BASE_URL = '/api/compras-publicas/process';
+const ENABLE_CP_API = import.meta.env.VITE_ENABLE_CP_API !== 'false';
 
 export const createProcess = async (request: CreateProcessRequest): Promise<CPProcessData> => {
   const response = await post(BASE_URL, request);
@@ -74,6 +75,15 @@ export const listProcesses = async (
   page: number = 0,
   size: number = 20
 ): Promise<ProcessListResponse> => {
+  if (!ENABLE_CP_API) {
+    return {
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      number: page,
+      size,
+    };
+  }
   const searchParams = new URLSearchParams({
     countryCode, page: String(page), size: String(size),
   });
@@ -82,7 +92,37 @@ export const listProcesses = async (
   if (entityRuc) searchParams.append('entityRuc', entityRuc);
 
   const response = await get(`${BASE_URL}?${searchParams.toString()}`);
-  return response.json();
+  if (!response.ok) {
+    // Compare/hybrid mode may not expose CP endpoints for all roles.
+    return {
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      number: page,
+      size,
+    };
+  }
+
+  const payload = await response.json();
+  if (Array.isArray(payload)) {
+    return {
+      content: payload as CPProcessData[],
+      totalElements: payload.length,
+      totalPages: 1,
+      number: page,
+      size,
+    };
+  }
+  if (Array.isArray(payload?.data)) {
+    return {
+      content: payload.data as CPProcessData[],
+      totalElements: payload.data.length,
+      totalPages: 1,
+      number: page,
+      size,
+    };
+  }
+  return payload as ProcessListResponse;
 };
 
 export const deleteProcess = async (processId: string): Promise<void> => {

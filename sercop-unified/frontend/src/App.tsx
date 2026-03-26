@@ -31,6 +31,8 @@ import CPMarketStudyPage from './pages/cp/CPMarketStudyPage';
 import CPPAAListPage from './pages/cp/CPPAAListPage';
 import CPBudgetPage from './pages/cp/CPBudgetPage';
 import CPProcessListPage from './pages/cp/CPProcessListPage';
+import CPRiskDashboardPage from './pages/cp/CPRiskDashboardPage';
+import CPAIAssistantPage from './pages/CPAIAssistantPage';
 
 // GptSercop integration pages
 import InfimaCuantiaPage from './pages/cp/InfimaCuantiaPage';
@@ -40,11 +42,14 @@ import AdvancedSearchPage from './pages/cp/AdvancedSearchPage';
 import { OAuth2Callback } from './pages/auth/OAuth2Callback';
 import { FeatureCertificationPage } from './pages/FeatureCertificationPage';
 import MfaSettings from './pages/MfaSettings';
+import MobileHomeDashboard from './pages/MobileHomeDashboard';
+import AIAnalysis from './pages/AIAnalysis';
 
 // Client portal
 import { ClientDashboard, ClientNewRequest, ClientRequestDetail, ClientRequestEdit } from './pages/client';
 import { ClientProfile } from './pages/client/ClientProfile';
 import { ClientOperations } from './pages/client/ClientOperations';
+import { WorkboxOperationsPage } from './components/operations';
 
 // -- Global Error Boundary --
 class GlobalErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean; error: Error | null}> {
@@ -144,6 +149,7 @@ function AppRouter() {
           </ScheduleGate>
         </ProtectedRoute>
       } />
+      <Route path="/mobile-home" element={<ProtectedRoute><Dashboard><MobileHomeDashboard /></Dashboard></ProtectedRoute>} />
 
       {/* Admin / Config pages */}
       <Route path="/participants" element={<ProtectedRoute><Dashboard><Participants /></Dashboard></ProtectedRoute>} />
@@ -159,10 +165,43 @@ function AppRouter() {
       <Route path="/cp/paa" element={<ProtectedRoute><Dashboard><CPPAAListPage /></Dashboard></ProtectedRoute>} />
       <Route path="/cp/presupuesto" element={<ProtectedRoute><Dashboard><CPBudgetPage /></Dashboard></ProtectedRoute>} />
       <Route path="/cp/procesos" element={<ProtectedRoute><Dashboard><CPProcessListPage /></Dashboard></ProtectedRoute>} />
+      {/* CP aliases used by menu seeds */}
+      <Route path="/cp/dashboard" element={<ProtectedRoute><Dashboard><CPDashboardPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/processes" element={<ProtectedRoute><Dashboard><CPProcessListPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/budget" element={<ProtectedRoute><Dashboard><CPBudgetPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/market" element={<ProtectedRoute><Dashboard><CPMarketStudyPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/risk" element={<ProtectedRoute><Dashboard><CPRiskDashboardPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/ai-assistant" element={<ProtectedRoute><Dashboard><CPAIAssistantPage /></Dashboard></ProtectedRoute>} />
 
       {/* GptSercop integration routes */}
       <Route path="/cp/infima-cuantia" element={<ProtectedRoute><Dashboard><InfimaCuantiaPage /></Dashboard></ProtectedRoute>} />
       <Route path="/search" element={<ProtectedRoute><Dashboard><AdvancedSearchPage /></Dashboard></ProtectedRoute>} />
+
+      {/* Legacy-First routes (menu compatibility) */}
+      <Route path="/workbox" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="LC_IMPORT" titleKey="menu.workbox" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/drafts" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="LC_IMPORT" titleKey="menu.drafts" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/pending-approval" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="LC_IMPORT" titleKey="menu.pendingApproval" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/standby-lc" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="STANDBY_LC" titleKey="menu.standbyLc" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/collection-imports" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="COLLECTION_IMPORT" titleKey="menu.collectionImports" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/collection-exports" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="COLLECTION_EXPORT" titleKey="menu.collectionExports" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/guarantee-mandataria" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="GUARANTEE_MANDATARIA" titleKey="menu.guaranteeMandataria" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/trade-financing" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="TRADE_FINANCING" titleKey="menu.tradeFinancing" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/workbox/aval-descuento" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="AVAL_DESCUENTO" titleKey="menu.avalDescuento" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />
+      <Route path="/ai-analysis/chat" element={<ProtectedRoute><Dashboard><AIAnalysis /></Dashboard></ProtectedRoute>} />
+
+      {/* Product wizard/expert aliases used by legacy menu */}
+      <Route path="/standby-lc/wizard" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="STANDBY_LC" titleKey="menu.standbyLc" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/standby-lc/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="STANDBY_LC" titleKey="menu.standbyLc" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/collection-imports/wizard" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="COLLECTION_IMPORT" titleKey="menu.collectionImports" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/collection-imports/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="COLLECTION_IMPORT" titleKey="menu.collectionImports" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/collection-exports/wizard" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="COLLECTION_EXPORT" titleKey="menu.collectionExports" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/collection-exports/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="COLLECTION_EXPORT" titleKey="menu.collectionExports" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/guarantee-mandataria/wizard" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="GUARANTEE_MANDATARIA" titleKey="menu.guaranteeMandataria" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/guarantee-mandataria/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="GUARANTEE_MANDATARIA" titleKey="menu.guaranteeMandataria" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/trade-financing/wizard" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="TRADE_FINANCING" titleKey="menu.tradeFinancing" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/trade-financing/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="TRADE_FINANCING" titleKey="menu.tradeFinancing" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/aval-descuento/wizard" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="AVAL_DESCUENTO" titleKey="menu.avalDescuento" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+      <Route path="/aval-descuento/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="AVAL_DESCUENTO" titleKey="menu.avalDescuento" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
 
       {/* Client portal */}
       <Route path="/client" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
@@ -180,6 +219,8 @@ function AppRouter() {
 
 // -- Main App Component --
 function App() {
+  const enableCmxChat = import.meta.env.VITE_ENABLE_CMX_CHAT !== 'false';
+
   return (
     <GlobalErrorBoundary>
       <ChakraProvider value={system}>
@@ -200,9 +241,11 @@ function App() {
                           }>
                             <AppRouter />
                           </Suspense>
-                          <Suspense fallback={null}>
-                            <CMXChat />
-                          </Suspense>
+                          {enableCmxChat ? (
+                            <Suspense fallback={null}>
+                              <CMXChat />
+                            </Suspense>
+                          ) : null}
                           <AlertNotificationListener />
                         </SidebarProvider>
                       </ResponsiveProvider>

@@ -32,6 +32,7 @@ export interface MobileHomeData {
 }
 
 export function useMobileHomeData(filters?: DashboardFilters): MobileHomeData {
+  const enableDashboardApi = import.meta.env.VITE_ENABLE_DASHBOARD_API !== 'false';
   const [activeOps, setActiveOps] = useState<Operation[]>([]);
   const [awaitingResponseOps, setAwaitingResponseOps] = useState<Operation[]>([]);
   const [opsWithAlerts, setOpsWithAlerts] = useState<Operation[]>([]);
@@ -49,7 +50,9 @@ export function useMobileHomeData(filters?: DashboardFilters): MobileHomeData {
         operationsApi.getOperations({ status: 'ACTIVE' as any }).catch(() => []),
         operationsApi.getAwaitingResponse().catch(() => []),
         operationsApi.getWithAlerts().catch(() => []),
-        dashboardService.getDashboardSummary(dashboardFilters).catch(() => null),
+        enableDashboardApi
+          ? dashboardService.getDashboardSummary(dashboardFilters).catch(() => null)
+          : Promise.resolve(null),
       ]);
 
       // Store full lists - counts come from actual data
@@ -67,7 +70,7 @@ export function useMobileHomeData(filters?: DashboardFilters): MobileHomeData {
     } finally {
       setIsLoading(false);
     }
-  }, [filters?.period, filters?.productType, filters?.currency, filters?.statusFilter,
+  }, [enableDashboardApi, filters?.period, filters?.productType, filters?.currency, filters?.statusFilter,
       filters?.createdBy, filters?.beneficiary, filters?.issuingBank, filters?.advisingBank, filters?.applicant]);
 
   useEffect(() => {

@@ -6,6 +6,22 @@
 -- Date: 2026-01-30
 -- ================================================
 
+SET @has_field_name := (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'swift_field_config_readmodel'
+      AND column_name = 'field_name'
+);
+SET @sql_relax_field_name := IF(
+    @has_field_name > 0,
+    "ALTER TABLE swift_field_config_readmodel MODIFY COLUMN field_name VARCHAR(255) NULL DEFAULT ''",
+    "SELECT 'V215: field_name column not present, skipping compatibility alter' AS migration_note"
+);
+PREPARE stmt_relax_field_name FROM @sql_relax_field_name;
+EXECUTE stmt_relax_field_name;
+DEALLOCATE PREPARE stmt_relax_field_name;
+
 -- ============================================
 -- MT719 - ADVICE OF A THIRD BANK'S GUARANTEE
 -- Used in Doka: GITOPR, GITPOP

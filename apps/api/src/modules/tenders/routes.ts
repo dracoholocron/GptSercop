@@ -17,8 +17,30 @@ export const tendersRoutes: FastifyPluginAsync = async (app) => {
   // Tenders CRUD
   app.get<{ Querystring: any }>('/api/v1/tenders', async (req, reply) => {
     try {
-      const tenders = await prisma.tender.findMany({ where: (req.query as any), orderBy: { createdAt: 'desc' }, include: { procurementPlan: { select: { entity: { select: { id: true, name: true, code: true } } } } } });
-      return { data: tenders };
+      const q = (req.query as any) || {};
+      const page = Math.max(1, parseInt(String(q.page ?? '1'), 10) || 1);
+      const pageSize = Math.min(100, Math.max(1, parseInt(String(q.pageSize ?? '20'), 10) || 20));
+      const skip = (page - 1) * pageSize;
+      const where: Prisma.TenderWhereInput = {};
+
+      // Supported filters only (avoid passing pagination keys directly to Prisma where).
+      if (q.status) where.status = q.status;
+      if (q.processType) where.processType = q.processType;
+      if (q.procurementMethod) where.procurementMethod = q.procurementMethod;
+      if (q.procurementPlanId) where.procurementPlanId = q.procurementPlanId;
+      if (q.q) where.title = { contains: String(q.q), mode: 'insensitive' };
+
+      const [total, tenders] = await Promise.all([
+        prisma.tender.count({ where }),
+        prisma.tender.findMany({
+          where,
+          skip,
+          take: pageSize,
+          orderBy: { createdAt: 'desc' },
+          include: { procurementPlan: { select: { entity: { select: { id: true, name: true, code: true } } } } },
+        }),
+      ]);
+      return { data: tenders, total, page, pageSize };
     } catch (e) { req.log.error(e); return reply.status(500).send({ error: 'Error listar procesos' }); }
   });
 

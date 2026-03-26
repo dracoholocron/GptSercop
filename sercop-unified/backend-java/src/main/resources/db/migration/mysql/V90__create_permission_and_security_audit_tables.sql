@@ -3,6 +3,59 @@
 -- Creates tables for granular permission control and security event logging
 -- =============================================================================
 
+CREATE TABLE IF NOT EXISTS role_read_model (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_read_model (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(150) UNIQUE,
+    name VARCHAR(100),
+    password VARCHAR(255),
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    account_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
+    account_non_locked BOOLEAN NOT NULL DEFAULT TRUE,
+    credentials_non_expired BOOLEAN NOT NULL DEFAULT TRUE,
+    accountNonExpired BOOLEAN NOT NULL DEFAULT TRUE,
+    accountNonLocked BOOLEAN NOT NULL DEFAULT TRUE,
+    credentialsNonExpired BOOLEAN NOT NULL DEFAULT TRUE,
+    identity_provider VARCHAR(20) DEFAULT 'LOCAL',
+    external_id VARCHAR(255),
+    avatar_url VARCHAR(500),
+    last_sso_login TIMESTAMP NULL,
+    mfa_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    mfa_enforced BOOLEAN NOT NULL DEFAULT FALSE,
+    mfa_grace_period_until TIMESTAMP NULL,
+    last_mfa_verified_at TIMESTAMP NULL,
+    last_login TIMESTAMP NULL,
+    user_type VARCHAR(20) DEFAULT 'INTERNAL',
+    cliente_id VARCHAR(36),
+    is_primary_contact BOOLEAN NOT NULL DEFAULT FALSE,
+    cargo VARCHAR(100),
+    phone_number VARCHAR(30),
+    preferred_language VARCHAR(5) DEFAULT 'en',
+    approval_status VARCHAR(20) DEFAULT 'APPROVED',
+    approval_requested_at TIMESTAMP NULL,
+    approved_at TIMESTAMP NULL,
+    approved_by VARCHAR(100),
+    rejection_reason VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_role_read_model (
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES user_read_model(id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES role_read_model(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- 1. Permission table for granular access control
 CREATE TABLE IF NOT EXISTS permission_read_model (
     code VARCHAR(50) PRIMARY KEY,
@@ -51,15 +104,86 @@ CREATE TABLE IF NOT EXISTS security_audit_log (
 -- Note: Using simple ALTER without IF NOT EXISTS as Flyway manages migration state
 -- These columns are added only once when migration V90 runs
 
--- Check and add columns by trying to alter (will fail if already exists, which is fine for one-time migration)
-ALTER TABLE user_read_model
-    ADD COLUMN identity_provider VARCHAR(20) DEFAULT 'LOCAL',
-    ADD COLUMN external_id VARCHAR(255),
-    ADD COLUMN avatar_url VARCHAR(500),
-    ADD COLUMN last_sso_login TIMESTAMP NULL;
+SET @has_identity_provider := (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'user_read_model'
+      AND column_name = 'identity_provider'
+);
+SET @add_identity_provider_sql := IF(
+    @has_identity_provider = 0,
+    "ALTER TABLE user_read_model ADD COLUMN identity_provider VARCHAR(20) DEFAULT 'LOCAL'",
+    'SELECT 1'
+);
+PREPARE stmt_add_identity_provider FROM @add_identity_provider_sql;
+EXECUTE stmt_add_identity_provider;
+DEALLOCATE PREPARE stmt_add_identity_provider;
+
+SET @has_external_id := (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'user_read_model'
+      AND column_name = 'external_id'
+);
+SET @add_external_id_sql := IF(
+    @has_external_id = 0,
+    'ALTER TABLE user_read_model ADD COLUMN external_id VARCHAR(255)',
+    'SELECT 1'
+);
+PREPARE stmt_add_external_id FROM @add_external_id_sql;
+EXECUTE stmt_add_external_id;
+DEALLOCATE PREPARE stmt_add_external_id;
+
+SET @has_avatar_url := (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'user_read_model'
+      AND column_name = 'avatar_url'
+);
+SET @add_avatar_url_sql := IF(
+    @has_avatar_url = 0,
+    'ALTER TABLE user_read_model ADD COLUMN avatar_url VARCHAR(500)',
+    'SELECT 1'
+);
+PREPARE stmt_add_avatar_url FROM @add_avatar_url_sql;
+EXECUTE stmt_add_avatar_url;
+DEALLOCATE PREPARE stmt_add_avatar_url;
+
+SET @has_last_sso_login := (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'user_read_model'
+      AND column_name = 'last_sso_login'
+);
+SET @add_last_sso_login_sql := IF(
+    @has_last_sso_login = 0,
+    'ALTER TABLE user_read_model ADD COLUMN last_sso_login TIMESTAMP NULL',
+    'SELECT 1'
+);
+PREPARE stmt_add_last_sso_login FROM @add_last_sso_login_sql;
+EXECUTE stmt_add_last_sso_login;
+DEALLOCATE PREPARE stmt_add_last_sso_login;
 
 -- Add index for external_id lookups
-CREATE INDEX idx_users_external_id ON user_read_model(identity_provider, external_id);
+SET @has_idx_users_external_id := (
+    SELECT COUNT(*)
+    FROM information_schema.statistics
+    WHERE table_schema = DATABASE()
+      AND table_name = 'user_read_model'
+      AND index_name = 'idx_users_external_id'
+);
+SET @add_idx_users_external_id_sql := IF(
+    @has_idx_users_external_id = 0,
+    'CREATE INDEX idx_users_external_id ON user_read_model(identity_provider, external_id)',
+    'SELECT 1'
+);
+PREPARE stmt_add_idx_users_external_id FROM @add_idx_users_external_id_sql;
+EXECUTE stmt_add_idx_users_external_id;
+DEALLOCATE PREPARE stmt_add_idx_users_external_id;
 
 -- 5. Add new roles if not exist
 INSERT IGNORE INTO role_read_model (name, description) VALUES

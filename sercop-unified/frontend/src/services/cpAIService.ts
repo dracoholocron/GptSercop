@@ -183,13 +183,43 @@ export interface HistoricalPrice {
 // ============================================================================
 
 const BASE_URL = '/api/compras-publicas/ai';
+const ENABLE_CP_API = import.meta.env.VITE_ENABLE_CP_API !== 'false';
+
+const EMPTY_LEGAL_HELP: CPLegalHelpResponse = {
+  title: 'Asistente legal no disponible',
+  content: 'El modulo de ayuda legal no esta habilitado en este entorno.',
+  legalReferences: [],
+  requirements: [],
+  commonErrors: [],
+  tips: [],
+  examples: [],
+  sercopResolutions: [],
+  severity: 'INFO',
+  provider: 'N/A',
+  model: 'N/A',
+  processingTimeMs: 0,
+  confidence: 0,
+};
 
 /**
  * Obtiene ayuda legal contextual
  */
 export async function getLegalHelp(request: CPLegalHelpRequest): Promise<CPLegalHelpResponse> {
+  if (!ENABLE_CP_API) return EMPTY_LEGAL_HELP;
   const response = await post(`${BASE_URL}/legal-help`, request);
-  return response.json();
+  if (!response.ok) return EMPTY_LEGAL_HELP;
+  const payload = await response.json().catch(() => null);
+  const data = (payload?.data ?? payload ?? {}) as Partial<CPLegalHelpResponse>;
+  return {
+    ...EMPTY_LEGAL_HELP,
+    ...data,
+    legalReferences: Array.isArray(data.legalReferences) ? data.legalReferences : [],
+    requirements: Array.isArray(data.requirements) ? data.requirements : [],
+    commonErrors: Array.isArray(data.commonErrors) ? data.commonErrors : [],
+    tips: Array.isArray(data.tips) ? data.tips : [],
+    examples: Array.isArray(data.examples) ? data.examples : [],
+    sercopResolutions: Array.isArray(data.sercopResolutions) ? data.sercopResolutions : [],
+  };
 }
 
 /**
