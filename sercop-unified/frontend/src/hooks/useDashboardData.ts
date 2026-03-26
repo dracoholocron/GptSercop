@@ -35,10 +35,11 @@ export const useDashboardData = (
   options: UseDashboardDataOptions = {}
 ): UseDashboardDataReturn => {
   const { autoRefresh = false, refreshInterval: initialRefreshInterval = 300000, externalFilters, externalFilterOptions } = options;
+  const enableDashboardApi = import.meta.env.VITE_ENABLE_DASHBOARD_API !== 'false';
 
   const [data, setData] = useState<DashboardSummary | null>(null);
   const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions | null>(null);
-  const [internalFilters, setInternalFilters] = useState<DashboardFilters>({ period: 'month', statusFilter: 'OPEN' });
+  const [internalFilters, setInternalFilters] = useState<DashboardFilters>({ period: 'month' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -50,6 +51,13 @@ export const useDashboardData = (
   const effectiveFilterOptions = externalFilterOptions !== undefined ? externalFilterOptions : filterOptions;
 
   const fetchData = useCallback(async () => {
+    if (!enableDashboardApi) {
+      setData(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -65,12 +73,11 @@ export const useDashboardData = (
       }
       setLastUpdated(new Date());
     } catch (err) {
-      console.error('Error fetching dashboard data:', err);
       setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
-  }, [filters, effectiveFilterOptions]);
+  }, [enableDashboardApi, filters, effectiveFilterOptions]);
 
   const refresh = useCallback(async () => {
     await fetchData();

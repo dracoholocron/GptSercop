@@ -4,6 +4,31 @@
 SET @dbname = DATABASE();
 SET @tablename = 'external_api_request_mapping';
 
+CREATE TABLE IF NOT EXISTS external_api_request_mapping (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  api_config_id BIGINT NOT NULL,
+  source_type VARCHAR(30) NOT NULL DEFAULT 'TEMPLATE_VARIABLE',
+  variable_code VARCHAR(100) NULL,
+  constant_value VARCHAR(1000) NULL,
+  calculated_expression VARCHAR(500) NULL,
+  api_parameter_name VARCHAR(255) NOT NULL,
+  use_custom_name BOOLEAN DEFAULT FALSE,
+  custom_name VARCHAR(255) NULL,
+  parameter_location VARCHAR(30) NOT NULL DEFAULT 'BODY',
+  json_path VARCHAR(500) NULL,
+  transformation_type VARCHAR(30) DEFAULT 'NONE',
+  transformation_pattern VARCHAR(255) NULL,
+  default_value VARCHAR(500) NULL,
+  is_required BOOLEAN DEFAULT TRUE,
+  description VARCHAR(500) NULL,
+  display_order INT DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at DATETIME,
+  updated_at DATETIME,
+  INDEX idx_request_mapping_api_config (api_config_id),
+  INDEX idx_request_mapping_active (is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Add source_type column if not exists
 SET @columnname = 'source_type';
 SET @preparedStatement = (SELECT IF(

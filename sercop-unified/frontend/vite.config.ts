@@ -4,7 +4,9 @@ import react from '@vitejs/plugin-react'
 import { compression } from 'vite-plugin-compression2'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(() => {
+  const proxyTarget = process.env.VITE_DEV_PROXY_TARGET || 'http://localhost:8000'
+  return {
   plugins: [
     react(),
     compression({ algorithm: 'gzip', threshold: 1024 }),
@@ -43,18 +45,22 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:8000', // Kong gateway port
+        target: proxyTarget,
         changeOrigin: true,
         secure: false,
         ws: true, // Enable WebSocket proxying
         // Kong handles routing to backend - path stays as-is
         configure: (proxy, _options) => {
           proxy.on('proxyReq', (proxyReq, req, _res) => {
+            // Avoid backend CORS rejection in local proxy mode:
+            // browser sends Origin localhost:517x, but backend whitelist may differ.
+            proxyReq.removeHeader('origin')
+            proxyReq.removeHeader('referer')
             // Estos logs aparecen en la terminal del servidor de Vite
-            console.log('[Vite Proxy -> Kong] Proxying:', req.method, req.url, '->', proxyReq.path);
+            console.log('[Vite Proxy] Proxying:', req.method, req.url, '->', proxyReq.path, `target=${proxyTarget}`);
           });
           proxy.on('error', (err, req, res) => {
-            console.error('[Vite Proxy -> Kong] Error:', err.message, 'for', req.url);
+            console.error('[Vite Proxy] Error:', err.message, 'for', req.url, `target=${proxyTarget}`);
           });
         },
       }
@@ -78,5 +84,6 @@ export default defineConfig({
         }
       }
     }
+  }
   }
 })

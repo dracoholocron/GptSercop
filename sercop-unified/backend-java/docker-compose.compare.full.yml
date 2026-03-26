@@ -1,0 +1,144 @@
+services:
+  postgres-eventstore-compare:
+    image: postgres:16-alpine
+    container_name: globalcmx-postgres-eventstore-compare
+    environment:
+      POSTGRES_DB: globalcmx_eventstore
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "55432:5432"
+    networks:
+      - globalcmx-network-compare
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql-readmodel-compare:
+    image: mysql:8.0
+    container_name: globalcmx-mysql-readmodel-compare
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: globalcmx_read
+      MYSQL_USER: globalcmx
+      MYSQL_PASSWORD: globalcmx123
+    ports:
+      - "33306:3306"
+    networks:
+      - globalcmx-network-compare
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  zookeeper-compare:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: globalcmx-zookeeper-compare
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "32181:2181"
+    networks:
+      - globalcmx-network-compare
+
+  kafka-compare:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: globalcmx-kafka-compare
+    depends_on:
+      - zookeeper-compare
+    ports:
+      - "39092:9092"
+      - "39093:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-compare:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:39092,PLAINTEXT_INTERNAL://kafka-compare:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 30000
+      KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 30000
+    networks:
+      - globalcmx-network-compare
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:39092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  kafka-ui-compare:
+    image: provectuslabs/kafka-ui:latest
+    container_name: globalcmx-kafka-ui-compare
+    depends_on:
+      - kafka-compare
+    ports:
+      - "18090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: globalcmx-cluster-compare
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-compare:29092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper-compare:2181
+    networks:
+      - globalcmx-network-compare
+
+  chromadb-compare:
+    image: chromadb/chroma:latest
+    container_name: globalcmx-chromadb-compare
+    ports:
+      - "18002:8000"
+    networks:
+      - globalcmx-network-compare
+    environment:
+      IS_PERSISTENT: "TRUE"
+      PERSIST_DIRECTORY: /chroma/chroma
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8000' 2>/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  backend-api-compare:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: globalcmx-backend-api-compare
+    depends_on:
+      mysql-readmodel-compare:
+        condition: service_healthy
+      postgres-eventstore-compare:
+        condition: service_healthy
+      kafka-compare:
+        condition: service_healthy
+      chromadb-compare:
+        condition: service_healthy
+    ports:
+      - "18080:8080"
+      - "18081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_FLYWAY_ENABLED: "true"
+      GLOBALCMX_SCHEDULE_ENABLED: "false"
+      GLOBALCMX_SCHEDULE_BLOCK_ACCESS: "false"
+      JWT_SECRET: Y29tcGFyZS1kZXYtand0LXNlY3JldC1rZXktMzItY2hhcnM=
+      DB_READMODEL_URL: jdbc:mysql://mysql-readmodel-compare:3306/globalcmx_read?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_READMODEL_USER: globalcmx
+      DB_READMODEL_PASSWORD: globalcmx123
+      DB_EVENTSTORE_URL: jdbc:mysql://mysql-readmodel-compare:3306/globalcmx_eventstore?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_EVENTSTORE_USER: root
+      DB_EVENTSTORE_PASSWORD: root
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-compare:29092
+      AI_VECTOR_STORE: chroma
+      CHROMA_URL: http://chromadb-compare:8000
+      LOG_LEVEL_ROOT: INFO
+      LOG_LEVEL_APP: DEBUG
+    networks:
+      - globalcmx-network-compare
+
+networks:
+  globalcmx-network-compare:
+    driver: bridge

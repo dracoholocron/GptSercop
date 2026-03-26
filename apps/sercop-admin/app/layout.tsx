@@ -4,7 +4,7 @@ import { AuthInit } from './components/AuthInit';
 import { QueryProvider } from './components/QueryProvider';
 
 export const metadata: Metadata = {
-  title: 'SERCOP – Admin',
+  title: 'Compras Públicas – Admin',
   description: 'Panel de administración',
   icons: { icon: '/favicon.svg' },
 };

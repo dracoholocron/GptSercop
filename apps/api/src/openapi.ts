@@ -1,7 +1,7 @@
-/** OpenAPI 3 spec para documentación de la API SERCOP V2 */
+/** OpenAPI 3 spec para documentación de la API base de Compras Públicas */
 export const openapiSpec = {
   openapi: '3.0.3',
-  info: { title: 'SERCOP V2 API', version: '0.1.0', description: 'API de contratación pública SERCOP V2' },
+  info: { title: 'Compras Públicas API', version: '0.1.0', description: 'API base de contratación pública' },
   servers: [{ url: '/', description: 'API base' }],
   paths: {
     '/health': {

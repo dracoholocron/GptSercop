@@ -46,9 +46,9 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run build --workspace=api && npm run start --workspace=api',
-      url: 'http://localhost:3080/health',
+      url: `${process.env.PLAYWRIGHT_API_URL || 'http://localhost:3080'}/health`,
       reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      timeout: 300000,
       env: {
         ...process.env,
         PORT: '3080',
@@ -60,7 +60,7 @@ export default defineConfig({
       command: 'npm run build --workspace=public-portal && cd apps/public-portal && npx next start -p 3010',
       url: 'http://localhost:3010',
       reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      timeout: 300000,
       env: { ...process.env, PORT: '3010' },
     },
     {

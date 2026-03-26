@@ -3,7 +3,7 @@
  */
 import { Page, APIRequestContext } from '@playwright/test';
 
-const API_BASE = 'http://localhost:3080';
+const API_BASE = process.env.PLAYWRIGHT_API_URL || 'http://localhost:3080';
 const SUPPLIER_EMAIL = 'supplier@test.com';
 const SUPPLIER_RUC = '1791234567001'; // TecEcuador (seed)
 const ENTITY_EMAIL = 'admin@mec.gob.ec'; // seed: usuario entity MEC

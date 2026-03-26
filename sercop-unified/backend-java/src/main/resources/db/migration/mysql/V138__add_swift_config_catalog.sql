@@ -9,6 +9,28 @@
 --   forces the specified SWIFT spec version for all users (testing mode)
 -- ==================================================
 
+CREATE TABLE IF NOT EXISTS custom_catalog_read_model (
+    id BIGINT NOT NULL PRIMARY KEY,
+    code VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(500),
+    level INT NOT NULL,
+    parent_catalog_id BIGINT,
+    parent_catalog_code VARCHAR(100),
+    parent_catalog_name VARCHAR(255),
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    is_system BOOLEAN DEFAULT FALSE,
+    display_order INT NOT NULL DEFAULT 0,
+    created_at DATETIME,
+    updated_at DATETIME,
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100),
+    INDEX idx_custom_catalog_code (code),
+    INDEX idx_custom_catalog_level (level),
+    INDEX idx_custom_catalog_parent (parent_catalog_id),
+    INDEX idx_custom_catalog_active (active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Step 1: Create parent catalog (Level 1)
 INSERT INTO custom_catalog_read_model (
     id, code, name, description, level, parent_catalog_id,

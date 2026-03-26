@@ -9,7 +9,7 @@ const sourceSans = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: 'SERCOP – Portal público',
+  title: 'Compras Públicas – Portal ciudadano',
   description: 'Búsqueda de procesos de contratación pública',
   icons: { icon: '/favicon.svg' },
 };

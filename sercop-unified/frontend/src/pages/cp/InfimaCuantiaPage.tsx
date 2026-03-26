@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Heading, Text, VStack, FormControl, FormLabel, Input, Button, useToast, Container } from '@chakra-ui/react';
+import { Box, Heading, Text, VStack, Input, Button, Container } from '@chakra-ui/react';
 import { apiClient } from '../../utils/apiClient';
 import { LuSend } from 'react-icons/lu';
 
@@ -7,7 +7,11 @@ export const InfimaCuantiaPage = () => {
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
+  const notify = (titleMsg: string, description: string) => {
+    if (typeof window !== 'undefined') {
+      window.alert(`${titleMsg}\n${description}`);
+    }
+  };
 
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,13 +23,13 @@ export const InfimaCuantiaPage = () => {
         body: JSON.stringify({ title, estimatedAmount: Number(amount) })
       });
       if (res.ok) {
-        toast({ title: 'Publicado con éxito', description: 'El proceso está disponible en la red pública.', status: 'success', duration: 4000, isClosable: true });
+        notify('Publicado con éxito', 'El proceso está disponible en la red pública.');
         setTitle(''); setAmount('');
       } else {
-        toast({ title: 'Error de validación', description: 'Por favor, revise el monto o los topes PAC anuales.', status: 'warning', duration: 4000, isClosable: true });
+        notify('Error de validación', 'Por favor, revise el monto o los topes PAC anuales.');
       }
     } catch(err) {
-      toast({ title: 'Error de conexión', description: 'El servicio Fastify IA no está respondiendo.', status: 'error', duration: 4000, isClosable: true });
+      notify('Error de conexión', 'El servicio Fastify IA no está respondiendo.');
     } finally {
       setIsLoading(false);
     }
@@ -43,8 +47,8 @@ export const InfimaCuantiaPage = () => {
         
         <Box as="form" onSubmit={handlePublish} bg="white" p={8} borderRadius="2xl" boxShadow="lg" borderWidth="1px" borderColor="gray.100">
           <VStack gap={5}>
-            <FormControl isRequired>
-              <FormLabel fontWeight="600" color="gray.700">Objeto de Contratación (Concepto de Factura)</FormLabel>
+            <Box width="100%">
+              <Text mb={2} fontWeight="600" color="gray.700">Objeto de Contratación (Concepto de Factura)</Text>
               <Input 
                 value={title} 
                 onChange={e => setTitle(e.target.value)} 
@@ -53,10 +57,10 @@ export const InfimaCuantiaPage = () => {
                 focusBorderColor="blue.500" 
                 bg="gray.50"
               />
-            </FormControl>
+            </Box>
 
-            <FormControl isRequired>
-              <FormLabel fontWeight="600" color="gray.700">Monto Estimado (USD, sin IVA)</FormLabel>
+            <Box width="100%">
+              <Text mb={2} fontWeight="600" color="gray.700">Monto Estimado (USD, sin IVA)</Text>
               <Input 
                 type="number" 
                 step="0.01" 
@@ -67,12 +71,12 @@ export const InfimaCuantiaPage = () => {
                 focusBorderColor="blue.500" 
                 bg="gray.50"
               />
-            </FormControl>
+            </Box>
 
-            <FormControl>
-              <FormLabel fontWeight="600" color="gray.700">Archivo Adjunto Opcional (TDR u Oficio)</FormLabel>
+            <Box width="100%">
+              <Text mb={2} fontWeight="600" color="gray.700">Archivo Adjunto Opcional (TDR u Oficio)</Text>
               <Input type="file" p={1.5} size="lg" bg="gray.50" />
-            </FormControl>
+            </Box>
 
             <Button 
               type="submit" 

@@ -19,8 +19,46 @@ ALTER TABLE swift_field_config_readmodel MODIFY COLUMN message_type VARCHAR(50) 
 ALTER TABLE swift_field_config_readmodel MODIFY COLUMN successor_field_code VARCHAR(50) NULL;
 
 -- Drop and recreate unique constraint with new column sizes
-ALTER TABLE swift_field_config_readmodel DROP INDEX uk_field_spec_version;
-ALTER TABLE swift_field_config_readmodel ADD CONSTRAINT uk_field_spec_version UNIQUE (field_code, message_type, spec_version);
+SET @has_uk_field_spec_version := (
+  SELECT COUNT(*)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'swift_field_config_readmodel'
+    AND index_name = 'uk_field_spec_version'
+);
+SET @sql_drop_uk_field_spec_version := IF(
+  @has_uk_field_spec_version > 0,
+  'ALTER TABLE swift_field_config_readmodel DROP INDEX uk_field_spec_version',
+  'SELECT 1'
+);
+PREPARE stmt_drop_uk_field_spec_version FROM @sql_drop_uk_field_spec_version;
+EXECUTE stmt_drop_uk_field_spec_version;
+DEALLOCATE PREPARE stmt_drop_uk_field_spec_version;
+
+-- Remove duplicated records before recreating the unique key.
+DELETE s1
+FROM swift_field_config_readmodel s1
+JOIN swift_field_config_readmodel s2
+  ON s1.field_code = s2.field_code
+ AND s1.message_type = s2.message_type
+ AND s1.spec_version = s2.spec_version
+ AND s1.id > s2.id;
+
+SET @has_uk_field_spec_version := (
+  SELECT COUNT(*)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'swift_field_config_readmodel'
+    AND index_name = 'uk_field_spec_version'
+);
+SET @sql_add_uk_field_spec_version := IF(
+  @has_uk_field_spec_version = 0,
+  'ALTER TABLE swift_field_config_readmodel ADD CONSTRAINT uk_field_spec_version UNIQUE (field_code, message_type, spec_version)',
+  'SELECT 1'
+);
+PREPARE stmt_add_uk_field_spec_version FROM @sql_add_uk_field_spec_version;
+EXECUTE stmt_add_uk_field_spec_version;
+DEALLOCATE PREPARE stmt_add_uk_field_spec_version;
 
 -- ============================================================================
 -- 1. EVENT TYPES - Etapas de cada proceso como eventos

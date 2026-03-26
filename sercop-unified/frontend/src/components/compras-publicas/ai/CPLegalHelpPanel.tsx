@@ -90,9 +90,9 @@ export const CPLegalHelpPanel: React.FC<CPLegalHelpPanelProps> = ({
 
   const SeverityBadge = ({ severity }: { severity: string }) => {
     const config = {
-      INFO: { color: 'blue', icon: HelpCircle, label: 'Información' },
-      WARNING: { color: 'orange', icon: AlertTriangle, label: 'Advertencia' },
-      REQUIRED: { color: 'red', icon: AlertTriangle, label: 'Obligatorio' }
+      INFO: { color: 'blue', icon: FiHelpCircle, label: 'Información' },
+      WARNING: { color: 'orange', icon: FiAlertTriangle, label: 'Advertencia' },
+      REQUIRED: { color: 'red', icon: FiAlertTriangle, label: 'Obligatorio' }
     };
     const { color, icon, label } = config[severity as keyof typeof config] || config.INFO;
 

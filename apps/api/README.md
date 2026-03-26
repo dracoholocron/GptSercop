@@ -1,4 +1,4 @@
-# API (SERCOP V2)
+# API (Base Compras Públicas)
 
 API Fastify conectada a PostgreSQL (Prisma). Endpoints públicos v1: tenders, providers. Ver [Docs/](../../Docs/).
 

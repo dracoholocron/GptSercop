@@ -609,6 +609,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed: forcedCollapsed }) 
 
   // Fetch stage counts for badge display
   useEffect(() => {
+    const enableStageCounts = import.meta.env.VITE_ENABLE_BACKOFFICE_STAGE_COUNTS !== 'false';
+    if (!enableStageCounts) return;
     if (!isAuthenticated || hasRole('ROLE_CLIENT')) return;
 
     const fetchStageCounts = async () => {

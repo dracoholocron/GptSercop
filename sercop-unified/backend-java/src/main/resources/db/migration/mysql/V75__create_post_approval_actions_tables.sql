@@ -63,6 +63,46 @@ INSERT INTO action_type_config (action_type, language, display_name, description
 ON DUPLICATE KEY UPDATE display_name=VALUES(display_name), description=VALUES(description);
 
 -- Insert event rules for LC_IMPORT
+CREATE TABLE IF NOT EXISTS event_rules_read_model (
+    id BIGINT NOT NULL PRIMARY KEY,
+    code VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(1000),
+    operation_type VARCHAR(100) NOT NULL,
+    trigger_event VARCHAR(100) NOT NULL,
+    conditions_drl TEXT,
+    actions_json TEXT,
+    priority INT DEFAULT 100,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at DATETIME,
+    updated_at DATETIME,
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100),
+    aggregate_id VARCHAR(100),
+    version BIGINT DEFAULT 0,
+    INDEX idx_event_rules_code (code),
+    INDEX idx_event_rules_operation_type (operation_type),
+    INDEX idx_event_rules_trigger_event (trigger_event),
+    INDEX idx_event_rules_active (active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Ensure the optimistic lock column exists for JPA @Version mapping.
+SET @event_rules_has_version := (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'event_rules_read_model'
+      AND column_name = 'version'
+);
+SET @event_rules_version_sql := IF(
+    @event_rules_has_version = 0,
+    'ALTER TABLE event_rules_read_model ADD COLUMN version BIGINT DEFAULT 0',
+    'SELECT 1'
+);
+PREPARE stmt_event_rules_version FROM @event_rules_version_sql;
+EXECUTE stmt_event_rules_version;
+DEALLOCATE PREPARE stmt_event_rules_version;
+
 INSERT INTO event_rules_read_model (id, code, name, description, operation_type, trigger_event, actions_json, priority, active, created_at, created_by, aggregate_id, version) VALUES
 (100, 'LC_IMPORT_ISSUE_APPROVED', 'Acciones post-aprobación de Emisión LC Import', 'Genera mensaje SWIFT MT700 cuando se aprueba la emisión de una LC Import', 'LC_IMPORT', 'ISSUE_APPROVED', '[{"tipo":"SWIFT_MESSAGE","orden":1,"async":false,"continueOnError":false,"config":{"messageType":"MT700","direction":"OUTBOUND","description":"Generar y registrar mensaje MT700"}},{"tipo":"AUDITORIA","orden":2,"async":true,"continueOnError":true,"config":{"categoria":"LC_EMITIDA","severidad":"INFO","mensaje":"LC Import emitida y mensaje MT700 generado"}}]', 10, 1, NOW(), 'system', 'RULE-LC_IMPORT_ISSUE_APPROVED', 1),
 (101, 'LC_IMPORT_AMEND_APPROVED', 'Acciones post-aprobación de Enmienda LC Import', 'Genera mensaje SWIFT MT707 cuando se aprueba la enmienda de una LC Import', 'LC_IMPORT', 'AMEND_APPROVED', '[{"tipo":"SWIFT_MESSAGE","orden":1,"async":false,"continueOnError":false,"config":{"messageType":"MT707","direction":"OUTBOUND","description":"Generar mensaje MT707 de enmienda"}},{"tipo":"AUDITORIA","orden":2,"async":true,"continueOnError":true,"config":{"categoria":"LC_ENMENDADA","severidad":"INFO","mensaje":"LC Import enmendada y mensaje MT707 generado"}}]', 10, 1, NOW(), 'system', 'RULE-LC_IMPORT_AMEND_APPROVED', 1),

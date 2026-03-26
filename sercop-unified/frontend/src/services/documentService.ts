@@ -266,8 +266,11 @@ class DocumentService {
    */
   async getCategories(): Promise<DocumentCategory[]> {
     const response = await get(`${DOCUMENTS_URL}/categories`);
+    if (!response.ok) {
+      // Node API may not expose document catalogs in compare mode.
+      return [];
+    }
     const result: DocumentApiResponse<DocumentCategory[]> = await response.json();
-
     return result.data || [];
   }
 
@@ -280,8 +283,11 @@ class DocumentService {
       : `${DOCUMENTS_URL}/types`;
 
     const response = await get(url);
+    if (!response.ok) {
+      // Node API may not expose document catalogs in compare mode.
+      return [];
+    }
     const result: DocumentApiResponse<DocumentType[]> = await response.json();
-
     return result.data || [];
   }
 

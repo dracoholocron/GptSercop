@@ -64,20 +64,28 @@ Ejecutar más de **100 escenarios** automatizados que cubran navegación entre i
 
 **Login en tests que lo requieren:** Los escenarios que necesitan sesión (wizard de oferta proveedor, flujo F08, detalle ofertas entidad) usan **login vía API** e inyección de token en `localStorage` (`e2e/battery/auth-helpers.ts`), con credenciales del seed (proveedor: RUC 1791234567001; entidad: admin@mec.gob.ec). Así se cubren los **119 tests** sin skips. La API debe tener **JWT_SECRET** (en E2E se asigna por defecto en `playwright.config.ts` si no está definido).
 
-Requisito: **PostgreSQL en marcha** y **DATABASE_URL** definido.
+Requisito (modo full): **PostgreSQL en marcha** y **DATABASE_URL** definido.
 
 ```bash
-# Batería completa (seed automático si hay DATABASE_URL; API + 4 portales)
+# Batería core (híbrido/remoto)
 npm run test:e2e:battery
 
-# Solo un portal
-npx playwright test e2e/battery/public-battery.spec.ts
+# Alias explícito del modo core
+npm run test:e2e:battery:core
+
+# Batería full (local puro)
+npm run test:e2e:battery:full
+
+# Full con seed previo
+npm run test:e2e:battery:full:seed
 
 # Reporte HTML tras la ejecución
 npx playwright show-report playwright-report
 ```
 
-El global setup lee `.env` y `apps/api/.env` para obtener `DATABASE_URL`; si no está definido, no ejecuta el seed y los tests que dependen de procesos se omiten.
+El global setup de `playwright.config.ts` lee `.env` y `apps/api/.env` para obtener `DATABASE_URL`; si no está definido, no ejecuta seed y varios tests de negocio pueden omitirse/fallar en modo full.
+
+Referencia operativa: `Docs/qa/E2E-battery-modes.md`.
 
 En cada fallo se guarda screenshot en `test-results/` (configuración `screenshot: 'only-on-failure'`).
 
