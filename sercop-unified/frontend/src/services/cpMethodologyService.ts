@@ -119,11 +119,18 @@ export interface CPProcurementThreshold {
 // ============================================================================
 
 const BASE_URL = '/api/compras-publicas/ai/methodology';
+const ENABLE_CP_API = import.meta.env.VITE_ENABLE_CP_API !== 'false';
 
 /** Get all active methodologies (user can choose) */
 export const getActiveMethodologies = async (countryCode = 'EC'): Promise<CPPAAMethodology[]> => {
+  if (!ENABLE_CP_API) return [];
   const response = await get(`${BASE_URL}/active?countryCode=${countryCode}`);
-  return response.json();
+  if (!response.ok) return [];
+  const payload = await response.json().catch(() => []);
+  if (Array.isArray(payload)) return payload as CPPAAMethodology[];
+  if (Array.isArray(payload?.data)) return payload.data as CPPAAMethodology[];
+  if (Array.isArray(payload?.content)) return payload.content as CPPAAMethodology[];
+  return [];
 };
 
 /** Get a specific methodology by ID */
@@ -140,8 +147,41 @@ export const getMethodologyByCode = async (code: string): Promise<CPPAAMethodolo
 
 /** Get the default methodology */
 export const getDefaultMethodology = async (countryCode = 'EC'): Promise<CPPAAMethodology> => {
+  if (!ENABLE_CP_API) {
+    return {
+      id: 0,
+      code: 'DEFAULT',
+      name: 'Default',
+      description: '',
+      sourceFramework: '',
+      countryCode,
+      welcomeMessage: '',
+      totalPhases: 0,
+      isDefault: true,
+      isActive: false,
+      version: 1,
+      phases: [],
+    };
+  }
   const response = await get(`${BASE_URL}/default?countryCode=${countryCode}`);
-  return response.json();
+  if (!response.ok) {
+    return {
+      id: 0,
+      code: 'DEFAULT',
+      name: 'Default',
+      description: '',
+      sourceFramework: '',
+      countryCode,
+      welcomeMessage: '',
+      totalPhases: 0,
+      isDefault: true,
+      isActive: false,
+      version: 1,
+      phases: [],
+    };
+  }
+  const payload = await response.json().catch(() => null);
+  return (payload?.data ?? payload) as CPPAAMethodology;
 };
 
 /** Get all active legal context */

@@ -12,10 +12,10 @@ interface BrandContextType {
 
 // Default brand configuration (used when no active brand or loading)
 const DEFAULT_BRAND = {
-  code: 'GLOBALCX_DEFAULT',
-  name: 'GlobalCX',
-  companyName: 'GlobalCX',
-  companyShortName: 'GCX',
+  code: 'COMPRAS_PUBLICAS_DEFAULT',
+  name: 'Compras Publicas',
+  companyName: 'Compras Publicas',
+  companyShortName: 'SERCOP',
   primaryColor: '#0073E6',
   secondaryColor: '#FFB800',
   accentColor: '#2DD4BF',

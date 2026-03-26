@@ -261,7 +261,7 @@ export const CPAIAssistantPage: React.FC = () => {
                   size="lg"
                   colorPalette="whiteAlpha"
                   variant="solid"
-                  leftIcon={<Zap />}
+                  leftIcon={<FiZap />}
                 >
                   Iniciar Análisis
                 </Button>
@@ -270,7 +270,7 @@ export const CPAIAssistantPage: React.FC = () => {
                   variant="outline"
                   borderColor="whiteAlpha.500"
                   _hover={{ bg: 'whiteAlpha.200' }}
-                  leftIcon={<Lightbulb />}
+                  leftIcon={<LuLightbulb />}
                 >
                   Ver Tutorial
                 </Button>

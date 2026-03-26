@@ -1,8 +1,7 @@
 'use client';
 
 /**
- * Logo SERCOP (nuevo) para la plataforma de contratación pública.
- * Objetivo: institucional y moderno sin usar escudos oficiales.
+ * Logo institucional para la plataforma de Compras Públicas.
  *
  * Símbolo: "documento + sello/check" dentro de un contenedor sobrio.
  * - funciona a tamaños pequeños (favicon / header)
@@ -58,17 +57,17 @@ export function SercopLogo({
         strokeLinejoin="round"
       />
 
-      {/* Logotipo SERCOP */}
+      {/* Logotipo Compras Públicas */}
       <text
         x="52"
         y={showSubtitle ? 30 : 26}
         fontFamily="system-ui, -apple-system, sans-serif"
-        fontSize="22"
+        fontSize="15"
         fontWeight="800"
         fill="#1A1A1A"
         letterSpacing="-0.02em"
       >
-        SERCOP
+        COMPRAS PUBLICAS
       </text>
       {showSubtitle && (
         <text
@@ -79,7 +78,7 @@ export function SercopLogo({
           fontWeight="400"
           fill="#525252"
         >
-          Contratación Pública
+          Plataforma Nacional
         </text>
       )}
     </svg>

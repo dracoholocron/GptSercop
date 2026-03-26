@@ -48,7 +48,7 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [loginMethod, setLoginMethod] = useState<'sso' | 'credentials' | 'passwordless'>('sso');
+  const [loginMethod, setLoginMethod] = useState<'sso' | 'credentials' | 'passwordless'>('credentials');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
   const { login, logout, isAuthenticated, hasRole } = useAuth();

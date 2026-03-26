@@ -28,7 +28,7 @@ export function SupplierShell({ children, activeId }: { children: React.ReactNod
     <div className="flex min-h-screen bg-neutral-50 text-text-primary">
       <a href="#main" className="skip-link">Saltar al contenido</a>
       <Sidebar
-        title="Proveedores CMX"
+        title="Portal Proveedores"
         logo={<SercopLogo variant="compact" />}
         items={NAV_ITEMS}
         activeId={activeId}
@@ -58,7 +58,7 @@ export function SupplierShell({ children, activeId }: { children: React.ReactNod
         </main>
         <AppFooter
           links={FOOTER_LINKS}
-          copyright={`© ${new Date().getFullYear()} SERCOP – Servicio Nacional de Contratación Pública`}
+          copyright={`© ${new Date().getFullYear()} Compras Públicas Ecuador`}
         />
       </div>
     </div>

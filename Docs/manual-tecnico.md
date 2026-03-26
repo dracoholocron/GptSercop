@@ -205,7 +205,9 @@ Rutas principales por app:
 - **Smoke:** `npm run smoke` — comprueba /health, /api/v1/tenders, /api/v1/pac, RAG/search, /ready.
 - **Integración:** `npm run test:integration` — pruebas HTTP contra la API (workspace api).
 - **Seguridad:** `npm run test:security` — verificación de 401 en rutas protegidas sin token.
-- **E2E (batería):** `npm run test:e2e:battery` — Playwright sobre `e2e/battery/*.spec.ts` (chromium). Incluye: licitación, contenido, SIE, obras, navegación, público, proveedor, admin. Opción con seed previo: `npm run test:e2e:battery:full`.
+- **E2E (batería core):** `npm run test:e2e:battery` (alias: `test:e2e:battery:core`) — perfil estable para entorno híbrido/remoto.
+- **E2E (batería full):** `npm run test:e2e:battery:full` — suite completa en topología local pura.
+- **E2E (full + seed):** `npm run test:e2e:battery:full:seed`.
 - **Evidencia (screenshots):** `npm run evidence` — captura pantallas del admin (login, usuarios, normativa) y documentación API.
 
 Los tests E2E pueden levantar automáticamente la API y los portales según `playwright.config.ts` (webServer). En local, es recomendable tener la API ya levantada y, si se desea, los portales para evitar timeouts.

@@ -17,7 +17,7 @@ export interface OfficialBannerProps {
  * Inspirado en patrones USWDS/GOV para generar confianza.
  */
 export function OfficialBanner({
-  title = 'SERCOP',
+  title = 'Compras Públicas',
   secureLabel = 'Conexión segura (HTTPS)',
   howYouKnowLabel = 'Cómo lo sabe',
   className = '',

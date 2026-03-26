@@ -115,7 +115,7 @@ export default function NuevoProcesoPage() {
                 value={processType}
                 onChange={(e) => setProcessType(e.target.value)}
               />
-              {processType === 'feria_inclusiva' && <p className="text-xs text-amber-600">Ferias inclusivas: en desarrollo por SERCOP.</p>}
+              {processType === 'feria_inclusiva' && <p className="text-xs text-amber-600">Ferias inclusivas: en desarrollo por la autoridad rectora.</p>}
               <Select
                 label="Régimen"
                 options={[

@@ -1,0 +1,78 @@
+[
+  {
+    "route": "/ai-analysis/chat",
+    "status": 200
+  },
+  {
+    "route": "/aval-descuento/expert",
+    "status": 200
+  },
+  {
+    "route": "/aval-descuento/wizard",
+    "status": 200
+  },
+  {
+    "route": "/collection-exports/expert",
+    "status": 200
+  },
+  {
+    "route": "/collection-exports/wizard",
+    "status": 200
+  },
+  {
+    "route": "/collection-imports/expert",
+    "status": 200
+  },
+  {
+    "route": "/collection-imports/wizard",
+    "status": 200
+  },
+  {
+    "route": "/guarantee-mandataria/expert",
+    "status": 200
+  },
+  {
+    "route": "/guarantee-mandataria/wizard",
+    "status": 200
+  },
+  {
+    "route": "/standby-lc/expert",
+    "status": 200
+  },
+  {
+    "route": "/standby-lc/wizard",
+    "status": 200
+  },
+  {
+    "route": "/trade-financing/expert",
+    "status": 200
+  },
+  {
+    "route": "/trade-financing/wizard",
+    "status": 200
+  },
+  {
+    "route": "/workbox/aval-descuento",
+    "status": 200
+  },
+  {
+    "route": "/workbox/collection-exports",
+    "status": 200
+  },
+  {
+    "route": "/workbox/collection-imports",
+    "status": 200
+  },
+  {
+    "route": "/workbox/guarantee-mandataria",
+    "status": 200
+  },
+  {
+    "route": "/workbox/standby-lc",
+    "status": 200
+  },
+  {
+    "route": "/workbox/trade-financing",
+    "status": 200
+  }
+]

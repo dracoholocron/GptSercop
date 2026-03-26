@@ -23,7 +23,7 @@ export default function NormativaPage() {
     <PublicShell activeId="normativa">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <h1 className="mb-2 text-2xl font-semibold text-text-primary">Normativa y documentación</h1>
-        <p className="mb-6 text-text-secondary">Busque en la LOSNCP, reglamentos, manuales, resoluciones SERCOP y guías.</p>
+        <p className="mb-6 text-text-secondary">Busque en la LOSNCP, reglamentos, manuales, resoluciones oficiales y guías.</p>
 
         <Card title="Búsqueda" variant="outline" className="mb-8">
           <div className="flex gap-2">

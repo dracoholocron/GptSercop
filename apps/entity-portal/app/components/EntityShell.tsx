@@ -29,7 +29,7 @@ export function EntityShell({ children, activeId }: { children: React.ReactNode;
     <div className="flex min-h-screen bg-neutral-50 text-text-primary">
       <a href="#main" className="skip-link">Saltar al contenido</a>
       <Sidebar
-        title="Entidades CMX"
+        title="Portal Entidades"
         logo={<SercopLogo variant="compact" />}
         items={NAV_ITEMS}
         activeId={activeId}
@@ -59,7 +59,7 @@ export function EntityShell({ children, activeId }: { children: React.ReactNode;
         </main>
         <AppFooter
           links={FOOTER_LINKS}
-          copyright={`© ${new Date().getFullYear()} SERCOP – Servicio Nacional de Contratación Pública`}
+          copyright={`© ${new Date().getFullYear()} Compras Públicas Ecuador`}
         />
       </div>
     </div>

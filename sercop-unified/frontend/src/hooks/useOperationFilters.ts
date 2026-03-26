@@ -17,16 +17,29 @@ export function useOperationFilters(options: UseOperationFiltersOptions = {}) {
   const { defaults } = options;
   const { user, hasRole } = useAuth();
   const isOperator = hasRole('ROLE_OPERATOR');
+  const enableDashboardApi = import.meta.env.VITE_ENABLE_DASHBOARD_API !== 'false';
 
   const [filters, _setFilters] = useState<DashboardFilters>({
     period: 'month',
-    statusFilter: 'OPEN',
     ...defaults,
     // ROLE_OPERATOR: auto-set createdBy to current user
     ...(isOperator && user?.username ? { createdBy: user.username } : {}),
   });
 
   const [filterOptions, setFilterOptions] = useState<DashboardFilterOptions | null>(null);
+
+  const emptyFilterOptions: DashboardFilterOptions = useMemo(() => ({
+    periods: [],
+    productTypes: [],
+    currencies: [],
+    statusFilters: [],
+    createdByOptions: [],
+    beneficiaryOptions: [],
+    issuingBankOptions: [],
+    advisingBankOptions: [],
+    applicantOptions: [],
+    customFieldConfigs: [],
+  }), []);
 
   // Safe setFilters: operators cannot clear their createdBy
   const setFilters = useCallback((newFilters: DashboardFilters) => {
@@ -40,15 +53,20 @@ export function useOperationFilters(options: UseOperationFiltersOptions = {}) {
   // Load filter options once
   const loadFilterOptions = useCallback(async () => {
     if (filterOptions) return filterOptions;
+    if (!enableDashboardApi) {
+      setFilterOptions(emptyFilterOptions);
+      return emptyFilterOptions;
+    }
     try {
       const opts = await dashboardService.getFilterOptions();
       setFilterOptions(opts);
       return opts;
-    } catch (err) {
-      console.error('Error loading filter options:', err);
-      return null;
+    } catch {
+      // Keep UI usable in compare/hybrid mode where endpoint may be unavailable.
+      setFilterOptions(emptyFilterOptions);
+      return emptyFilterOptions;
     }
-  }, [filterOptions]);
+  }, [emptyFilterOptions, enableDashboardApi, filterOptions]);
 
   // Auto-load on mount
   useEffect(() => {

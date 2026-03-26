@@ -3,7 +3,7 @@ import './globals.css';
 import { AuthInit } from './components/AuthInit';
 
 export const metadata: Metadata = {
-  title: 'SERCOP – Portal proveedores',
+  title: 'Compras Públicas – Portal proveedores',
   description: 'Registro y ofertas',
   icons: { icon: '/favicon.svg' },
 };

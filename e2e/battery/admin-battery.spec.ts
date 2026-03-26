@@ -6,6 +6,7 @@ import { test, expect } from '@playwright/test';
 import { adminLogin } from './auth-helpers';
 
 const BASE = 'http://localhost:3014';
+test.skip(process.env.BATTERY_SKIP_ADMIN === '1', 'Admin battery skipped for this environment');
 
 test.describe('Admin – Carga de rutas', () => {
   test.use({ baseURL: BASE });

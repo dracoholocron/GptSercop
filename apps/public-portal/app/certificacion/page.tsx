@@ -29,7 +29,7 @@ export default function CertificacionPage() {
           <h2 className="mb-2 text-lg font-medium text-text-primary">Cronograma</h2>
           <p className="text-text-secondary">
             El cronograma detallado y los enlaces de inscripción se publicarán en esta sección cuando estén disponibles.
-            Para más información, consulte el portal oficial de SERCOP o las notificaciones y comunicados.
+            Para más información, consulte el portal oficial de Compras Públicas o las notificaciones y comunicados.
           </p>
           <a
             href="/notificaciones"

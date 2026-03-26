@@ -6,6 +6,7 @@ import { test, expect } from '@playwright/test';
 import { entityLogin } from './auth-helpers';
 
 const BASE = 'http://localhost:3013';
+test.skip(process.env.BATTERY_SKIP_ENTITY === '1', 'Entity battery skipped for this environment');
 
 test.describe('Entidad – Carga de rutas', () => {
   test.use({ baseURL: BASE });
