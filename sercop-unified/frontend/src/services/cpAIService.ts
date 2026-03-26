@@ -226,8 +226,36 @@ export async function getLegalHelp(request: CPLegalHelpRequest): Promise<CPLegal
  * Analiza un precio propuesto
  */
 export async function analyzePrices(request: CPPriceAnalysisRequest): Promise<CPPriceAnalysisResponse> {
+  const fallback: CPPriceAnalysisResponse = {
+    analysisId: 'fallback-price-analysis',
+    cpcCode: request.cpcCode,
+    proposedPrice: request.proposedPrice,
+    historicalStats: {
+      average: request.proposedPrice,
+      min: request.proposedPrice,
+      max: request.proposedPrice,
+      median: request.proposedPrice,
+      sampleCount: 0,
+      standardDeviation: 0,
+    },
+    percentileRank: 50,
+    deviationFromAverage: 0,
+    anomalyScore: 0,
+    riskLevel: 'LOW',
+    recommendation: 'Modulo de analisis de precios no disponible en este entorno.',
+    warnings: [],
+    justification: 'Respuesta fallback por modulo deshabilitado o sin permisos.',
+    suggestedPriceRange: { min: request.proposedPrice, max: request.proposedPrice },
+    provider: 'N/A',
+    model: 'N/A',
+    processingTimeMs: 0,
+  };
+
+  if (!ENABLE_CP_API) return fallback;
   const response = await post(`${BASE_URL}/price-analysis`, request);
-  return response.json();
+  if (!response.ok) return fallback;
+  const payload = await response.json().catch(() => null);
+  return ((payload?.data ?? payload) || fallback) as CPPriceAnalysisResponse;
 }
 
 /**
@@ -258,8 +286,32 @@ export async function searchPrices(query: string): Promise<HistoricalPrice[]> {
  * Analiza riesgos en un proceso
  */
 export async function analyzeRisks(request: CPRiskAnalysisRequest): Promise<CPRiskAnalysisResponse> {
+  const fallback: CPRiskAnalysisResponse = {
+    assessmentId: 'fallback-risk-analysis',
+    processCode: request.processCode,
+    overallRiskScore: 0,
+    riskLevel: 'LOW',
+    detectedIndicators: [],
+    patterns: [],
+    recommendations: [],
+    summary: 'Modulo de analisis de riesgos no disponible en este entorno.',
+    provider: 'N/A',
+    model: 'N/A',
+    processingTimeMs: 0,
+  };
+
+  if (!ENABLE_CP_API) return fallback;
   const response = await post(`${BASE_URL}/risk-analysis`, request);
-  return response.json();
+  if (!response.ok) return fallback;
+  const payload = await response.json().catch(() => null);
+  const data = ((payload?.data ?? payload) || fallback) as Partial<CPRiskAnalysisResponse>;
+  return {
+    ...fallback,
+    ...data,
+    detectedIndicators: Array.isArray(data.detectedIndicators) ? data.detectedIndicators : [],
+    patterns: Array.isArray(data.patterns) ? data.patterns : [],
+    recommendations: Array.isArray(data.recommendations) ? data.recommendations : [],
+  };
 }
 
 /**

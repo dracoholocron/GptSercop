@@ -104,8 +104,10 @@ public class ApiPermissionFilter extends OncePerRequestFilter {
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(
-                        "{\"error\":\"WIDGET_SCOPE_DENIED\",\"message\":\"Widget tokens solo permiten lectura (GET)\"}");
+                response.getWriter().write(String.format(
+                        "{\"error\":\"WIDGET_SCOPE_DENIED\",\"errorCode\":\"WIDGET_SCOPE_DENIED\",\"message\":\"Widget tokens solo permiten lectura (GET)\",\"path\":\"%s\",\"status\":403}",
+                        requestUri
+                ));
                 return;
             }
 
@@ -121,8 +123,10 @@ public class ApiPermissionFilter extends OncePerRequestFilter {
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(
-                        "{\"error\":\"WIDGET_SCOPE_DENIED\",\"message\":\"Endpoint no permitido para widget tokens\"}");
+                response.getWriter().write(String.format(
+                        "{\"error\":\"WIDGET_SCOPE_DENIED\",\"errorCode\":\"WIDGET_SCOPE_DENIED\",\"message\":\"Endpoint no permitido para widget tokens\",\"path\":\"%s\",\"status\":403}",
+                        requestUri
+                ));
                 return;
             }
 
@@ -167,7 +171,7 @@ public class ApiPermissionFilter extends OncePerRequestFilter {
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write(String.format(
-                        "{\"error\":\"Forbidden\",\"message\":\"Access denied\",\"path\":\"%s\",\"status\":403}",
+                        "{\"error\":\"Forbidden\",\"errorCode\":\"UNCONFIGURED_ENDPOINT_FORBIDDEN\",\"message\":\"Access denied\",\"path\":\"%s\",\"status\":403}",
                         requestUri
                 ));
                 return;
@@ -226,8 +230,9 @@ public class ApiPermissionFilter extends OncePerRequestFilter {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(String.format(
-                    "{\"error\":\"Forbidden\",\"message\":\"You don't have permission to access this resource\",\"path\":\"%s\",\"status\":403}",
-                    requestUri
+                    "{\"error\":\"Forbidden\",\"errorCode\":\"PERMISSION_DENIED\",\"message\":\"You don't have permission to access this resource\",\"path\":\"%s\",\"status\":403,\"requiredPermissions\":\"%s\"}",
+                    requestUri,
+                    String.join(",", requiredPermCodes)
             ));
             return;
         }

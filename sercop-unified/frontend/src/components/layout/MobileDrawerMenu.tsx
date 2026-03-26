@@ -5,7 +5,7 @@
  * hace clic en el icono de hamburguesa.
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Box,
   VStack,
@@ -43,11 +43,13 @@ import {
 import type { IconType } from 'react-icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { usePermissions } from '../../hooks/usePermissions';
 
 interface MenuItem {
   label: string;
   icon: IconType;
   path: string;
+  permissions?: string[];
   children?: MenuItem[];
 }
 
@@ -90,6 +92,18 @@ const mobileMenuItems: MenuItem[] = [
       { label: 'menu.activeOperations', icon: FiFile, path: '/operations/active' },
       { label: 'menu.awaitingResponse', icon: FiFile, path: '/operations/awaiting-response' },
       { label: 'menu.eventHistory', icon: FiFile, path: '/operations/event-history' },
+    ],
+  },
+  {
+    label: 'menu.cp.aiAssistant',
+    icon: FiCpu,
+    path: '/cp/ai-assistant',
+    permissions: ['CP_AI_ASSISTANT', 'GPT_ASSISTANT_VIEW'],
+    children: [
+      { label: 'menu.cp.aiAssistant', icon: FiCpu, path: '/cp/ai-assistant', permissions: ['CP_AI_ASSISTANT', 'GPT_ASSISTANT_VIEW'] },
+      { label: 'menu.cp.marketStudy', icon: FiBarChart2, path: '/cp/market', permissions: ['CP_AI_PRICE_ANALYSIS', 'GPT_PRICING_VIEW'] },
+      { label: 'menu.cp.riskDashboard', icon: FiShield, path: '/cp/risk', permissions: ['CP_AI_RISK_ANALYSIS', 'GPT_RISK_VIEW'] },
+      { label: 'menu.search', icon: FiSearch, path: '/search', permissions: ['GPT_SEARCH_VIEW', 'CP_AI_ASSISTANT'] },
     ],
   },
   {
@@ -230,6 +244,7 @@ export const MobileDrawerMenu: React.FC<MobileDrawerMenuProps> = ({ onClose }) =
   const location = useLocation();
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const { hasAnyPermission } = usePermissions();
   const { getColors } = useTheme();
   const colors = getColors();
 
@@ -261,6 +276,31 @@ export const MobileDrawerMenu: React.FC<MobileDrawerMenuProps> = ({ onClose }) =
   const isExpanded = (path: string): boolean => {
     return expandedItems.includes(path);
   };
+
+  const visibleMenuItems = useMemo(() => {
+    const canView = (item: MenuItem): boolean => {
+      if (!item.permissions || item.permissions.length === 0) return true;
+      return hasAnyPermission(item.permissions);
+    };
+
+    const filterItems = (items: MenuItem[]): MenuItem[] => {
+      return items.reduce<MenuItem[]>((acc, item) => {
+        const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+        if (!hasChildren) {
+          if (canView(item)) acc.push(item);
+          return acc;
+        }
+
+        const filteredChildren = filterItems(item.children || []);
+        if (filteredChildren.length > 0 || canView(item)) {
+          acc.push({ ...item, children: filteredChildren });
+        }
+        return acc;
+      }, []);
+    };
+
+    return filterItems(mobileMenuItems);
+  }, [hasAnyPermission]);
 
   return (
     <Box h="100%" bg={colors.cardBg} display="flex" flexDirection="column">
@@ -302,7 +342,7 @@ export const MobileDrawerMenu: React.FC<MobileDrawerMenuProps> = ({ onClose }) =
       {/* Menu Items con scroll */}
       <Box flex={1} overflow="auto" py={2}>
         <VStack align="stretch" gap={0}>
-          {mobileMenuItems.map((item) => (
+          {visibleMenuItems.map((item) => (
             <Box key={item.path}>
               {item.children ? (
                 <>
