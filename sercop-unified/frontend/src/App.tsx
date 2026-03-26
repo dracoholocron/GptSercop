@@ -22,6 +22,8 @@ import { CustomCatalogs } from './pages/CustomCatalogs';
 import { Templates } from './pages/Templates';
 import { EmailTemplates } from './pages/EmailTemplates';
 import { AlertNotificationListener } from './components/alerts/AlertNotificationListener';
+import AIPromptConfigAdmin from './pages/AIPromptConfigAdmin';
+import AIUsageReportsPage from './pages/admin/AIUsageReportsPage';
 
 // Lazy load chat
 const CMXChat = lazy(() => import('./components/chat').then(module => ({ default: module.CMXChat })));
@@ -194,6 +196,8 @@ function AppRouter() {
       <Route path="/templates" element={<ProtectedRoute><Dashboard><Templates /></Dashboard></ProtectedRoute>} />
       <Route path="/email-templates" element={<ProtectedRoute><Dashboard><EmailTemplates /></Dashboard></ProtectedRoute>} />
       <Route path="/settings/mfa" element={<ProtectedRoute><Dashboard><MfaSettings /></Dashboard></ProtectedRoute>} />
+      <Route path="/admin/ai-prompts" element={<ProtectedRoute><PermissionRoute anyOf={['AI_PROMPT_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><AIPromptConfigAdmin /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/admin/ai-usage" element={<ProtectedRoute><PermissionRoute anyOf={['CAN_VIEW_AI_STATS', 'GPT_ADMIN_VIEW']}><Dashboard><AIUsageReportsPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
 
       {/* Compras Públicas (CP) routes */}
       <Route path="/cp" element={<ProtectedRoute><Dashboard><CPDashboardPage /></Dashboard></ProtectedRoute>} />
