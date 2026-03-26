@@ -59,6 +59,14 @@ interface ApiResponse<T> {
 }
 
 class CatalogoPersonalizadoService {
+  private async safeJson<T>(response: Response): Promise<T | null> {
+    try {
+      return await response.json() as T;
+    } catch {
+      return null;
+    }
+  }
+
   // Queries (Lectura)
   async getAllCatalogosPersonalizados(): Promise<CatalogoPersonalizado[]> {
     try {
@@ -131,16 +139,17 @@ class CatalogoPersonalizadoService {
   async getCatalogosByCodigoPadre(codigoPadre: string): Promise<CatalogoPersonalizado[]> {
     try {
       const response = await get(`${API_BASE_URL}/custom-catalogs/queries/codigo-padre/${codigoPadre}`);
-      const result: ApiResponse<CatalogoPersonalizado[]> = await response.json();
+      const result = await this.safeJson<ApiResponse<CatalogoPersonalizado[]>>(response);
 
       if (!response.ok) {
-        throw new Error(result.message || 'Error al obtener catálogos personalizados');
+        // Keep app stable when catalog service is unavailable.
+        return [];
       }
 
-      return result.data || [];
+      return result?.data || [];
     } catch (error) {
       console.error('Error fetching catálogos by código padre:', error);
-      throw error;
+      return [];
     }
   }
 
