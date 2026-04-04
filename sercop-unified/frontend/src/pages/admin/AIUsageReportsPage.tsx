@@ -18,7 +18,11 @@ import {
   FiUsers,
   FiFilter,
   FiRefreshCw,
+  FiBarChart2,
+  FiAlertCircle,
 } from 'react-icons/fi';
+import { LuSparkles } from 'react-icons/lu';
+import { get } from '../../utils/apiClient';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../contexts/ThemeContext';
 import { DataTable, type DataTableColumn } from '../../components/ui/DataTable';
@@ -64,6 +68,40 @@ export const AIUsageReportsPage: React.FC = () => {
   const [usageRecords, setUsageRecords] = useState<UsageRecord[]>([]);
   const [summary, setSummary] = useState<UsageSummary | null>(null);
   const [selectedOrg, setSelectedOrg] = useState<string>('all');
+
+  // GPTsercop metrics
+  const [gptMetrics, setGptMetrics] = useState<{
+    totalRequests: number;
+    fallbackCount: number;
+    fallbackPct: number;
+    avgLatencyMs: number | null;
+    maxLatencyMs: number | null;
+    fallbackReasons: Record<string, number>;
+  } | null>(null);
+  const [gptMetricsLoading, setGptMetricsLoading] = useState(true);
+
+  // Load GPTsercop metrics
+  const loadGptMetrics = useCallback(async () => {
+    setGptMetricsLoading(true);
+    try {
+      const res = await get('/v1/gptsercop/metrics');
+      if (res.ok) {
+        const d = await res.json();
+        setGptMetrics({
+          totalRequests: d?.totalRequests ?? 0,
+          fallbackCount: d?.fallbackCount ?? 0,
+          fallbackPct: d?.totalRequests > 0 ? Math.round((d.fallbackCount / d.totalRequests) * 100) : 0,
+          avgLatencyMs: d?.avgLatencyMs ?? null,
+          maxLatencyMs: d?.maxLatencyMs ?? null,
+          fallbackReasons: d?.fallbackReasons ?? {},
+        });
+      }
+    } catch { /* silent */ } finally {
+      setGptMetricsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { loadGptMetrics(); }, [loadGptMetrics]);
 
   // Cargar datos
   const loadUsageData = useCallback(async () => {
@@ -496,6 +534,102 @@ export const AIUsageReportsPage: React.FC = () => {
             </HStack>
           </HStack>
         )}
+
+        {/* GPTsercop Node API Metrics */}
+        <Box
+          p={4}
+          bg={isDark ? 'purple.900' : 'purple.50'}
+          borderRadius="xl"
+          border="1px solid"
+          borderColor={isDark ? 'purple.700' : 'purple.200'}
+        >
+          <HStack gap={2} mb={3} justify="space-between">
+            <HStack gap={2}>
+              <LuSparkles size={16} color="var(--chakra-colors-purple-500)" />
+              <Text fontSize="13px" fontWeight="600" color={colors.textColor}>
+                GPTsercop Node API – Métricas de Uso
+              </Text>
+            </HStack>
+            <IconButton
+              aria-label="Actualizar métricas GPT"
+              size="xs"
+              variant="ghost"
+              onClick={loadGptMetrics}
+            >
+              <FiRefreshCw />
+            </IconButton>
+          </HStack>
+          {gptMetricsLoading ? (
+            <Spinner size="sm" />
+          ) : !gptMetrics ? (
+            <HStack gap={2}>
+              <FiAlertCircle size={14} color="var(--chakra-colors-orange-400)" />
+              <Text fontSize="12px" color={colors.textColorSecondary}>No se pudo cargar métricas del Node API</Text>
+            </HStack>
+          ) : (
+            <Box>
+              <HStack gap={4} flexWrap="wrap" mb={3}>
+                <Box p={3} bg={isDark ? 'gray.800' : 'white'} borderRadius="lg" minW="120px">
+                  <HStack gap={2} mb={1}>
+                    <FiBarChart2 size={14} color="var(--chakra-colors-purple-500)" />
+                    <Text fontSize="10px" fontWeight="600" textTransform="uppercase" color={colors.textColorSecondary}>Total Requests</Text>
+                  </HStack>
+                  <Text fontSize="xl" fontWeight="700" color={colors.textColor}>{gptMetrics.totalRequests.toLocaleString()}</Text>
+                </Box>
+                <Box p={3} bg={isDark ? 'gray.800' : 'white'} borderRadius="lg" minW="120px">
+                  <HStack gap={2} mb={1}>
+                    <FiAlertCircle size={14} color="var(--chakra-colors-orange-400)" />
+                    <Text fontSize="10px" fontWeight="600" textTransform="uppercase" color={colors.textColorSecondary}>Fallbacks</Text>
+                  </HStack>
+                  <HStack gap={1} align="baseline">
+                    <Text fontSize="xl" fontWeight="700" color={gptMetrics.fallbackPct > 20 ? 'orange.400' : colors.textColor}>
+                      {gptMetrics.fallbackPct}%
+                    </Text>
+                    <Text fontSize="12px" color={colors.textColorSecondary}>({gptMetrics.fallbackCount})</Text>
+                  </HStack>
+                </Box>
+                {gptMetrics.avgLatencyMs !== null && (
+                  <Box p={3} bg={isDark ? 'gray.800' : 'white'} borderRadius="lg" minW="120px">
+                    <HStack gap={2} mb={1}>
+                      <FiCpu size={14} color="var(--chakra-colors-blue-400)" />
+                      <Text fontSize="10px" fontWeight="600" textTransform="uppercase" color={colors.textColorSecondary}>Latencia Prom.</Text>
+                    </HStack>
+                    <HStack gap={1} align="baseline">
+                      <Text fontSize="xl" fontWeight="700" color={colors.textColor}>{gptMetrics.avgLatencyMs}</Text>
+                      <Text fontSize="12px" color={colors.textColorSecondary}>ms</Text>
+                    </HStack>
+                  </Box>
+                )}
+                {gptMetrics.maxLatencyMs !== null && (
+                  <Box p={3} bg={isDark ? 'gray.800' : 'white'} borderRadius="lg" minW="120px">
+                    <HStack gap={2} mb={1}>
+                      <FiCpu size={14} color="var(--chakra-colors-red-400)" />
+                      <Text fontSize="10px" fontWeight="600" textTransform="uppercase" color={colors.textColorSecondary}>Latencia Máx.</Text>
+                    </HStack>
+                    <HStack gap={1} align="baseline">
+                      <Text fontSize="xl" fontWeight="700" color={colors.textColor}>{gptMetrics.maxLatencyMs}</Text>
+                      <Text fontSize="12px" color={colors.textColorSecondary}>ms</Text>
+                    </HStack>
+                  </Box>
+                )}
+              </HStack>
+              {Object.keys(gptMetrics.fallbackReasons).length > 0 && (
+                <Box>
+                  <Text fontSize="11px" fontWeight="600" color={colors.textColorSecondary} mb={2} textTransform="uppercase">
+                    Razones de Fallback
+                  </Text>
+                  <HStack gap={2} flexWrap="wrap">
+                    {Object.entries(gptMetrics.fallbackReasons).map(([reason, count]) => (
+                      <Badge key={reason} colorPalette="orange" variant="subtle" fontSize="xs">
+                        {reason}: {count}
+                      </Badge>
+                    ))}
+                  </HStack>
+                </Box>
+              )}
+            </Box>
+          )}
+        </Box>
 
         {/* Información de facturación */}
         <Box

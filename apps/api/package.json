@@ -14,8 +14,12 @@
     "crawler:import": "tsx scripts/import-ocds-synthetic.ts",
     "cpc:import": "tsx scripts/import-cpc.ts",
     "test:unit": "tsx --test test/unit/*.test.ts",
+    "test:unit:analytics": "tsx --test test/unit/risk-engine.test.ts",
     "test:integration": "node --test test/integration/*.test.js",
-    "test:security": "node --test test/security/*.test.js"
+    "test:integration:analytics": "node --test test/integration/analytics.test.js",
+    "test:security": "node --test test/security/*.test.js",
+    "analytics:compute": "tsx scripts/compute-risk-scores.ts",
+    "analytics:compute:dry": "tsx scripts/compute-risk-scores.ts --dry-run"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

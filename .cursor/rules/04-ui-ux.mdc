@@ -1,0 +1,103 @@
+---
+description: Frontend UI/UX patterns — React 19, Chakra UI 3, Vite, routing, state, accessibility
+globs: sercop-unified/frontend/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# UI / UX Standards
+
+## Tech Stack (Official Frontend)
+
+- **Vite 7 + React 19 + TypeScript** — `sercop-unified/frontend/`
+- **Chakra UI 3 + Emotion** for all UI components
+- **react-router-dom 7** for navigation
+- **i18next** for internationalization (all user-visible strings must be translatable)
+- **Framer Motion** for animations (use sparingly)
+- **Recharts** for data visualization
+
+## Component Structure
+
+```
+src/
+  components/           → Reusable, stateless/presentational
+  pages/                → Route-level components (thin, delegate to components)
+    cp/                 → Compras Públicas / AI features
+    client/             → Client portal pages
+  services/             → API calls via apiClient.ts (no fetch() directly in components)
+  realtime/             → WebSocket / SignalR providers
+  theme.ts              → Chakra theme overrides (single source of truth for colors/fonts)
+  styles/               → Global CSS (minimal — prefer Chakra props)
+```
+
+## Component Rules
+
+```tsx
+// ✅ Functional components with explicit TypeScript props
+interface TenderCardProps {
+  tenderId: string;
+  title: string;
+  onSelect: (id: string) => void;
+}
+
+export const TenderCard: React.FC<TenderCardProps> = ({ tenderId, title, onSelect }) => {
+  return (
+    <Box p={4} borderRadius="md" onClick={() => onSelect(tenderId)}>
+      <Text fontWeight="bold">{title}</Text>
+    </Box>
+  );
+};
+
+// ❌ Never use default exports for components (use named exports)
+// ❌ Never call fetch() directly in a component — use services/
+```
+
+## State Management
+
+- **Local state**: `useState`, `useReducer` for component-level
+- **Shared state**: React Context (`AuthContext`, `BrandContext`) for global concerns
+- **Server state**: custom hooks wrapping service calls with loading/error states
+- No Redux — keep it simple
+
+## API Calls Pattern
+
+```typescript
+// ✅ All API calls via services/
+import { gptsercopService } from '../services/gptsercopService';
+
+const { data, isLoading, error } = useTenderSearch(query);
+
+// ✅ Service pattern
+export const gptsercopService = {
+  analyze: async (tenderId: string) =>
+    apiClient.post(`/api/v1/sercop/core-flow/analyze`, { tenderId }),
+};
+```
+
+## Accessibility (a11y)
+
+- All interactive elements need `aria-label` or visible text
+- Color contrast ratio ≥ 4.5:1 (WCAG AA)
+- Keyboard navigation must work for all flows
+- Use `@axe-core/playwright` in E2E to catch a11y regressions
+- Never disable focus outlines
+
+## Responsive Design
+
+- Mobile-first: use Chakra responsive array syntax `fontSize={['sm', 'md', 'lg']}`
+- Test on 375px (mobile), 768px (tablet), 1280px (desktop)
+- `styles/mobile.css` for mobile-specific overrides when Chakra props are insufficient
+
+## Realtime (SignalR / WebSocket)
+
+- Realtime connections managed in `realtime/` providers — never in page components
+- Clean up subscriptions on unmount with `useEffect` cleanup function
+- Graceful degradation: app must work if realtime is unavailable
+
+## Do / Don't
+
+- ✅ Use Chakra theme tokens — never hardcode hex colors in components
+- ✅ i18n every user-facing string via `useTranslation()`
+- ✅ Lazy-load heavy pages with `React.lazy` + `Suspense`
+- ❌ Never import from `apps/*-portal` — those are deprecated
+- ❌ Never bypass `AuthContext` for protected views
+- ❌ Never use inline styles (use Chakra props or theme)

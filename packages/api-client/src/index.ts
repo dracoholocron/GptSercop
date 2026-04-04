@@ -78,6 +78,53 @@ export type Provider = {
   patrimonyAmount?: number | null;
 };
 
+// ---- Analytics types ----
+export type RiskScore = {
+  id: string;
+  tenderId: string;
+  competitionRisk: number;
+  priceRisk: number;
+  supplierRisk: number;
+  processRisk: number;
+  executionRisk: number;
+  totalScore: number;
+  riskLevel: 'low' | 'medium' | 'high';
+  flags: string[];
+  calculatedAt: string;
+  tender?: {
+    id: string;
+    code?: string | null;
+    title: string;
+    processType?: string | null;
+    procurementPlan?: { entity?: { id: string; name: string } | null } | null;
+  };
+};
+
+export type AlertEvent = {
+  id: string;
+  alertType: string;
+  severity: 'INFO' | 'WARNING' | 'CRITICAL';
+  entityType: string;
+  entityId: string;
+  message: string;
+  metadata?: Record<string, unknown> | null;
+  resolvedAt?: string | null;
+  createdAt: string;
+};
+
+export type MarketStats = {
+  entityId?: string;
+  entityName?: string;
+  entityCode?: string;
+  province?: string;
+  processType?: string;
+  contractCount: number;
+  tenderCount?: number;
+  totalAmount: number;
+  avgAmount?: number;
+  providerCount?: number;
+};
+
 export type Catalog = {
   id: string;
   entityId?: string | null;
@@ -1031,5 +1078,132 @@ export const api = {
     async deleteChunk(id: string): Promise<void> {
       await request(`/api/v1/rag/chunks/${id}`, { method: 'DELETE' });
     },
+  },
+
+  // ---- Analytics module ----
+  async getAnalyticsDashboard(): Promise<{
+    totalTenders: number;
+    totalContracts: number;
+    totalProviders: number;
+    totalEntities: number;
+    totalContractAmount: number;
+    avgBidders: number;
+    riskDistribution: { high: number; medium: number; low: number };
+    openAlerts: number;
+  }> {
+    return request('/api/v1/analytics/dashboard');
+  },
+
+  async getRiskScores(params?: {
+    level?: 'low' | 'medium' | 'high';
+    entityId?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ data: RiskScore[]; total: number; page: number; limit: number }> {
+    const q = new URLSearchParams();
+    if (params?.level) q.set('level', params.level);
+    if (params?.entityId) q.set('entityId', params.entityId);
+    if (params?.from) q.set('from', params.from);
+    if (params?.to) q.set('to', params.to);
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.limit != null) q.set('limit', String(params.limit));
+    return request(`/api/v1/analytics/risk-scores${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async getCompetition(params?: { year?: number }): Promise<{
+    avgBidders: number;
+    bySector: Array<{ processType: string; tenderCount: number; avgBidders: number; singleBidderPct: number }>;
+    hhiByEntity: Array<{ entityId: string; entityName: string; hhi: number }>;
+  }> {
+    const q = new URLSearchParams();
+    if (params?.year != null) q.set('year', String(params.year));
+    return request(`/api/v1/analytics/competition${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async getMarket(params?: {
+    year?: number;
+    groupBy?: 'entity' | 'province' | 'processType';
+  }): Promise<{ data: MarketStats[] }> {
+    const q = new URLSearchParams();
+    if (params?.year != null) q.set('year', String(params.year));
+    if (params?.groupBy) q.set('groupBy', params.groupBy);
+    return request(`/api/v1/analytics/market${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async getPacVsExecuted(params?: { year?: number }): Promise<{
+    data: Array<{
+      entityId: string;
+      entityName: string;
+      planned: number;
+      executed: number;
+      plannedAmount: number;
+      executedAmount: number;
+      executionRate: number;
+      deviation: number;
+    }>;
+  }> {
+    const q = new URLSearchParams();
+    if (params?.year != null) q.set('year', String(params.year));
+    return request(`/api/v1/analytics/pac-vs-executed${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async getAlerts(params?: {
+    severity?: 'INFO' | 'WARNING' | 'CRITICAL';
+    resolved?: boolean;
+    from?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ data: AlertEvent[]; total: number; page: number; limit: number }> {
+    const q = new URLSearchParams();
+    if (params?.severity) q.set('severity', params.severity);
+    if (params?.resolved != null) q.set('resolved', String(params.resolved));
+    if (params?.from) q.set('from', params.from);
+    if (params?.page != null) q.set('page', String(params.page));
+    if (params?.limit != null) q.set('limit', String(params.limit));
+    return request(`/api/v1/analytics/alerts${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async computeRisk(tenderId: string): Promise<RiskScore> {
+    return request(`/api/v1/analytics/compute-risk/${tenderId}`, { method: 'POST' });
+  },
+
+  async getProviderNetwork(params?: { minShared?: number }): Promise<{
+    nodes: Array<{ id: string; name: string; contractCount: number; totalAmount: number }>;
+    edges: Array<{ providerAId: string; providerBId: string; sharedTenders: number }>;
+  }> {
+    const q = new URLSearchParams();
+    if (params?.minShared != null) q.set('minShared', String(params.minShared));
+    return request(`/api/v1/analytics/provider-network${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async getProviderNeighbors(providerId: string): Promise<{
+    data: Array<{ id: string; name: string; contractCount: number; totalAmount: number }>;
+  }> {
+    return request(`/api/v1/analytics/provider-network/${providerId}/neighbors`);
+  },
+
+  async getPublicMarketOverview(params?: { year?: number }): Promise<{
+    year: number;
+    totalContractAmount: number;
+    byProcessType: Array<{ processType: string; tenderCount: number; totalAmount: number }>;
+  }> {
+    const q = new URLSearchParams();
+    if (params?.year != null) q.set('year', String(params.year));
+    return request(`/api/v1/public/analytics/market-overview${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async getPublicTopProviders(params?: { year?: number; limit?: number }): Promise<{
+    data: Array<{ providerId: string; name: string; totalAmount: number; contractCount: number }>;
+  }> {
+    const q = new URLSearchParams();
+    if (params?.year != null) q.set('year', String(params.year));
+    if (params?.limit != null) q.set('limit', String(params.limit));
+    return request(`/api/v1/public/analytics/top-providers${q.toString() ? `?${q}` : ''}`);
+  },
+
+  async getPublicRiskSummary(): Promise<{ low: number; medium: number; high: number; total: number }> {
+    return request('/api/v1/public/analytics/risk-summary');
   },
 };

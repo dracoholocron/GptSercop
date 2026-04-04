@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { id: 'reclamos', label: 'Reclamos', href: '/reclamos' },
   { id: 'usuarios', label: 'Usuarios', href: '/usuarios' },
   { id: 'auditoria', label: 'Auditoría', href: '/auditoria' },
+  { id: 'analytics', label: 'Analítica', href: '/analytics' },
   { id: 'parametros', label: 'Parámetros', href: '/parametros' },
   { id: 'normativa', label: 'Normativa', href: '/normativa' },
 ];

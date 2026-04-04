@@ -1,0 +1,107 @@
+---
+description: Database patterns — Prisma ORM, migrations, raw SQL, and Java JPA conventions
+globs: apps/api/**/*.ts,**/*.prisma
+alwaysApply: false
+---
+
+# Database & ORM Standards
+
+## Prisma (Node API)
+
+### Client Singleton
+
+```typescript
+// db.ts — single shared instance, never create new PrismaClient in modules
+import { PrismaClient } from '@prisma/client';
+
+const db = new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['query'] : [],
+});
+
+export default db;
+```
+
+### Migration Workflow
+
+```bash
+# Development — evolve schema iteratively
+npx prisma db push
+
+# Production — generate and apply tracked migration
+npx prisma migrate dev --name describe_change
+npx prisma migrate deploy   # CI/CD deploy step
+
+# Seed initial data
+npx prisma db seed
+```
+
+### Query Patterns
+
+```typescript
+// ✅ Typed, safe queries
+const tenders = await db.tender.findMany({
+  where: { status: 'ACTIVE', dt: { gte: startDate } },
+  select: { id: true, title: true, budget: true },
+  orderBy: { createdAt: 'desc' },
+  take: pageSize,
+  skip: (page - 1) * pageSize,
+});
+
+// ✅ Transactions for multi-step writes
+await db.$transaction([
+  db.tender.update({ where: { id }, data: { status: 'AWARDED' } }),
+  db.auditLog.create({ data: { action: 'AWARD', entityId: id, userId } }),
+]);
+
+// ⚠️  Raw SQL — only for full-text search, never for writes
+const results = await db.$queryRawUnsafe(
+  `SELECT id, title, ts_rank(search_vector, query) AS rank
+   FROM tenders, plainto_tsquery('spanish', $1) query
+   WHERE search_vector @@ query
+   ORDER BY rank DESC LIMIT $2`,
+  searchTerm,   // parameterized — never string-interpolated
+  limit,
+);
+```
+
+### Schema Conventions
+
+```prisma
+model Tender {
+  id          String   @id @default(cuid())
+  title       String
+  budget      Decimal  @db.Decimal(18, 2)
+  status      TenderStatus @default(DRAFT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // Always include createdAt/updatedAt on every model
+  // Use cuid() for all PKs (not autoincrement)
+}
+```
+
+- Field names: **camelCase** in Prisma, **snake_case** in raw SQL
+- Always use `@updatedAt` on mutable models
+- Soft deletes: `deletedAt DateTime?` + filter `where: { deletedAt: null }`
+
+## RAG / Full-Text Search
+
+- Uses PostgreSQL `tsvector` with Spanish language config
+- Index: `search_vector` computed column on `RagChunk`
+- Only `$queryRawUnsafe` for SELECT — all parameters positional
+
+## Spring Data JPA (Java backend)
+
+- One repository interface per aggregate root
+- JPQL for complex queries; native SQL only for performance-critical paths
+- Flyway for all schema changes — **never** use `spring.jpa.hibernate.ddl-auto=update` in production
+- Multi-datasource configured in `application.yml` profiles
+- Soft-delete pattern with `@Where(clause = "deleted = false")`
+
+## Do / Don't
+
+- ✅ Always run `prisma generate` after schema changes
+- ✅ Index foreign keys and frequently-filtered columns
+- ✅ Use Decimal for monetary values (never Float/Double)
+- ❌ Never expose Prisma error details to API consumers
+- ❌ Never use `deleteMany` without a specific `where` clause
+- ❌ Never call `$queryRawUnsafe` with user input via string interpolation

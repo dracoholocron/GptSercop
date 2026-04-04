@@ -15,6 +15,7 @@ import { cpcRoutes } from './modules/cpc/routes.js';
 import { awardsRoutes } from './modules/awards/routes.js';
 import { pacRoutes } from './modules/pac/routes.js';
 import { coreRoutes } from './modules/core/routes.js';
+import { analyticsRoutes } from './modules/analytics/routes.js';
 
 const app = Fastify({ logger: true, bodyLimit: 20 * 1024 * 1024 });
 
@@ -47,6 +48,7 @@ await app.register(cpcRoutes);
 await app.register(awardsRoutes);
 await app.register(pacRoutes);
 await app.register(coreRoutes);
+await app.register(analyticsRoutes);
 
 const host = process.env.HOST ?? '0.0.0.0';
 const port = Number(process.env.PORT ?? 3080);

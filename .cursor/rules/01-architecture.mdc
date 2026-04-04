@@ -1,0 +1,52 @@
+---
+description: Project architecture, monorepo structure, and stack conventions for GPTsercop
+alwaysApply: true
+---
+
+# Architecture & Project Structure
+
+## Monorepo Layout
+
+```
+apps/api               → Fastify 5 + Prisma (GPTsercop active backend)
+apps/*-portal          → Next.js 14 (deprecated UX; use sercop-unified/frontend for new UI)
+packages/design-system → Shared React components
+packages/api-client    → Typed fetch client
+sercop-unified/frontend → Vite 7 + React 19 + Chakra UI (OFFICIAL production UX)
+sercop-unified/backend-java → Spring Boot 3 + Kafka (OFFICIAL enterprise backend)
+infra/                 → Nginx gateway, K8s manifests, Terraform
+e2e/                   → Playwright E2E specs
+scripts/               → Dev tooling, crawlers, smoke tests
+```
+
+## Stack Decisions
+
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| Node API | Fastify 5, ESM, TypeScript 5.6 | GPTsercop backend |
+| Java API | Spring Boot 3.2, Java 21 | Enterprise/CQRS backend |
+| Frontend | Vite 7 + React 19 + Chakra UI 3 | Official UX |
+| ORM | Prisma 6 → PostgreSQL | Node side |
+| Java ORM | Spring Data JPA + Flyway | Java side |
+| Cache | Redis 7 | Health + session |
+| Storage | MinIO / S3-compatible | Documents |
+| Gateway | Nginx (rate-limit 30 r/s) | Proxy to API |
+| Messaging | Kafka (Java), optional Pub/Sub/Service Bus | Events |
+| Node ≥ 20, npm workspaces |
+
+## Module Pattern (Fastify API)
+
+Each domain lives in `apps/api/src/modules/<domain>/`:
+- `routes.ts` — exports `FastifyPluginAsync`, registers `/api/v1/<domain>/...`
+- Service classes + adapters follow ports-and-adapters style
+- Cross-cutting: `db.ts`, `redis.ts`, `storage.ts`, `audit.ts`, `rag.ts`
+
+## New Feature Checklist
+
+- [ ] Add module under `apps/api/src/modules/<domain>/`
+- [ ] Register plugin in `src/index.ts`
+- [ ] Add OpenAPI entry in `src/openapi.ts`
+- [ ] Add allowlist entries in `authPlugin.ts` for public routes
+- [ ] Add Prisma model/migration if new entity
+- [ ] Add Vitest unit + integration tests
+- [ ] Add E2E spec under `e2e/`

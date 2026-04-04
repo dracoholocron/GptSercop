@@ -3,11 +3,15 @@
  * Objetivo: al menos 100 registros de cada tipo para pruebas del módulo IA
  *
  * Uso: npm run crawler:import (desde raíz) o tsx scripts/import-ocds-synthetic.ts (desde apps/api)
+ * Flags:
+ *   --incremental  Solo importa ocids no existentes en la DB (evita duplicados en re-ejecuciones)
  */
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker/locale/es';
 
 const prisma = new PrismaClient();
+
+const IS_INCREMENTAL = process.argv.includes('--incremental');
 
 const OCDS_BASE = process.env.CRAWLER_OCDS_URL || 'https://datosabiertos.compraspublicas.gob.ec/PLATAFORMA/api';
 const TARGET_COUNT = 100;
@@ -23,14 +27,40 @@ const CANTONES: Record<string, string[]> = {
 
 type OcdsSearchItem = {
   ocid?: string;
+  id?: string;
   buyerId?: string;
   buyerName?: string;
+  buyer?: { name?: string; id?: string };
   title?: string;
   description?: string;
   internal_type?: string;
   supplierName?: string;
   supplierId?: string;
   amount?: number;
+  value?: number | { amount?: number };
+  monto?: number;
+  tender?: {
+    title?: string;
+    description?: string;
+    procurementMethod?: string;
+    value?: { amount?: number };
+    status?: string;
+  };
+  awards?: Array<{
+    status?: string;
+    value?: { amount?: number };
+    date?: string;
+    suppliers?: Array<{ id?: string; name?: string; identifier?: { id?: string; legalName?: string } }>;
+  }>;
+  contracts?: Array<{
+    value?: { amount?: number };
+    status?: string;
+    dateSigned?: string;
+    period?: { startDate?: string; endDate?: string };
+  }>;
+  planning?: {
+    budget?: { amount?: { amount?: number } };
+  };
   [key: string]: unknown;
 };
 
@@ -71,6 +101,14 @@ async function importFromOcds(): Promise<{
   let bidsCreated = 0;
   let contractsCreated = 0;
 
+  // --incremental: load existing ocids from DB to skip already-imported records
+  if (IS_INCREMENTAL) {
+    console.log('  [incremental] Cargando ocids existentes...');
+    const existingCodes = await prisma.tender.findMany({ select: { code: true }, where: { code: { startsWith: 'OCDS-' } } });
+    for (const t of existingCodes) ocidsSeen.add(t.code);
+    console.log(`  [incremental] ${ocidsSeen.size} ocids ya en DB, se omitirán`);
+  }
+
   const searches = ['compras', 'servicios', 'equipos', 'suministros', 'obras', 'construcción', 'mantenimiento', 'consultoría'];
   const years = [2024, 2023, 2022];
 
@@ -82,13 +120,40 @@ async function importFromOcds(): Promise<{
 
         for (const item of data as OcdsSearchItem[]) {
           const ocid = item.ocid || item.id || JSON.stringify(item).slice(0, 50);
-          if (ocidsSeen.has(ocid)) continue;
-          ocidsSeen.add(ocid);
+          const tenderCode = `OCDS-${ocid.toString().replace(/[^a-zA-Z0-9-]/g, '_').slice(0, 60)}`;
 
-          const buyerName = (item.buyerName || item.buyer?.name || item.comprador || '')?.toString().trim();
-          const supplierName = (item.supplierName || item.supplier?.name || item.proveedor || item.adjudicatario || '')?.toString().trim();
-          const title = (item.title || item.titulo || item.description || 'Proceso de contratación')?.toString().trim().slice(0, 500);
-          const amount = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.value || item.monto || item.amount || 0)) || 10000;
+          if (ocidsSeen.has(tenderCode)) continue;
+          ocidsSeen.add(tenderCode);
+
+          // --incremental: skip if code already in DB
+          if (IS_INCREMENTAL) {
+            const existing = await prisma.tender.findFirst({ where: { code: tenderCode } });
+            if (existing) continue;
+          }
+
+          // Extract buyer from OCDS structure
+          const buyerName = (
+            item.buyerName ||
+            (item.buyer as { name?: string } | undefined)?.name ||
+            (item as { comprador?: string }).comprador ||
+            ''
+          )?.toString().trim();
+
+          // OCDS full field mapping: tender.title > title > tender.description
+          const ocdsTitle = item.tender?.title || item.title || item.tender?.description || 'Proceso de contratación';
+          const title = ocdsTitle.toString().trim().slice(0, 500);
+          const description = (item.tender?.description || item.description || '')?.toString().slice(0, 2000) || null;
+          const procurementMethod = item.tender?.procurementMethod || 'open';
+
+          // Amount: planning.budget > tender.value > top-level amount
+          const rawAmount =
+            item.planning?.budget?.amount?.amount ??
+            item.tender?.value?.amount ??
+            (typeof item.value === 'number' ? item.value : (item.value as { amount?: number } | undefined)?.amount) ??
+            item.amount ??
+            item.monto ??
+            10000;
+          const amount = parseFloat(String(rawAmount)) || 10000;
 
           if (!title) continue;
 
@@ -125,9 +190,7 @@ async function importFromOcds(): Promise<{
             entityId = entity.id;
           }
 
-          let plan = await prisma.procurementPlan.findFirst({
-            where: { entityId, year },
-          });
+          let plan = await prisma.procurementPlan.findFirst({ where: { entityId, year } });
           if (!plan) {
             plan = await prisma.procurementPlan.create({
               data: {
@@ -140,65 +203,118 @@ async function importFromOcds(): Promise<{
             });
           }
 
-          const tenderCode = `OCDS-T-${ocidsSeen.size}`;
-          const existingTender = await prisma.tender.findFirst({
-            where: { code: tenderCode },
-          });
+          const existingTender = await prisma.tender.findFirst({ where: { code: tenderCode } });
           if (existingTender) continue;
 
+          const tenderStatus = item.tender?.status === 'complete' ? 'awarded' : 'published';
           const tender = await prisma.tender.create({
             data: {
               procurementPlanId: plan.id,
               code: tenderCode,
               title: title || `Proceso ${ocid}`,
-              description: (item.description as string)?.slice(0, 2000) || null,
-              status: 'published',
-              procurementMethod: 'open',
+              description,
+              status: tenderStatus,
+              procurementMethod: procurementMethod.slice(0, 50),
               estimatedAmount: amount,
               publishedAt: new Date(year, 0, 1),
             },
           });
           tendersCreated++;
 
-          let providerId: string | undefined;
-          if (supplierName) {
-            const pKey = supplierName.toLowerCase().slice(0, 100);
+          // Map awards[0].suppliers[0] → Provider + Bid (winner)
+          const awardedSuppliers: Array<{ id?: string; name?: string; identifier?: { id?: string; legalName?: string } }> = [];
+          if (item.awards?.length) {
+            for (const award of item.awards) {
+              if (award.status === 'active' || award.status === 'pending') {
+                if (award.suppliers?.length) awardedSuppliers.push(...award.suppliers);
+              }
+            }
+          }
+
+          // Fallback to legacy top-level supplier fields
+          const legacySupplierName = (
+            item.supplierName ||
+            (item as { supplier?: { name?: string } }).supplier?.name ||
+            (item as { proveedor?: string }).proveedor ||
+            (item as { adjudicatario?: string }).adjudicatario ||
+            ''
+          )?.toString().trim();
+
+          const suppliersToProcess = awardedSuppliers.length
+            ? awardedSuppliers
+            : legacySupplierName
+              ? [{ name: legacySupplierName, id: item.supplierId?.toString() }]
+              : [];
+
+          let firstProviderId: string | undefined;
+          for (const supplier of suppliersToProcess) {
+            const sName = (supplier.identifier?.legalName || supplier.name || '').trim();
+            if (!sName) continue;
+            const pKey = sName.toLowerCase().slice(0, 100);
             if (!providerByKey.has(pKey)) {
               providerCounter++;
-              const prov = await prisma.provider.create({
-                data: {
-                  name: supplierName.slice(0, 255),
-                  identifier: (item.supplierId || item.ruc || `OCDS-P-${providerCounter}`)?.toString().slice(0, 20),
-                  legalName: supplierName,
+              const sId = (supplier.identifier?.id || supplier.id || `OCDS-P-${providerCounter}`)?.toString().slice(0, 20);
+              const prov = await prisma.provider.upsert({
+                where: { identifier: sId },
+                update: {},
+                create: {
+                  name: sName.slice(0, 255),
+                  identifier: sId,
+                  legalName: sName,
                   province: PROVINCIAS_EC[providerCounter % PROVINCIAS_EC.length],
                   canton: 'N/A',
                 },
               });
               providerByKey.set(pKey, prov.id);
             }
-            providerId = providerByKey.get(pKey);
-          }
+            const providerId = providerByKey.get(pKey)!;
+            if (!firstProviderId) firstProviderId = providerId;
 
-          if (providerId) {
-            const bid = await prisma.bid.create({
-              data: {
-                tenderId: tender.id,
-                providerId,
-                amount: amount * (0.9 + Math.random() * 0.2),
-                status: 'submitted',
-                submittedAt: new Date(year, 1, 1),
-              },
-            });
-            bidsCreated++;
-
-            if (Math.random() > 0.5) {
-              await prisma.contract.create({
+            const bidAmount = item.awards?.[0]?.value?.amount ?? amount * (0.9 + Math.random() * 0.2);
+            const existingBid = await prisma.bid.findFirst({ where: { tenderId: tender.id, providerId } });
+            if (!existingBid) {
+              await prisma.bid.create({
                 data: {
                   tenderId: tender.id,
                   providerId,
+                  amount: bidAmount,
+                  status: 'submitted',
+                  submittedAt: new Date(year, 1, 1),
+                },
+              });
+              bidsCreated++;
+            }
+          }
+
+          // Map contracts[0].value.amount → Contract.amount
+          if (firstProviderId && item.contracts?.length) {
+            const firstContract = item.contracts[0];
+            const contractAmount = firstContract.value?.amount ?? amount;
+            const signedAt = firstContract.dateSigned ? new Date(firstContract.dateSigned) : new Date(year, 2, 1);
+            const existingContract = await prisma.contract.findFirst({ where: { tenderId: tender.id } });
+            if (!existingContract) {
+              await prisma.contract.create({
+                data: {
+                  tenderId: tender.id,
+                  providerId: firstProviderId,
+                  contractNo: `CON-${tenderCode.slice(0, 30)}`,
+                  status: firstContract.status === 'terminated' ? 'terminated' : 'signed',
+                  amount: contractAmount,
+                  signedAt,
+                },
+              }).catch(() => {});
+              contractsCreated++;
+            }
+          } else if (firstProviderId && Math.random() > 0.5) {
+            const existingContract = await prisma.contract.findFirst({ where: { tenderId: tender.id } });
+            if (!existingContract) {
+              await prisma.contract.create({
+                data: {
+                  tenderId: tender.id,
+                  providerId: firstProviderId,
                   contractNo: `CON-${year}-${contractsCreated.toString().padStart(4, '0')}`,
                   status: 'signed',
-                  amount: bid.amount,
+                  amount: amount,
                   signedAt: new Date(year, 2, 1),
                 },
               }).catch(() => {});
@@ -211,7 +327,8 @@ async function importFromOcds(): Promise<{
     }
   }
 
-  return { tendersCreated, bidsCreated, contractsCreated };
+  console.log(`  ${tendersCreated} items`);
+  return { entities: entityByKey, providers: providerByKey, tendersCreated, bidsCreated, contractsCreated };
 }
 
 async function generateSynthetic(

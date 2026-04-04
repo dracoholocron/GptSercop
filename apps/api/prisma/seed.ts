@@ -748,11 +748,493 @@ async function main() {
     }
   }
 
+  // ---- ANALYTICS SCENARIOS (Plataforma Analítica SERCOP) ----
+  // Escenario A: proceso con un solo oferente (SINGLE_BIDDER pattern)
+  const entitySercop = entities.find((e) => e.code === 'SERCOP') ?? entities[0];
+  const providerA = providers[0];
+  const providerB = providers[1];
+  const providerC = providers[2];
+  const providerD = providers[3];
+  const providerE = providers[4] ?? providers[0];
+
+  let analyticsPlan = await prisma.procurementPlan.findFirst({ where: { entityId: entitySercop.id, year } });
+  if (!analyticsPlan) {
+    analyticsPlan = await prisma.procurementPlan.create({
+      data: { entityId: entitySercop.id, year, status: 'published', publishedAt: new Date(), totalAmount: 2000000 },
+    });
+  }
+
+  // Escenario A: un solo oferente (SINGLE_BIDDER)
+  const codeA = `SERCOP-${year}-AN-001`;
+  let tenderA = await prisma.tender.findFirst({ where: { code: codeA } });
+  if (!tenderA) {
+    tenderA = await prisma.tender.create({
+      data: {
+        procurementPlanId: analyticsPlan.id,
+        code: codeA,
+        title: 'Consultoría sistemas informáticos – proceso analítico A',
+        description: 'Proceso de análisis con un solo oferente para detección SINGLE_BIDDER.',
+        status: 'awarded',
+        procurementMethod: 'open',
+        processType: 'licitacion',
+        regime: 'ordinario',
+        estimatedAmount: 120000,
+        referenceBudgetAmount: 120000,
+        publishedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+  // Solo un bid para este proceso
+  const existingBidsA = await prisma.bid.count({ where: { tenderId: tenderA.id } });
+  if (existingBidsA === 0 && providerA) {
+    await prisma.bid.create({
+      data: {
+        tenderId: tenderA.id,
+        providerId: providerA.id,
+        amount: 118000,
+        status: 'submitted',
+        submittedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
+      },
+    });
+    const contractA = await prisma.contract.findFirst({ where: { tenderId: tenderA.id } });
+    if (!contractA) {
+      await prisma.contract.create({
+        data: {
+          tenderId: tenderA.id,
+          providerId: providerA.id,
+          contractNo: `${codeA}-CT`,
+          status: 'active',
+          amount: 118000,
+          signedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+        },
+      });
+    }
+  }
+  console.log('  Escenario A: proceso con un solo oferente (SERCOP-AN-001)');
+
+  // Escenario B: proveedor dominante – providerA gana >40% contratos de la entidad
+  const entityMec = entities.find((e) => e.code === 'MEC') ?? entities[0];
+  let mecPlan = await prisma.procurementPlan.findFirst({ where: { entityId: entityMec.id, year } });
+  if (!mecPlan) {
+    mecPlan = await prisma.procurementPlan.create({
+      data: { entityId: entityMec.id, year, status: 'published', publishedAt: new Date(), totalAmount: 800000 },
+    });
+  }
+  const dominantCodes = [`MEC-${year}-AN-010`, `MEC-${year}-AN-011`, `MEC-${year}-AN-012`];
+  for (const [i, dCode] of dominantCodes.entries()) {
+    let tD = await prisma.tender.findFirst({ where: { code: dCode } });
+    if (!tD) {
+      tD = await prisma.tender.create({
+        data: {
+          procurementPlanId: mecPlan.id,
+          code: dCode,
+          title: `Suministros médicos dominante – lote ${i + 1}`,
+          description: `Proceso ${dCode} para escenario proveedor dominante.`,
+          status: 'awarded',
+          procurementMethod: 'open',
+          processType: 'licitacion',
+          regime: 'ordinario',
+          estimatedAmount: 80000 + i * 10000,
+          referenceBudgetAmount: 80000 + i * 10000,
+          publishedAt: new Date(Date.now() - (60 - i * 5) * 24 * 60 * 60 * 1000),
+        },
+      });
+    }
+    const bidsD = await prisma.bid.count({ where: { tenderId: tD.id } });
+    if (bidsD === 0 && providerA && providerB) {
+      await prisma.bid.createMany({
+        data: [
+          { tenderId: tD.id, providerId: providerA.id, amount: 78000 + i * 9000, status: 'submitted', submittedAt: new Date() },
+          { tenderId: tD.id, providerId: providerB.id, amount: 82000 + i * 11000, status: 'submitted', submittedAt: new Date() },
+        ],
+      });
+      const contractD = await prisma.contract.findFirst({ where: { tenderId: tD.id } });
+      if (!contractD) {
+        await prisma.contract.create({
+          data: {
+            tenderId: tD.id,
+            providerId: providerA.id,
+            contractNo: `${dCode}-CT`,
+            status: 'active',
+            amount: 78000 + i * 9000,
+            signedAt: new Date(Date.now() - (50 - i * 5) * 24 * 60 * 60 * 1000),
+          },
+        });
+      }
+    }
+  }
+  console.log('  Escenario B: proveedor dominante en MEC (3 contratos a mismo proveedor)');
+
+  // Escenario C: contrato al 98% del presupuesto referencial (OVERPRICE pattern)
+  const codeC = `SERCOP-${year}-AN-002`;
+  let tenderC = await prisma.tender.findFirst({ where: { code: codeC } });
+  if (!tenderC) {
+    tenderC = await prisma.tender.create({
+      data: {
+        procurementPlanId: analyticsPlan.id,
+        code: codeC,
+        title: 'Adquisición equipos tecnológicos – proceso analítico C',
+        description: 'Proceso para detección OVERPRICE: contrato al 98% del presupuesto.',
+        status: 'awarded',
+        procurementMethod: 'open',
+        processType: 'licitacion',
+        regime: 'ordinario',
+        estimatedAmount: 200000,
+        referenceBudgetAmount: 200000,
+        publishedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+  const existingBidsC = await prisma.bid.count({ where: { tenderId: tenderC.id } });
+  if (existingBidsC === 0 && providerB && providerC) {
+    await prisma.bid.createMany({
+      data: [
+        { tenderId: tenderC.id, providerId: providerB.id, amount: 196000, status: 'submitted', submittedAt: new Date() },
+        { tenderId: tenderC.id, providerId: providerC.id, amount: 199500, status: 'submitted', submittedAt: new Date() },
+      ],
+    });
+    const contractC = await prisma.contract.findFirst({ where: { tenderId: tenderC.id } });
+    if (!contractC) {
+      await prisma.contract.create({
+        data: {
+          tenderId: tenderC.id,
+          providerId: providerB.id,
+          contractNo: `${codeC}-CT`,
+          status: 'active',
+          amount: 196000, // 98% de 200000 → OVERPRICE flag
+          signedAt: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000),
+        },
+      });
+    }
+  }
+  console.log('  Escenario C: contrato al 98% del presupuesto referencial (SERCOP-AN-002)');
+
+  // Escenario D: desviación PAC vs ejecutado (entidad con 3 ítems PAC, solo 1 ejecutado)
+  const entityIess = entities.find((e) => e.code === 'IESS') ?? entities[3];
+  let iessPlan = await prisma.procurementPlan.findFirst({ where: { entityId: entityIess.id, year } });
+  if (!iessPlan) {
+    iessPlan = await prisma.procurementPlan.create({
+      data: { entityId: entityIess.id, year, status: 'published', publishedAt: new Date(), totalAmount: 600000 },
+    });
+  }
+  const pacDeviationCodes = [`IESS-${year}-AN-020`, `IESS-${year}-AN-021`, `IESS-${year}-AN-022`];
+  for (const [i, pCode] of pacDeviationCodes.entries()) {
+    let tPAC = await prisma.tender.findFirst({ where: { code: pCode } });
+    if (!tPAC) {
+      // Solo el primer proceso se ejecuta (published → awarded); los otros quedan en draft
+      await prisma.tender.create({
+        data: {
+          procurementPlanId: iessPlan.id,
+          code: pCode,
+          title: `Plan anual IESS – ítem ${i + 1}`,
+          description: `Proceso ${pCode} para escenario desviación PAC.`,
+          status: i === 0 ? 'awarded' : 'draft',
+          procurementMethod: 'open',
+          processType: 'licitacion',
+          regime: 'ordinario',
+          estimatedAmount: 150000,
+          publishedAt: i === 0 ? new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) : null,
+        },
+      });
+    }
+  }
+  console.log('  Escenario D: desviación PAC vs ejecutado en IESS (1 de 3 procesos ejecutado)');
+
+  // ---- ANALYTICS SCENARIOS FASE 2 ----
+
+  // Escenario E: proceso muy rápido (FAST_PROCESS) – adjudicado en 3 días
+  const codeE = `SERCOP-${year}-AN-003`;
+  let tenderE = await prisma.tender.findFirst({ where: { code: codeE } });
+  if (!tenderE) {
+    const pubDateE = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
+    const signDateE = new Date(pubDateE.getTime() + 3 * 24 * 60 * 60 * 1000); // solo 3 días
+    tenderE = await prisma.tender.create({
+      data: {
+        procurementPlanId: analyticsPlan.id,
+        code: codeE,
+        title: 'Servicios de consultoría express – proceso analítico E',
+        description: 'Proceso para detección FAST_PROCESS: adjudicado en 3 días hábiles.',
+        status: 'awarded',
+        procurementMethod: 'direct',
+        processType: 'contratacion_directa',
+        regime: 'ordinario',
+        estimatedAmount: 50000,
+        referenceBudgetAmount: 50000,
+        publishedAt: pubDateE,
+      },
+    });
+    const existingBidsE = await prisma.bid.count({ where: { tenderId: tenderE.id } });
+    if (existingBidsE === 0 && providerA) {
+      await prisma.bid.create({
+        data: { tenderId: tenderE.id, providerId: providerA.id, amount: 49000, status: 'submitted', submittedAt: pubDateE },
+      });
+      const contractE = await prisma.contract.findFirst({ where: { tenderId: tenderE.id } });
+      if (!contractE) {
+        await prisma.contract.create({
+          data: { tenderId: tenderE.id, providerId: providerA.id, contractNo: `${codeE}-CT`, status: 'active', amount: 49000, signedAt: signDateE },
+        });
+      }
+    }
+  }
+  console.log('  Escenario E: proceso muy rápido – adjudicado en 3 días (SERCOP-AN-003)');
+
+  // Escenario F: 4 contratos fragmentados misma entidad misma semana (FRAGMENTATION)
+  const fragmentCodes = [`SERCOP-${year}-AN-010`, `SERCOP-${year}-AN-011`, `SERCOP-${year}-AN-012`, `SERCOP-${year}-AN-013`];
+  const baseDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  for (const [i, fCode] of fragmentCodes.entries()) {
+    let tF = await prisma.tender.findFirst({ where: { code: fCode } });
+    if (!tF) {
+      const pubF = new Date(baseDate.getTime() + i * 24 * 60 * 60 * 1000);
+      tF = await prisma.tender.create({
+        data: {
+          procurementPlanId: analyticsPlan.id,
+          code: fCode,
+          title: `Suministros de oficina fragmentado – lote ${i + 1}`,
+          description: `Proceso ${fCode} para escenario FRAGMENTATION.`,
+          status: 'awarded',
+          procurementMethod: 'direct',
+          processType: 'infima_cuantia',
+          regime: 'ordinario',
+          estimatedAmount: 4800,
+          referenceBudgetAmount: 4800,
+          publishedAt: pubF,
+        },
+      });
+      if (providerC) {
+        await prisma.bid.create({
+          data: { tenderId: tF.id, providerId: providerC.id, amount: 4700, status: 'submitted', submittedAt: pubF },
+        });
+        const contractF = await prisma.contract.findFirst({ where: { tenderId: tF.id } });
+        if (!contractF) {
+          await prisma.contract.create({
+            data: { tenderId: tF.id, providerId: providerC.id, contractNo: `${fCode}-CT`, status: 'active', amount: 4700, signedAt: new Date(pubF.getTime() + 24 * 60 * 60 * 1000) },
+          });
+        }
+      }
+    }
+  }
+  console.log('  Escenario F: 4 contratos fragmentados en 1 semana (SERCOP-AN-010..013)');
+
+  // Escenario G: empresa nueva gana contrato grande (NEW_COMPANY)
+  const newCompanyProvider = await (async () => {
+    const existing = await prisma.provider.findFirst({ where: { identifier: '1799000001001' } });
+    if (existing) return existing;
+    return prisma.provider.create({
+      data: {
+        name: 'Startup Tecnológica Reciente S.A.',
+        identifier: '1799000001001',
+        legalName: 'Startup Tecnológica Reciente Sociedad Anónima',
+        tradeName: 'StartupTec',
+        status: 'active',
+        province: 'Pichincha',
+        canton: 'Quito',
+        legalEstablishmentDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000), // hace 60 días
+      },
+    });
+  })();
+  const codeG = `SERCOP-${year}-AN-004`;
+  let tenderG = await prisma.tender.findFirst({ where: { code: codeG } });
+  if (!tenderG) {
+    tenderG = await prisma.tender.create({
+      data: {
+        procurementPlanId: analyticsPlan.id,
+        code: codeG,
+        title: 'Plataforma tecnológica nacional – proceso analítico G',
+        description: 'Proceso para detección NEW_COMPANY: empresa con < 1 año gana contrato grande.',
+        status: 'awarded',
+        procurementMethod: 'open',
+        processType: 'licitacion',
+        regime: 'ordinario',
+        estimatedAmount: 350000,
+        referenceBudgetAmount: 350000,
+        publishedAt: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000),
+      },
+    });
+    await prisma.bid.create({
+      data: { tenderId: tenderG.id, providerId: newCompanyProvider.id, amount: 340000, status: 'submitted', submittedAt: new Date() },
+    });
+    const contractG = await prisma.contract.findFirst({ where: { tenderId: tenderG.id } });
+    if (!contractG) {
+      await prisma.contract.create({
+        data: { tenderId: tenderG.id, providerId: newCompanyProvider.id, contractNo: `${codeG}-CT`, status: 'active', amount: 340000, signedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) },
+      });
+    }
+  }
+  console.log('  Escenario G: empresa creada hace 60 días gana contrato de $340k (SERCOP-AN-004)');
+
+  // Escenario H: entidad con 5 contratos de emergencia en 2 meses (EMERGENCY_ABUSE)
+  const entityMsp = entities.find((e) => e.code === 'MSP') ?? entities[1];
+  let mspPlan = await prisma.procurementPlan.findFirst({ where: { entityId: entityMsp.id, year } });
+  if (!mspPlan) {
+    mspPlan = await prisma.procurementPlan.create({
+      data: { entityId: entityMsp.id, year, status: 'published', publishedAt: new Date(), totalAmount: 500000 },
+    });
+  }
+  const emergencyCodes = Array.from({ length: 5 }, (_, i) => `MSP-${year}-AN-030${i + 1}`);
+  for (const [i, eCode] of emergencyCodes.entries()) {
+    if (!(await prisma.tender.findFirst({ where: { code: eCode } }))) {
+      const tEmerg = await prisma.tender.create({
+        data: {
+          procurementPlanId: mspPlan.id,
+          code: eCode,
+          title: `Emergencia sanitaria – suministro ${i + 1}`,
+          description: `Proceso ${eCode} emergencia para detección EMERGENCY_ABUSE.`,
+          status: 'awarded',
+          procurementMethod: 'direct',
+          processType: 'contratacion_directa',
+          regime: 'emergencia',
+          estimatedAmount: 30000 + i * 5000,
+          referenceBudgetAmount: 30000 + i * 5000,
+          publishedAt: new Date(Date.now() - (55 - i * 10) * 24 * 60 * 60 * 1000),
+        },
+      });
+      if (providerE) {
+        await prisma.bid.create({
+          data: { tenderId: tEmerg.id, providerId: providerE.id, amount: 29000 + i * 4800, status: 'submitted', submittedAt: new Date() },
+        });
+        const contractEmerg = await prisma.contract.findFirst({ where: { tenderId: tEmerg.id } });
+        if (!contractEmerg) {
+          await prisma.contract.create({
+            data: { tenderId: tEmerg.id, providerId: providerE.id, contractNo: `${eCode}-CT`, status: 'active', amount: 29000 + i * 4800, signedAt: new Date(Date.now() - (50 - i * 10) * 24 * 60 * 60 * 1000) },
+          });
+        }
+      }
+    }
+  }
+  console.log('  Escenario H: 5 contratos de emergencia en MSP en 2 meses (MSP-AN-0301..0305)');
+
+  // Escenario I: 3 ContractAmendments en mismo contrato (FREQUENT_AMENDMENTS)
+  const codeI = `SERCOP-${year}-AN-005`;
+  let tenderI = await prisma.tender.findFirst({ where: { code: codeI } });
+  if (!tenderI) {
+    tenderI = await prisma.tender.create({
+      data: {
+        procurementPlanId: analyticsPlan.id,
+        code: codeI,
+        title: 'Obra de infraestructura con modificaciones – proceso analítico I',
+        description: 'Proceso para detección FREQUENT_AMENDMENTS: 3 modificaciones contractuales.',
+        status: 'awarded',
+        procurementMethod: 'open',
+        processType: 'licitacion_obras',
+        regime: 'ordinario',
+        estimatedAmount: 500000,
+        referenceBudgetAmount: 500000,
+        publishedAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
+      },
+    });
+    if (providerD) {
+      await prisma.bid.create({
+        data: { tenderId: tenderI.id, providerId: providerD.id, amount: 490000, status: 'submitted', submittedAt: new Date() },
+      });
+    }
+  }
+  const contractI = await prisma.contract.findFirst({ where: { tenderId: tenderI.id } });
+  const contractIRecord = contractI ?? (providerD ? await prisma.contract.create({
+    data: { tenderId: tenderI.id, providerId: providerD.id, contractNo: `${codeI}-CT`, status: 'active', amount: 490000, signedAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000) },
+  }) : null);
+  if (contractIRecord) {
+    const existingAmendments = await prisma.contractAmendment.count({ where: { contractId: contractIRecord.id } });
+    if (existingAmendments === 0) {
+      await prisma.contractAmendment.createMany({
+        data: [
+          { contractId: contractIRecord.id, amendmentNo: 1, changeType: 'PLAZO', reason: 'Retraso en entrega de materiales', valueBefore: null, valueAfter: null, approvedAt: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000) },
+          { contractId: contractIRecord.id, amendmentNo: 2, changeType: 'MONTO', valueBefore: new Prisma.Decimal(490000), valueAfter: new Prisma.Decimal(535000), reason: 'Incremento por obras adicionales', approvedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000) },
+          { contractId: contractIRecord.id, amendmentNo: 3, changeType: 'PLAZO', reason: 'Segunda extensión de plazo por condiciones climáticas', valueBefore: null, valueAfter: null, approvedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+        ],
+      });
+      console.log('  Escenario I: 3 ContractAmendments en contrato SERCOP-AN-005');
+    }
+  }
+
+  // ---- ANALYTICS SCENARIOS FASE 3 – Colusión ----
+
+  // Escenario J: providers[0] y providers[1] compiten juntos en 5 procesos (COLLUSION_CANDIDATE)
+  const collusionCodes = Array.from({ length: 5 }, (_, i) => `SERCOP-${year}-AN-02${i}`);
+  for (const [i, jCode] of collusionCodes.entries()) {
+    if (!(await prisma.tender.findFirst({ where: { code: jCode } }))) {
+      const tJ = await prisma.tender.create({
+        data: {
+          procurementPlanId: analyticsPlan.id,
+          code: jCode,
+          title: `Licitación suministros generales – cluster ${i + 1}`,
+          description: `Proceso ${jCode} para escenario colusión J: providerA y providerB compiten juntos.`,
+          status: 'awarded',
+          procurementMethod: 'open',
+          processType: 'licitacion',
+          regime: 'ordinario',
+          estimatedAmount: 60000 + i * 5000,
+          referenceBudgetAmount: 60000 + i * 5000,
+          publishedAt: new Date(Date.now() - (100 + i * 15) * 24 * 60 * 60 * 1000),
+        },
+      });
+      if (providerA && providerB) {
+        const winner = i % 2 === 0 ? providerA : providerB;
+        const loser = i % 2 === 0 ? providerB : providerA;
+        await prisma.bid.createMany({
+          data: [
+            { tenderId: tJ.id, providerId: winner.id, amount: 58000 + i * 4800, status: 'submitted', submittedAt: new Date() },
+            { tenderId: tJ.id, providerId: loser.id, amount: 61000 + i * 5100, status: 'submitted', submittedAt: new Date() },
+          ],
+        });
+        const contractJ = await prisma.contract.findFirst({ where: { tenderId: tJ.id } });
+        if (!contractJ) {
+          await prisma.contract.create({
+            data: { tenderId: tJ.id, providerId: winner.id, contractNo: `${jCode}-CT`, status: 'active', amount: 58000 + i * 4800, signedAt: new Date(Date.now() - (90 + i * 15) * 24 * 60 * 60 * 1000) },
+          });
+        }
+      }
+    }
+  }
+  console.log('  Escenario J: providerA y providerB compiten juntos en 5 procesos (colusión)');
+
+  // Escenario K: cluster de 3 proveedores (providerA, providerB, providerC) en 4 procesos
+  const clusterCodes = Array.from({ length: 4 }, (_, i) => `SERCOP-${year}-AN-03${i}`);
+  for (const [i, kCode] of clusterCodes.entries()) {
+    if (!(await prisma.tender.findFirst({ where: { code: kCode } }))) {
+      const tK = await prisma.tender.create({
+        data: {
+          procurementPlanId: analyticsPlan.id,
+          code: kCode,
+          title: `Servicios técnicos – triángulo colusión ${i + 1}`,
+          description: `Proceso ${kCode} para escenario cluster K.`,
+          status: 'awarded',
+          procurementMethod: 'open',
+          processType: 'licitacion',
+          regime: 'ordinario',
+          estimatedAmount: 70000 + i * 8000,
+          referenceBudgetAmount: 70000 + i * 8000,
+          publishedAt: new Date(Date.now() - (150 + i * 20) * 24 * 60 * 60 * 1000),
+        },
+      });
+      if (providerA && providerB && providerC) {
+        const winners = [providerA, providerB, providerC, providerA];
+        const winner = winners[i];
+        await prisma.bid.createMany({
+          data: [
+            { tenderId: tK.id, providerId: providerA.id, amount: 68000 + i * 7800, status: 'submitted', submittedAt: new Date() },
+            { tenderId: tK.id, providerId: providerB.id, amount: 72000 + i * 8200, status: 'submitted', submittedAt: new Date() },
+            { tenderId: tK.id, providerId: providerC.id, amount: 71000 + i * 8100, status: 'submitted', submittedAt: new Date() },
+          ],
+        });
+        const contractK = await prisma.contract.findFirst({ where: { tenderId: tK.id } });
+        if (!contractK) {
+          await prisma.contract.create({
+            data: { tenderId: tK.id, providerId: winner.id, contractNo: `${kCode}-CT`, status: 'active', amount: 68000 + i * 7800, signedAt: new Date(Date.now() - (140 + i * 20) * 24 * 60 * 60 * 1000) },
+          });
+        }
+      }
+    }
+  }
+  console.log('  Escenario K: triángulo colusión – 3 proveedores en 4 procesos (SERCOP-AN-030..033)');
+
   console.log('\nSeed OK. Datos de prueba tipo SERCOP listos.');
   console.log('  - Procesos publicados con códigos MEC-YYYY-CO-001, etc.');
   console.log('  - OfferFormConfig y Auction (SIE) creados para pruebas E2E.');
   console.log('  - Login entity: admin@mec.gob.ec');
   console.log('  - Login supplier: RUC 1791234567001 (TecEcuador)');
+  console.log('  - Analytics escenarios: SERCOP-AN-001 (single bidder), SERCOP-AN-002 (overprice), SERCOP-AN-003 (fast process)');
+  console.log('  - Analytics riesgo: SERCOP-AN-010..013 (fragmentación), SERCOP-AN-004 (new company), MSP-AN-030x (emergencias)');
+  console.log('  - Analytics colusión: SERCOP-AN-020..024 (pares), SERCOP-AN-030..033 (triángulo)');
   console.log('  - Para batería E2E completa: npm run db:seed y luego npm run test:e2e:battery (con API en marcha).');
 }
 

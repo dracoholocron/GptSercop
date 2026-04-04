@@ -41,6 +41,19 @@ import CPAIAssistantPage from './pages/CPAIAssistantPage';
 import InfimaCuantiaPage from './pages/cp/InfimaCuantiaPage';
 import AdvancedSearchPage from './pages/cp/AdvancedSearchPage';
 
+// NEW: GPTsercop Frontend Gap Implementation
+import CPProcessDetailPage from './pages/cp/CPProcessDetailPage';
+import CPProcessFormPage from './pages/cp/CPProcessFormPage';
+import CPEvaluationPage from './pages/cp/CPEvaluationPage';
+import CPContractListPage from './pages/cp/CPContractListPage';
+import CPContractDetailPage from './pages/cp/CPContractDetailPage';
+import ProviderRUPWizardPage from './pages/cp/ProviderRUPWizardPage';
+import OfferSubmitPage from './pages/cp/OfferSubmitPage';
+import CPSIEPage from './pages/cp/CPSIEPage';
+import CPComplaintsPage from './pages/cp/CPComplaintsPage';
+import CPCPCBrowserPage from './pages/cp/CPCPCBrowserPage';
+import CPCatalogPage from './pages/cp/CPCatalogPage';
+
 // Auth pages
 import { OAuth2Callback } from './pages/auth/OAuth2Callback';
 import { FeatureCertificationPage } from './pages/FeatureCertificationPage';
@@ -218,6 +231,25 @@ function AppRouter() {
       {/* GptSercop integration routes */}
       <Route path="/cp/infima-cuantia" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_PROCESSES', 'GPT_SEARCH_VIEW']}><Dashboard><InfimaCuantiaPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
       <Route path="/search" element={<ProtectedRoute><PermissionRoute anyOf={['CP_AI_ASSISTANT', 'GPT_SEARCH_VIEW']}><Dashboard><AdvancedSearchPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+
+      {/* NEW: Process management */}
+      <Route path="/cp/processes/new" element={<ProtectedRoute><PermissionRoute anyOf={['CP_CREATE_PROCESS', 'CP_VIEW_PROCESSES', 'GPT_ADMIN_VIEW']}><Dashboard><CPProcessFormPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/cp/processes/:id" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_PROCESSES', 'GPT_SEARCH_VIEW']}><Dashboard><CPProcessDetailPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/cp/processes/:id/evaluations" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_PROCESSES', 'CP_EVALUATE_OFFERS']}><Dashboard><CPEvaluationPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/cp/processes/:id/sie" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_PROCESSES', 'GPT_SEARCH_VIEW']}><Dashboard><CPSIEPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+
+      {/* NEW: Contracts */}
+      <Route path="/cp/contracts" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_CONTRACTS', 'CP_VIEW_PROCESSES', 'GPT_ADMIN_VIEW']}><Dashboard><CPContractListPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/cp/contracts/:id" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_CONTRACTS', 'CP_VIEW_PROCESSES', 'GPT_ADMIN_VIEW']}><Dashboard><CPContractDetailPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+
+      {/* NEW: Provider portal */}
+      <Route path="/providers/register" element={<ProtectedRoute><Dashboard><ProviderRUPWizardPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/offers/submit/:tenderId" element={<ProtectedRoute><Dashboard><OfferSubmitPage /></Dashboard></ProtectedRoute>} />
+
+      {/* NEW: Additional modules */}
+      <Route path="/cp/complaints" element={<ProtectedRoute><Dashboard><CPComplaintsPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/cpc-browser" element={<ProtectedRoute><Dashboard><CPCPCBrowserPage /></Dashboard></ProtectedRoute>} />
+      <Route path="/cp/catalog-electronic" element={<ProtectedRoute><PermissionRoute anyOf={['CP_VIEW_PROCESSES', 'GPT_SEARCH_VIEW']}><Dashboard><CPCatalogPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
 
       {/* Legacy-First routes (menu compatibility) */}
       <Route path="/workbox" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="LC_IMPORT" titleKey="menu.workbox" subtitleKey="workbox.operations.subtitle" defaultViewMode="expiry" /></Dashboard></ProtectedRoute>} />

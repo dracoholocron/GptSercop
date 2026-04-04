@@ -1,0 +1,142 @@
+---
+description: Integration patterns — AI/OpenAI, OCDS data, S3/MinIO, Redis, Kafka, and external services
+globs: apps/api/**/*.ts,sercop-unified/**/*.ts
+alwaysApply: false
+---
+
+# Integration Standards
+
+## AI / GPT Integration
+
+### Feature Flags
+
+```bash
+AI_ENABLED=true          # Master switch for AI features
+RAG_ENABLED=true         # Enable RAG search
+AI_MODE=mock|openai      # Switch between stub and real API
+OPENAI_API_KEY=sk-...    # Required when AI_MODE=openai
+```
+
+### Adapter Pattern (Ports & Adapters)
+
+```typescript
+// ✅ Always define an interface — swap implementation without touching routes
+interface GptAnalysisPort {
+  analyze(tender: TenderContext): Promise<AnalysisResult>;
+}
+
+class GptAnalysisAdapter implements GptAnalysisPort {
+  async analyze(tender: TenderContext): Promise<AnalysisResult> {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('AI_NOT_CONFIGURED');
+    }
+    // call OpenAI API
+  }
+}
+
+class MockGptAdapter implements GptAnalysisPort {
+  async analyze(): Promise<AnalysisResult> {
+    return { summary: 'Mock analysis', riskScore: 0.1 };
+  }
+}
+```
+
+### RAG Search
+
+- Full-text against PostgreSQL `tsvector` (language: `spanish`)
+- Endpoint: `GET /api/v1/rag/search?q=...`
+- Frontend calls via `gptsercopService` (env flag: `VITE_ENABLE_CP_API`)
+- Chunk size, overlap, and re-ranking params live in `rag.ts` — not in route files
+
+## OCDS / Compras Públicas Data
+
+```typescript
+// Crawler: scripts/crawler/index.js
+// Import: scripts/import-ocds-synthetic.ts
+// Pattern: fetch → validate OCDS schema → upsert via Prisma
+const response = await fetch(process.env.CRAWLER_OCDS_URL);
+const ocdsRelease = await response.json();
+// Always validate before insert
+await db.tender.upsert({ where: { ocdsId: release.id }, ... });
+```
+
+- Source URL in `CRAWLER_*` env vars — never hardcoded
+- Idempotent upserts — safe to re-run
+- Log every import run to `auditLog`
+
+## Object Storage (MinIO / S3)
+
+```typescript
+// storage.ts — presigned URL pattern
+import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
+// ✅ Never return raw S3 credentials or bucket names to clients
+// ✅ Always use presigned URLs (default expiry: 15 minutes)
+const url = await getSignedUrl(s3, new GetObjectCommand({ Bucket, Key }), { expiresIn: 900 });
+```
+
+Environment: `S3_BUCKET`, `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`
+
+## Redis
+
+```typescript
+// redis.ts — used for health checks and optional session cache
+// ✅ Check connection in /health endpoint
+// ✅ Set TTL on every cache key — never store without expiration
+await redis.set(`tender:${id}`, JSON.stringify(data), { EX: 3600 });
+```
+
+## Kafka (Java backend)
+
+- Topics defined in `application.yml` → `kafka.topics.*`
+- Producers: fire-and-forget for non-critical events; use `@Transactional` for DB + publish atomicity
+- Consumers: idempotency key on every handler to handle at-least-once delivery
+- DLQ configured for all consumer groups
+
+## SignalR / Realtime (Frontend)
+
+```typescript
+// sercop-unified/frontend/src/realtime/
+// ✅ One provider per realtime concern (notifications, live updates)
+// ✅ Auto-reconnect with exponential backoff
+// ✅ Must not block initial page render — load asynchronously
+```
+
+## External API Pattern
+
+```typescript
+// ✅ Wrap every external call with timeout + retry
+const result = await fetchWithRetry(url, {
+  timeout: 10_000,   // 10s
+  retries: 3,
+  backoff: 'exponential',
+});
+
+// ✅ Circuit breaker for high-traffic integrations
+// ✅ Log request/response metadata (no PII) for observability
+```
+
+## Environment Configuration
+
+All integration credentials must be in `.env` (never committed):
+
+```bash
+# AI
+OPENAI_API_KEY=
+AI_ENABLED=false
+AI_MODE=mock
+
+# Storage
+S3_BUCKET=
+S3_ENDPOINT=
+S3_ACCESS_KEY=
+S3_SECRET_KEY=
+
+# Data
+CRAWLER_OCDS_URL=
+DATABASE_URL=
+REDIS_URL=
+```
+
+Copy `.env.example` for new environments — update defaults, never hardcode.

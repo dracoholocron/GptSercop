@@ -51,6 +51,40 @@ async function main() {
       console.log('  GET /openapi.json: no disponible (opcional)');
     }
 
+    // Analytics module smoke checks
+    const dash = await fetchOk(`${baseUrl}/api/v1/analytics/dashboard`, 'GET /api/v1/analytics/dashboard');
+    if (typeof dash.totalTenders !== 'number') throw new Error('/analytics/dashboard: missing totalTenders');
+    console.log('  GET /api/v1/analytics/dashboard: OK (tenders:', dash.totalTenders + ')');
+
+    const market = await fetchOk(`${baseUrl}/api/v1/analytics/market`, 'GET /api/v1/analytics/market');
+    if (!Array.isArray(market.data)) throw new Error('/analytics/market: missing data array');
+    console.log('  GET /api/v1/analytics/market:', market.data.length, 'items');
+
+    const competition = await fetchOk(`${baseUrl}/api/v1/analytics/competition`, 'GET /api/v1/analytics/competition');
+    if (typeof competition.avgBidders !== 'number') throw new Error('/analytics/competition: missing avgBidders');
+    console.log('  GET /api/v1/analytics/competition: OK (avgBidders:', competition.avgBidders + ')');
+
+    const pacVsEx = await fetchOk(`${baseUrl}/api/v1/analytics/pac-vs-executed`, 'GET /api/v1/analytics/pac-vs-executed');
+    if (!Array.isArray(pacVsEx.data)) throw new Error('/analytics/pac-vs-executed: missing data array');
+    console.log('  GET /api/v1/analytics/pac-vs-executed:', pacVsEx.data.length, 'items');
+
+    const alerts = await fetchOk(`${baseUrl}/api/v1/analytics/alerts`, 'GET /api/v1/analytics/alerts');
+    if (!Array.isArray(alerts.data)) throw new Error('/analytics/alerts: missing data array');
+    console.log('  GET /api/v1/analytics/alerts:', alerts.data.length, 'items');
+
+    // Public analytics endpoints (no auth required)
+    const pubMarket = await fetchOk(`${baseUrl}/api/v1/public/analytics/market-overview`, 'GET /api/v1/public/analytics/market-overview');
+    if (typeof pubMarket.totalContractAmount !== 'number') throw new Error('/public/analytics/market-overview: missing totalContractAmount');
+    console.log('  GET /api/v1/public/analytics/market-overview: OK');
+
+    const pubProviders = await fetchOk(`${baseUrl}/api/v1/public/analytics/top-providers`, 'GET /api/v1/public/analytics/top-providers');
+    if (!Array.isArray(pubProviders.data)) throw new Error('/public/analytics/top-providers: missing data array');
+    console.log('  GET /api/v1/public/analytics/top-providers:', pubProviders.data.length, 'items');
+
+    const pubRisk = await fetchOk(`${baseUrl}/api/v1/public/analytics/risk-summary`, 'GET /api/v1/public/analytics/risk-summary');
+    if (typeof pubRisk.total !== 'number') throw new Error('/public/analytics/risk-summary: missing total');
+    console.log('  GET /api/v1/public/analytics/risk-summary: OK (total evaluated:', pubRisk.total + ')');
+
     console.log('Smoke OK');
   } catch (e) {
     console.error('Smoke FAIL:', e.message);

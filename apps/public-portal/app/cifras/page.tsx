@@ -25,6 +25,9 @@ import {
 import { api, setBaseUrl } from '@sercop/api-client';
 import { PublicShell } from '../components/PublicShell';
 
+type CompetitionSector = { processType: string; tenderCount: number; avgBidders: number; singleBidderPct: number };
+type ProcessTypeMarket = { processType: string; tenderCount: number; totalAmount: number };
+
 setBaseUrl(process.env.NEXT_PUBLIC_API_URL || '');
 
 type MetricKey = 'tenders' | 'published' | 'providers' | 'contracts' | null;
@@ -63,9 +66,17 @@ export default function CifrasPage() {
   const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear());
   const [filterMethod, setFilterMethod] = useState<string>('');
   const [detailPage, setDetailPage] = useState(1);
+  const [competitionData, setCompetitionData] = useState<CompetitionSector[]>([]);
+  const [marketByTypeData, setMarketByTypeData] = useState<ProcessTypeMarket[]>([]);
 
   useEffect(() => {
     api.getAnalyticsPublic().then(setData).catch(() => setData(null));
+    api.getCompetition()
+      .then((r) => setCompetitionData(r.bySector))
+      .catch(() => setCompetitionData([]));
+    api.getMarket({ groupBy: 'processType' })
+      .then((r) => setMarketByTypeData(r.data as ProcessTypeMarket[]))
+      .catch(() => setMarketByTypeData([]));
   }, []);
 
   const loadCharts = useCallback(() => {
@@ -482,6 +493,68 @@ export default function CifrasPage() {
                 <p className="text-text-secondary">No se pudieron cargar los gráficos.</p>
               )}
             </section>
+
+            {/* ---- Competencia de mercado (nuevas secciones analíticas) ---- */}
+            {competitionData.length > 0 && (
+              <section className="mt-10">
+                <h2 className="mb-4 text-xl font-semibold">Competencia de mercado</h2>
+                <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+                  <h3 className="mb-2 text-sm font-semibold text-text-primary">Promedio de oferentes por modalidad</h3>
+                  <div className="h-[280px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={competitionData.map((d) => ({
+                          name: (d.processType || 'otro').replace(/_/g, ' ').slice(0, 20),
+                          oferentes: parseFloat(String(d.avgBidders ?? 0)).toFixed(1),
+                          monoProveedor: parseFloat(String(d.singleBidderPct ?? 0)).toFixed(1),
+                        }))}
+                        margin={{ top: 8, right: 8, left: 0, bottom: 60 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis dataKey="name" tick={{ fontSize: 11 }} angle={-30} textAnchor="end" interval={0} />
+                        <YAxis tick={{ fontSize: 12 }} />
+                        <Tooltip />
+                        <Legend wrapperStyle={{ paddingTop: '12px' }} />
+                        <Bar dataKey="oferentes" name="Promedio oferentes" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="monoProveedor" name="% Mono-proveedor" fill={CHART_COLORS[3]} radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {marketByTypeData.length > 0 && (
+              <section className="mt-6">
+                <h2 className="mb-4 text-xl font-semibold">Distribución de modalidades</h2>
+                <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+                  <h3 className="mb-2 text-sm font-semibold text-text-primary">Distribución por tipo de proceso</h3>
+                  <div className="h-[300px] w-full max-w-lg">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={marketByTypeData.map((d) => ({
+                            name: (d.processType || 'otro').replace(/_/g, ' '),
+                            value: Number(d.tenderCount ?? 0),
+                          }))}
+                          dataKey="value"
+                          nameKey="name"
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={110}
+                          label={({ name, value }) => `${name}: ${value}`}
+                        >
+                          {marketByTypeData.map((_, i) => (
+                            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </section>
+            )}
           </>
         )}
       </div>

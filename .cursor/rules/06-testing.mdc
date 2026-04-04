@@ -1,0 +1,116 @@
+---
+description: Testing standards — Vitest unit/integration, Playwright E2E, and coverage requirements
+globs: **/*.test.{ts,tsx,js},e2e/**/*.ts
+alwaysApply: false
+---
+
+# Testing Standards
+
+## Test Pyramid
+
+```
+E2E (Playwright)        → critical user journeys only
+Integration tests       → API routes with real DB (test DB)
+Unit tests (Vitest)     → services, utilities, transformations
+```
+
+## Unit & Integration Tests (Vitest)
+
+### File Locations
+
+```
+apps/api/tests/         → Vitest specs (*.test.ts)
+apps/api/test/unit/     → Unit specs
+apps/api/test/integration/ → Integration specs (node --test)
+apps/api/test/security/ → Security specs (node --test)
+sercop-unified/frontend/src/**/*.test.tsx  → Component/service tests
+```
+
+### Vitest Patterns
+
+```typescript
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+describe('TenderService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns paginated list with correct total', async () => {
+    const mockDb = { tender: { findMany: vi.fn().mockResolvedValue([...]) } };
+    const service = new TenderService(mockDb as any);
+    const result = await service.list({ page: 1, pageSize: 10 });
+    expect(result.total).toBe(42);
+    expect(result.data).toHaveLength(10);
+  });
+});
+```
+
+### Coverage Targets
+
+| Layer | Minimum |
+|-------|---------|
+| Service/utility functions | 80% |
+| Route handlers | 70% |
+| React components | 60% |
+
+Run coverage: `npm run test:coverage` in each package.
+
+## E2E Tests (Playwright)
+
+### Config Files
+
+| Config | Scope |
+|--------|-------|
+| `playwright.config.ts` | Default full suite |
+| `playwright.admin.config.ts` | Admin flows (runs in CI) |
+| `playwright.battery.config.ts` | Battery/regression suite |
+| `playwright.evidence.config.ts` | Evidence capture runs |
+
+### Spec Pattern
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Tender search', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
+
+  test('supplier can search and view tender detail', async ({ page }) => {
+    await page.getByRole('searchbox').fill('construcción');
+    await page.getByRole('button', { name: 'Buscar' }).click();
+    await expect(page.getByTestId('tender-list')).toBeVisible();
+  });
+});
+```
+
+### Accessibility in E2E
+
+```typescript
+import AxeBuilder from '@axe-core/playwright';
+
+test('main page has no critical a11y violations', async ({ page }) => {
+  await page.goto('/');
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter(v => v.impact === 'critical')).toHaveLength(0);
+});
+```
+
+## Smoke Tests
+
+```bash
+npm run smoke   # scripts/smoke.js — quick health check against running stack
+```
+
+Run after every deployment as a post-deploy gate.
+
+## Do / Don't
+
+- ✅ Mock external HTTP calls in unit/integration tests (use `vi.mock` or MSW)
+- ✅ Use a **separate test database** — never run integration tests against dev/prod DB
+- ✅ Test error paths, not just happy paths
+- ✅ Use `getByRole` / `getByTestId` in Playwright (not CSS selectors)
+- ❌ Never `console.log` in tests — use `expect` assertions
+- ❌ Never hardcode test data IDs — use fixtures or factories
+- ❌ Never skip flaky tests with `test.skip` — fix or remove them

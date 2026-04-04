@@ -1,0 +1,95 @@
+---
+description: REST API design conventions, Fastify patterns, and OpenAPI standards
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# API Design Standards
+
+## URL Conventions
+
+```
+GET    /api/v1/<resource>            → list (paginated)
+GET    /api/v1/<resource>/:id        → single item
+POST   /api/v1/<resource>            → create
+PUT    /api/v1/<resource>/:id        → full update
+PATCH  /api/v1/<resource>/:id        → partial update
+DELETE /api/v1/<resource>/:id        → delete
+POST   /api/v1/<resource>/:id/<action> → domain action (e.g. /analyze)
+```
+
+- Always prefix with `/api/v1/`
+- Resources in **kebab-case plural** (`tender-items`, not `tenderItem`)
+- Actions as nouns or verbs at the end of the path
+
+## Response Shapes
+
+```typescript
+// ✅ List response
+{ data: T[], total: number, page: number, pageSize: number }
+
+// ✅ Single item
+{ data: T }
+
+// ✅ Error (never expose stack traces in production)
+{ error: string, code: string, statusCode: number }
+
+// ✅ Created
+reply.status(201).send({ data: newResource })
+```
+
+## Fastify Route Plugin
+
+```typescript
+// ✅ CORRECT pattern
+import type { FastifyPluginAsync } from 'fastify';
+
+const myRoutes: FastifyPluginAsync = async (fastify) => {
+  fastify.get('/api/v1/resources', async (request, reply) => {
+    const items = await fastify.db.resource.findMany({ ... });
+    return { data: items, total: items.length };
+  });
+};
+
+export default myRoutes;
+```
+
+## Query Parameters
+
+- Pagination: `?page=1&pageSize=20` (default pageSize: 20, max: 100)
+- Filtering: `?status=active&dt=2024-01-01`
+- Sorting: `?sortBy=createdAt&order=desc`
+- Always validate with Fastify JSON Schema on `querystring`
+
+## OpenAPI
+
+- Every route must have a corresponding entry in `src/openapi.ts`
+- Include `summary`, `tags`, `parameters`, `requestBody`, and `responses` (200, 400, 401, 500)
+- Tag groupings: `auth`, `tenders`, `providers`, `analytics`, `ai`, `documents`
+
+## Error Handling
+
+```typescript
+// ✅ Use Fastify's built-in error throwing
+throw fastify.httpErrors.notFound('Tender not found');
+throw fastify.httpErrors.badRequest('Invalid date format');
+throw fastify.httpErrors.unauthorized('Token expired');
+
+// ✅ Wrap external calls
+try {
+  const result = await externalService.call();
+  return { data: result };
+} catch (err) {
+  request.log.error({ err }, 'External service failed');
+  throw fastify.httpErrors.serviceUnavailable('Service temporarily unavailable');
+}
+```
+
+## Do / Don't
+
+- ✅ Keep route handlers thin — delegate logic to service classes
+- ✅ Use `query_params` pattern for parameterized queries
+- ✅ Log with `request.log` (structured JSON), not `console.log`
+- ❌ Never return raw Prisma errors to the client
+- ❌ Never skip input validation schemas
+- ❌ Never hardcode IDs, URLs, or secrets in route files

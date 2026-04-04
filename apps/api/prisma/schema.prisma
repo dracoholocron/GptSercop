@@ -123,6 +123,7 @@ model Tender {
   clarifications          TenderClarification[]
   catalogItems            CatalogItem[]
   purchaseOrders          PurchaseOrder[]
+  riskScore               RiskScore?
 }
 
 model Bid {
@@ -200,6 +201,7 @@ model Contract {
   provider                Provider          @relation(fields: [providerId], references: [id], onDelete: Restrict)
   payments                ContractPayment[]
   resultReportDocument    Document?         @relation("ContractResultReport", fields: [resultReportDocumentId], references: [id], onDelete: SetNull)
+  amendments              ContractAmendment[]
 }
 
 model Document {
@@ -584,4 +586,72 @@ model CartItem {
   catalogItem   CatalogItem @relation(fields: [catalogItemId], references: [id], onDelete: Restrict)
 
   @@unique([cartId, catalogItemId])
+}
+
+// Analytics – Motor de riesgo e indicadores (Plataforma Analítica SERCOP)
+model RiskScore {
+  id              String   @id @default(uuid())
+  tenderId        String   @unique
+  competitionRisk Float    @default(0)   // 0–100, peso 25%
+  priceRisk       Float    @default(0)   // 0–100, peso 20%
+  supplierRisk    Float    @default(0)   // 0–100, peso 20%
+  processRisk     Float    @default(0)   // 0–100, peso 15%
+  executionRisk   Float    @default(0)   // 0–100, peso 20%
+  totalScore      Float    @default(0)   // 0–100 ponderado
+  riskLevel       String   @default("low")  // low | medium | high
+  flags           String[] @default([])
+  calculatedAt    DateTime @default(now())
+  tender          Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+
+  @@index([riskLevel])
+  @@index([totalScore])
+}
+
+// Modificaciones contractuales (gap analítico identificado en docs)
+model ContractAmendment {
+  id          String    @id @default(uuid())
+  contractId  String
+  amendmentNo Int
+  changeType  String    // PLAZO | MONTO | ALCANCE | OTRO
+  valueBefore Decimal?  @db.Decimal(18, 2)
+  valueAfter  Decimal?  @db.Decimal(18, 2)
+  reason      String?
+  approvedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  contract    Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId])
+}
+
+// Alertas automáticas del sistema analítico
+model AlertEvent {
+  id         String    @id @default(uuid())
+  alertType  String    // SINGLE_BIDDER | DOMINANT_SUPPLIER | OVERPRICE | FRAGMENTATION | FAST_PROCESS | FREQUENT_AMENDMENTS | NEW_COMPANY | EMERGENCY_ABUSE
+  severity   String    // INFO | WARNING | CRITICAL
+  entityType String    // Tender | Contract | Provider
+  entityId   String
+  message    String
+  metadata   Json?
+  resolvedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([alertType])
+  @@index([severity])
+  @@index([entityId])
+  @@index([resolvedAt])
+}
+
+// Red de proveedores – detección de colusión (Fase 3)
+model ProviderRelation {
+  id            String    @id @default(uuid())
+  providerAId   String
+  providerBId   String
+  sharedTenders Int       @default(0)
+  lastSeenAt    DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@unique([providerAId, providerBId])
+  @@index([providerAId])
+  @@index([providerBId])
+  @@index([sharedTenders])
 }

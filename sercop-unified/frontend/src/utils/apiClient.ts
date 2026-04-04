@@ -174,6 +174,17 @@ export const put = (endpoint: string, data?: any, options?: RequestOptions) => {
 };
 
 /**
+ * Convenience method for PATCH requests
+ */
+export const patch = (endpoint: string, data?: any, options?: RequestOptions) => {
+  return apiClient(endpoint, {
+    ...options,
+    method: 'PATCH',
+    body: data ? JSON.stringify(data) : undefined,
+  });
+};
+
+/**
  * Convenience method for DELETE requests
  */
 export const del = (endpoint: string, options?: RequestOptions) => {
