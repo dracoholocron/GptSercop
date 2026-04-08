@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import type { AgentSOCEConfig, AgentSOCETheme, HostAdapter } from '../types/index.js';
 import { useAgentSOCE } from '../hooks/useAgentSOCE.js';
 import { useGuidedFlow } from '../hooks/useGuidedFlow.js';
+import { useProviders } from '../hooks/useProviders.js';
 import { resolveTheme, applyThemeToDOM } from '../theming/ThemeEngine.js';
 import { MessageList } from './MessageList.js';
 import { ChatInput } from './ChatInput.js';
@@ -34,11 +35,12 @@ export const FloatingChatShell: React.FC<FloatingChatShellProps> = ({
   const resolved = resolveTheme(localTheme, backendTheme);
 
   const { flowState, handleGuidance, cancelFlow } = useGuidedFlow(adapter);
-  const { messages, isLoading, error, sendMessage, clearMessages, sendFeedback } = useAgentSOCE({
+  const { messages, isLoading, error, sendMessage, clearMessages, sendFeedback, selectedProviderId, setProviderId } = useAgentSOCE({
     config,
     adapter,
     onGuidance: handleGuidance,
   });
+  const providers = useProviders(config.apiBaseUrl ?? '', config.token ?? '');
 
   useEffect(() => {
     if (position.x === -1) {
@@ -143,9 +145,25 @@ export const FloatingChatShell: React.FC<FloatingChatShellProps> = ({
         style={styles.header}
         onMouseDown={onDragStart}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: 0 }}>
           {resolved.logoUrl && <img src={resolved.logoUrl} alt="" style={{ width: 24, height: 24 }} />}
           <span style={{ fontWeight: 600, fontSize: '14px' }}>{resolved.buttonLabel}</span>
+          {providers.length > 1 && (
+            <select
+              value={selectedProviderId ?? ''}
+              onChange={(e) => setProviderId(e.target.value || undefined)}
+              onMouseDown={(e) => e.stopPropagation()}
+              style={styles.providerSelect}
+              title="Seleccionar modelo LLM"
+            >
+              <option value="">Modelo por defecto</option>
+              {providers.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} ({p.model})
+                </option>
+              ))}
+            </select>
+          )}
         </div>
         <div style={{ display: 'flex', gap: '4px' }}>
           <button style={styles.headerBtn} onClick={clearMessages} title="Nueva conversación">🔄</button>
@@ -217,6 +235,11 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '4px', width: '28px', height: '28px', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontSize: '14px',
+  },
+  providerSelect: {
+    background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)',
+    color: '#fff', borderRadius: '6px', fontSize: '11px', padding: '2px 6px',
+    cursor: 'pointer', maxWidth: '140px', outline: 'none',
   },
   error: {
     padding: '8px 16px', background: '#FEF2F2', color: '#B91C1C',

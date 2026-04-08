@@ -853,6 +853,8 @@ const SidebarItem = ({
         transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
         onClick={handleClick}
         boxShadow={isActive ? `0 8px 25px \${glowColor}` : isHovered ? '0 6px 20px rgba(0,0,0,0.2)' : 'none'}
+        data-nav-id={item.code}
+        id={`nav-${item.code}`}
       >
         {isActive && (
           <Box

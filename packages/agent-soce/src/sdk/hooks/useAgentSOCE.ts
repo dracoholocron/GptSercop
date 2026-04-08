@@ -14,6 +14,7 @@ export function useAgentSOCE({ config, adapter, onGuidance }: UseAgentSOCEOption
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedProviderId, setProviderId] = useState<string | undefined>(undefined);
   const sessionIdRef = useRef(config.sessionId ?? crypto.randomUUID());
 
   const sseClient = useRef(
@@ -64,6 +65,7 @@ export function useAgentSOCE({ config, adapter, onGuidance }: UseAgentSOCEOption
         messages: allMessages,
         context,
         sessionId: sessionIdRef.current,
+        providerId: selectedProviderId,
       });
 
       for await (const event of stream) {
@@ -124,5 +126,7 @@ export function useAgentSOCE({ config, adapter, onGuidance }: UseAgentSOCEOption
     clearMessages,
     sendFeedback,
     sessionId: sessionIdRef.current,
+    selectedProviderId,
+    setProviderId,
   };
 }

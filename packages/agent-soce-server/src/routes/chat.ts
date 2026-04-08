@@ -12,6 +12,7 @@ interface ChatBody {
   messages: ChatMessage[];
   context?: UIContext;
   sessionId?: string;
+  providerId?: string;
 }
 
 // LLM router is initialised once per process from the DB config.
@@ -62,13 +63,23 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
     let assistantContent = '';
 
     try {
-      const llm = await getLLMRouter();
+      const router = await getLLMRouter();
+      // Resolve the actual provider: use requested one or fallback to default
+      const provider = providerId ? (() => {
+        try { return router.getProvider(providerId); } catch { return router.getProvider(); }
+      })() : router.getProvider();
+      // Thin adapter so orchestrate receives an llm-like object
+      const llm = {
+        chat: provider.chat.bind(provider),
+        embed: provider.embed.bind(provider),
+        getProvider: () => provider,
+      } as unknown as Parameters<typeof orchestrate>[0]['llm'];
 
       const { stream } = await orchestrate(
         {
           llm,
           prisma: prisma as unknown as Parameters<typeof orchestrate>[0]['prisma'],
-          embed: (text: string) => llm.embed(text),
+          embed: (text: string) => provider.embed(text),
           tools: AGENT_TOOLS,
           flows: FLOW_MAP,
         },

@@ -55,7 +55,7 @@ export function executeAction(action: GuidanceAction, adapter?: HostAdapter): vo
   }
 }
 
-function highlightFieldDOM(fieldId: string): void {
+export function highlightFieldDOM(fieldId: string): void {
   const el = document.getElementById(fieldId);
   if (!el) return;
   el.style.outline = '3px solid var(--agent-soce-primary, #0073E6)';

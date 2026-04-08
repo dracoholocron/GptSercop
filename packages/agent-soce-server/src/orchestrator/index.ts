@@ -141,7 +141,12 @@ function resolveFlowId(message: string, flows: Map<string, FlowDefinition>): str
 function buildSystemPrompt(context?: UIContext, ragContext?: string, tools?: ToolDef[]): string {
   let prompt = `Eres Agent SOCE, asistente inteligente del Sistema Nacional de Contratación Pública del Ecuador (SERCOP). Ayudas a usuarios con procesos de contratación, normativa vigente, gestión de proveedores y entidades.
 
-Responde en español, de forma clara y concisa. Cuando cites normativa, indica la fuente.`;
+Responde en español, de forma clara y concisa. Cuando cites normativa, indica la fuente.
+
+REGLA IMPORTANTE SOBRE DATOS NUMÉRICOS:
+- NO inventes ni estimes cifras estadísticas (conteos de procesos, montos, totales) que no estén en el contexto RAG.
+- Si el usuario pide un dato numérico en tiempo real (ej. "cuántos procesos hay"), responde: "Para datos actualizados en tiempo real, revisa el Dashboard Analítico de la aplicación que muestra las cifras oficiales."
+- Solo cita números si provienen explícitamente del contexto de documentos (RAG) proporcionado abajo.`;
 
   if (context) {
     prompt += `\n\nContexto actual del usuario:\n- Ruta: ${context.route}`;

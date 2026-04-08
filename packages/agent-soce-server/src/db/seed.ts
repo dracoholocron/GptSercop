@@ -115,14 +115,14 @@ async function main() {
   }
   console.log('  ✓ Permissions created');
 
-  // ─── LLM Provider ───────────────────────────────────────
+  // ─── LLM Providers ──────────────────────────────────────
   await prisma.agentLLMProvider.upsert({
     where: { name: 'ollama-local' },
     update: {},
     create: {
       name: 'ollama-local',
       type: 'ollama',
-      baseUrl: process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434',
+      baseUrl: process.env.OLLAMA_BASE_URL ?? 'http://ollama:11434',
       model: 'llama3.2:3b',
       isDefault: true,
       isActive: true,
@@ -131,7 +131,30 @@ async function main() {
       metadata: { embeddingModel: 'nomic-embed-text' },
     },
   });
-  console.log('  ✓ LLM provider created');
+
+  // OpenAI provider — only created when OPENAI_API_KEY is set
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (openaiKey) {
+    await prisma.agentLLMProvider.upsert({
+      where: { name: 'openai-gpt4o-mini' },
+      update: { apiKey: openaiKey, isActive: true },
+      create: {
+        name: 'openai-gpt4o-mini',
+        type: 'openai',
+        apiKey: openaiKey,
+        model: 'gpt-4o-mini',
+        isDefault: false,
+        isActive: true,
+        maxTokens: 4096,
+        temperature: 0.3,
+        metadata: {},
+      },
+    });
+    console.log('  ✓ OpenAI provider added (gpt-4o-mini)');
+  } else {
+    console.log('  ℹ  OPENAI_API_KEY not set — skipping OpenAI provider');
+  }
+  console.log('  ✓ LLM providers configured');
 
   // ─── RAG Config ──────────────────────────────────────────
   const ragCount = await prisma.agentRAGConfig.count();

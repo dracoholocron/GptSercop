@@ -4,6 +4,7 @@ export interface SendMessageOptions {
   messages: Array<{ role: string; content: string }>;
   context?: UIContext;
   sessionId?: string;
+  providerId?: string;
 }
 
 export function createSSEClient(baseUrl: string, token: string) {

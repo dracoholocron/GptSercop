@@ -55,6 +55,36 @@ function resolveFields(path: string): string[] {
   return [];
 }
 
+/**
+ * Resolve a DOM element from a field/nav identifier.
+ * Priority:
+ *  1. id="<fieldId>"
+ *  2. [name="<fieldId>"]
+ *  3. [data-field="<fieldId>"]
+ *  4. [data-nav-id="<fieldId>"]   ← sidebar menu items
+ *  5. id="nav-<fieldId>"
+ *  6. Label text match in sidebar links (case-insensitive)
+ */
+function resolveElement(fieldId: string): Element | null {
+  return (
+    document.getElementById(fieldId) ??
+    document.querySelector(`[name="${fieldId}"]`) ??
+    document.querySelector(`[data-field="${fieldId}"]`) ??
+    document.querySelector(`[data-nav-id="${fieldId}"]`) ??
+    document.getElementById(`nav-${fieldId}`) ??
+    // Fuzzy label match for sidebar items (lowercase comparison)
+    (() => {
+      const lower = fieldId.toLowerCase().replace(/[_-]/g, ' ');
+      const allNavItems = document.querySelectorAll('[data-nav-id]');
+      for (const el of allNavItems) {
+        const label = el.textContent?.toLowerCase().trim() ?? '';
+        if (label.includes(lower) || lower.includes(label.replace(/\s+/g, ''))) return el;
+      }
+      return null;
+    })()
+  );
+}
+
 // Returns the React Router navigate function if available
 function getNavigateFn(): ((path: string) => void) | null {
   if (typeof window === 'undefined') return null;
@@ -96,37 +126,30 @@ export const sercopAdapter: HostAdapter = {
   },
 
   highlightField(fieldId: string): void {
-    // Try standard DOM first
-    const el = document.getElementById(fieldId)
-      ?? document.querySelector(`[name="${fieldId}"]`)
-      ?? document.querySelector(`[data-field="${fieldId}"]`);
-
+    const el = resolveElement(fieldId);
     if (el) {
       (el as HTMLElement).style.outline = '3px solid var(--agent-soce-primary, #0073E6)';
       (el as HTMLElement).style.outlineOffset = '2px';
-      (el as HTMLElement).style.transition = 'outline 0.3s ease';
+      (el as HTMLElement).style.boxShadow = '0 0 12px rgba(0,115,230,0.4)';
+      (el as HTMLElement).style.transition = 'outline 0.3s ease, box-shadow 0.3s ease';
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-      // Fallback to generic highlight
       highlightFieldDOM(fieldId);
     }
   },
 
   removeHighlight(fieldId: string): void {
-    const el = document.getElementById(fieldId)
-      ?? document.querySelector(`[name="${fieldId}"]`)
-      ?? document.querySelector(`[data-field="${fieldId}"]`);
-
+    const el = resolveElement(fieldId);
     if (el) {
       (el as HTMLElement).style.outline = '';
       (el as HTMLElement).style.outlineOffset = '';
+      (el as HTMLElement).style.boxShadow = '';
     }
     removeHighlightDOM(fieldId);
   },
 
   focusField(fieldId: string): void {
-    const el = document.getElementById(fieldId)
-      ?? document.querySelector<HTMLElement>(`[name="${fieldId}"]`);
+    const el = resolveElement(fieldId);
     if (el instanceof HTMLElement) {
       el.focus();
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -144,8 +167,7 @@ export const sercopAdapter: HostAdapter = {
   },
 
   showTooltip(fieldId: string, text: string): void {
-    const el = document.getElementById(fieldId)
-      ?? document.querySelector(`[name="${fieldId}"]`);
+    const el = resolveElement(fieldId);
     if (!el) return;
 
     let tooltip = document.getElementById(`agent-soce-tooltip-${fieldId}`);
