@@ -133,3 +133,104 @@ test.describe('A11y – Portal entidad (licitación)', () => {
     expect(results.violations).toEqual([]);
   });
 });
+
+// ──────────────────────────────────────────────────────────────
+// A11y – Nuevos módulos CP (sercop-unified legacy frontend)
+// ──────────────────────────────────────────────────────────────
+const LEGACY_BASE = process.env.LEGACY_BASE_URL || 'http://localhost:5177';
+const LEGACY_USER = process.env.LEGACY_E2E_USER || 'cp_admin';
+const LEGACY_PASS = process.env.LEGACY_E2E_PASSWORD || 'Demo123!';
+
+async function loginLegacyForA11y(page: Page) {
+  await page.goto(`${LEGACY_BASE}/login`);
+  const userInput = page
+    .locator('input[type="text"], input[name="username"]')
+    .first();
+  await userInput.waitFor({ state: 'visible', timeout: 10000 });
+  await userInput.fill(LEGACY_USER);
+  await page.locator('input[type="password"]').first().fill(LEGACY_PASS);
+  await page.locator('button[type="submit"]').first().click();
+  await page.waitForLoadState('networkidle').catch(() => {});
+}
+
+test.describe('A11y – Nuevos módulos CP (sercop-unified)', () => {
+  test('AX-CP1: /cp/contracts sin violaciones WCAG 2.1 AA', async ({ page }) => {
+    await loginLegacyForA11y(page);
+    const isLogin = page.url().includes('/login');
+    test.skip(isLogin, 'Auth not available for a11y test');
+
+    await page.goto(`${LEGACY_BASE}/cp/contracts`);
+    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForSelector('body', { state: 'attached' });
+
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa'])
+      .disableRules(['color-contrast', 'link-in-text-block'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+  });
+
+  test('AX-CP2: /cp/cpc-browser sin violaciones WCAG 2.1 AA', async ({ page }) => {
+    await loginLegacyForA11y(page);
+    const isLogin = page.url().includes('/login');
+    test.skip(isLogin, 'Auth not available for a11y test');
+
+    await page.goto(`${LEGACY_BASE}/cp/cpc-browser`);
+    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForSelector('body', { state: 'attached' });
+
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa'])
+      .disableRules(['color-contrast', 'link-in-text-block'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+  });
+
+  test('AX-CP3: /providers/register (step 1) sin violaciones WCAG 2.1 AA', async ({ page }) => {
+    await loginLegacyForA11y(page);
+    const isLogin = page.url().includes('/login');
+    test.skip(isLogin, 'Auth not available for a11y test');
+
+    await page.goto(`${LEGACY_BASE}/providers/register`);
+    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForSelector('body', { state: 'attached' });
+
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa'])
+      .disableRules(['color-contrast', 'link-in-text-block'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+  });
+
+  test('AX-CP4: /cp/complaints sin violaciones WCAG 2.1 AA', async ({ page }) => {
+    await loginLegacyForA11y(page);
+    const isLogin = page.url().includes('/login');
+    test.skip(isLogin, 'Auth not available for a11y test');
+
+    await page.goto(`${LEGACY_BASE}/cp/complaints`);
+    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForSelector('body', { state: 'attached' });
+
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa'])
+      .disableRules(['color-contrast', 'link-in-text-block'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+  });
+
+  test('AX-CP5: /cp/processes/new (wizard paso 1) sin violaciones WCAG 2.1 AA', async ({ page }) => {
+    await loginLegacyForA11y(page);
+    const isLogin = page.url().includes('/login');
+    test.skip(isLogin, 'Auth not available for a11y test');
+
+    await page.goto(`${LEGACY_BASE}/cp/processes/new`);
+    await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForSelector('body', { state: 'attached' });
+
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa'])
+      .disableRules(['color-contrast', 'link-in-text-block'])
+      .analyze();
+    expect(results.violations).toEqual([]);
+  });
+});
