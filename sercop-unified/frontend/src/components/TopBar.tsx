@@ -11,6 +11,7 @@ import {
   CloseButton,
   Tooltip,
 } from '@chakra-ui/react';
+import { useAgentSOCEButton } from '../hooks/useAgentSOCEButton';
 import { toaster } from './ui/toaster';
 import { useTranslation } from 'react-i18next';
 import { keyframes } from '@emotion/react';
@@ -294,6 +295,11 @@ export const TopBar = () => {
             </Tooltip.Content>
           </Tooltip.Positioner>
         </Tooltip.Root>
+
+        <Separator orientation="vertical" h="24px" borderColor={isDark ? 'whiteAlpha.100' : 'blackAlpha.100'} />
+
+        {/* Agent SOCE Button */}
+        <AgentSOCETopBarButton isDark={isDark} />
 
         <Separator orientation="vertical" h="24px" borderColor={isDark ? 'whiteAlpha.100' : 'blackAlpha.100'} />
 
@@ -805,5 +811,47 @@ export const TopBar = () => {
         <SmartCommandBar onClose={() => setShowSmartSearch(false)} />
       )}
     </Flex>
+  );
+};
+
+// ─── Agent SOCE Top Bar Button ────────────────────────────────────────────────
+
+const AgentSOCETopBarButton: React.FC<{ isDark: boolean }> = ({ isDark }) => {
+  const { toggle, isOpen } = useAgentSOCEButton();
+  return (
+    <Tooltip.Root openDelay={100} positioning={{ placement: 'bottom' }}>
+      <Tooltip.Trigger asChild>
+        <Box
+          as="button"
+          onClick={toggle}
+          aria-label="Agent SOCE"
+          px={3}
+          py={2}
+          borderRadius="12px"
+          cursor="pointer"
+          display="flex"
+          alignItems="center"
+          gap={2}
+          transition="all 0.2s ease"
+          bg={isOpen
+            ? (isDark ? 'rgba(0, 115, 230, 0.3)' : 'rgba(0, 115, 230, 0.12)')
+            : (isDark ? 'rgba(0, 115, 230, 0.1)' : 'rgba(0, 115, 230, 0.06)')}
+          _hover={{
+            bg: isDark ? 'rgba(0, 115, 230, 0.25)' : 'rgba(0, 115, 230, 0.15)',
+            transform: 'scale(1.02)',
+          }}
+        >
+          <Text fontSize="lg" lineHeight={1}>🤖</Text>
+          <Text fontSize="sm" fontWeight="600" color={isDark ? '#63B3ED' : '#0073E6'} display={{ base: 'none', md: 'block' }}>
+            Agent SOCE
+          </Text>
+        </Box>
+      </Tooltip.Trigger>
+      <Tooltip.Positioner>
+        <Tooltip.Content bg={isDark ? 'gray.700' : 'gray.800'} color="white" px={3} py={1.5} borderRadius="lg" fontSize="xs" fontWeight="500">
+          Asistente IA Agent SOCE
+        </Tooltip.Content>
+      </Tooltip.Positioner>
+    </Tooltip.Root>
   );
 };

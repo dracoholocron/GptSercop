@@ -368,6 +368,89 @@ export const getProviderOverview = (providerId: string, page?: number, limit?: n
 export const getRiskPrediction = (tenderId: string) =>
   fetchJson<RiskPrediction>(`${BASE}/risk-prediction/${tenderId}`);
 
+// ---- Geographic Analysis ----
+export type GeoItem = {
+  province: string;
+  contractCount: number;
+  totalAmount: number;
+  entityCount: number;
+};
+export const getGeoAnalytics = (year?: number) =>
+  fetchJson<{ year?: number; data: GeoItem[] }>(`${BASE}/geo${year ? `?year=${year}` : ''}`);
+
+// ---- Process Efficiency ----
+export type EfficiencyItem = {
+  processType: string;
+  count: number;
+  avgPublishToBidsDays: number | null;
+  avgBidsToAwardDays: number | null;
+  cancelledCount: number;
+};
+export const getProcessEfficiency = (year?: number) =>
+  fetchJson<{ year?: number; data: EfficiencyItem[] }>(`${BASE}/process-efficiency${year ? `?year=${year}` : ''}`);
+
+// ---- Savings Analysis ----
+export type SavingsItem = {
+  groupKey: string;
+  count: number;
+  totalEstimated: number;
+  totalAwarded: number;
+  savingsAmount: number;
+  savingsPct: number;
+};
+export const getSavingsAnalysis = (year?: number, groupBy?: 'processType' | 'entity') => {
+  const q = new URLSearchParams();
+  if (year) q.set('year', String(year));
+  if (groupBy) q.set('groupBy', groupBy);
+  return fetchJson<{ year?: number; groupBy: string; data: SavingsItem[] }>(`${BASE}/savings?${q}`);
+};
+
+// ---- MIPYME Participation ----
+export type MipymeItem = {
+  category: string;
+  providerCount: number;
+  contractCount: number;
+  totalAmount: number;
+  contractPct: number;
+  amountPct: number;
+};
+export const getMipymeAnalytics = (year?: number) =>
+  fetchJson<{ year?: number; data: MipymeItem[] }>(`${BASE}/mipyme${year ? `?year=${year}` : ''}`);
+
+// ---- Emergency Contracts ----
+export type EmergencyItem = {
+  id: string;
+  code: string | null;
+  title: string;
+  status: string;
+  estimatedAmount: number | null;
+  entityName: string | null;
+  entityId: string | null;
+  contractAmount: number | null;
+  contractStatus: string | null;
+  providerName: string | null;
+  providerId: string | null;
+  createdAt: string;
+};
+export type EmergencyData = {
+  total: number;
+  allTendersCount: number;
+  emergencyPct: number;
+  emergencyAmountTotal: number;
+  allAmountTotal: number;
+  emergencyAmountPct: number;
+  page: number;
+  limit: number;
+  data: EmergencyItem[];
+};
+export const getEmergencyContracts = (params?: { page?: number; limit?: number; year?: number }) => {
+  const q = new URLSearchParams();
+  if (params?.page) q.set('page', String(params.page));
+  if (params?.limit) q.set('limit', String(params.limit));
+  if (params?.year) q.set('year', String(params.year));
+  return fetchJson<EmergencyData>(`${BASE}/emergency?${q}`);
+};
+
 // ---- Public ----
 export const getPublicMarketOverview = () => fetchJson<unknown>(`${PUBLIC_BASE}/market-overview`);
 export const getPublicTopProviders = (limit = 10) => fetchJson<unknown>(`${PUBLIC_BASE}/top-providers?limit=${limit}`);

@@ -1,4 +1,6 @@
 import { ChakraProvider, Box, Spinner, Text, VStack, Button } from '@chakra-ui/react';
+import { AgentSOCEProvider } from './contexts/AgentSOCEContext';
+import { AgentSOCEWidget } from './components/agent-soce/AgentSOCEWidget';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense, Component, type ErrorInfo, type ReactNode } from 'react';
 import system from './theme';
@@ -68,6 +70,11 @@ import ContractHealthPage from './pages/analytics/ContractHealthPage';
 import FragmentationPage from './pages/analytics/FragmentationPage';
 import AnalyticsEntityDetailPage from './pages/analytics/AnalyticsEntityDetailPage';
 import AnalyticsProviderDetailPage from './pages/analytics/AnalyticsProviderDetailPage';
+import GeoAnalyticsPage from './pages/analytics/GeoAnalyticsPage';
+import ProcessEfficiencyPage from './pages/analytics/ProcessEfficiencyPage';
+import SavingsAnalysisPage from './pages/analytics/SavingsAnalysisPage';
+import MipymeAnalyticsPage from './pages/analytics/MipymeAnalyticsPage';
+import EmergencyContractsPage from './pages/analytics/EmergencyContractsPage';
 
 // Auth pages
 import { OAuth2Callback } from './pages/auth/OAuth2Callback';
@@ -306,6 +313,11 @@ function AppRouter() {
       <Route path="/analytics/fragmentation" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><FragmentationPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
       <Route path="/analytics/entities/:entityId" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><AnalyticsEntityDetailPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
       <Route path="/analytics/providers/:providerId" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><AnalyticsProviderDetailPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/geo" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><GeoAnalyticsPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/efficiency" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><ProcessEfficiencyPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/savings" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><SavingsAnalysisPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/mipyme" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><MipymeAnalyticsPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/emergency" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><EmergencyContractsPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
 
       {/* Client portal */}
       <Route path="/client" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />
@@ -337,6 +349,7 @@ function App() {
                     <ThemeProvider>
                       <ResponsiveProvider>
                         <SidebarProvider>
+                          <AgentSOCEProvider>
                           <Toaster />
                           <Suspense fallback={
                             <Box display="flex" justifyContent="center" alignItems="center" minH="100vh">
@@ -350,7 +363,9 @@ function App() {
                               <CMXChat />
                             </Suspense>
                           ) : null}
+                          <AgentSOCEWidget />
                           <AlertNotificationListener />
+                          </AgentSOCEProvider>
                         </SidebarProvider>
                       </ResponsiveProvider>
                     </ThemeProvider>

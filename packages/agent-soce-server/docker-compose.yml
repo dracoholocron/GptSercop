@@ -1,0 +1,66 @@
+# Agent SOCE Chat 2.0 – Standalone Infrastructure
+# Ports chosen to avoid conflicts with host app (see plan Section 0.2)
+# Usage: docker compose up -d
+
+services:
+  agent-soce-db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: agent_soce
+      POSTGRES_PASSWORD: agent_soce
+      POSTGRES_DB: agent_soce
+    ports:
+      - "5433:5432"
+    volumes:
+      - agent_soce_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agent_soce -d agent_soce"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  agent-soce-redis:
+    image: redis:7-alpine
+    ports:
+      - "6381:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  agent-soce-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3090
+      DATABASE_URL: postgresql://agent_soce:agent_soce@agent-soce-db:5432/agent_soce
+      REDIS_URL: redis://agent-soce-redis:6379
+      OLLAMA_BASE_URL: http://ollama:11434
+      AGENT_SOCE_LLM_PROVIDER: ollama
+      AGENT_SOCE_LLM_MODEL: llama3.2:3b
+      AGENT_SOCE_EMBEDDING_PROVIDER: ollama
+      AGENT_SOCE_EMBEDDING_MODEL: nomic-embed-text
+      JWT_SECRET: ${JWT_SECRET:-agent-soce-dev-secret-min-32-chars!!}
+    ports:
+      - "3090:3090"
+    depends_on:
+      agent-soce-db:
+        condition: service_healthy
+      agent-soce-redis:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+
+volumes:
+  agent_soce_pgdata:
+  ollama_data:

@@ -658,6 +658,301 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
     },
   );
 
+  // ---- GAP COVERAGE ENDPOINTS ----
+
+  // GET /api/v1/analytics/geo – gasto por provincia (proveedor.province)
+  app.get<{ Querystring: { year?: string } }>(
+    '/api/v1/analytics/geo',
+    async (req, reply) => {
+      try {
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+
+        const yearFilter = year
+          ? `AND EXTRACT(YEAR FROM c."signedAt") = ${year}`
+          : '';
+
+        const rows = await prisma.$queryRawUnsafe<
+          Array<{ province: string; contractCount: bigint; totalAmount: string; entityCount: bigint }>
+        >(
+          `SELECT
+            COALESCE(p.province, 'Desconocida') AS province,
+            COUNT(DISTINCT c.id) AS "contractCount",
+            COALESCE(SUM(c.amount), 0) AS "totalAmount",
+            COUNT(DISTINCT pp."entityId") AS "entityCount"
+          FROM "Contract" c
+          JOIN "Provider" p ON p.id = c."providerId"
+          JOIN "Tender" t ON t.id = c."tenderId"
+          JOIN "ProcurementPlan" pp ON pp.id = t."procurementPlanId"
+          WHERE 1=1 ${yearFilter}
+          GROUP BY COALESCE(p.province, 'Desconocida')
+          ORDER BY "totalAmount" DESC`,
+        );
+
+        return {
+          year,
+          data: rows.map((r) => ({
+            province: r.province,
+            contractCount: Number(r.contractCount),
+            totalAmount: parseFloat(r.totalAmount),
+            entityCount: Number(r.entityCount),
+          })),
+        };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener análisis geográfico' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/process-efficiency – duración promedio por tipo de proceso
+  app.get<{ Querystring: { year?: string } }>(
+    '/api/v1/analytics/process-efficiency',
+    async (req, reply) => {
+      try {
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+        const yearFilter = year
+          ? `AND EXTRACT(YEAR FROM t."createdAt") = ${year}`
+          : '';
+
+        const rows = await prisma.$queryRawUnsafe<
+          Array<{
+            processType: string;
+            count: bigint;
+            avgPublishToBidsDays: string | null;
+            avgBidsToAwardDays: string | null;
+            cancelledCount: bigint;
+          }>
+        >(
+          `SELECT
+            COALESCE(t."processType", 'sin tipo') AS "processType",
+            COUNT(*) AS count,
+            AVG(EXTRACT(EPOCH FROM (t."bidsDeadlineAt" - t."createdAt")) / 86400.0) AS "avgPublishToBidsDays",
+            AVG(EXTRACT(EPOCH FROM (c."signedAt" - t."bidsDeadlineAt")) / 86400.0) AS "avgBidsToAwardDays",
+            SUM(CASE WHEN t.status = 'cancelled' THEN 1 ELSE 0 END) AS "cancelledCount"
+          FROM "Tender" t
+          LEFT JOIN "Contract" c ON c."tenderId" = t.id
+          WHERE 1=1 ${yearFilter}
+          GROUP BY COALESCE(t."processType", 'sin tipo')
+          ORDER BY count DESC`,
+        );
+
+        return {
+          year,
+          data: rows.map((r) => ({
+            processType: r.processType,
+            count: Number(r.count),
+            avgPublishToBidsDays: r.avgPublishToBidsDays ? parseFloat(r.avgPublishToBidsDays) : null,
+            avgBidsToAwardDays: r.avgBidsToAwardDays ? parseFloat(r.avgBidsToAwardDays) : null,
+            cancelledCount: Number(r.cancelledCount),
+          })),
+        };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener eficiencia de procesos' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/savings – ahorro: presupuesto vs monto adjudicado
+  app.get<{ Querystring: { year?: string; groupBy?: string } }>(
+    '/api/v1/analytics/savings',
+    async (req, reply) => {
+      try {
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+        const groupBy = req.query.groupBy === 'entity' ? 'entity' : 'processType';
+        const yearFilter = year
+          ? `AND EXTRACT(YEAR FROM c."signedAt") = ${year}`
+          : '';
+
+        let rows: Array<{
+          groupKey: string;
+          count: bigint;
+          totalEstimated: string;
+          totalAwarded: string;
+        }>;
+
+        if (groupBy === 'entity') {
+          rows = await prisma.$queryRawUnsafe(
+            `SELECT
+              e.name AS "groupKey",
+              COUNT(*) AS count,
+              COALESCE(SUM(t."estimatedAmount"), 0) AS "totalEstimated",
+              COALESCE(SUM(c.amount), 0) AS "totalAwarded"
+            FROM "Contract" c
+            JOIN "Tender" t ON t.id = c."tenderId"
+            JOIN "ProcurementPlan" pp ON pp.id = t."procurementPlanId"
+            JOIN "Entity" e ON e.id = pp."entityId"
+            WHERE t."estimatedAmount" IS NOT NULL ${yearFilter}
+            GROUP BY e.name
+            ORDER BY "totalEstimated" DESC
+            LIMIT 20`,
+          );
+        } else {
+          rows = await prisma.$queryRawUnsafe(
+            `SELECT
+              COALESCE(t."processType", 'sin tipo') AS "groupKey",
+              COUNT(*) AS count,
+              COALESCE(SUM(t."estimatedAmount"), 0) AS "totalEstimated",
+              COALESCE(SUM(c.amount), 0) AS "totalAwarded"
+            FROM "Contract" c
+            JOIN "Tender" t ON t.id = c."tenderId"
+            WHERE t."estimatedAmount" IS NOT NULL ${yearFilter}
+            GROUP BY COALESCE(t."processType", 'sin tipo')
+            ORDER BY "totalEstimated" DESC`,
+          );
+        }
+
+        return {
+          year,
+          groupBy,
+          data: rows.map((r) => {
+            const estimated = parseFloat(r.totalEstimated);
+            const awarded = parseFloat(r.totalAwarded);
+            const savings = estimated - awarded;
+            const savingsPct = estimated > 0 ? (savings / estimated) * 100 : 0;
+            return {
+              groupKey: r.groupKey,
+              count: Number(r.count),
+              totalEstimated: estimated,
+              totalAwarded: awarded,
+              savingsAmount: savings,
+              savingsPct: parseFloat(savingsPct.toFixed(2)),
+            };
+          }),
+        };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener análisis de ahorros' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/mipyme – participación MIPYME (clasificación por patrimonio)
+  app.get<{ Querystring: { year?: string } }>(
+    '/api/v1/analytics/mipyme',
+    async (req, reply) => {
+      try {
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+        const yearFilter = year
+          ? `AND EXTRACT(YEAR FROM c."signedAt") = ${year}`
+          : '';
+
+        // MIPYME thresholds (USD patrimony): micro < 100k, small < 1M, medium < 5M, large >= 5M
+        const rows = await prisma.$queryRawUnsafe<
+          Array<{
+            category: string;
+            providerCount: bigint;
+            contractCount: bigint;
+            totalAmount: string;
+          }>
+        >(
+          `SELECT
+            CASE
+              WHEN p."patrimonyAmount" IS NULL THEN 'No clasificado'
+              WHEN p."patrimonyAmount" < 100000 THEN 'Microempresa'
+              WHEN p."patrimonyAmount" < 1000000 THEN 'Pequeña empresa'
+              WHEN p."patrimonyAmount" < 5000000 THEN 'Mediana empresa'
+              ELSE 'Gran empresa'
+            END AS category,
+            COUNT(DISTINCT p.id) AS "providerCount",
+            COUNT(DISTINCT c.id) AS "contractCount",
+            COALESCE(SUM(c.amount), 0) AS "totalAmount"
+          FROM "Contract" c
+          JOIN "Provider" p ON p.id = c."providerId"
+          WHERE 1=1 ${yearFilter}
+          GROUP BY 1
+          ORDER BY "totalAmount" DESC`,
+        );
+
+        const totalContracts = rows.reduce((s, r) => s + Number(r.contractCount), 0);
+        const totalAmount = rows.reduce((s, r) => s + parseFloat(r.totalAmount), 0);
+
+        return {
+          year,
+          data: rows.map((r) => {
+            const amt = parseFloat(r.totalAmount);
+            const cnt = Number(r.contractCount);
+            return {
+              category: r.category,
+              providerCount: Number(r.providerCount),
+              contractCount: cnt,
+              totalAmount: amt,
+              contractPct: totalContracts > 0 ? parseFloat(((cnt / totalContracts) * 100).toFixed(2)) : 0,
+              amountPct: totalAmount > 0 ? parseFloat(((amt / totalAmount) * 100).toFixed(2)) : 0,
+            };
+          }),
+        };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener análisis MIPYME' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/emergency – monitoreo de contrataciones de emergencia
+  app.get<{ Querystring: { page?: string; limit?: string; year?: string } }>(
+    '/api/v1/analytics/emergency',
+    async (req, reply) => {
+      try {
+        const page = Math.max(1, parseInt(req.query.page ?? '1'));
+        const limit = Math.min(50, parseInt(req.query.limit ?? '20'));
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+        const skip = (page - 1) * limit;
+
+        const yearFilter = year ? { createdAt: { gte: new Date(`${year}-01-01`), lt: new Date(`${year + 1}-01-01`) } } : {};
+
+        const [data, total, allTenders, emergencySum, allSum] = await Promise.all([
+          prisma.tender.findMany({
+            where: { processType: 'emergencia', ...yearFilter },
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit,
+            include: {
+              contract: { select: { id: true, amount: true, status: true, providerId: true, provider: { select: { name: true } } } },
+              procurementPlan: { select: { entityId: true, entity: { select: { name: true } } } },
+            },
+          }),
+          prisma.tender.count({ where: { processType: 'emergencia', ...yearFilter } }),
+          prisma.tender.count({ where: yearFilter }),
+          prisma.$queryRawUnsafe<Array<{ total: string }>>(
+            `SELECT COALESCE(SUM(c.amount), 0) AS total FROM "Contract" c
+             JOIN "Tender" t ON t.id = c."tenderId"
+             WHERE t."processType" = 'emergencia'`,
+          ),
+          prisma.$queryRawUnsafe<Array<{ total: string }>>(
+            `SELECT COALESCE(SUM(amount), 0) AS total FROM "Contract"`,
+          ),
+        ]);
+
+        const emergencyAmountTotal = parseFloat(emergencySum[0]?.total ?? '0');
+        const allAmountTotal = parseFloat(allSum[0]?.total ?? '0');
+
+        return {
+          total,
+          allTendersCount: allTenders,
+          emergencyPct: allTenders > 0 ? parseFloat(((total / allTenders) * 100).toFixed(2)) : 0,
+          emergencyAmountTotal,
+          allAmountTotal,
+          emergencyAmountPct: allAmountTotal > 0 ? parseFloat(((emergencyAmountTotal / allAmountTotal) * 100).toFixed(2)) : 0,
+          page,
+          limit,
+          data: data.map((t) => ({
+            id: t.id,
+            code: t.code,
+            title: t.title,
+            status: t.status,
+            estimatedAmount: t.estimatedAmount ? parseFloat(String(t.estimatedAmount)) : null,
+            entityName: t.procurementPlan?.entity?.name ?? null,
+            entityId: t.procurementPlan?.entityId ?? null,
+            contractAmount: t.contract?.amount ? parseFloat(String(t.contract.amount)) : null,
+            contractStatus: t.contract?.status ?? null,
+            providerName: t.contract?.provider?.name ?? null,
+            providerId: t.contract?.providerId ?? null,
+            createdAt: t.createdAt,
+          })),
+        };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener contrataciones de emergencia' });
+      }
+    },
+  );
+
   // ---- PUBLIC ENDPOINTS (no auth required) ----
 
   // GET /api/v1/public/analytics/market-overview

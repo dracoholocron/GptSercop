@@ -1,0 +1,47 @@
+{
+  "name": "@sercop/agent-soce-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node --loader tsx src/index.ts",
+    "build": "tsc",
+    "db:generate": "prisma generate --schema=src/db/schema.prisma",
+    "db:push": "prisma db push --schema=src/db/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=src/db/schema.prisma",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:setup": "npm run db:push && npm run db:seed",
+    "test": "npm run test:unit && npm run test:smoke && npm run test:integration && npm run test:security && npm run test:audit && npm run test:regression",
+    "test:smoke": "node --import tsx --test test/smoke/*.test.ts",
+    "test:unit": "node --import tsx --test test/unit/*.test.ts",
+    "test:integration": "node --import tsx --test test/integration/*.test.ts",
+    "test:security": "node --import tsx --test test/security/*.test.ts",
+    "test:audit": "node --import tsx --test test/audit/*.test.ts",
+    "test:regression": "node --import tsx --test test/regression/*.test.ts",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/rate-limit": "^10.0.0",
+    "@google/generative-ai": "^0.20.0",
+    "@prisma/client": "^6.0.0",
+    "fastify": "^5.0.0",
+    "ioredis": "^5.4.0",
+    "jsonwebtoken": "^9.0.0",
+    "ollama": "^0.5.0",
+    "openai": "^4.70.0",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/jsonwebtoken": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.0",
+    "prisma": "^6.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

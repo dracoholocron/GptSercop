@@ -394,6 +394,11 @@ const getFallbackInternalMenu = (): MenuItem[] => [
       { id: -99, code: 'analytics.priceIndex', label: 'Índice de Precios', icon: FiDollarSign, path: '/analytics/price-index', isSection: false, children: [] },
       { id: -910, code: 'analytics.contracts', label: 'Salud Contractual', icon: LuClipboardCheck, path: '/analytics/contracts', isSection: false, children: [] },
       { id: -911, code: 'analytics.fragmentation', label: 'Fragmentación', icon: FiActivity, path: '/analytics/fragmentation', isSection: false, children: [] },
+      { id: -912, code: 'analytics.geo', label: 'Análisis Geográfico', icon: FiHash, path: '/analytics/geo', isSection: false, children: [] },
+      { id: -913, code: 'analytics.efficiency', label: 'Eficiencia de Procesos', icon: FiClock, path: '/analytics/efficiency', isSection: false, children: [] },
+      { id: -914, code: 'analytics.savings', label: 'Ahorros', icon: FiPercent, path: '/analytics/savings', isSection: false, children: [] },
+      { id: -915, code: 'analytics.mipyme', label: 'Participación MIPYME', icon: FiUserCheck, path: '/analytics/mipyme', isSection: false, children: [] },
+      { id: -916, code: 'analytics.emergency', label: 'Emergencias', icon: FiDroplet, path: '/analytics/emergency', isSection: false, children: [] },
     ],
   },
   {

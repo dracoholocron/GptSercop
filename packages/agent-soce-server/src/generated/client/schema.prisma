@@ -1,0 +1,246 @@
+// Agent SOCE Chat 2.0 – Standalone database schema
+// Deployed on its own PostgreSQL instance (port 5433), independent of host app.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── RBAC ────────────────────────────────────────────────────────────────────
+
+model AgentRole {
+  id          String                @id @default(uuid())
+  name        String                @unique
+  description String?
+  isSystem    Boolean               @default(false)
+  createdAt   DateTime              @default(now())
+  users       AgentUserRole[]
+  permissions AgentDataPermission[]
+}
+
+model AgentUser {
+  id           String             @id @default(uuid())
+  externalId   String             @unique
+  email        String
+  displayName  String
+  status       String             @default("active")
+  createdAt    DateTime           @default(now())
+  roles        AgentUserRole[]
+  sessions     AgentSession[]
+  auditEntries AgentAuditLog[]
+  interactions AgentInteraction[]
+}
+
+model AgentUserRole {
+  userId String
+  roleId String
+  user   AgentUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   AgentRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+// ─── Data Sources ────────────────────────────────────────────────────────────
+
+model AgentDataSource {
+  id            String                @id @default(uuid())
+  name          String                @unique
+  type          String // postgresql | mysql | mssql | readonly_replica
+  connectionUrl String // encrypted at rest
+  schema        String?
+  isActive      Boolean               @default(true)
+  maxPoolSize   Int                   @default(5)
+  timeoutMs     Int                   @default(10000)
+  metadata      Json?
+  createdAt     DateTime              @default(now())
+  permissions   AgentDataPermission[]
+}
+
+model AgentDataPermission {
+  id             String          @id @default(uuid())
+  roleId         String
+  dataSourceId   String
+  tableName      String
+  allowedColumns String[]
+  rowFilter      String?
+  accessLevel    String          @default("read")
+  role           AgentRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  dataSource     AgentDataSource @relation(fields: [dataSourceId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, dataSourceId, tableName])
+}
+
+// ─── LLM / RAG / Graph / Theme Configuration ────────────────────────────────
+
+model AgentLLMProvider {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  type        String // openai | anthropic | google | ollama
+  apiKey      String?
+  baseUrl     String?
+  model       String
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  maxTokens   Int      @default(4096)
+  temperature Float    @default(0.3)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+}
+
+model AgentRAGConfig {
+  id              String   @id @default(uuid())
+  embeddingModel  String   @default("nomic-embed-text")
+  embeddingDims   Int      @default(768)
+  chunkSize       Int      @default(512)
+  chunkOverlap    Int      @default(64)
+  searchWeight    Json     @default("{\"semantic\": 0.6, \"keyword\": 0.4}")
+  rerankerEnabled Boolean  @default(false)
+  createdAt       DateTime @default(now())
+}
+
+model AgentGraphConfig {
+  id          String   @id @default(uuid())
+  graphName   String   @default("sercop_graph")
+  syncEnabled Boolean  @default(true)
+  syncCron    String   @default("0 */6 * * *")
+  createdAt   DateTime @default(now())
+}
+
+model AgentThemeConfig {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  isActive        Boolean  @default(false)
+  primaryColor    String   @default("#0073E6")
+  secondaryColor  String   @default("#FFB800")
+  accentColor     String   @default("#10B981")
+  bgColor         String   @default("#FFFFFF")
+  bgColorDark     String   @default("#0D111C")
+  textColor       String   @default("#1A202C")
+  textColorDark   String   @default("#E2E8F0")
+  chatBubbleUser  String   @default("#0073E6")
+  chatBubbleAgent String   @default("#F7FAFC")
+  fontFamily      String   @default("Inter, system-ui, sans-serif")
+  borderRadius    String   @default("12px")
+  logoUrl         String?
+  iconUrl         String?
+  buttonLabel     String   @default("Agent SOCE")
+  customCss       String?
+  createdAt       DateTime @default(now())
+}
+
+model AgentGeneralConfig {
+  id                  String   @id @default(uuid())
+  enableDataQueries   Boolean  @default(true)
+  enableGuidedFlows   Boolean  @default(true)
+  enableOverlay       Boolean  @default(true)
+  sessionTtlSeconds   Int      @default(3600)
+  rateLimitPerMinute  Int      @default(30)
+  maxConversationLen  Int      @default(50)
+  piiRedactionEnabled Boolean  @default(true)
+  piiPatterns         Json     @default("[\"\\\\b\\\\d{10,13}\\\\b\"]")
+  createdAt           DateTime @default(now())
+}
+
+// ─── RAG Chunks (vector + full-text) ─────────────────────────────────────────
+
+model AgentRagChunk {
+  id           String                      @id @default(uuid())
+  title        String
+  content      String
+  source       String
+  documentType String
+  url          String?
+  date         DateTime?
+  jurisdiction String?
+  version      String?
+  embedding    Unsupported("vector(768)")?
+  createdAt    DateTime                    @default(now())
+}
+
+// ─── Sessions ────────────────────────────────────────────────────────────────
+
+model AgentSession {
+  id             String    @id @default(uuid())
+  userId         String
+  user           AgentUser @relation(fields: [userId], references: [id])
+  conversationId String?
+  screenContext  Json?
+  flowState      Json?
+  createdAt      DateTime  @default(now())
+  expiresAt      DateTime
+}
+
+// ─── Audit ───────────────────────────────────────────────────────────────────
+
+model AgentAuditLog {
+  id        String    @id @default(uuid())
+  userId    String
+  user      AgentUser @relation(fields: [userId], references: [id])
+  action    String
+  detail    Json
+  ipAddress String?
+  createdAt DateTime  @default(now())
+}
+
+// ─── Interactions (for audit + training) ─────────────────────────────────────
+
+model AgentInteraction {
+  id               String               @id @default(uuid())
+  sessionId        String
+  userId           String
+  user             AgentUser            @relation(fields: [userId], references: [id])
+  messageRole      String
+  content          String
+  toolCalls        Json?
+  ragChunksUsed    String[]
+  dataSourceUsed   String?
+  sqlGenerated     String?
+  llmProvider      String?
+  llmModel         String?
+  tokensIn         Int?
+  tokensOut        Int?
+  latencyMs        Int?
+  screenContext    String?
+  feedbackRating   Int?
+  feedbackText     String?
+  flaggedForReview Boolean              @default(false)
+  trainingStatus   String               @default("raw")
+  createdAt        DateTime             @default(now())
+  trainingEntries  AgentTrainingEntry[]
+}
+
+// ─── Training ────────────────────────────────────────────────────────────────
+
+model AgentTrainingDataset {
+  id          String               @id @default(uuid())
+  name        String               @unique
+  description String?
+  status      String               @default("draft")
+  format      String               @default("jsonl")
+  totalPairs  Int                  @default(0)
+  exportUrl   String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  entries     AgentTrainingEntry[]
+}
+
+model AgentTrainingEntry {
+  id            String               @id @default(uuid())
+  datasetId     String
+  dataset       AgentTrainingDataset @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  interactionId String
+  interaction   AgentInteraction     @relation(fields: [interactionId], references: [id])
+  systemPrompt  String?
+  userMessage   String
+  idealResponse String
+  category      String?
+  quality       String               @default("pending")
+  createdAt     DateTime             @default(now())
+
+  @@unique([datasetId, interactionId])
+}
