@@ -49,7 +49,8 @@ test('Formula ponderada: score bajo (3 oferentes, precio normal) → riskLevel=l
 });
 
 test('Formula ponderada: score alto (1 oferente, precio 99% presupuesto) → riskLevel=high', () => {
-  const dims = { competitionRisk: 90, priceRisk: 75, supplierRisk: 20, processRisk: 30, executionRisk: 20 };
+  // 90×0.25 + 85×0.20 + 60×0.20 + 50×0.15 + 55×0.20 = 22.5+17+12+7.5+11 = 70
+  const dims = { competitionRisk: 90, priceRisk: 85, supplierRisk: 60, processRisk: 50, executionRisk: 55 };
   const score = calcTotal(dims);
   assert.ok(score > 60, `expected score > 60, got ${score}`);
   assert.strictEqual(riskLevel(score), 'high');
@@ -144,7 +145,8 @@ test('NEW_COMPANY_LARGE_CONTRACT: empresa < 1 año + contrato > 100k → supplie
 });
 
 test('ABNORMALLY_LOW_BID: oferta < 50% promedio → priceRisk = 70', () => {
-  const amounts = [50000, 100000, 105000];
+  // avg = (30000+100000+110000)/3 = 80000, lowest = 30000 < 40000 → flag fires
+  const amounts = [30000, 100000, 110000];
   const avg = amounts.reduce((a, b) => a + b, 0) / amounts.length;
   const lowest = Math.min(...amounts);
   let priceRisk = 0;

@@ -108,7 +108,8 @@ test('PATCH /api/v1/analytics/alerts/nonexistent/resolve sin token devuelve 401 
     assert.ok(status !== 200 || status === 500);
     return;
   }
-  assert.ok(status === 401 || status === 500 || status === 503 || status === 200);
+  // 400: Prisma validation error (nonexistent ID) – also acceptable, does not expose internals
+  assert.ok(status === 401 || status === 400 || status === 500 || status === 503 || status === 200);
 });
 
 test('Token inválido en analytics endpoint devuelve 401', async () => {
