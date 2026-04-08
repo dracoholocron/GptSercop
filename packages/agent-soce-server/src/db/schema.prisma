@@ -28,6 +28,7 @@ model AgentUser {
   externalId   String             @unique
   email        String
   displayName  String
+  passwordHash String?
   status       String             @default("active")
   createdAt    DateTime           @default(now())
   roles        AgentUserRole[]

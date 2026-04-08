@@ -1,4 +1,5 @@
 import { PrismaClient } from '../generated/client/index.js';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -33,20 +34,24 @@ async function main() {
   console.log('  ✓ Roles created');
 
   // ─── Users ───────────────────────────────────────────────
+  // Admin users get a passwordHash so they can log in to the Admin Console
+  const adminDefaultPassword = process.env.AGENT_SOCE_ADMIN_PASSWORD ?? 'admin123';
+  const adminHash = await bcrypt.hash(adminDefaultPassword, 12);
+
   const users = [
-    { externalId: 'admin-001', email: 'admin@sercop.gob.ec', displayName: 'Admin SOCE', roleId: adminRole.id },
-    { externalId: 'analyst-001', email: 'analyst@sercop.gob.ec', displayName: 'Ana Analista', roleId: analystRole.id },
-    { externalId: 'entity-001', email: 'entity@msp.gob.ec', displayName: 'Carlos Entidad MSP', roleId: entityRole.id },
-    { externalId: 'entity-002', email: 'entity2@mineduc.gob.ec', displayName: 'Diana Entidad MINEDUC', roleId: entityRole.id },
-    { externalId: 'provider-001', email: 'prov@proveedores.com', displayName: 'Proveedor Tech S.A.', roleId: providerRole.id },
-    { externalId: 'provider-002', email: 'prov2@medical.com', displayName: 'Proveedor Medical Corp', roleId: providerRole.id },
+    { externalId: 'admin-001', email: 'admin@sercop.gob.ec', displayName: 'Admin SOCE', roleId: adminRole.id, passwordHash: adminHash },
+    { externalId: 'analyst-001', email: 'analyst@sercop.gob.ec', displayName: 'Ana Analista', roleId: analystRole.id, passwordHash: null },
+    { externalId: 'entity-001', email: 'entity@msp.gob.ec', displayName: 'Carlos Entidad MSP', roleId: entityRole.id, passwordHash: null },
+    { externalId: 'entity-002', email: 'entity2@mineduc.gob.ec', displayName: 'Diana Entidad MINEDUC', roleId: entityRole.id, passwordHash: null },
+    { externalId: 'provider-001', email: 'prov@proveedores.com', displayName: 'Proveedor Tech S.A.', roleId: providerRole.id, passwordHash: null },
+    { externalId: 'provider-002', email: 'prov2@medical.com', displayName: 'Proveedor Medical Corp', roleId: providerRole.id, passwordHash: null },
   ];
 
   for (const u of users) {
     const user = await prisma.agentUser.upsert({
       where: { externalId: u.externalId },
-      update: {},
-      create: { externalId: u.externalId, email: u.email, displayName: u.displayName },
+      update: u.passwordHash ? { passwordHash: u.passwordHash } : {},
+      create: { externalId: u.externalId, email: u.email, displayName: u.displayName, passwordHash: u.passwordHash },
     });
     await prisma.agentUserRole.upsert({
       where: { userId_roleId: { userId: user.id, roleId: u.roleId } },

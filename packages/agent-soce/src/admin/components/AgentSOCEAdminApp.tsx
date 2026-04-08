@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { AgentAdminContext } from '../context/AgentAdminContext.js';
 import { RolesPage } from '../pages/RolesPage.js';
 import { UsersPage } from '../pages/UsersPage.js';
@@ -11,6 +11,7 @@ import { RAGConfigPage } from '../../config/pages/RAGConfigPage.js';
 import { GraphDBConfigPage } from '../../config/pages/GraphDBConfigPage.js';
 import { ThemingConfigPage } from '../../config/pages/ThemingConfigPage.js';
 import { GeneralConfigPage } from '../../config/pages/GeneralConfigPage.js';
+import { AgentSOCEAdminLoginPage } from './AgentSOCEAdminLoginPage.js';
 
 // Wrapper components that pull apiBaseUrl/token from context and pass as props
 const LLMConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <LLMConfigPage baseUrl={apiBaseUrl} token={token ?? ''} />; };
@@ -45,17 +46,59 @@ const PAGE_COMPONENTS: Record<View, React.ComponentType> = {
   theming: ThemingConfigWrapper, general: GeneralConfigPage,
 };
 
+const STORAGE_KEY = 'agent_soce_admin_token';
+
 export interface AgentSOCEAdminAppProps {
   apiBaseUrl: string;
+  /** Optional pre-existing token (e.g. from host app SSO). If omitted, the
+   *  built-in login form is shown when no persisted token is found. */
   token?: string;
   initialView?: View;
 }
 
 export const AgentSOCEAdminApp: React.FC<AgentSOCEAdminAppProps> = ({
   apiBaseUrl,
-  token,
+  token: externalToken,
   initialView = 'roles',
 }) => {
+  // Resolve token: external prop > sessionStorage > null (→ show login)
+  const getStoredToken = () => {
+    try { return sessionStorage.getItem(STORAGE_KEY); } catch { return null; }
+  };
+
+  const [adminToken, setAdminToken] = useState<string | null>(
+    externalToken ?? getStoredToken(),
+  );
+  const [adminUser, setAdminUser] = useState<{ email: string; displayName: string } | null>(null);
+
+  // Keep token in sessionStorage (survives page refresh, cleared on tab close)
+  useEffect(() => {
+    if (adminToken) {
+      try { sessionStorage.setItem(STORAGE_KEY, adminToken); } catch {}
+    }
+  }, [adminToken]);
+
+  const handleLoginSuccess = useCallback(
+    (token: string, user: { email: string; displayName: string; roles: string[] }) => {
+      setAdminToken(token);
+      setAdminUser({ email: user.email, displayName: user.displayName });
+    },
+    [],
+  );
+
+  const handleLogout = useCallback(() => {
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch {}
+    setAdminToken(null);
+    setAdminUser(null);
+  }, []);
+
+  // Show login page if no token available
+  if (!adminToken) {
+    return <AgentSOCEAdminLoginPage apiBaseUrl={apiBaseUrl} onLoginSuccess={handleLoginSuccess} />;
+  }
+
+  const token = adminToken;
+
   const [active, setActive] = useState<View>(initialView);
   const ActivePage = PAGE_COMPONENTS[active];
 
@@ -106,6 +149,21 @@ export const AgentSOCEAdminApp: React.FC<AgentSOCEAdminAppProps> = ({
                 <span>{item.icon}</span> {item.label}
               </div>
             ))}
+          </div>
+
+          {/* User info + logout */}
+          <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            {adminUser && (
+              <div style={{ fontSize: 12, color: '#A0AEC0', marginBottom: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {adminUser.displayName}
+              </div>
+            )}
+            <div
+              onClick={handleLogout}
+              style={{ fontSize: 13, color: '#FC8181', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+            >
+              <span>🚪</span> Cerrar sesión
+            </div>
           </div>
         </div>
 

@@ -404,9 +404,10 @@ function App() {
 }
 
 // ─── Agent SOCE Admin Console Wrapper ────────────────────────────────────────
-// Reads the current path to determine initial view and injects auth token.
+// The Admin Console manages its own JWT auth flow via built-in login screen.
+// We do NOT forward the host app token — each admin must authenticate against
+// the Agent SOCE backend with their own credentials.
 function AgentSOCEAdminConsoleWrapper() {
-  const { token } = useAuth();
   const location = window.location.pathname;
 
   // Derive initial view from sub-path: /agent-soce/admin/roles → "roles"
@@ -421,7 +422,6 @@ function AgentSOCEAdminConsoleWrapper() {
   return (
     <AgentSOCEAdminApp
       apiBaseUrl={import.meta.env.VITE_AGENT_SOCE_API_URL ?? 'http://localhost:3090'}
-      token={token ?? undefined}
       initialView={initialView}
     />
   );
