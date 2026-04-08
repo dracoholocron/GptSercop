@@ -34,7 +34,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.post<{ Body: ChatBody }>('/', async (request, reply) => {
     const user = getAgentUser(request)!;
-    const { messages, context, sessionId } = request.body;
+    const { messages, context, sessionId, providerId } = request.body;
 
     if (!messages?.length) {
       return reply.code(400).send({ error: 'messages array is required' });
