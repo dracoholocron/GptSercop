@@ -76,6 +76,8 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
       );
 
       for await (const event of stream) {
+        // Skip orchestrator's own 'done' — we emit a single one after logging
+        if (event.type === 'done') continue;
         reply.raw.write(`data: ${JSON.stringify(event)}\n\n`);
         if (event.type === 'text') {
           assistantContent += String(event.data);
