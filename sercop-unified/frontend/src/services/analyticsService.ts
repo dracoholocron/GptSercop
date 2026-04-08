@@ -29,8 +29,12 @@ async function postJson<T>(url: string, body?: unknown): Promise<T> {
   return res.json();
 }
 
-async function patchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url, { method: 'PATCH', headers: authHeaders() });
+async function patchJson<T>(url: string, body?: unknown): Promise<T> {
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: body ? JSON.stringify(body) : undefined,
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
@@ -127,6 +131,7 @@ export type ProviderScoreItem = {
 
 export type PriceIndexItem = {
   processType: string;
+  entityId: string;
   entityName: string;
   avgContractPrice: number;
   nationalAvg: number;
@@ -167,10 +172,12 @@ export type AmendmentPatternItem = {
 export type FragmentationAlertItem = {
   id: string;
   entityId: string;
+  entityName?: string;
   pattern: string;
   contractIds: string[];
   totalAmount: number;
   contractCount: number;
+  periodDays?: number;
   severity: string;
   resolvedAt: string | null;
   createdAt: string;
@@ -189,14 +196,57 @@ export type RiskPrediction = {
   confidence: number;
 };
 
+export type EntityOverview = {
+  entity: { id: string; name: string; code: string | null; organizationType: string | null };
+  totalTenders: number;
+  totalContracts: number;
+  totalSpend: number;
+  avgBidders: number;
+  riskDistribution: { high: number; medium: number; low: number };
+  openAlerts: number;
+};
+
+export type ProviderContractItem = {
+  contractId: string;
+  contractNo: string;
+  amount: number;
+  status: string;
+  amendmentCount: number;
+  healthLevel: string;
+  tenderId?: string;
+  tenderCode?: string;
+  tenderTitle?: string;
+  processType?: string;
+  entityId?: string;
+  entityName?: string;
+  signedAt?: string | null;
+};
+
+export type ProviderOverview = {
+  provider: { id: string; name: string; identifier: string | null; province: string | null; status: string };
+  score: {
+    complianceScore: number;
+    deliveryScore: number;
+    priceScore: number;
+    diversityScore: number;
+    totalScore: number;
+    tier: string;
+    calculatedAt: string;
+  } | null;
+  contracts: PaginatedResponse<ProviderContractItem>;
+  bidsCount: number;
+  neighborCount: number;
+};
+
 // ---- Dashboard ----
 export const getDashboard = () => fetchJson<DashboardData>(`${BASE}/dashboard`);
 
 // ---- Risk Scores ----
-export const getRiskScores = (params?: { level?: string; entityId?: string; page?: number; limit?: number }) => {
+export const getRiskScores = (params?: { level?: string; entityId?: string; processType?: string; page?: number; limit?: number }) => {
   const q = new URLSearchParams();
   if (params?.level) q.set('level', params.level);
   if (params?.entityId) q.set('entityId', params.entityId);
+  if (params?.processType) q.set('processType', params.processType);
   if (params?.page) q.set('page', String(params.page));
   if (params?.limit) q.set('limit', String(params.limit));
   return fetchJson<PaginatedResponse<RiskScoreItem>>(`${BASE}/risk-scores?${q}`);
@@ -216,20 +266,34 @@ export const getMarket = (groupBy = 'entity', year?: number) => {
 };
 
 // ---- PAC ----
-export const getPacVsExecuted = (year?: number) =>
-  fetchJson<{ data: PacItem[] }>(`${BASE}/pac-vs-executed${year ? `?year=${year}` : ''}`);
+export const getPacVsExecuted = (year?: number, entityId?: string) => {
+  const q = new URLSearchParams();
+  if (year) q.set('year', String(year));
+  if (entityId) q.set('entityId', entityId);
+  const qs = q.toString();
+  return fetchJson<{ data: PacItem[] }>(`${BASE}/pac-vs-executed${qs ? `?${qs}` : ''}`);
+};
 
 // ---- Alerts ----
-export const getAlerts = (params?: { severity?: string; resolved?: string; page?: number; limit?: number }) => {
+export const getAlerts = (params?: { severity?: string; resolved?: string; entityId?: string; page?: number; limit?: number }) => {
   const q = new URLSearchParams();
   if (params?.severity) q.set('severity', params.severity);
   if (params?.resolved) q.set('resolved', params.resolved);
+  if (params?.entityId) q.set('entityId', params.entityId);
   if (params?.page) q.set('page', String(params.page));
   if (params?.limit) q.set('limit', String(params.limit));
   return fetchJson<PaginatedResponse<AlertItem>>(`${BASE}/alerts?${q}`);
 };
 
-export const resolveAlert = (alertId: string) => patchJson<{ ok: boolean }>(`${BASE}/alerts/${alertId}/resolve`);
+export const resolveAlert = (
+  alertId: string,
+  opts?: { notes?: string; actionTaken?: string; resolvedBy?: string },
+) => {
+  if (opts && Object.keys(opts).length > 0) {
+    return patchJson<{ ok: boolean }>(`${BASE}/alerts/${alertId}/resolve`, opts);
+  }
+  return patchJson<{ ok: boolean }>(`${BASE}/alerts/${alertId}/resolve`);
+};
 
 // ---- Provider Network ----
 export const getProviderNetwork = (minShared = 2) =>
@@ -286,6 +350,18 @@ export const getFragmentationAlerts = (params?: { page?: number; limit?: number;
   if (params?.limit) q.set('limit', String(params.limit));
   if (params?.severity) q.set('severity', params.severity);
   return fetchJson<PaginatedResponse<FragmentationAlertItem>>(`${BASE}/fragmentation-alerts?${q}`);
+};
+
+// ---- Entity & Provider Overviews ----
+export const getEntityOverview = (entityId: string) =>
+  fetchJson<EntityOverview>(`${BASE}/entities/${entityId}/overview`);
+
+export const getProviderOverview = (providerId: string, page?: number, limit?: number) => {
+  const q = new URLSearchParams();
+  if (page) q.set('page', String(page));
+  if (limit) q.set('limit', String(limit));
+  const qs = q.toString();
+  return fetchJson<ProviderOverview>(`${BASE}/providers/${providerId}/overview${qs ? `?${qs}` : ''}`);
 };
 
 // ---- Predictive ----

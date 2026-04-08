@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Heading, Spinner, Text, Table, Badge, SimpleGrid, Card } from '@chakra-ui/react';
 import { getCompetition, type CompetitionData } from '../../services/analyticsService';
 
 export default function CompetitionPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<CompetitionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -51,8 +53,13 @@ export default function CompetitionPage() {
           </Table.Header>
           <Table.Body>
             {data.bySector.map((s) => (
-              <Table.Row key={s.processType}>
-                <Table.Cell>{s.processType}</Table.Cell>
+              <Table.Row
+                key={s.processType}
+                cursor="pointer"
+                _hover={{ bg: 'bg.muted' }}
+                onClick={() => navigate(`/analytics/risk-scores?processType=${encodeURIComponent(s.processType)}`)}
+              >
+                <Table.Cell color="blue.500">{s.processType}</Table.Cell>
                 <Table.Cell>{s.tenderCount}</Table.Cell>
                 <Table.Cell>{s.singleBidderCount}</Table.Cell>
                 <Table.Cell>
@@ -79,8 +86,13 @@ export default function CompetitionPage() {
           </Table.Header>
           <Table.Body>
             {data.hhiByEntity.map((e) => (
-              <Table.Row key={e.entityName}>
-                <Table.Cell>{e.entityName}</Table.Cell>
+              <Table.Row
+                key={e.entityName}
+                cursor="pointer"
+                _hover={{ bg: 'bg.muted' }}
+                onClick={() => e.entityId && navigate(`/analytics/entities/${e.entityId}`)}
+              >
+                <Table.Cell color="blue.500">{e.entityName}</Table.Cell>
                 <Table.Cell fontWeight="bold">{e.hhi.toFixed(0)}</Table.Cell>
                 <Table.Cell>
                   <Badge colorPalette={e.hhi > 2500 ? 'red' : e.hhi > 1500 ? 'yellow' : 'green'}>

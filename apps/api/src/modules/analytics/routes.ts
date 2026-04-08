@@ -60,11 +60,11 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
   });
 
   // GET /api/v1/analytics/risk-scores – listado paginado con filtros
-  app.get<{ Querystring: { level?: string; entityId?: string; from?: string; to?: string; page?: string; limit?: string } }>(
+  app.get<{ Querystring: { level?: string; entityId?: string; processType?: string; from?: string; to?: string; page?: string; limit?: string } }>(
     '/api/v1/analytics/risk-scores',
     async (req, reply) => {
       try {
-        const { level, entityId, from, to, page = '1', limit = '20' } = req.query;
+        const { level, entityId, processType, from, to, page = '1', limit = '20' } = req.query;
         const pageNum = Math.max(1, parseInt(page) || 1);
         const skip = (pageNum - 1) * Math.max(1, parseInt(limit) || 20);
         const take = Math.min(Math.max(1, parseInt(limit) || 20), 100);
@@ -77,9 +77,12 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
             ...(to ? { lte: new Date(to) } : {}),
           };
         }
-        if (entityId) {
-          where.tender = { procurementPlan: { entityId } };
-        }
+
+        // Build tender filter combining entityId and processType
+        const tenderFilter: Record<string, unknown> = {};
+        if (entityId) tenderFilter.procurementPlan = { entityId };
+        if (processType) tenderFilter.processType = processType;
+        if (Object.keys(tenderFilter).length > 0) where.tender = tenderFilter;
 
         const [data, total] = await Promise.all([
           prisma.riskScore.findMany({
@@ -189,12 +192,12 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
   );
 
   // GET /api/v1/analytics/pac-vs-executed – comparación PAC vs ejecutado
-  app.get<{ Querystring: { year?: string } }>(
+  app.get<{ Querystring: { year?: string; entityId?: string } }>(
     '/api/v1/analytics/pac-vs-executed',
     async (req, reply) => {
       try {
         const year = req.query.year ? parseInt(req.query.year) : undefined;
-        const data = await getPacVsExecuted(year);
+        const data = await getPacVsExecuted(year, req.query.entityId);
         return {
           data: data.map((d) => ({
             ...d,
@@ -213,11 +216,11 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
   );
 
   // GET /api/v1/analytics/alerts – alertas del sistema
-  app.get<{ Querystring: { severity?: string; resolved?: string; from?: string; page?: string; limit?: string } }>(
+  app.get<{ Querystring: { severity?: string; resolved?: string; entityId?: string; from?: string; page?: string; limit?: string } }>(
     '/api/v1/analytics/alerts',
     async (req, reply) => {
       try {
-        const { severity, resolved, from, page = '1', limit = '20' } = req.query;
+        const { severity, resolved, entityId, from, page = '1', limit = '20' } = req.query;
         const skip = (parseInt(page) - 1) * parseInt(limit);
         const take = Math.min(parseInt(limit), 100);
 
@@ -229,6 +232,23 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
           where.resolvedAt = null;
         }
         if (from) where.createdAt = { gte: new Date(from) };
+
+        // entityId filter: alerts where entityType='Entity' and entityId matches,
+        // or alerts whose linked tender belongs to this entity
+        if (entityId) {
+          where.OR = [
+            { entityType: 'Entity', entityId },
+            {
+              entityType: 'Tender',
+              entityId: {
+                in: (await prisma.tender.findMany({
+                  where: { procurementPlan: { entityId } },
+                  select: { id: true },
+                })).map((t) => t.id),
+              },
+            },
+          ];
+        }
 
         const [data, total] = await Promise.all([
           prisma.alertEvent.findMany({ where, skip, take, orderBy: { createdAt: 'desc' } }),
@@ -265,13 +285,18 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
     },
   );
 
-  // PATCH /api/v1/analytics/alerts/:alertId/resolve – resolver una alerta
-  app.patch<{ Params: { alertId: string } }>(
+  // PATCH /api/v1/analytics/alerts/:alertId/resolve – resolver una alerta (con notas opcionales)
+  app.patch<{ Params: { alertId: string }; Body: { notes?: string; actionTaken?: string; resolvedBy?: string } }>(
     '/api/v1/analytics/alerts/:alertId/resolve',
     async (req, reply) => {
       try {
-        const actorId = (req as unknown as { user?: { id?: string } }).user?.id ?? 'unknown';
-        await resolveAlert(req.params.alertId, actorId);
+        const actorId = (req as unknown as { user?: { id?: string } }).user?.id
+          ?? (req.body as Record<string, string>)?.resolvedBy
+          ?? 'unknown';
+        await resolveAlert(req.params.alertId, actorId, {
+          notes: (req.body as Record<string, string>)?.notes,
+          actionTaken: (req.body as Record<string, string>)?.actionTaken,
+        });
         return { ok: true };
       } catch (e) {
         return reply.status(500).send({ error: 'Error al resolver alerta' });
@@ -462,6 +487,173 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
           return reply.status(404).send({ error: 'Proceso no encontrado' });
         }
         return reply.status(500).send({ error: 'Error al predecir riesgo' });
+      }
+    },
+  );
+
+  // ---- ENTITY & PROVIDER OVERVIEWS ----
+
+  // GET /api/v1/analytics/entities/:entityId/overview
+  app.get<{ Params: { entityId: string } }>(
+    '/api/v1/analytics/entities/:entityId/overview',
+    async (req, reply) => {
+      try {
+        const { entityId } = req.params;
+        const entity = await prisma.entity.findUnique({ where: { id: entityId } });
+        if (!entity) return reply.status(404).send({ error: 'Entidad no encontrada' });
+
+        const [
+          tenderIds,
+          totalContracts,
+          openAlerts,
+          riskHigh,
+          riskMedium,
+          riskLow,
+        ] = await Promise.all([
+          prisma.tender.findMany({
+            where: { procurementPlan: { entityId } },
+            select: { id: true },
+          }),
+          prisma.contract.count({
+            where: { tender: { procurementPlan: { entityId } } },
+          }),
+          prisma.alertEvent.count({ where: { entityType: 'Entity', entityId, resolvedAt: null } }),
+          prisma.riskScore.count({ where: { riskLevel: 'high', tender: { procurementPlan: { entityId } } } }),
+          prisma.riskScore.count({ where: { riskLevel: 'medium', tender: { procurementPlan: { entityId } } } }),
+          prisma.riskScore.count({ where: { riskLevel: 'low', tender: { procurementPlan: { entityId } } } }),
+        ]);
+
+        const tIds = tenderIds.map((t) => t.id);
+        const totalTenders = tIds.length;
+
+        const totalSpendResult = await prisma.$queryRawUnsafe<Array<{ total: number }>>(
+          `SELECT COALESCE(SUM(c.amount), 0) AS total
+           FROM "Contract" c
+           JOIN "Tender" t ON t.id = c."tenderId"
+           JOIN "ProcurementPlan" pp ON pp.id = t."procurementPlanId"
+           WHERE pp."entityId" = $1`,
+          entityId,
+        );
+        const totalSpend = parseFloat(String(totalSpendResult[0]?.total ?? 0));
+
+        const avgBiddersResult = await prisma.$queryRawUnsafe<Array<{ avg: number }>>(
+          `SELECT AVG(bid_counts."bidCount") AS avg
+           FROM (
+             SELECT b."tenderId", COUNT(*) AS "bidCount"
+             FROM "Bid" b
+             JOIN "Tender" t ON t.id = b."tenderId"
+             JOIN "ProcurementPlan" pp ON pp.id = t."procurementPlanId"
+             WHERE pp."entityId" = $1
+             GROUP BY b."tenderId"
+           ) bid_counts`,
+          entityId,
+        );
+        const avgBidders = Math.round((parseFloat(String(avgBiddersResult[0]?.avg ?? 0)) || 0) * 100) / 100;
+
+        return {
+          entity: { id: entity.id, name: entity.name, code: entity.code, organizationType: entity.organizationType },
+          totalTenders,
+          totalContracts,
+          totalSpend,
+          avgBidders,
+          riskDistribution: { high: riskHigh, medium: riskMedium, low: riskLow },
+          openAlerts,
+        };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener overview de entidad' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/providers/:providerId/overview
+  app.get<{ Params: { providerId: string }; Querystring: { page?: string; limit?: string } }>(
+    '/api/v1/analytics/providers/:providerId/overview',
+    async (req, reply) => {
+      try {
+        const { providerId } = req.params;
+        const page = Math.max(1, parseInt(req.query.page ?? '1') || 1);
+        const limit = Math.min(parseInt(req.query.limit ?? '20') || 20, 50);
+        const skip = (page - 1) * limit;
+
+        const provider = await prisma.provider.findUnique({ where: { id: providerId } });
+        if (!provider) return reply.status(404).send({ error: 'Proveedor no encontrado' });
+
+        const [score, bidsCount, neighborCount, contractsTotal] = await Promise.all([
+          prisma.providerScore.findUnique({
+            where: { providerId },
+            select: {
+              complianceScore: true,
+              deliveryScore: true,
+              priceScore: true,
+              diversityScore: true,
+              totalScore: true,
+              tier: true,
+              calculatedAt: true,
+            },
+          }),
+          prisma.bid.count({ where: { providerId } }),
+          prisma.providerRelation.count({
+            where: { OR: [{ providerAId: providerId }, { providerBId: providerId }] },
+          }),
+          prisma.contract.count({ where: { providerId } }),
+        ]);
+
+        const contracts = await prisma.contract.findMany({
+          where: { providerId },
+          skip,
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+          include: {
+            amendments: { select: { id: true } },
+            tender: {
+              select: {
+                id: true,
+                code: true,
+                title: true,
+                processType: true,
+                procurementPlan: { select: { entity: { select: { id: true, name: true } } } },
+              },
+            },
+          },
+        });
+
+        const contractData = contracts.map((c) => {
+          const amendCount = c.amendments.length;
+          let healthLevel: 'healthy' | 'warning' | 'critical' = 'healthy';
+          if (amendCount >= 3 || c.status === 'terminated') healthLevel = 'critical';
+          else if (amendCount >= 1 || c.status === 'suspended') healthLevel = 'warning';
+          return {
+            contractId: c.id,
+            contractNo: c.contractNo ?? '',
+            amount: parseFloat(String(c.amount ?? 0)),
+            status: c.status,
+            amendmentCount: amendCount,
+            healthLevel,
+            tenderId: c.tender?.id,
+            tenderCode: c.tender?.code,
+            tenderTitle: c.tender?.title,
+            processType: c.tender?.processType,
+            entityId: c.tender?.procurementPlan?.entity?.id,
+            entityName: c.tender?.procurementPlan?.entity?.name,
+            signedAt: c.signedAt,
+          };
+        });
+
+        return {
+          provider: {
+            id: provider.id,
+            name: provider.name,
+            identifier: provider.identifier,
+            province: provider.province,
+            status: provider.status,
+          },
+          score,
+          contracts: { data: contractData, total: contractsTotal, page, limit },
+          bidsCount,
+          neighborCount,
+        };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener overview de proveedor' });
       }
     },
   );

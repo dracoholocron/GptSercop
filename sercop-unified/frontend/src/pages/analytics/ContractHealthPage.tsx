@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Box, Heading, Spinner, Text, Table, Badge, Button, Flex, SimpleGrid, Card } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Heading, Spinner, Text, Table, Badge, Button, Flex } from '@chakra-ui/react';
 import {
   getContractHealth,
   getAmendmentPatterns,
@@ -11,6 +12,7 @@ import {
 const healthColor: Record<string, string> = { healthy: 'green', warning: 'yellow', critical: 'red' };
 
 export default function ContractHealthPage() {
+  const navigate = useNavigate();
   const [contracts, setContracts] = useState<PaginatedResponse<ContractHealthItem> | null>(null);
   const [patterns, setPatterns] = useState<AmendmentPatternItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,8 +52,13 @@ export default function ContractHealthPage() {
               </Table.Header>
               <Table.Body>
                 {patterns.map((p) => (
-                  <Table.Row key={p.entityName}>
-                    <Table.Cell>{p.entityName}</Table.Cell>
+                  <Table.Row
+                    key={p.entityName}
+                    cursor={p.entityId ? 'pointer' : undefined}
+                    _hover={p.entityId ? { bg: 'bg.muted' } : undefined}
+                    onClick={() => p.entityId && navigate(`/analytics/entities/${p.entityId}`)}
+                  >
+                    <Table.Cell color={p.entityId ? 'blue.500' : undefined}>{p.entityName}</Table.Cell>
                     <Table.Cell>{p.totalContracts}</Table.Cell>
                     <Table.Cell>{p.contractsWithAmendments}</Table.Cell>
                     <Table.Cell>{p.totalAmendments}</Table.Cell>
@@ -99,8 +106,13 @@ export default function ContractHealthPage() {
               </Table.Header>
               <Table.Body>
                 {contracts.data.map((c) => (
-                  <Table.Row key={c.contractId}>
-                    <Table.Cell fontFamily="mono" fontSize="xs">{c.contractNo}</Table.Cell>
+                  <Table.Row
+                    key={c.contractId}
+                    cursor="pointer"
+                    _hover={{ bg: 'bg.muted' }}
+                    onClick={() => navigate(`/cp/contracts/${c.contractId}`)}
+                  >
+                    <Table.Cell fontFamily="mono" fontSize="xs" color="blue.500">{c.contractNo}</Table.Cell>
                     <Table.Cell>{c.providerName}</Table.Cell>
                     <Table.Cell>{c.entityName}</Table.Cell>
                     <Table.Cell>${(c.amount / 1000).toFixed(0)}k</Table.Cell>

@@ -4,11 +4,19 @@ import { Box, Heading, SimpleGrid, Text, Spinner, Badge, Card, Button, Flex } fr
 import { useTranslation } from 'react-i18next';
 import { getDashboard, type DashboardData } from '../../services/analyticsService';
 
-const KPICard = ({ label, value, color }: { label: string; value: string | number; color?: string }) => (
-  <Card.Root>
+const KPICard = ({
+  label, value, color, onClick,
+}: { label: string; value: string | number; color?: string; onClick?: () => void }) => (
+  <Card.Root
+    onClick={onClick}
+    cursor={onClick ? 'pointer' : undefined}
+    _hover={onClick ? { borderColor: 'colorPalette.500', shadow: 'md' } : undefined}
+    transition="box-shadow 0.15s, border-color 0.15s"
+  >
     <Card.Body>
       <Text fontSize="sm" color="fg.muted">{label}</Text>
       <Text fontSize="2xl" fontWeight="bold" color={color}>{value}</Text>
+      {onClick && <Text fontSize="xs" color="fg.subtle" mt={1}>Ver detalle →</Text>}
     </Card.Body>
   </Card.Root>
 );
@@ -49,14 +57,14 @@ export default function AnalyticsDashboardPage() {
       <Heading size="lg" mb={6}>Dashboard Analítico</Heading>
 
       <SimpleGrid columns={{ base: 2, md: 4 }} gap={4} mb={8}>
-        <KPICard label="Total Procesos" value={data.totalTenders} />
-        <KPICard label="Contratos" value={data.totalContracts} />
-        <KPICard label="Proveedores" value={data.totalProviders} />
-        <KPICard label="Entidades" value={data.totalEntities} />
-        <KPICard label="Monto Total Contratos" value={`$${(data.totalContractAmount / 1000000).toFixed(1)}M`} />
-        <KPICard label="Promedio Oferentes" value={data.avgBidders} />
-        <KPICard label="Alertas Abiertas" value={data.openAlerts} color={data.openAlerts > 0 ? 'red.500' : undefined} />
-        <KPICard label="Riesgo Alto" value={data.riskDistribution.high} color="red.500" />
+        <KPICard label="Total Procesos" value={data.totalTenders} onClick={() => navigate('/analytics/risk-scores')} />
+        <KPICard label="Contratos" value={data.totalContracts} onClick={() => navigate('/analytics/contracts')} />
+        <KPICard label="Proveedores" value={data.totalProviders} onClick={() => navigate('/analytics/provider-scores')} />
+        <KPICard label="Entidades" value={data.totalEntities} onClick={() => navigate('/analytics/competition')} />
+        <KPICard label="Monto Total Contratos" value={`$${(data.totalContractAmount / 1000000).toFixed(1)}M`} onClick={() => navigate('/analytics/market')} />
+        <KPICard label="Promedio Oferentes" value={data.avgBidders} onClick={() => navigate('/analytics/competition')} />
+        <KPICard label="Alertas Abiertas" value={data.openAlerts} color={data.openAlerts > 0 ? 'red.500' : undefined} onClick={() => navigate('/analytics/alerts')} />
+        <KPICard label="Riesgo Alto" value={data.riskDistribution.high} color="red.500" onClick={() => navigate('/analytics/risk-scores?level=high')} />
       </SimpleGrid>
 
       <Heading size="md" mb={4}>Distribución de Riesgo</Heading>

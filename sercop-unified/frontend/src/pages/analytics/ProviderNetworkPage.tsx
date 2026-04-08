@@ -1,8 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Heading, Spinner, Text, Button, Flex, Table, Badge, Card, SimpleGrid } from '@chakra-ui/react';
 import { getProviderNetwork, type NetworkData } from '../../services/analyticsService';
 
 export default function ProviderNetworkPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<NetworkData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -80,9 +82,14 @@ export default function ProviderNetworkPage() {
                     <Table.Cell>{n.contractCount}</Table.Cell>
                     <Table.Cell>${(n.totalAmount / 1000).toFixed(0)}k</Table.Cell>
                     <Table.Cell>
-                      <Button size="xs" variant="outline" onClick={() => setSelectedNode(selectedNode === n.id ? null : n.id)}>
-                        {selectedNode === n.id ? 'Deseleccionar' : 'Ver relaciones'}
-                      </Button>
+                      <Flex gap={1}>
+                        <Button size="xs" variant="outline" onClick={() => setSelectedNode(selectedNode === n.id ? null : n.id)}>
+                          {selectedNode === n.id ? 'Deseleccionar' : 'Relaciones'}
+                        </Button>
+                        <Button size="xs" colorPalette="blue" variant="ghost" onClick={() => navigate(`/analytics/providers/${n.id}`)}>
+                          Ver detalle
+                        </Button>
+                      </Flex>
                     </Table.Cell>
                   </Table.Row>
                 ))}

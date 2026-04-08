@@ -1,14 +1,17 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Box, Heading, Spinner, Text, Badge, Button, Flex, Input, Table } from '@chakra-ui/react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Box, Heading, Spinner, Text, Badge, Button, Flex, Table } from '@chakra-ui/react';
 import { getRiskScores, type RiskScoreItem, type PaginatedResponse } from '../../services/analyticsService';
 
 const levelColor: Record<string, string> = { high: 'red', medium: 'yellow', low: 'green' };
 
 export default function RiskScoresPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [data, setData] = useState<PaginatedResponse<RiskScoreItem> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [level, setLevel] = useState('');
+  const [level, setLevel] = useState(searchParams.get('level') ?? '');
   const [page, setPage] = useState(1);
 
   const load = useCallback(() => {
@@ -60,9 +63,28 @@ export default function RiskScoresPage() {
               <Table.Body>
                 {data.data.map((rs) => (
                   <Table.Row key={rs.id}>
-                    <Table.Cell fontFamily="mono" fontSize="xs">{rs.tender?.code ?? '—'}</Table.Cell>
+                    <Table.Cell
+                      fontFamily="mono"
+                      fontSize="xs"
+                      cursor="pointer"
+                      color="blue.500"
+                      _hover={{ textDecoration: 'underline' }}
+                      onClick={() => rs.tenderId && navigate(`/cp/processes/${rs.tenderId}`)}
+                    >
+                      {rs.tender?.code ?? '—'}
+                    </Table.Cell>
                     <Table.Cell maxW="200px" truncate>{rs.tender?.title ?? '—'}</Table.Cell>
-                    <Table.Cell>{rs.tender?.procurementPlan?.entity?.name ?? '—'}</Table.Cell>
+                    <Table.Cell
+                      cursor="pointer"
+                      color="blue.500"
+                      _hover={{ textDecoration: 'underline' }}
+                      onClick={() => {
+                        const entityId = rs.tender?.procurementPlan?.entity?.id;
+                        if (entityId) navigate(`/analytics/entities/${entityId}`);
+                      }}
+                    >
+                      {rs.tender?.procurementPlan?.entity?.name ?? '—'}
+                    </Table.Cell>
                     <Table.Cell fontWeight="bold">{rs.totalScore}</Table.Cell>
                     <Table.Cell>
                       <Badge colorPalette={levelColor[rs.riskLevel] ?? 'gray'}>{rs.riskLevel}</Badge>

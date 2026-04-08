@@ -6,6 +6,7 @@ import { prisma } from '../../db.js';
 
 export type PriceComparison = {
   processType: string;
+  entityId: string;
   entityName: string;
   avgContractPrice: number;
   nationalAvg: number;
@@ -28,12 +29,14 @@ export async function getPriceIndex(year?: number, processType?: string): Promis
 
   const rows = await prisma.$queryRawUnsafe<Array<{
     processType: string;
+    entityId: string;
     entityName: string;
     avgContractPrice: number;
     contractCount: bigint;
   }>>(
     `SELECT
        t."processType",
+       e.id   AS "entityId",
        e.name AS "entityName",
        AVG(c.amount) AS "avgContractPrice",
        COUNT(c.id)   AS "contractCount"
@@ -44,7 +47,7 @@ export async function getPriceIndex(year?: number, processType?: string): Promis
      WHERE ($1::int IS NULL OR pp.year = $1)
        AND ($2::text IS NULL OR t."processType" = $2)
        AND t."processType" IS NOT NULL
-     GROUP BY t."processType", e.name
+     GROUP BY t."processType", e.id, e.name
      ORDER BY t."processType", "avgContractPrice" DESC`,
     yearFilter,
     processType ?? null,
@@ -66,6 +69,7 @@ export async function getPriceIndex(year?: number, processType?: string): Promis
     const natAvg = nationalAvgs[r.processType] ?? 0;
     return {
       processType: r.processType,
+      entityId: r.entityId,
       entityName: r.entityName,
       avgContractPrice: Math.round(avg * 100) / 100,
       nationalAvg: Math.round(natAvg * 100) / 100,

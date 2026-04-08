@@ -55,10 +55,25 @@ export async function generateAlerts(tenderId: string, flags: string[], totalSco
   }
 }
 
-export async function resolveAlert(alertId: string, resolvedBy: string): Promise<void> {
+export async function resolveAlert(
+  alertId: string,
+  resolvedBy: string,
+  opts?: { notes?: string; actionTaken?: string },
+): Promise<void> {
+  const existing = await prisma.alertEvent.findUnique({ where: { id: alertId } });
+  const prevMeta = (existing?.metadata as Record<string, unknown>) ?? {};
+
   await prisma.alertEvent.update({
     where: { id: alertId },
-    data: { resolvedAt: new Date() },
+    data: {
+      resolvedAt: new Date(),
+      metadata: {
+        ...prevMeta,
+        ...(opts?.notes ? { notes: opts.notes } : {}),
+        ...(opts?.actionTaken ? { actionTaken: opts.actionTaken } : {}),
+        resolvedBy,
+      },
+    },
   });
 
   await audit({
@@ -66,6 +81,6 @@ export async function resolveAlert(alertId: string, resolvedBy: string): Promise
     entityType: 'AlertEvent',
     entityId: alertId,
     actorId: resolvedBy,
-    payload: { alertId },
+    payload: { alertId, actionTaken: opts?.actionTaken },
   });
 }

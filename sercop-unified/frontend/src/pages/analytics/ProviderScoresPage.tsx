@@ -1,10 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Box, Heading, Spinner, Text, Badge, Button, Flex, Table, Card, SimpleGrid } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Heading, Spinner, Text, Badge, Button, Flex, Table } from '@chakra-ui/react';
 import { getProviderScores, type ProviderScoreItem, type PaginatedResponse } from '../../services/analyticsService';
 
 const tierColor: Record<string, string> = { premium: 'green', standard: 'blue', watch: 'yellow', restricted: 'red' };
 
 export default function ProviderScoresPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<PaginatedResponse<ProviderScoreItem> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,8 +60,13 @@ export default function ProviderScoresPage() {
               </Table.Header>
               <Table.Body>
                 {data.data.map((ps) => (
-                  <Table.Row key={ps.id}>
-                    <Table.Cell fontWeight="bold">{ps.provider?.name ?? '—'}</Table.Cell>
+                  <Table.Row
+                    key={ps.id}
+                    cursor="pointer"
+                    _hover={{ bg: 'bg.muted' }}
+                    onClick={() => ps.providerId && navigate(`/analytics/providers/${ps.providerId}`)}
+                  >
+                    <Table.Cell fontWeight="bold" color="blue.500">{ps.provider?.name ?? '—'}</Table.Cell>
                     <Table.Cell fontFamily="mono" fontSize="xs">{ps.provider?.identifier ?? '—'}</Table.Cell>
                     <Table.Cell>{ps.provider?.province ?? '—'}</Table.Cell>
                     <Table.Cell>{ps.complianceScore}</Table.Cell>

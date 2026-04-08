@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Box, Heading, Spinner, Text, Table, Badge, Flex } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Heading, Spinner, Text, Table, Badge } from '@chakra-ui/react';
 import { getPriceIndex, getPriceAnomalies, type PriceIndexItem, type PriceAnomalyItem } from '../../services/analyticsService';
 
 export default function PriceIndexPage() {
+  const navigate = useNavigate();
   const [indexData, setIndexData] = useState<PriceIndexItem[]>([]);
   const [anomalies, setAnomalies] = useState<PriceAnomalyItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +43,16 @@ export default function PriceIndexPage() {
               <Table.Body>
                 {anomalies.map((a) => (
                   <Table.Row key={a.tenderId}>
-                    <Table.Cell fontFamily="mono" fontSize="xs">{a.tenderCode}</Table.Cell>
+                    <Table.Cell
+                      fontFamily="mono"
+                      fontSize="xs"
+                      cursor="pointer"
+                      color="blue.500"
+                      _hover={{ textDecoration: 'underline' }}
+                      onClick={() => navigate(`/cp/processes/${a.tenderId}`)}
+                    >
+                      {a.tenderCode}
+                    </Table.Cell>
                     <Table.Cell>{a.entityName}</Table.Cell>
                     <Table.Cell>${a.contractAmount.toLocaleString()}</Table.Cell>
                     <Table.Cell>${a.nationalAvg.toLocaleString()}</Table.Cell>
@@ -73,7 +84,14 @@ export default function PriceIndexPage() {
             {indexData.map((item, i) => (
               <Table.Row key={i}>
                 <Table.Cell>{item.processType}</Table.Cell>
-                <Table.Cell>{item.entityName}</Table.Cell>
+                <Table.Cell
+                  cursor={item.entityId ? 'pointer' : undefined}
+                  color={item.entityId ? 'blue.500' : undefined}
+                  _hover={item.entityId ? { textDecoration: 'underline' } : undefined}
+                  onClick={() => item.entityId && navigate(`/analytics/entities/${item.entityId}`)}
+                >
+                  {item.entityName}
+                </Table.Cell>
                 <Table.Cell>${item.avgContractPrice.toLocaleString()}</Table.Cell>
                 <Table.Cell>${item.nationalAvg.toLocaleString()}</Table.Cell>
                 <Table.Cell>

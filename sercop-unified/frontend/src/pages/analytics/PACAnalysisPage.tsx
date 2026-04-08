@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Heading, Spinner, Text, Table, Badge } from '@chakra-ui/react';
 import { getPacVsExecuted, type PacItem } from '../../services/analyticsService';
 
 export default function PACAnalysisPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<PacItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -37,8 +39,13 @@ export default function PACAnalysisPage() {
           </Table.Header>
           <Table.Body>
             {data.map((item) => (
-              <Table.Row key={item.entityName}>
-                <Table.Cell>{item.entityName}</Table.Cell>
+              <Table.Row
+                key={item.entityName}
+                cursor="pointer"
+                _hover={{ bg: 'bg.muted' }}
+                onClick={() => item.entityId && navigate(`/analytics/entities/${item.entityId}`)}
+              >
+                <Table.Cell color="blue.500">{item.entityName}</Table.Cell>
                 <Table.Cell>{item.planned}</Table.Cell>
                 <Table.Cell>{item.executed}</Table.Cell>
                 <Table.Cell>${(item.plannedAmount / 1000).toFixed(0)}k</Table.Cell>

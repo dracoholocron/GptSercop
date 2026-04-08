@@ -12,15 +12,17 @@ export type PacVsExecuted = {
   deviation: number;
 };
 
-export async function getPacVsExecuted(year?: number): Promise<PacVsExecuted[]> {
+export async function getPacVsExecuted(year?: number, entityId?: string): Promise<PacVsExecuted[]> {
   const rows = await prisma.$queryRawUnsafe<Omit<PacVsExecuted, 'deviation'>[]>(
     Q_PAC_VS_EXECUTED,
     year ?? null,
   );
-  return rows.map((r) => ({
+  const mapped = rows.map((r) => ({
     ...r,
     deviation: parseFloat(String(r.plannedAmount)) - parseFloat(String(r.executedAmount)),
   }));
+  if (entityId) return mapped.filter((r) => r.entityId === entityId);
+  return mapped;
 }
 
 export async function getPacDeviationSummary(year?: number) {

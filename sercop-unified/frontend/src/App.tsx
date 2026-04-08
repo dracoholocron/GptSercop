@@ -66,6 +66,8 @@ import ProviderScoresPage from './pages/analytics/ProviderScoresPage';
 import PriceIndexPage from './pages/analytics/PriceIndexPage';
 import ContractHealthPage from './pages/analytics/ContractHealthPage';
 import FragmentationPage from './pages/analytics/FragmentationPage';
+import AnalyticsEntityDetailPage from './pages/analytics/AnalyticsEntityDetailPage';
+import AnalyticsProviderDetailPage from './pages/analytics/AnalyticsProviderDetailPage';
 
 // Auth pages
 import { OAuth2Callback } from './pages/auth/OAuth2Callback';
@@ -302,6 +304,8 @@ function AppRouter() {
       <Route path="/analytics/price-index" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><PriceIndexPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
       <Route path="/analytics/contracts" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><ContractHealthPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
       <Route path="/analytics/fragmentation" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><FragmentationPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/entities/:entityId" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><AnalyticsEntityDetailPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/providers/:providerId" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><AnalyticsProviderDetailPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
 
       {/* Client portal */}
       <Route path="/client" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />

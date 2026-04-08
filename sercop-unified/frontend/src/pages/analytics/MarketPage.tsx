@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Heading, Spinner, Text, Table, Button, Flex } from '@chakra-ui/react';
 import { getMarket, type MarketItem } from '../../services/analyticsService';
 
@@ -9,6 +10,7 @@ const groups = [
 ];
 
 export default function MarketPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<MarketItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -54,14 +56,29 @@ export default function MarketPage() {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {data.map((item, i) => (
-                <Table.Row key={i}>
-                  <Table.Cell>{(item as Record<string, unknown>)[labelKey] as string ?? '—'}</Table.Cell>
-                  <Table.Cell>{item.contractCount ?? item.tenderCount ?? 0}</Table.Cell>
-                  <Table.Cell fontWeight="bold">${(item.totalAmount / 1000).toFixed(0)}k</Table.Cell>
-                  {groupBy === 'province' && <Table.Cell>{item.providerCount ?? '—'}</Table.Cell>}
-                </Table.Row>
-              ))}
+              {data.map((item, i) => {
+                const labelVal = (item as Record<string, unknown>)[labelKey] as string ?? '—';
+                const isClickable = groupBy === 'entity' || groupBy === 'processType';
+                return (
+                  <Table.Row
+                    key={i}
+                    cursor={isClickable ? 'pointer' : undefined}
+                    _hover={isClickable ? { bg: 'bg.muted' } : undefined}
+                    onClick={() => {
+                      if (groupBy === 'entity' && (item as Record<string, unknown>).entityId) {
+                        navigate(`/analytics/entities/${(item as Record<string, unknown>).entityId}`);
+                      } else if (groupBy === 'processType') {
+                        navigate(`/analytics/risk-scores?processType=${encodeURIComponent(labelVal)}`);
+                      }
+                    }}
+                  >
+                    <Table.Cell color={isClickable ? 'blue.500' : undefined}>{labelVal}</Table.Cell>
+                    <Table.Cell>{item.contractCount ?? item.tenderCount ?? 0}</Table.Cell>
+                    <Table.Cell fontWeight="bold">${(item.totalAmount / 1000).toFixed(0)}k</Table.Cell>
+                    {groupBy === 'province' && <Table.Cell>{item.providerCount ?? '—'}</Table.Cell>}
+                  </Table.Row>
+                );
+              })}
             </Table.Body>
           </Table.Root>
         </Box>

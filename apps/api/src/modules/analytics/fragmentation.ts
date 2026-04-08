@@ -114,12 +114,27 @@ export async function getFragmentationAlerts(
   else if (resolved === false) where.resolvedAt = null;
 
   const [data, total] = await Promise.all([
-    prisma.fragmentationAlert.findMany({ where, skip, take, orderBy: { createdAt: 'desc' } }),
+    prisma.fragmentationAlert.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: 'desc' },
+    }),
     prisma.fragmentationAlert.count({ where }),
   ]);
 
+  // Resolve entity names in a single query
+  const entityIds = [...new Set(data.map((d) => d.entityId))];
+  const entities = entityIds.length > 0
+    ? await prisma.entity.findMany({
+        where: { id: { in: entityIds } },
+        select: { id: true, name: true },
+      })
+    : [];
+  const entityMap = Object.fromEntries(entities.map((e) => [e.id, e.name]));
+
   return {
-    data: data.map((d) => ({ ...d, entityName: undefined })),
+    data: data.map((d) => ({ ...d, entityName: entityMap[d.entityId] ?? d.entityId })),
     total,
     page,
     limit: take,

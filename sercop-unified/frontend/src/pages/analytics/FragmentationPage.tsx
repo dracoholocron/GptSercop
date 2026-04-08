@@ -1,15 +1,18 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Heading, Spinner, Text, Table, Badge, Button, Flex } from '@chakra-ui/react';
 import { getFragmentationAlerts, type FragmentationAlertItem, type PaginatedResponse } from '../../services/analyticsService';
 
 const severityColor: Record<string, string> = { CRITICAL: 'red', WARNING: 'yellow', INFO: 'blue' };
 
 export default function FragmentationPage() {
+  const navigate = useNavigate();
   const [data, setData] = useState<PaginatedResponse<FragmentationAlertItem> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [severity, setSeverity] = useState('');
   const [page, setPage] = useState(1);
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -57,17 +60,57 @@ export default function FragmentationPage() {
               </Table.Header>
               <Table.Body>
                 {data.data.map((item) => (
-                  <Table.Row key={item.id}>
-                    <Table.Cell><Badge>{item.pattern}</Badge></Table.Cell>
-                    <Table.Cell>{item.entityId}</Table.Cell>
-                    <Table.Cell>{item.contractCount}</Table.Cell>
-                    <Table.Cell fontWeight="bold">${(item.totalAmount / 1000).toFixed(0)}k</Table.Cell>
-                    <Table.Cell>{item.periodDays}</Table.Cell>
-                    <Table.Cell>
-                      <Badge colorPalette={severityColor[item.severity] ?? 'gray'}>{item.severity}</Badge>
-                    </Table.Cell>
-                    <Table.Cell fontSize="xs">{new Date(item.createdAt).toLocaleDateString()}</Table.Cell>
-                  </Table.Row>
+                  <>
+                    <Table.Row
+                      key={item.id}
+                      cursor="pointer"
+                      _hover={{ bg: 'bg.muted' }}
+                      onClick={() => setExpandedRow(expandedRow === item.id ? null : item.id)}
+                    >
+                      <Table.Cell><Badge>{item.pattern}</Badge></Table.Cell>
+                      <Table.Cell
+                        color="blue.500"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (item.entityId) navigate(`/analytics/entities/${item.entityId}`);
+                        }}
+                      >
+                        {item.entityName ?? item.entityId}
+                      </Table.Cell>
+                      <Table.Cell>{item.contractCount}</Table.Cell>
+                      <Table.Cell fontWeight="bold">${(item.totalAmount / 1000).toFixed(0)}k</Table.Cell>
+                      <Table.Cell>{item.periodDays}</Table.Cell>
+                      <Table.Cell>
+                        <Badge colorPalette={severityColor[item.severity] ?? 'gray'}>{item.severity}</Badge>
+                      </Table.Cell>
+                      <Table.Cell fontSize="xs">{new Date(item.createdAt).toLocaleDateString()}</Table.Cell>
+                    </Table.Row>
+                    {expandedRow === item.id && (
+                      <Table.Row key={`${item.id}-expanded`} bg="bg.subtle">
+                        <Table.Cell colSpan={7} pb={3}>
+                          <Box pt={2} pl={4}>
+                            <Text fontSize="sm" fontWeight="600" mb={2}>
+                              Contratos relacionados ({item.contractIds.length}):
+                            </Text>
+                            <Flex gap={2} wrap="wrap">
+                              {item.contractIds.map((cId) => (
+                                <Button
+                                  key={cId}
+                                  size="xs"
+                                  variant="outline"
+                                  colorPalette="blue"
+                                  fontFamily="mono"
+                                  onClick={(e) => { e.stopPropagation(); navigate(`/cp/contracts/${cId}`); }}
+                                >
+                                  {cId.slice(-12)}
+                                </Button>
+                              ))}
+                            </Flex>
+                          </Box>
+                        </Table.Cell>
+                      </Table.Row>
+                    )}
+                  </>
                 ))}
               </Table.Body>
             </Table.Root>
