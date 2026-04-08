@@ -7,6 +7,11 @@ import { getCompetitionBySector, getHhiByEntity, getAvgBidders } from './competi
 import { getMarketByEntity, getMarketByProcessType, getMarketByProvince, getTopProviders } from './market.js';
 import { getPacVsExecuted } from './pac-analysis.js';
 import { buildProviderNetwork, getProviderNeighbors } from './provider-network.js';
+import { computeProviderScore, getProviderScores } from './provider-score.js';
+import { getPriceIndex, getPriceAnomalies } from './price-index.js';
+import { getContractHealth, getAmendmentPatterns } from './contract-monitoring.js';
+import { detectFragmentation, getFragmentationAlerts } from './fragmentation.js';
+import { predictRisk } from './predictive.js';
 
 export const analyticsRoutes: FastifyPluginAsync = async (app) => {
 
@@ -60,8 +65,9 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
     async (req, reply) => {
       try {
         const { level, entityId, from, to, page = '1', limit = '20' } = req.query;
-        const skip = (parseInt(page) - 1) * parseInt(limit);
-        const take = Math.min(parseInt(limit), 100);
+        const pageNum = Math.max(1, parseInt(page) || 1);
+        const skip = (pageNum - 1) * Math.max(1, parseInt(limit) || 20);
+        const take = Math.min(Math.max(1, parseInt(limit) || 20), 100);
 
         const where: Record<string, unknown> = {};
         if (level && ['low', 'medium', 'high'].includes(level)) where.riskLevel = level;
@@ -280,7 +286,10 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
       try {
         const minShared = req.query.minShared ? parseInt(req.query.minShared) : 2;
         const network = await buildProviderNetwork(minShared);
-        return network;
+        return {
+          ...network,
+          edges: network.edges.map((e) => ({ ...e, source: e.providerAId, target: e.providerBId })),
+        };
       } catch (e) {
         return reply.status(500).send({ error: 'Error al obtener red de proveedores' });
       }
@@ -296,6 +305,163 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
         return { data: neighbors };
       } catch (e) {
         return reply.status(500).send({ error: 'Error al obtener vecinos' });
+      }
+    },
+  );
+
+  // ---- PROVIDER SCORES ----
+
+  // GET /api/v1/analytics/provider-scores – paginated list
+  app.get<{ Querystring: { page?: string; limit?: string; tier?: string } }>(
+    '/api/v1/analytics/provider-scores',
+    async (req, reply) => {
+      try {
+        const page = parseInt(req.query.page ?? '1');
+        const limit = parseInt(req.query.limit ?? '20');
+        return await getProviderScores(page, limit, req.query.tier);
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener scores de proveedores' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/provider-scores/:providerId
+  app.get<{ Params: { providerId: string } }>(
+    '/api/v1/analytics/provider-scores/:providerId',
+    async (req, reply) => {
+      try {
+        const score = await prisma.providerScore.findUnique({
+          where: { providerId: req.params.providerId },
+          include: { provider: { select: { id: true, name: true, identifier: true, province: true } } },
+        });
+        if (!score) return reply.status(404).send({ error: 'Score no encontrado' });
+        return score;
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener score de proveedor' });
+      }
+    },
+  );
+
+  // POST /api/v1/analytics/compute-provider-score/:providerId
+  app.post<{ Params: { providerId: string } }>(
+    '/api/v1/analytics/compute-provider-score/:providerId',
+    async (req, reply) => {
+      try {
+        const score = await computeProviderScore(req.params.providerId);
+        return score;
+      } catch (e: unknown) {
+        if ((e as { statusCode?: number }).statusCode === 404) {
+          return reply.status(404).send({ error: 'Proveedor no encontrado' });
+        }
+        return reply.status(500).send({ error: 'Error al calcular score' });
+      }
+    },
+  );
+
+  // ---- PRICE INDEX ----
+
+  // GET /api/v1/analytics/price-index
+  app.get<{ Querystring: { year?: string; processType?: string } }>(
+    '/api/v1/analytics/price-index',
+    async (req, reply) => {
+      try {
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+        const data = await getPriceIndex(year, req.query.processType);
+        return { data };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener índice de precios' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/price-anomalies
+  app.get<{ Querystring: { year?: string; threshold?: string } }>(
+    '/api/v1/analytics/price-anomalies',
+    async (req, reply) => {
+      try {
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+        const threshold = req.query.threshold ? parseFloat(req.query.threshold) : 50;
+        const data = await getPriceAnomalies(year, threshold);
+        return { data };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener anomalías de precio' });
+      }
+    },
+  );
+
+  // ---- CONTRACT MONITORING ----
+
+  // GET /api/v1/analytics/contract-health
+  app.get<{ Querystring: { page?: string; limit?: string; healthLevel?: string; entityId?: string } }>(
+    '/api/v1/analytics/contract-health',
+    async (req, reply) => {
+      try {
+        const page = parseInt(req.query.page ?? '1');
+        const limit = parseInt(req.query.limit ?? '20');
+        return await getContractHealth(page, limit, req.query.healthLevel, req.query.entityId);
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener salud contractual' });
+      }
+    },
+  );
+
+  // GET /api/v1/analytics/amendment-patterns
+  app.get<{ Querystring: { year?: string } }>(
+    '/api/v1/analytics/amendment-patterns',
+    async (req, reply) => {
+      try {
+        const year = req.query.year ? parseInt(req.query.year) : undefined;
+        const data = await getAmendmentPatterns(year);
+        return { data };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener patrones de modificaciones' });
+      }
+    },
+  );
+
+  // ---- FRAGMENTATION ----
+
+  // GET /api/v1/analytics/fragmentation-alerts
+  app.get<{ Querystring: { page?: string; limit?: string; severity?: string; resolved?: string } }>(
+    '/api/v1/analytics/fragmentation-alerts',
+    async (req, reply) => {
+      try {
+        const page = parseInt(req.query.page ?? '1');
+        const limit = parseInt(req.query.limit ?? '20');
+        const resolved = req.query.resolved === 'true' ? true : req.query.resolved === 'false' ? false : undefined;
+        return await getFragmentationAlerts(page, limit, req.query.severity, resolved);
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener alertas de fragmentación' });
+      }
+    },
+  );
+
+  // POST /api/v1/analytics/detect-fragmentation
+  app.post<{ Querystring: { entityId?: string } }>(
+    '/api/v1/analytics/detect-fragmentation',
+    async (req, reply) => {
+      try {
+        const results = await detectFragmentation(req.query.entityId);
+        return { data: results, newAlerts: results.length };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al detectar fragmentación' });
+      }
+    },
+  );
+
+  // ---- PREDICTIVE ----
+
+  // GET /api/v1/analytics/risk-prediction/:tenderId
+  app.get<{ Params: { tenderId: string } }>(
+    '/api/v1/analytics/risk-prediction/:tenderId',
+    async (req, reply) => {
+      try {
+        return await predictRisk(req.params.tenderId);
+      } catch (e: unknown) {
+        if ((e as { statusCode?: number }).statusCode === 404) {
+          return reply.status(404).send({ error: 'Proceso no encontrado' });
+        }
+        return reply.status(500).send({ error: 'Error al predecir riesgo' });
       }
     },
   );

@@ -60,6 +60,7 @@ model Provider {
   complaints          Complaint[]
   claims              ProcessClaim[]
   tenderClarifications TenderClarification[]
+  providerScore       ProviderScore?
 }
 
 model ProcurementPlan {
@@ -638,6 +639,60 @@ model AlertEvent {
   @@index([alertType])
   @@index([severity])
   @@index([entityId])
+  @@index([resolvedAt])
+}
+
+// Analytics – Reputación de proveedores (Score de proveedor)
+model ProviderScore {
+  id              String   @id @default(uuid())
+  providerId      String   @unique
+  complianceScore Float    @default(50) // cumplimiento contractual 0–100
+  deliveryScore   Float    @default(50) // puntualidad entregas 0–100
+  priceScore      Float    @default(50) // competitividad precios 0–100
+  diversityScore  Float    @default(50) // diversificación clientes 0–100
+  totalScore      Float    @default(50) // ponderado 0–100
+  tier            String   @default("standard") // premium | standard | watch | restricted
+  calculatedAt    DateTime @default(now())
+  provider        Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([tier])
+  @@index([totalScore])
+}
+
+// Analytics – Referencia nacional de precios
+model PriceReference {
+  id           String   @id @default(uuid())
+  cpcCode      String?
+  processType  String?
+  description  String
+  avgPrice     Float
+  minPrice     Float
+  maxPrice     Float
+  sampleSize   Int      @default(0)
+  year         Int
+  province     String?
+  calculatedAt DateTime @default(now())
+
+  @@index([cpcCode])
+  @@index([processType])
+  @@index([year])
+}
+
+// Analytics – Alertas de fragmentación contractual
+model FragmentationAlert {
+  id             String   @id @default(uuid())
+  entityId       String
+  pattern        String   // AMOUNT_CLUSTER | TEMPORAL_CLUSTER | THRESHOLD_AVOIDANCE
+  contractIds    String[] @default([])
+  totalAmount    Float    @default(0)
+  contractCount  Int      @default(0)
+  periodDays     Int      @default(30)
+  severity       String   @default("WARNING") // INFO | WARNING | CRITICAL
+  resolvedAt     DateTime?
+  createdAt      DateTime @default(now())
+
+  @@index([entityId])
+  @@index([severity])
   @@index([resolvedAt])
 }
 

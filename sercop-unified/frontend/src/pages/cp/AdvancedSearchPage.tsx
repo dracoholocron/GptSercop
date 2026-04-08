@@ -3,6 +3,15 @@ import { Box, Flex, Heading, Text, VStack, Input, Button, Checkbox, HStack, Badg
 import { apiClient } from '../../utils/apiClient';
 import { LuSearch, LuSparkles, LuCalendar, LuBuilding } from 'react-icons/lu';
 
+// Chakra UI v3 Checkbox wrapper (Checkbox is a namespace, not a direct component)
+const CheckboxItem = ({ checked, onChange, children }: { checked: boolean; onChange: () => void; children: React.ReactNode }) => (
+  <Checkbox.Root checked={checked} onCheckedChange={onChange} size="sm" cursor="pointer">
+    <Checkbox.HiddenInput />
+    <Checkbox.Control />
+    <Checkbox.Label>{children}</Checkbox.Label>
+  </Checkbox.Root>
+);
+
 export const AdvancedSearchPage = () => {
   const [filters, setFilters] = useState({ q: '', ragQuery: '', minAmount: '', maxAmount: '', processTypes: [] as string[], statuses: [] as string[] });
   const [results, setResults] = useState<any[]>([]);
@@ -70,21 +79,21 @@ export const AdvancedSearchPage = () => {
           <Box>
             <Text fontSize="sm" fontWeight="bold" color="gray.700" mb={2}>Tipo de Procedimiento</Text>
             <VStack align="start">
-              <Checkbox size="sm" onChange={() => toggleArrayFilter('processTypes', 'LICITACION')}>Licitación</Checkbox>
-              <Checkbox size="sm" onChange={() => toggleArrayFilter('processTypes', 'INFIMA_CUANTIA')}>Ínfima Cuantía</Checkbox>
-              <Checkbox size="sm" onChange={() => toggleArrayFilter('processTypes', 'SUBASTA_INVERSA')}>Subasta Inversa</Checkbox>
+              <CheckboxItem checked={filters.processTypes.includes('LICITACION')} onChange={() => toggleArrayFilter('processTypes', 'LICITACION')}>Licitación</CheckboxItem>
+              <CheckboxItem checked={filters.processTypes.includes('INFIMA_CUANTIA')} onChange={() => toggleArrayFilter('processTypes', 'INFIMA_CUANTIA')}>Ínfima Cuantía</CheckboxItem>
+              <CheckboxItem checked={filters.processTypes.includes('SUBASTA_INVERSA')} onChange={() => toggleArrayFilter('processTypes', 'SUBASTA_INVERSA')}>Subasta Inversa</CheckboxItem>
             </VStack>
           </Box>
 
           <Box>
             <Text fontSize="sm" fontWeight="bold" color="gray.700" mb={2}>Estado del Proceso</Text>
             <VStack align="start">
-              <Checkbox size="sm" onChange={() => toggleArrayFilter('statuses', 'published')}>Publicado</Checkbox>
-              <Checkbox size="sm" onChange={() => toggleArrayFilter('statuses', 'awarded')}>Adjudicado</Checkbox>
+              <CheckboxItem checked={filters.statuses.includes('published')} onChange={() => toggleArrayFilter('statuses', 'published')}>Publicado</CheckboxItem>
+              <CheckboxItem checked={filters.statuses.includes('awarded')} onChange={() => toggleArrayFilter('statuses', 'awarded')}>Adjudicado</CheckboxItem>
             </VStack>
           </Box>
 
-          <Button mt={4} colorScheme="blue" onClick={() => handleSearch()} w="full">Aplicar Filtros</Button>
+              <Button mt={4} colorPalette="blue" onClick={() => handleSearch()} w="full">Aplicar Filtros</Button>
         </VStack>
       </Box>
 
@@ -101,7 +110,7 @@ export const AdvancedSearchPage = () => {
           <Box as="form" onSubmit={handleSearch}>
             <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
               <Input size="lg" flex={1} borderColor="blue.200" focusBorderColor="blue.500" placeholder="Ej: Quiero ver licitaciones de mantenimiento de aires acondicionados en Guayas del último mes..." value={filters.ragQuery} onChange={e => setFilters({...filters, ragQuery: e.target.value})} />
-              <Button type="submit" size="lg" colorScheme="blue" px={8} isLoading={loading}>Consultar</Button>
+              <Button type="submit" size="lg" colorPalette="blue" px={8} loading={loading}>Consultar</Button>
             </Flex>
           </Box>
         </Box>
@@ -127,11 +136,11 @@ export const AdvancedSearchPage = () => {
             <Flex key={r.id} bg="white" p={5} borderRadius="lg" borderWidth="1px" borderColor="gray.200" _hover={{ boxShadow: 'md', borderColor: 'blue.300' }} transition="all 0.2s" direction={{ base: 'column', md: 'row' }} justify="space-between" align={{ md: 'center' }} gap={4} cursor="pointer">
               <Box flex={1}>
                 <HStack mb={2}>
-                  <Badge colorScheme="blue" px={2} py={0.5} borderRadius="md">{r.processType || 'LICITACION'}</Badge>
-                  <Badge colorScheme={r.status === 'published' ? 'green' : 'gray'} px={2} py={0.5} borderRadius="md">{r.status?.toUpperCase()}</Badge>
+                  <Badge colorPalette="blue" px={2} py={0.5} borderRadius="md">{r.processType || 'LICITACION'}</Badge>
+                  <Badge colorPalette={r.status === 'published' ? 'green' : 'gray'} px={2} py={0.5} borderRadius="md">{r.status?.toUpperCase()}</Badge>
                 </HStack>
                 <Heading size="sm" color="gray.800" mb={1} _hover={{ color: 'blue.600' }}>{r.title}</Heading>
-                <Text fontSize="sm" color="gray.500" noOfLines={2}>{r.description || 'Sin descripción detallada.'}</Text>
+                <Text fontSize="sm" color="gray.500" lineClamp={2}>{r.description || 'Sin descripción detallada.'}</Text>
                 <HStack fontSize="xs" fontWeight="medium" color="gray.400" mt={3} gap={4}>
                   <HStack><Icon as={LuBuilding} /> <Text>{r.procurementPlan?.entity?.name || 'ENTIDAD STUB'}</Text></HStack>
                   <HStack><Icon as={LuCalendar} /> <Text>{new Date(r.publishedAt || r.createdAt).toLocaleDateString()}</Text></HStack>

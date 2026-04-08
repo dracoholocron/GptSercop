@@ -54,6 +54,19 @@ import CPComplaintsPage from './pages/cp/CPComplaintsPage';
 import CPCPCBrowserPage from './pages/cp/CPCPCBrowserPage';
 import CPCatalogPage from './pages/cp/CPCatalogPage';
 
+// Analytics pages
+import AnalyticsDashboardPage from './pages/analytics/AnalyticsDashboardPage';
+import RiskScoresPage from './pages/analytics/RiskScoresPage';
+import CompetitionPage from './pages/analytics/CompetitionPage';
+import MarketPage from './pages/analytics/MarketPage';
+import PACAnalysisPage from './pages/analytics/PACAnalysisPage';
+import AlertsPage from './pages/analytics/AlertsPage';
+import ProviderNetworkPage from './pages/analytics/ProviderNetworkPage';
+import ProviderScoresPage from './pages/analytics/ProviderScoresPage';
+import PriceIndexPage from './pages/analytics/PriceIndexPage';
+import ContractHealthPage from './pages/analytics/ContractHealthPage';
+import FragmentationPage from './pages/analytics/FragmentationPage';
+
 // Auth pages
 import { OAuth2Callback } from './pages/auth/OAuth2Callback';
 import { FeatureCertificationPage } from './pages/FeatureCertificationPage';
@@ -276,6 +289,19 @@ function AppRouter() {
       <Route path="/trade-financing/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="TRADE_FINANCING" titleKey="menu.tradeFinancing" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
       <Route path="/aval-descuento/wizard" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="AVAL_DESCUENTO" titleKey="menu.avalDescuento" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
       <Route path="/aval-descuento/expert" element={<ProtectedRoute><Dashboard><WorkboxOperationsPage productType="AVAL_DESCUENTO" titleKey="menu.avalDescuento" subtitleKey="workbox.operations.subtitle" defaultViewMode="table" /></Dashboard></ProtectedRoute>} />
+
+      {/* Analytics routes */}
+      <Route path="/analytics" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW', 'CP_AI_RISK_ANALYSIS']}><Dashboard><AnalyticsDashboardPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/risk-scores" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW', 'CP_AI_RISK_ANALYSIS']}><Dashboard><RiskScoresPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/competition" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><CompetitionPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/market" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><MarketPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/pac" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><PACAnalysisPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/alerts" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><AlertsPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/provider-network" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><ProviderNetworkPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/provider-scores" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><ProviderScoresPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/price-index" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><PriceIndexPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/contracts" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><ContractHealthPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/fragmentation" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><FragmentationPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
 
       {/* Client portal */}
       <Route path="/client" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />

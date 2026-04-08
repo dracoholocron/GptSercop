@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { API_BASE_URL_WITH_PREFIX, TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from '../config/api.config';
+import { API_BASE_URL_WITH_PREFIX, API_V1_URL, TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from '../config/api.config';
 import { attemptTokenRefresh, getTokenExpiration } from '../utils/tokenRefresh';
 
 export type UserRole = 'admin' | 'manager' | 'user';
@@ -66,14 +66,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
       // Enviar timezone como query parameter para evitar problemas de CORS con headers personalizados
-      const loginUrl = `${API_BASE_URL_WITH_PREFIX}/auth/login?timezone=${encodeURIComponent(userTimezone)}`;
+      const loginUrl = `${API_V1_URL}/auth/login?timezone=${encodeURIComponent(userTimezone)}`;
 
       const response = await fetch(loginUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email: username, password }),
       });
 
       if (!response.ok) {
@@ -101,7 +101,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           message: raw?.message || 'Respuesta de autenticacion invalida',
         };
       }
-      const roles = Array.isArray(data.roles) ? data.roles : [];
+
+      // Prefer roles array from response; fall back to decoding JWT payload
+      let roles: string[] = Array.isArray(data.roles) ? data.roles : [];
+      if (roles.length === 0 && data.token) {
+        try {
+          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          const roleMap: Record<string, string[]> = {
+            admin:    ['ROLE_ADMIN'],
+            entity:   ['ROLE_CP_SUPERVISOR', 'ROLE_CP_ANALISTA', 'ROLE_USER'],
+            supplier: ['ROLE_USER'],
+          };
+          roles = roleMap[payload?.role as string] ?? ['ROLE_USER'];
+        } catch { /* ignore decode errors */ }
+      }
 
       // Crear objeto User
       const authenticatedUser: User = {

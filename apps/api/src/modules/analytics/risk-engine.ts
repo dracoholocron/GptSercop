@@ -216,8 +216,19 @@ export async function computeRiskScore(tenderId: string) {
     }
   }
 
-  // Patrón 17: Empresa siempre pierde (wins=0, participaciones>5)
-  // Calculado en batch, no en per-tender; skip here.
+  // Patrón 17: Empresa siempre pierde (wins=0, participaciones>5) – per-tender check for bids
+  for (const bid of bids) {
+    const bidProvId = bid.providerId;
+    const bidCount = await prisma.bid.count({ where: { providerId: bidProvId } });
+    if (bidCount > 5) {
+      const winCount = await prisma.contract.count({ where: { providerId: bidProvId } });
+      if (winCount === 0) {
+        dims.competitionRisk = Math.max(dims.competitionRisk, 55);
+        flags.push('ALWAYS_LOSES');
+        break;
+      }
+    }
+  }
 
   // Patrón 14: Múltiples contratos simultáneos (provider con > 10 contratos activos)
   if (contract) {

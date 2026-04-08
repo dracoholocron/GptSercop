@@ -23,7 +23,10 @@
     "test:security": "node --test test/security/*.test.js",
     "test:security:public": "node --test test/security/public-endpoints.test.js",
     "analytics:compute": "tsx scripts/compute-risk-scores.ts",
-    "analytics:compute:dry": "tsx scripts/compute-risk-scores.ts --dry-run"
+    "analytics:compute:dry": "tsx scripts/compute-risk-scores.ts --dry-run",
+    "seed:analytics": "tsx prisma/seed-analytics.ts && tsx scripts/compute-all-analytics.ts",
+    "seed:analytics:data": "tsx prisma/seed-analytics.ts",
+    "analytics:compute:all": "tsx scripts/compute-all-analytics.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
