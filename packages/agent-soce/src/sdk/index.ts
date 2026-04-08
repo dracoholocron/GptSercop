@@ -10,6 +10,7 @@ export { createSSEClient } from './transport/sse-client.js';
 export { resolveTheme, applyThemeToDOM } from './theming/ThemeEngine.js';
 export { collectContext, sanitizePII } from './context/ContextCollector.js';
 export { executeAction } from './actions/ActionBridge.js';
+export { sercopAdapter } from './adapters/sercop-adapter.js';
 export type {
   AgentSOCEConfig,
   AgentSOCETheme,

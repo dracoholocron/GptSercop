@@ -1,7 +1,7 @@
 import { ChakraProvider, Box, Spinner, Text, VStack, Button } from '@chakra-ui/react';
 import { AgentSOCEProvider } from './contexts/AgentSOCEContext';
 import { AgentSOCEWidget } from './components/agent-soce/AgentSOCEWidget';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { lazy, Suspense, Component, type ErrorInfo, type ReactNode } from 'react';
 import system from './theme';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -210,6 +210,14 @@ const PermissionRoute = ({
   return <>{children}</>;
 };
 
+// ─── Inject React Router navigate for Agent SOCE guided flows ────────────────
+// sercopAdapter reads window.__agentSOCENavigate to navigate without page reload.
+function AgentSOCENavigateInjector() {
+  const navigate = useNavigate();
+  (window as unknown as Record<string, unknown>).__agentSOCENavigate = navigate;
+  return null;
+}
+
 // -- App Router --
 function AppRouter() {
   return (
@@ -374,6 +382,7 @@ function App() {
                         <SidebarProvider>
                           <AgentSOCEProvider>
                           <Toaster />
+                          <AgentSOCENavigateInjector />
                           <Suspense fallback={
                             <Box display="flex" justifyContent="center" alignItems="center" minH="100vh">
                               <Spinner size="xl" color="blue.500" />

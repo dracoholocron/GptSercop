@@ -99,12 +99,41 @@ export async function orchestrate(
   return { stream: toSSE(), flowState: input.flowState };
 }
 
+// Keyword aliases to map common user phrases to specific flow IDs
+const FLOW_KEYWORD_MAP: Array<{ flowId: string; keywords: RegExp[] }> = [
+  {
+    flowId: 'registrar_pac',
+    keywords: [/\bpac\b/i, /plan\s+anual/i, /plan\s+de\s+contrat/i, /planificac/i],
+  },
+  {
+    flowId: 'crear_proceso_subasta',
+    keywords: [/subasta/i, /nuevo\s+proceso/i, /crear\s+proceso/i, /crear\s+contrat/i],
+  },
+  {
+    flowId: 'buscar_proceso',
+    keywords: [/buscar\s+proceso/i, /encontrar\s+proceso/i, /buscar\s+contrat/i],
+  },
+  {
+    flowId: 'consultar_proveedor',
+    keywords: [/buscar\s+proveedor/i, /consultar\s+proveedor/i, /rup\b/i],
+  },
+];
+
 function resolveFlowId(message: string, flows: Map<string, FlowDefinition>): string | null {
   const lower = message.toLowerCase();
+
+  // Check alias keywords first (most specific)
+  for (const { flowId, keywords } of FLOW_KEYWORD_MAP) {
+    if (flows.has(flowId) && keywords.some((re) => re.test(lower))) return flowId;
+  }
+
+  // Fall back to matching flow id or name substring
   for (const [id, flow] of flows) {
     const name = flow.name.toLowerCase();
     if (lower.includes(name) || lower.includes(id)) return id;
   }
+
+  // Last resort: generic "crear" or "proceso" → first flow
   if (lower.includes('proceso') || lower.includes('crear')) return flows.keys().next().value ?? null;
   return null;
 }
@@ -134,18 +163,47 @@ async function* guidanceStream(
   step: { id: string; label: string; screenRoute?: string; fieldId?: string; instructions: string },
   flow: { name: string; steps: { id: string }[] },
 ): AsyncGenerator<SSEEvent> {
-  yield {
-    type: 'guidance',
-    data: {
-      action: 'highlight',
-      stepId: step.id,
-      label: step.label,
-      route: step.screenRoute,
-      fieldId: step.fieldId,
-      instructions: step.instructions,
-      totalSteps: flow.steps.length,
-    },
-  };
+  // Step 1: navigate to the target screen (if route provided)
+  if (step.screenRoute) {
+    yield {
+      type: 'guidance',
+      data: {
+        action: 'navigate',
+        stepId: step.id,
+        label: step.label,
+        route: step.screenRoute,
+        instructions: step.instructions,
+        totalSteps: flow.steps.length,
+      },
+    };
+  }
+
+  // Step 2: highlight + tooltip on the target field (if fieldId provided)
+  if (step.fieldId) {
+    yield {
+      type: 'guidance',
+      data: {
+        action: 'highlight',
+        stepId: step.id,
+        label: step.label,
+        route: step.screenRoute,
+        fieldId: step.fieldId,
+        instructions: step.instructions,
+        totalSteps: flow.steps.length,
+      },
+    };
+    yield {
+      type: 'guidance',
+      data: {
+        action: 'tooltip',
+        stepId: step.id,
+        fieldId: step.fieldId,
+        instructions: step.instructions,
+        totalSteps: flow.steps.length,
+      },
+    };
+  }
+
   yield { type: 'text', data: step.instructions };
   yield { type: 'done', data: null };
 }

@@ -2,6 +2,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { compression } from 'vite-plugin-compression2'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -10,6 +11,12 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const proxyTarget = env.VITE_DEV_PROXY_TARGET || process.env.VITE_DEV_PROXY_TARGET || 'http://localhost:3080'
   return {
+  resolve: {
+    alias: {
+      // Point @sercop/agent-soce to the local package source (no build step required)
+      '@sercop/agent-soce': path.resolve(__dirname, '../../packages/agent-soce/src/index.ts'),
+    },
+  },
   plugins: [
     react(),
     compression({ algorithm: 'gzip', threshold: 1024 }),
@@ -47,6 +54,17 @@ export default defineConfig(({ mode }) => {
       ignored: ['**/backend/**', '**/target/**', '**/node_modules/**']
     },
     proxy: {
+      // Agent SOCE backend (must come before the generic /api rule)
+      '/api/v1/agent-soce': {
+        target: env.VITE_AGENT_SOCE_PROXY_TARGET || env.VITE_AGENT_SOCE_API_URL || 'http://localhost:3090',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, req) => {
+            console.error('[Vite Proxy Agent SOCE] Error:', err.message, 'for', req.url);
+          });
+        },
+      },
       '/api': {
         target: proxyTarget,
         changeOrigin: true,

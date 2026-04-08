@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useAgentSOCEButton } from '../../hooks/useAgentSOCEButton';
 import { useAuth } from '../../contexts/AuthContext';
-import { FloatingChatShell } from '@sercop/agent-soce';
+import { FloatingChatShell, sercopAdapter } from '@sercop/agent-soce';
 import type { AgentSOCEConfig } from '@sercop/agent-soce';
 
 const AGENT_SOCE_API_URL = import.meta.env.VITE_AGENT_SOCE_API_URL ?? 'http://localhost:3090';
@@ -57,6 +57,7 @@ export const AgentSOCEWidget: React.FC = () => {
   return (
     <FloatingChatShell
       config={config}
+      adapter={sercopAdapter}
       defaultOpen={true}
       theme={{
         buttonLabel: 'Agent SOCE',
