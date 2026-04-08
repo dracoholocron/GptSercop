@@ -3,12 +3,30 @@ import { requireAuth, getAgentUser } from './auth.js';
 import { prisma } from '../db/client.js';
 import { logInteraction, updateFeedback } from '../telemetry/audit.js';
 import type { ChatMessage, UIContext } from '../types/index.js';
+import { LLMRouter } from '../llm/router.js';
+import { orchestrate } from '../orchestrator/index.js';
+import { AGENT_TOOLS } from '../tools/definitions.js';
+import { SERCOP_FLOWS } from '../manifest/sercop-manifest.js';
 
 interface ChatBody {
   messages: ChatMessage[];
   context?: UIContext;
   sessionId?: string;
 }
+
+// LLM router is initialised once per process from the DB config.
+// We use a lazy singleton so it's ready after the first request.
+let llmRouterCache: LLMRouter | null = null;
+
+async function getLLMRouter(): Promise<LLMRouter> {
+  if (llmRouterCache) return llmRouterCache;
+  const providers = await prisma.agentLLMProvider.findMany({ where: { isActive: true } });
+  llmRouterCache = LLMRouter.fromConfig(providers as Parameters<typeof LLMRouter.fromConfig>[0]);
+  return llmRouterCache;
+}
+
+// Flow map built once from the SERCOP manifest
+const FLOW_MAP = new Map(SERCOP_FLOWS.map((f) => [f.id, f]));
 
 const chatRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.addHook('onRequest', requireAuth);
@@ -31,6 +49,8 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
     });
 
     const lastMsg = messages[messages.length - 1];
+
+    // Log user turn
     await logInteraction(prisma as unknown as Parameters<typeof logInteraction>[0], {
       sessionId: sid,
       userId: user.sub,
@@ -39,19 +59,45 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
       screenContext: context?.route,
     });
 
-    // Stream a basic echo response for now (orchestrator integration in Phase 1A completion)
-    const responseText = `Entendido. Has preguntado: "${lastMsg.content}". El sistema Agent SOCE está procesando tu solicitud.`;
+    let assistantContent = '';
 
-    reply.raw.write(`data: ${JSON.stringify({ type: 'text', data: responseText })}\n\n`);
+    try {
+      const llm = await getLLMRouter();
 
+      const { stream } = await orchestrate(
+        {
+          llm,
+          prisma: prisma as unknown as Parameters<typeof orchestrate>[0]['prisma'],
+          embed: (text: string) => llm.embed(text),
+          tools: AGENT_TOOLS,
+          flows: FLOW_MAP,
+        },
+        { messages, context, sessionId: sid },
+      );
+
+      for await (const event of stream) {
+        reply.raw.write(`data: ${JSON.stringify(event)}\n\n`);
+        if (event.type === 'text') {
+          assistantContent += String(event.data);
+        }
+      }
+    } catch (err) {
+      const errorEvent = { type: 'error', data: 'Error al procesar tu consulta. Por favor intenta de nuevo.' };
+      reply.raw.write(`data: ${JSON.stringify(errorEvent)}\n\n`);
+      fastify.log.error(err, 'Orchestrator error');
+    }
+
+    // Log assistant turn
     const latencyMs = Date.now() - start;
-    await logInteraction(prisma as unknown as Parameters<typeof logInteraction>[0], {
-      sessionId: sid,
-      userId: user.sub,
-      messageRole: 'assistant',
-      content: responseText,
-      latencyMs,
-    });
+    if (assistantContent) {
+      await logInteraction(prisma as unknown as Parameters<typeof logInteraction>[0], {
+        sessionId: sid,
+        userId: user.sub,
+        messageRole: 'assistant',
+        content: assistantContent,
+        latencyMs,
+      });
+    }
 
     reply.raw.write(`data: ${JSON.stringify({ type: 'done', data: null })}\n\n`);
     reply.raw.end();
