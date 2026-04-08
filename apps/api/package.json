@@ -26,7 +26,8 @@
     "analytics:compute:dry": "tsx scripts/compute-risk-scores.ts --dry-run",
     "seed:analytics": "tsx prisma/seed-analytics.ts && tsx scripts/compute-all-analytics.ts",
     "seed:analytics:data": "tsx prisma/seed-analytics.ts",
-    "analytics:compute:all": "tsx scripts/compute-all-analytics.ts"
+    "analytics:compute:all": "tsx scripts/compute-all-analytics.ts",
+    "seed:provider-scores": "tsx prisma/seed-provider-scores.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
