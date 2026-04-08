@@ -15,9 +15,13 @@
     "cpc:import": "tsx scripts/import-cpc.ts",
     "test:unit": "tsx --test test/unit/*.test.ts",
     "test:unit:analytics": "tsx --test test/unit/risk-engine.test.ts",
+    "test:unit:adapters": "tsx --test test/unit/adapters.test.ts",
     "test:integration": "node --test test/integration/*.test.js",
     "test:integration:analytics": "node --test test/integration/analytics.test.js",
+    "test:integration:batch": "node --test test/integration/batch-job.test.js",
+    "test:integration:ocds": "node --test test/integration/ocds-ingesta.test.js",
     "test:security": "node --test test/security/*.test.js",
+    "test:security:public": "node --test test/security/public-endpoints.test.js",
     "analytics:compute": "tsx scripts/compute-risk-scores.ts",
     "analytics:compute:dry": "tsx scripts/compute-risk-scores.ts --dry-run"
   },
