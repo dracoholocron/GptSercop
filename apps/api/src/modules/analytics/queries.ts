@@ -89,7 +89,7 @@ export const Q_PAC_VS_EXECUTED = `
     e.name                                        AS "entityName",
     COUNT(t.id)                                   AS "planned",
     SUM(CASE WHEN t.status IN ('awarded','active','closed') THEN 1 ELSE 0 END) AS "executed",
-    COALESCE(SUM(pp.totalAmount), 0)              AS "plannedAmount",
+    COALESCE(SUM(pp."totalAmount"), 0)             AS "plannedAmount",
     COALESCE(SUM(c.amount), 0)                    AS "executedAmount",
     ROUND(
       100.0 * SUM(CASE WHEN t.status IN ('awarded','active','closed') THEN 1 ELSE 0 END)

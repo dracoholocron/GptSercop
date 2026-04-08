@@ -249,16 +249,7 @@ export const coreRoutes: FastifyPluginAsync = async (app) => {
     } catch (e) { return reply.status(500).send({ error: 'Error doc' }); }
   });
 
-  // Analytics
-  app.get('/api/v1/analytics/dashboard', async (req, reply) => {
-    try {
-      const [tenders, providers, contracts, documents] = await Promise.all([
-        prisma.tender.count(), prisma.provider.count(), prisma.contract.count(), prisma.document.count(),
-      ]);
-      const tendersPublished = await prisma.tender.count({ where: { status: 'published' } });
-      return { tenders, tendersPublished, providers, contracts, documents };
-    } catch (e) { return reply.status(500).send({ error: 'Error stats' }); }
-  });
+  // Analytics dashboard – handled by analyticsRoutes (modules/analytics/routes.ts)
 
   app.get('/api/v1/analytics/public', async (req, reply) => {
     try {

@@ -52,9 +52,11 @@ async function main() {
     }
 
     // Analytics module smoke checks
+    // Acepta tanto el formato legacy {tenders} como el nuevo {totalTenders}
     const dash = await fetchOk(`${baseUrl}/api/v1/analytics/dashboard`, 'GET /api/v1/analytics/dashboard');
-    if (typeof dash.totalTenders !== 'number') throw new Error('/analytics/dashboard: missing totalTenders');
-    console.log('  GET /api/v1/analytics/dashboard: OK (tenders:', dash.totalTenders + ')');
+    const dashTenders = dash.totalTenders ?? dash.tenders;
+    if (typeof dashTenders !== 'number') throw new Error('/analytics/dashboard: missing totalTenders or tenders field');
+    console.log('  GET /api/v1/analytics/dashboard: OK (tenders:', dashTenders + ')');
 
     const market = await fetchOk(`${baseUrl}/api/v1/analytics/market`, 'GET /api/v1/analytics/market');
     if (!Array.isArray(market.data)) throw new Error('/analytics/market: missing data array');
