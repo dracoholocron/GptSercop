@@ -25,6 +25,7 @@ export interface InteractionData {
   tokensOut?: number;
   latencyMs?: number;
   screenContext?: string;
+  [key: string]: unknown;
 }
 
 export async function logAudit(

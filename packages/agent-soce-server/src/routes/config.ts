@@ -9,13 +9,13 @@ const configRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.get('/llm-providers', async () => {
     const providers = await prisma.agentLLMProvider.findMany({ orderBy: { name: 'asc' } });
-    return providers.map((p) => ({ ...p, apiKey: p.apiKey ? '***' : null }));
+    return providers.map((p: { apiKey?: string | null; [key: string]: unknown }) => ({ ...p, apiKey: p.apiKey ? '***' : null }));
   });
 
   fastify.post<{ Body: { name: string; type: string; model: string; apiKey?: string; baseUrl?: string; isDefault?: boolean; maxTokens?: number; temperature?: number; metadata?: Record<string, unknown> } }>(
     '/llm-providers',
     async (request) => {
-      return prisma.agentLLMProvider.create({ data: request.body });
+      return prisma.agentLLMProvider.create({ data: request.body as Parameters<typeof prisma.agentLLMProvider.create>[0]['data'] });
     },
   );
 
@@ -53,13 +53,12 @@ const configRoutes: FastifyPluginAsync = async (fastify) => {
     '/rag',
     async (request) => {
       const existing = await prisma.agentRAGConfig.findFirst();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const body = request.body as any;
       if (existing) {
-        return prisma.agentRAGConfig.update({
-          where: { id: existing.id },
-          data: request.body,
-        });
+        return prisma.agentRAGConfig.update({ where: { id: existing.id }, data: body });
       }
-      return prisma.agentRAGConfig.create({ data: request.body });
+      return prisma.agentRAGConfig.create({ data: body });
     },
   );
 

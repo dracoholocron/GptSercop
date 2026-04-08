@@ -1,6 +1,13 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import jwt from 'jsonwebtoken';
 
+// Augment Fastify's Request type to carry the decoded agent user
+declare module 'fastify' {
+  interface FastifyRequest {
+    agentUser?: AgentJWTPayload;
+  }
+}
+
 const JWT_SECRET = process.env.JWT_SECRET ?? 'agent-soce-dev-secret-min-32-chars!!';
 
 export interface AgentJWTPayload {
@@ -30,7 +37,7 @@ export async function requireAuth(
 
   try {
     const payload = verifyToken(header.slice(7));
-    (request as Record<string, unknown>).agentUser = payload;
+    request.agentUser = payload;
   } catch {
     reply.code(401).send({ error: 'Invalid or expired token' });
   }
@@ -43,12 +50,12 @@ export async function requireAdmin(
   await requireAuth(request, reply);
   if (reply.sent) return;
 
-  const user = (request as Record<string, unknown>).agentUser as AgentJWTPayload | undefined;
+  const user = request.agentUser;
   if (!user?.roles.includes('agent_admin')) {
     reply.code(403).send({ error: 'Admin role required' });
   }
 }
 
 export function getAgentUser(request: FastifyRequest): AgentJWTPayload | null {
-  return ((request as Record<string, unknown>).agentUser as AgentJWTPayload) ?? null;
+  return request.agentUser ?? null;
 }
