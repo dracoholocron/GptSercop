@@ -30,6 +30,11 @@ import AIUsageReportsPage from './pages/admin/AIUsageReportsPage';
 // Lazy load chat
 const CMXChat = lazy(() => import('./components/chat').then(module => ({ default: module.CMXChat })));
 
+// Lazy load Agent SOCE Admin Console
+const AgentSOCEAdminApp = lazy(() =>
+  import('@sercop/agent-soce').then(m => ({ default: m.AgentSOCEAdminApp }))
+);
+
 // CP (Compras Públicas) pages
 import CPDashboardPage from './pages/cp/CPDashboardPage';
 import CPMarketStudyPage from './pages/cp/CPMarketStudyPage';
@@ -327,6 +332,24 @@ function AppRouter() {
       <Route path="/client/requests/:id/edit" element={<ProtectedRoute><ClientRequestEdit /></ProtectedRoute>} />
       <Route path="/client/profile" element={<ProtectedRoute><ClientProfile /></ProtectedRoute>} />
 
+      {/* Agent SOCE Admin + Config Console */}
+      <Route
+        path="/agent-soce/*"
+        element={
+          <ProtectedRoute>
+            <PermissionRoute anyOf={['GPT_ADMIN_VIEW', 'AI_PROMPT_VIEW']}>
+              <Suspense fallback={
+                <Box display="flex" justifyContent="center" alignItems="center" minH="100vh">
+                  <Spinner size="xl" color="blue.500" />
+                </Box>
+              }>
+                <AgentSOCEAdminConsoleWrapper />
+              </Suspense>
+            </PermissionRoute>
+          </ProtectedRoute>
+        }
+      />
+
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -377,6 +400,30 @@ function App() {
         </BrowserRouter>
       </ChakraProvider>
     </GlobalErrorBoundary>
+  );
+}
+
+// ─── Agent SOCE Admin Console Wrapper ────────────────────────────────────────
+// Reads the current path to determine initial view and injects auth token.
+function AgentSOCEAdminConsoleWrapper() {
+  const { token } = useAuth();
+  const location = window.location.pathname;
+
+  // Derive initial view from sub-path: /agent-soce/admin/roles → "roles"
+  const sub = location.replace(/^\/agent-soce\/(admin|config)\/?/, '');
+  const viewMap: Record<string, string> = {
+    roles: 'roles', users: 'users', permissions: 'permissions',
+    'data-sources': 'data-sources', audit: 'audit', training: 'training',
+    llm: 'llm', rag: 'rag', graph: 'graph', theming: 'theming', general: 'general',
+  };
+  const initialView = (viewMap[sub] ?? 'roles') as Parameters<typeof AgentSOCEAdminApp>[0]['initialView'];
+
+  return (
+    <AgentSOCEAdminApp
+      apiBaseUrl={import.meta.env.VITE_AGENT_SOCE_API_URL ?? 'http://localhost:3090'}
+      token={token ?? undefined}
+      initialView={initialView}
+    />
   );
 }
 

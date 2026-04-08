@@ -699,6 +699,15 @@ const getFallbackInternalMenu = (): MenuItem[] => [
         isSection: false,
         children: [],
       },
+      {
+        id: -49,
+        code: 'agentSoceAdmin',
+        label: 'Agent SOCE',
+        icon: FiCpu,
+        path: '/agent-soce/admin',
+        isSection: false,
+        children: [],
+      },
     ],
   },
 ];
