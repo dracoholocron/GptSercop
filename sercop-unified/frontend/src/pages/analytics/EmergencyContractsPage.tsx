@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Heading, Text, Select, Flex, Spinner, SimpleGrid, Card,
   Table, Badge, Button,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { getEmergencyContracts, type EmergencyItem } from '../../services/analyticsService';
 
 const fmt = (n: number | null) => {
@@ -26,11 +25,17 @@ export default function EmergencyContractsPage() {
   const [year, setYear] = useState<number | undefined>(undefined);
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
+  const [data, setData] = useState<Awaited<ReturnType<typeof getEmergencyContracts>> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['emergencyContracts', year, page],
-    queryFn: () => getEmergencyContracts({ year, page, limit: 20 }),
-  });
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+    getEmergencyContracts({ year, page, limit: 20 })
+      .then((r) => { setData(r); setIsLoading(false); })
+      .catch((e) => { setError(e); setIsLoading(false); });
+  }, [year, page]);
 
   return (
     <Box p={6}>

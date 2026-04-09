@@ -1,0 +1,42 @@
+# Sercop Unified Frontend – Docker production build
+# Build context: project root (needs access to packages/agent-soce)
+# Usage: docker compose build frontend  (from project root)
+
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+# Build arguments for Vite
+ARG VITE_API_BASE_URL=/api
+ARG VITE_REALTIME_ENABLED=false
+ARG VITE_REALTIME_PROVIDER=none
+
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_REALTIME_ENABLED=$VITE_REALTIME_ENABLED
+ENV VITE_REALTIME_PROVIDER=$VITE_REALTIME_PROVIDER
+
+# Copy the local agent-soce package (referenced via vite alias)
+COPY packages/agent-soce ./packages/agent-soce
+
+# Copy frontend package files and install dependencies
+COPY sercop-unified/frontend/package*.json ./sercop-unified/frontend/
+WORKDIR /app/sercop-unified/frontend
+RUN npm ci
+
+# Copy frontend source
+COPY sercop-unified/frontend/ .
+
+# Symlink node_modules to project root so agent-soce can resolve shared deps (react, etc.)
+RUN ln -s /app/sercop-unified/frontend/node_modules /app/node_modules
+
+# Build
+RUN npm run build
+
+# Production stage with nginx
+FROM nginx:alpine
+
+COPY --from=build /app/sercop-unified/frontend/dist /usr/share/nginx/html
+COPY sercop-unified/frontend/nginx.sercop.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

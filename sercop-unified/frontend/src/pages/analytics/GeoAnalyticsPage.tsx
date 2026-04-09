@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Heading, Text, Select, Flex, Spinner, SimpleGrid, Card,
   Table, Badge,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { getGeoAnalytics, type GeoItem } from '../../services/analyticsService';
 
 const fmt = (n: number) =>
@@ -17,11 +16,17 @@ const fmt = (n: number) =>
 export default function GeoAnalyticsPage() {
   const [year, setYear] = useState<number | undefined>(undefined);
   const navigate = useNavigate();
+  const [data, setData] = useState<Awaited<ReturnType<typeof getGeoAnalytics>> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['geoAnalytics', year],
-    queryFn: () => getGeoAnalytics(year),
-  });
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+    getGeoAnalytics(year)
+      .then((r) => { setData(r); setIsLoading(false); })
+      .catch((e) => { setError(e); setIsLoading(false); });
+  }, [year]);
 
   const maxAmount = data ? Math.max(...data.data.map((d) => d.totalAmount), 1) : 1;
 

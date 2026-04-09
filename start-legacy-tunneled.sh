@@ -10,7 +10,7 @@
 
 set -e
 
-REMOTE_HOST="user@192.168.100.45"
+REMOTE_HOST="user@192.168.100.42"
 FRONTEND_DIR="$(cd "$(dirname "$0")/sercop-unified/frontend" && pwd)"
 
 # ---- Puertos ----------------------------------------------------------------

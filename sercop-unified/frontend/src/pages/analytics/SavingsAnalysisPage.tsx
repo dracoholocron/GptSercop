@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Heading, Text, Select, Flex, Spinner, SimpleGrid, Card,
   Table, Badge,
 } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { getSavingsAnalysis, type SavingsItem } from '../../services/analyticsService';
 
 const fmt = (n: number) =>
@@ -16,11 +15,17 @@ const fmt = (n: number) =>
 export default function SavingsAnalysisPage() {
   const [year, setYear] = useState<number | undefined>(undefined);
   const [groupBy, setGroupBy] = useState<'processType' | 'entity'>('processType');
+  const [data, setData] = useState<Awaited<ReturnType<typeof getSavingsAnalysis>> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['savingsAnalysis', year, groupBy],
-    queryFn: () => getSavingsAnalysis(year, groupBy),
-  });
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+    getSavingsAnalysis(year, groupBy)
+      .then((r) => { setData(r); setIsLoading(false); })
+      .catch((e) => { setError(e); setIsLoading(false); });
+  }, [year, groupBy]);
 
   const totalEstimated = data?.data.reduce((s, d) => s + d.totalEstimated, 0) ?? 0;
   const totalAwarded = data?.data.reduce((s, d) => s + d.totalAwarded, 0) ?? 0;

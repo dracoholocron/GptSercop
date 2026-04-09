@@ -28,11 +28,23 @@ RUN npm run build
 # Production stage with nginx
 FROM nginx:alpine
 
+# Which nginx config to use. Defaults to globalcmx layout (nginx.conf).
+# For Sercop standalone Docker use: --build-arg NGINX_CONF=nginx.sercop.conf
+ARG NGINX_CONF=nginx.conf
+
 # Copy built assets from build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy both nginx configs so the image is self-contained regardless of build arg
+COPY nginx.conf /tmp/nginx.globalcmx.conf
+COPY nginx.sercop.conf /tmp/nginx.sercop.conf
+
+# Activate the requested config
+RUN if [ "$NGINX_CONF" = "nginx.sercop.conf" ]; then \
+      cp /tmp/nginx.sercop.conf /etc/nginx/conf.d/default.conf; \
+    else \
+      cp /tmp/nginx.globalcmx.conf /etc/nginx/conf.d/default.conf; \
+    fi
 
 # Expose port 80
 EXPOSE 80

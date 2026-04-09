@@ -74,6 +74,26 @@ services:
     depends_on:
       - api
 
+  # ── Sercop unified frontend (React/Vite → nginx)
+  # Desarrollo local: usa start-dev.sh (Vite hot-reload en localhost:5177)
+  # Docker (siempre disponible): docker compose build frontend && docker compose up -d frontend
+  # Acceso remoto: http://192.168.100.45:5177 (o via túnel ssh -L 5177:localhost:5177)
+  frontend:
+    build:
+      context: .
+      dockerfile: sercop-unified/frontend/Dockerfile.sercop
+      args:
+        VITE_API_BASE_URL: /api
+        VITE_REALTIME_ENABLED: "false"
+        VITE_REALTIME_PROVIDER: none
+    ports:
+      - "5177:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - api
+    restart: unless-stopped
+
   # Portal público (opcional). Build desde raíz: docker compose build public-portal
   public-portal:
     build:

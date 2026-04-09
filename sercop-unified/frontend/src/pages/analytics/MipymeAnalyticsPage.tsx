@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Heading, Text, Select, Flex, Spinner, SimpleGrid, Card,
   Table, Badge, Progress,
 } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { getMipymeAnalytics, type MipymeItem } from '../../services/analyticsService';
 
 const fmt = (n: number) =>
@@ -25,11 +24,17 @@ const categoryOrder = ['Microempresa', 'Pequeña empresa', 'Mediana empresa', 'G
 
 export default function MipymeAnalyticsPage() {
   const [year, setYear] = useState<number | undefined>(undefined);
+  const [data, setData] = useState<Awaited<ReturnType<typeof getMipymeAnalytics>> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['mipymeAnalytics', year],
-    queryFn: () => getMipymeAnalytics(year),
-  });
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+    getMipymeAnalytics(year)
+      .then((r) => { setData(r); setIsLoading(false); })
+      .catch((e) => { setError(e); setIsLoading(false); });
+  }, [year]);
 
   const sorted = data
     ? [...data.data].sort(

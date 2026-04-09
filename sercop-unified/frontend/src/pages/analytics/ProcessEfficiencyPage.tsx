@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Heading, Text, Select, Flex, Spinner, SimpleGrid, Card,
   Table, Badge, Progress,
 } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { getProcessEfficiency, type EfficiencyItem } from '../../services/analyticsService';
 
 const fmtDays = (d: number | null) => (d === null ? '-' : `${d.toFixed(1)} días`);
@@ -17,11 +16,17 @@ const efficiencyColor = (days: number | null): string => {
 
 export default function ProcessEfficiencyPage() {
   const [year, setYear] = useState<number | undefined>(undefined);
+  const [data, setData] = useState<Awaited<ReturnType<typeof getProcessEfficiency>> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['processEfficiency', year],
-    queryFn: () => getProcessEfficiency(year),
-  });
+  useEffect(() => {
+    setIsLoading(true);
+    setError(null);
+    getProcessEfficiency(year)
+      .then((r) => { setData(r); setIsLoading(false); })
+      .catch((e) => { setError(e); setIsLoading(false); });
+  }, [year]);
 
   const totalProcesses = data?.data.reduce((s, d) => s + d.count, 0) ?? 0;
   const maxDays = data
