@@ -1,4 +1,4 @@
-import { hybridSearch } from './hybrid-search.js';
+import { hybridSearch, type SearchWeights } from './hybrid-search.js';
 
 interface RagResult {
   id: string;
@@ -29,10 +29,18 @@ export async function keywordSearch(
   prisma: PrismaLike,
   query: string,
   limit: number,
+  catalogIds?: string[],
 ): Promise<RagResult[]> {
   const safeLimit = Math.min(Math.max(limit, 1), 100);
   const sanitized = sanitizeQuery(query);
   if (!sanitized) return [];
+
+  const catalogFilter = catalogIds?.length
+    ? `AND "documentId" IN (SELECT id FROM "AgentKnowledgeDocument" WHERE "catalogId" = ANY($3::text[]))`
+    : '';
+
+  const params: unknown[] = [sanitized, safeLimit];
+  if (catalogIds?.length) params.push(catalogIds);
 
   const rows = await prisma.$queryRawUnsafe<RagRow[]>(
     `SELECT id, title, source, "documentType" AS document_type,
@@ -41,13 +49,13 @@ export async function keywordSearch(
      FROM "AgentRagChunk"
      WHERE to_tsvector('spanish', coalesce(title,'') || ' ' || coalesce(content,''))
            @@ plainto_tsquery('spanish', $1::text)
+           ${catalogFilter}
      ORDER BY ts_rank(
        to_tsvector('spanish', coalesce(title,'') || ' ' || coalesce(content,'')),
        plainto_tsquery('spanish', $1::text)
      ) DESC
      LIMIT $2`,
-    sanitized,
-    safeLimit,
+    ...params,
   );
 
   return rows.map((r, i) => ({
@@ -65,9 +73,11 @@ export async function searchRag(
   query: string,
   embedding: number[] | null,
   limit: number,
+  weights?: SearchWeights,
+  catalogIds?: string[],
 ): Promise<RagResult[]> {
   if (embedding && embedding.length > 0) {
-    return hybridSearch(prisma, query, embedding, limit);
+    return hybridSearch(prisma, query, embedding, limit, weights, catalogIds);
   }
-  return keywordSearch(prisma, query, limit);
+  return keywordSearch(prisma, query, limit, catalogIds);
 }

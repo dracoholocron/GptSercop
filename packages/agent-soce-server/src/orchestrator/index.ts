@@ -4,9 +4,11 @@ import { initFlow, advanceFlow, getCurrentStep, isFlowComplete } from './flow-en
 import type { ChatMessage, UIContext, SSEEvent, ToolDef } from '../types/index.js';
 import type { LLMRouter } from '../llm/router.js';
 import { searchRag } from '../rag/search.js';
+import type { SearchWeights } from '../rag/hybrid-search.js';
 
 type PrismaLike = {
   $queryRawUnsafe: <T>(query: string, ...values: unknown[]) => Promise<T>;
+  agentRAGConfig?: { findFirst: () => Promise<{ searchWeight?: unknown } | null> };
 };
 
 export interface OrchestratorDeps {
@@ -66,8 +68,18 @@ export async function orchestrate(
   let ragContext = '';
   if (intent.type === 'question' || intent.type === 'data_query') {
     try {
+      let weights: SearchWeights | undefined;
+      if (deps.prisma.agentRAGConfig) {
+        const cfg = await deps.prisma.agentRAGConfig.findFirst();
+        if (cfg?.searchWeight && typeof cfg.searchWeight === 'object') {
+          const w = cfg.searchWeight as { semantic?: number; keyword?: number };
+          if (w.semantic !== undefined && w.keyword !== undefined) {
+            weights = { semantic: w.semantic, keyword: w.keyword };
+          }
+        }
+      }
       const embedding = await deps.embed(lastMsg);
-      const chunks = await searchRag(deps.prisma, lastMsg, embedding, 5);
+      const chunks = await searchRag(deps.prisma, lastMsg, embedding, 5, weights);
       if (chunks.length > 0) {
         ragContext = '\n\nContexto relevante (documentos):\n' +
           chunks.map((c) => `[${c.source}] ${c.title}: ${c.snippet}`).join('\n');

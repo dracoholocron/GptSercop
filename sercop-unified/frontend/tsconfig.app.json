@@ -22,7 +22,11 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "@sercop/agent-soce": ["../../packages/agent-soce/src/index.ts"],
+      "@sercop/agent-soce/*": ["../../packages/agent-soce/src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "../../packages/agent-soce/src"]
 }

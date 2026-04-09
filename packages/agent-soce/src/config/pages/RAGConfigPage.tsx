@@ -9,6 +9,7 @@ type SearchWeight = { semantic: number; keyword: number };
 
 type RAGResponse = {
   id?: string;
+  embeddingProviderId?: string | null;
   embeddingModel?: string;
   embeddingDims?: number;
   chunkSize?: number;
@@ -20,6 +21,29 @@ type RAGResponse = {
   indexedDocuments?: number;
   lastIndexedAt?: string;
   stats?: { totalChunks?: number; indexedDocuments?: number; lastIndexedAt?: string };
+};
+
+interface ProviderOption {
+  id: string;
+  name: string;
+  type: string;
+  model: string;
+}
+
+const KNOWN_DIMS: Record<string, number> = {
+  'nomic-embed-text': 768,
+  'mxbai-embed-large': 1024,
+  'all-minilm': 384,
+  'text-embedding-3-small': 1536,
+  'text-embedding-3-large': 3072,
+  'text-embedding-004': 768,
+};
+
+const PROVIDER_EMBED_MODELS: Record<string, string> = {
+  ollama: 'nomic-embed-text',
+  openai: 'text-embedding-3-small',
+  google: 'text-embedding-004',
+  anthropic: 'text-embedding-3-small',
 };
 
 const shell: React.CSSProperties = {
@@ -133,6 +157,7 @@ export function RAGConfigPage({ baseUrl, token }: RAGConfigPageProps): React.Rea
   const [info, setInfo] = React.useState<string | null>(null);
   const [raw, setRaw] = React.useState<RAGResponse | null>(null);
 
+  const [embeddingProviderId, setEmbeddingProviderId] = React.useState<string | null>(null);
   const [embeddingModel, setEmbeddingModel] = React.useState('');
   const [embeddingDims, setEmbeddingDims] = React.useState(768);
   const [chunkSize, setChunkSize] = React.useState(512);
@@ -141,15 +166,25 @@ export function RAGConfigPage({ baseUrl, token }: RAGConfigPageProps): React.Rea
   const [keyword, setKeyword] = React.useState(0.4);
   const [rerankerEnabled, setRerankerEnabled] = React.useState(false);
 
+  const [providers, setProviders] = React.useState<ProviderOption[]>([]);
+  const [originalProviderId, setOriginalProviderId] = React.useState<string | null>(null);
+  const [originalModel, setOriginalModel] = React.useState('');
+
   const load = React.useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(joinUrl(baseUrl, '/config/rag'), { headers: { Authorization: `Bearer ${token}` } });
-      if (!res.ok) throw new Error(await res.text().catch(() => res.statusText));
-      const data = (await res.json()) as RAGResponse;
+      const [ragRes, provRes] = await Promise.all([
+        fetch(joinUrl(baseUrl, '/config/rag'), { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(joinUrl(baseUrl, '/providers')).catch(() => null),
+      ]);
+      if (!ragRes.ok) throw new Error(await ragRes.text().catch(() => ragRes.statusText));
+      const data = (await ragRes.json()) as RAGResponse;
       setRaw(data);
+      setEmbeddingProviderId(data.embeddingProviderId ?? null);
+      setOriginalProviderId(data.embeddingProviderId ?? null);
       setEmbeddingModel(data.embeddingModel ?? '');
+      setOriginalModel(data.embeddingModel ?? '');
       setEmbeddingDims(data.embeddingDims ?? 768);
       setChunkSize(data.chunkSize ?? 512);
       setChunkOverlap(data.chunkOverlap ?? 64);
@@ -157,6 +192,11 @@ export function RAGConfigPage({ baseUrl, token }: RAGConfigPageProps): React.Rea
       setSemantic(sw.semantic);
       setKeyword(sw.keyword);
       setRerankerEnabled(Boolean(data.rerankerEnabled));
+
+      if (provRes?.ok) {
+        const prov = (await provRes.json()) as ProviderOption[];
+        setProviders(Array.isArray(prov) ? prov : []);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load RAG config');
     } finally {
@@ -186,6 +226,7 @@ export function RAGConfigPage({ baseUrl, token }: RAGConfigPageProps): React.Rea
     setInfo(null);
     try {
       const body = {
+        embeddingProviderId: embeddingProviderId || null,
         embeddingModel: embeddingModel.trim(),
         embeddingDims,
         chunkSize,
@@ -199,7 +240,12 @@ export function RAGConfigPage({ baseUrl, token }: RAGConfigPageProps): React.Rea
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error(await res.text().catch(() => res.statusText));
-      setInfo('RAG settings saved.');
+      const result = (await res.json()) as { reindexRequired?: boolean };
+      if (result.reindexRequired) {
+        setInfo('RAG settings saved. All existing embeddings have been invalidated — please run "Reindex all" to regenerate them with the new model.');
+      } else {
+        setInfo('RAG settings saved.');
+      }
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
@@ -265,7 +311,45 @@ export function RAGConfigPage({ baseUrl, token }: RAGConfigPageProps): React.Rea
         <div style={{ padding: 32, textAlign: 'center', color: '#64748b' }}>Loading…</div>
       ) : (
         <div style={card}>
+          {(embeddingProviderId !== originalProviderId || embeddingModel !== originalModel) && (
+            <div style={{ padding: 12, borderRadius: 10, background: '#fefce8', color: '#854d0e', fontSize: 13, marginBottom: 16, border: '1px solid #fde68a' }}>
+              <strong>Advertencia:</strong> Cambiar el proveedor o modelo de embedding invalidará todos los vectores existentes. Se requiere un re-index completo después de guardar.
+            </div>
+          )}
           <div style={{ display: 'grid', gap: 16 }}>
+            <div>
+              <label style={label} htmlFor="rag-embed-provider">
+                Embedding provider
+              </label>
+              <select
+                id="rag-embed-provider"
+                style={input}
+                value={embeddingProviderId ?? ''}
+                onChange={(e) => {
+                  const newId = e.target.value || null;
+                  setEmbeddingProviderId(newId);
+                  if (newId) {
+                    const prov = providers.find((p) => p.id === newId);
+                    if (prov) {
+                      const defaultModel = PROVIDER_EMBED_MODELS[prov.type] ?? prov.model;
+                      setEmbeddingModel(defaultModel);
+                      const dims = KNOWN_DIMS[defaultModel];
+                      if (dims) setEmbeddingDims(dims);
+                    }
+                  } else {
+                    setEmbeddingModel('nomic-embed-text');
+                    setEmbeddingDims(768);
+                  }
+                }}
+              >
+                <option value="">(Default: Ollama local)</option>
+                {providers.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} ({p.type})
+                  </option>
+                ))}
+              </select>
+            </div>
             <div>
               <label style={label} htmlFor="rag-embed-model">
                 Embedding model
@@ -274,7 +358,11 @@ export function RAGConfigPage({ baseUrl, token }: RAGConfigPageProps): React.Rea
                 id="rag-embed-model"
                 style={input}
                 value={embeddingModel}
-                onChange={(e) => setEmbeddingModel(e.target.value)}
+                onChange={(e) => {
+                  setEmbeddingModel(e.target.value);
+                  const dims = KNOWN_DIMS[e.target.value];
+                  if (dims) setEmbeddingDims(dims);
+                }}
               />
             </div>
             <div>

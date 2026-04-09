@@ -94,14 +94,15 @@ model AgentLLMProvider {
 }
 
 model AgentRAGConfig {
-  id              String   @id @default(uuid())
-  embeddingModel  String   @default("nomic-embed-text")
-  embeddingDims   Int      @default(768)
-  chunkSize       Int      @default(512)
-  chunkOverlap    Int      @default(64)
-  searchWeight    Json     @default("{\"semantic\": 0.6, \"keyword\": 0.4}")
-  rerankerEnabled Boolean  @default(false)
-  createdAt       DateTime @default(now())
+  id                  String   @id @default(uuid())
+  embeddingProviderId String?
+  embeddingModel      String   @default("nomic-embed-text")
+  embeddingDims       Int      @default(768)
+  chunkSize           Int      @default(512)
+  chunkOverlap        Int      @default(64)
+  searchWeight        Json     @default("{\"semantic\": 0.6, \"keyword\": 0.4}")
+  rerankerEnabled     Boolean  @default(false)
+  createdAt           DateTime @default(now())
 }
 
 model AgentGraphConfig {
@@ -147,10 +148,45 @@ model AgentGeneralConfig {
   createdAt           DateTime @default(now())
 }
 
+// ─── Knowledge Base (catalogs + documents) ──────────────────────────────────
+
+model AgentKnowledgeCatalog {
+  id          String                    @id @default(uuid())
+  name        String                    @unique
+  description String?
+  slug        String                    @unique
+  icon        String                    @default("📁")
+  color       String                    @default("#0073E6")
+  isActive    Boolean                   @default(true)
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
+  documents   AgentKnowledgeDocument[]
+}
+
+model AgentKnowledgeDocument {
+  id            String                  @id @default(uuid())
+  catalogId     String
+  catalog       AgentKnowledgeCatalog   @relation(fields: [catalogId], references: [id], onDelete: Cascade)
+  title         String
+  fileName      String
+  mimeType      String
+  fileSizeBytes Int
+  rawText       String?
+  sourceUrl     String?
+  lastCrawledAt DateTime?
+  status        String                  @default("pending") // pending | processing | indexed | error
+  chunkCount    Int                     @default(0)
+  errorMessage  String?
+  metadata      Json?
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  chunks        AgentRagChunk[]
+}
+
 // ─── RAG Chunks (vector + full-text) ─────────────────────────────────────────
 
 model AgentRagChunk {
-  id           String                  @id @default(uuid())
+  id           String                    @id @default(uuid())
   title        String
   content      String
   source       String
@@ -159,8 +195,53 @@ model AgentRagChunk {
   date         DateTime?
   jurisdiction String?
   version      String?
+  documentId   String?
+  document     AgentKnowledgeDocument?   @relation(fields: [documentId], references: [id], onDelete: Cascade)
   embedding    Unsupported("vector(768)")?
-  createdAt    DateTime                @default(now())
+  createdAt    DateTime                  @default(now())
+}
+
+// ─── Admin Chat Playground ───────────────────────────────────────────────────
+
+model AdminChatFolder {
+  id        String      @id @default(uuid())
+  name      String
+  icon      String      @default("folder")
+  color     String      @default("#0073E6")
+  sortOrder Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  chats     AdminChat[]
+}
+
+model AdminChat {
+  id           String             @id @default(uuid())
+  folderId     String?
+  folder       AdminChatFolder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  title        String             @default("Nueva conversacion")
+  catalogIds   String[]           @default([])
+  providerId   String?
+  systemPrompt String?
+  isPinned     Boolean            @default(false)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  messages     AdminChatMessage[]
+}
+
+model AdminChatMessage {
+  id             String    @id @default(uuid())
+  chatId         String
+  chat           AdminChat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  role           String
+  content        String
+  ragChunksUsed  Json?
+  providerId     String?
+  model          String?
+  tokensIn       Int?
+  tokensOut      Int?
+  latencyMs      Int?
+  feedbackRating Int?
+  createdAt      DateTime  @default(now())
 }
 
 // ─── Sessions ────────────────────────────────────────────────────────────────

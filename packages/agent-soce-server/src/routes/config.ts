@@ -1,6 +1,9 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { requireAdmin } from './auth.js';
 import { prisma } from '../db/client.js';
+import { KNOWN_DIMS, getEmbeddingProvider, embedChunks } from '../rag/embed-service.js';
+import { LLMRouter } from '../llm/router.js';
+import type { AgentLLMProviderRecord } from '../types/index.js';
 
 const configRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.addHook('onRequest', requireAdmin);
@@ -49,22 +52,91 @@ const configRoutes: FastifyPluginAsync = async (fastify) => {
     return prisma.agentRAGConfig.findFirst() ?? {};
   });
 
-  fastify.put<{ Body: { embeddingModel?: string; embeddingDims?: number; chunkSize?: number; chunkOverlap?: number; searchWeight?: unknown; rerankerEnabled?: boolean } }>(
-    '/rag',
-    async (request) => {
-      const existing = await prisma.agentRAGConfig.findFirst();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const body = request.body as any;
-      if (existing) {
-        return prisma.agentRAGConfig.update({ where: { id: existing.id }, data: body });
+  fastify.put<{
+    Body: {
+      embeddingProviderId?: string | null;
+      embeddingModel?: string;
+      embeddingDims?: number;
+      chunkSize?: number;
+      chunkOverlap?: number;
+      searchWeight?: unknown;
+      rerankerEnabled?: boolean;
+    };
+  }>('/rag', async (request) => {
+    const existing = await prisma.agentRAGConfig.findFirst();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const body: Record<string, any> = { ...request.body };
+
+    // Detect if the embedding model or provider is changing
+    const modelChanged =
+      (body.embeddingModel !== undefined && body.embeddingModel !== existing?.embeddingModel) ||
+      (body.embeddingProviderId !== undefined && body.embeddingProviderId !== existing?.embeddingProviderId);
+
+    // Auto-resolve dimensions from KNOWN_DIMS if model changed and dims not explicitly provided
+    if (modelChanged && body.embeddingModel && body.embeddingDims === undefined) {
+      const knownDim = KNOWN_DIMS[body.embeddingModel];
+      if (knownDim) body.embeddingDims = knownDim;
+    }
+
+    let reindexRequired = false;
+
+    const saved = existing
+      ? await prisma.agentRAGConfig.update({ where: { id: existing.id }, data: body })
+      : await prisma.agentRAGConfig.create({ data: body });
+
+    if (modelChanged && saved.embeddingDims) {
+      const newDims = saved.embeddingDims;
+      try {
+        // Alter the vector column to match new dimensions
+        await prisma.$executeRawUnsafe(
+          `ALTER TABLE "AgentRagChunk" ALTER COLUMN embedding TYPE vector(${newDims}) USING NULL`,
+        );
+        // Nullify all existing embeddings (they're from the old model)
+        await prisma.$executeRawUnsafe(
+          `UPDATE "AgentRagChunk" SET embedding = NULL`,
+        );
+        // Rebuild the index for the new dimension
+        await prisma.$executeRawUnsafe(
+          `DROP INDEX IF EXISTS idx_agent_rag_chunk_embedding`,
+        );
+        await prisma.$executeRawUnsafe(
+          `CREATE INDEX IF NOT EXISTS idx_agent_rag_chunk_embedding ON "AgentRagChunk" USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)`,
+        );
+      } catch (err) {
+        fastify.log.error(err, 'Failed to migrate vector column dimensions');
       }
-      return prisma.agentRAGConfig.create({ data: body });
-    },
-  );
+      reindexRequired = true;
+    }
+
+    return { ...saved, reindexRequired };
+  });
 
   fastify.post('/rag/reindex', async () => {
-    // Placeholder for reindexing pipeline
-    return { status: 'reindex_queued', message: 'Reindexing will begin shortly' };
+    const ragConfig = await prisma.agentRAGConfig.findFirst();
+    const providers = await prisma.agentLLMProvider.findMany({ where: { isActive: true } });
+    const router = LLMRouter.fromConfig(providers as unknown as AgentLLMProviderRecord[]);
+    const provider = getEmbeddingProvider(router, ragConfig);
+
+    // Nullify all embeddings first so embedChunks picks them all up
+    await prisma.$executeRawUnsafe(`UPDATE "AgentRagChunk" SET embedding = NULL`);
+
+    // Run re-embedding in the background
+    embedChunks(
+      provider,
+      prisma as unknown as Parameters<typeof embedChunks>[1],
+    ).catch((err) => {
+      console.error('[reindex] Background embedding failed:', err);
+    });
+
+    const total = await prisma.agentRagChunk.count();
+    return {
+      status: 'reindex_started',
+      message: `Re-embedding ${total} chunks with ${provider.model} (${provider.dimensions}d)`,
+      provider: provider.id,
+      model: provider.model,
+      dimensions: provider.dimensions,
+      totalChunks: total,
+    };
   });
 
   // ─── Vector DB Config ────────────────────────────────────

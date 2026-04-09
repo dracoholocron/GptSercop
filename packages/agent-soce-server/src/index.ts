@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import rateLimit from '@fastify/rate-limit';
+import multipart from '@fastify/multipart';
 import agentSocePlugin from './plugin.js';
 import { disconnectPrisma } from './db/client.js';
 import { closeRedis, redis } from './session/redis.js';
@@ -13,6 +14,7 @@ const corsOpt = corsOrigins
   : { origin: true };
 
 await app.register(cors, corsOpt);
+await app.register(multipart, { limits: { fileSize: 20 * 1024 * 1024 } });
 await app.register(rateLimit, {
   max: Number(process.env.RATE_LIMIT_MAX ?? 120),
   timeWindow: '1 minute',

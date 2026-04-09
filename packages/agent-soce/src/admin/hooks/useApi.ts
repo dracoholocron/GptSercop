@@ -36,9 +36,19 @@ export function useApi() {
   }
 
   async function del(path: string): Promise<void> {
-    const r = await fetch(url(path), { method: 'DELETE', headers: headers() });
+    // No Content-Type on DELETE — sending it with an empty body causes Fastify's JSON
+    // body parser to reject the request with 400.
+    const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+    const r = await fetch(url(path), { method: 'DELETE', headers: authHeaders });
     if (!r.ok) throw new Error(`DELETE ${path} → ${r.status}`);
   }
 
-  return { get, post, put, patch, del };
+  async function upload<T>(path: string, formData: FormData): Promise<T> {
+    const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+    const r = await fetch(url(path), { method: 'POST', headers: authHeaders, body: formData });
+    if (!r.ok) throw new Error(`UPLOAD ${path} → ${r.status}`);
+    return r.json() as Promise<T>;
+  }
+
+  return { get, post, put, patch, del, upload };
 }

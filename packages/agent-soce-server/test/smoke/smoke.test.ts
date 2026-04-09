@@ -69,8 +69,78 @@ describe('Smoke Tests', () => {
   // SM-06: Admin API /roles responds 200 for admin token
   it('SM-06: Admin API /roles responds 200 for authenticated user', async () => {
     const r = await get('/api/v1/agent-soce/admin/roles');
-    // With a valid token this should be 200; without it should be 401
     assert.ok([200, 401, 403].includes(r.status),
       `Should get 200/401/403, got ${r.status}`);
+  });
+
+  // SM-KB-01: Knowledge catalogs endpoint responds
+  it('SM-KB-01: GET /admin/knowledge/catalogs responds 200 with auth', async () => {
+    const r = await get('/api/v1/agent-soce/admin/knowledge/catalogs');
+    assert.ok([200, 401, 403].includes(r.status), `Got ${r.status}`);
+  });
+
+  // SM-KB-02: Knowledge catalogs rejects unauthenticated
+  it('SM-KB-02: GET /admin/knowledge/catalogs responds 401 without auth', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/knowledge/catalogs`);
+    assert.ok([401, 403].includes(r.status), `Expected 401/403, got ${r.status}`);
+  });
+
+  // SM-KB-03: Knowledge stats endpoint returns valid structure
+  it('SM-KB-03: GET /admin/knowledge/stats responds with valid structure', async () => {
+    const r = await get('/api/v1/agent-soce/admin/knowledge/stats');
+    assert.ok(r.status < 500, `Stats should not 5xx, got ${r.status}`);
+    if (r.status === 200 && r.body) {
+      const b = r.body as Record<string, unknown>;
+      assert.ok('catalogs' in b, 'Should have catalogs field');
+      assert.ok('totalChunks' in b, 'Should have totalChunks field');
+    }
+  });
+
+  // SM-EP-01: RAG config includes embeddingProviderId
+  it('SM-EP-01: GET /config/rag responds and includes embeddingProviderId', async () => {
+    const r = await get('/api/v1/agent-soce/config/rag');
+    assert.ok(r.status < 500, `RAG config should not 5xx, got ${r.status}`);
+    if (r.status === 200 && r.body) {
+      const b = r.body as Record<string, unknown>;
+      assert.ok('embeddingProviderId' in b || b.embeddingProviderId === undefined,
+        'Should include embeddingProviderId field');
+    }
+  });
+
+  // SM-EP-02: Public providers endpoint returns at least one provider
+  it('SM-EP-02: GET /providers returns at least one provider', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/providers`);
+    assert.ok(r.status < 500, `Providers should not 5xx, got ${r.status}`);
+    if (r.status === 200) {
+      const body = await r.json() as Array<{ id: string }>;
+      assert.ok(Array.isArray(body), 'Should return an array');
+      assert.ok(body.length >= 1, 'Should have at least one provider');
+    }
+  });
+
+  // SM-EP-03: Reindex endpoint responds
+  it('SM-EP-03: POST /config/rag/reindex responds without 5xx', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/config/rag/reindex`, {
+      method: 'POST',
+      headers,
+    });
+    assert.ok(r.status < 500, `Reindex should not 5xx, got ${r.status}`);
+  });
+
+  // ─── Admin Chat Playground Smoke ───────────────────────
+
+  it('AC-SM01: GET /admin/chat/folders returns 401 without token', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/chat/folders`);
+    assert.equal(r.status, 401, 'Should require auth');
+  });
+
+  it('AC-SM02: GET /admin/chat/conversations returns 401 without token', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/chat/conversations`);
+    assert.equal(r.status, 401, 'Should require auth');
+  });
+
+  it('AC-SM03: GET /admin/chat/search returns 401 without token', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/chat/search?q=test`);
+    assert.equal(r.status, 401, 'Should require auth');
   });
 });

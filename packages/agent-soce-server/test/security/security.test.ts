@@ -84,7 +84,6 @@ describe('Security Tests', () => {
 
   // SEC-07: Non-admin user gets 403 on admin routes
   it('SEC-07: Admin routes return 403 or 401 for non-admin tokens', async () => {
-    // A crafted non-admin token (just an invalid structure to test the guard)
     const nonAdminToken = 'non-admin-token';
     const adminPaths = [
       '/api/v1/agent-soce/admin/roles',
@@ -98,5 +97,65 @@ describe('Security Tests', () => {
       assert.ok([401, 403].includes(status),
         `Admin path ${path} should return 401/403, got ${status}`);
     }
+  });
+
+  // SEC-KB-01: Unauthenticated request to knowledge catalogs returns 401
+  it('SEC-KB-01: Unauthenticated knowledge catalogs request returns 401', async () => {
+    const { status } = await get('/api/v1/agent-soce/admin/knowledge/catalogs');
+    assert.ok([401, 403].includes(status), `Expected 401/403, got ${status}`);
+  });
+
+  // SEC-KB-02: Unauthenticated document upload returns 401
+  it('SEC-KB-02: Unauthenticated document upload returns 401', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/knowledge/catalogs/fake-id/documents`, {
+      method: 'POST',
+      body: new FormData(),
+    });
+    assert.ok([401, 403].includes(r.status), `Expected 401/403, got ${r.status}`);
+  });
+
+  // SEC-KB-03: Invalid token on knowledge routes returns 401
+  it('SEC-KB-03: Invalid token on knowledge routes returns 401', async () => {
+    const { status } = await get('/api/v1/agent-soce/admin/knowledge/stats', 'bad-token');
+    assert.ok([401, 403].includes(status), `Expected 401/403, got ${status}`);
+  });
+
+  // SEC-EP-01: Unauthenticated RAG config change blocked
+  it('SEC-EP-01: Unauthenticated PUT /config/rag returns 401', async () => {
+    const { status } = await post('/api/v1/agent-soce/config/rag', {
+      embeddingProviderId: 'some-id',
+      embeddingModel: 'text-embedding-3-small',
+    });
+    assert.ok([401, 403].includes(status), `Expected 401/403, got ${status}`);
+  });
+
+  // SEC-EP-02: Non-admin token on RAG config change returns 401/403
+  it('SEC-EP-02: Non-admin token on PUT /config/rag returns 401/403', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/config/rag`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer bad-non-admin-token' },
+      body: JSON.stringify({ embeddingProviderId: 'some-id' }),
+    });
+    assert.ok([401, 403].includes(r.status), `Expected 401/403, got ${r.status}`);
+  });
+
+  // ─── Admin Chat Playground Security ────────────────────
+
+  it('AC-SEC01: All admin/chat routes return 401 without JWT', async () => {
+    const routes = [
+      '/api/v1/agent-soce/admin/chat/folders',
+      '/api/v1/agent-soce/admin/chat/conversations',
+      '/api/v1/agent-soce/admin/chat/search?q=test',
+    ];
+    for (const path of routes) {
+      const r = await get(path);
+      assert.equal(r.status, 401, `${path} should return 401 without token`);
+    }
+  });
+
+  it('AC-SEC02: SQL injection in search q parameter is safely handled', async () => {
+    const malicious = "'; DROP TABLE \"AdminChat\"; --";
+    const r = await get(`/api/v1/agent-soce/admin/chat/search?q=${encodeURIComponent(malicious)}`);
+    assert.ok([401, 200].includes(r.status), `Should not cause 500, got ${r.status}`);
   });
 });

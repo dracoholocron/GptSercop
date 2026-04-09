@@ -6,6 +6,8 @@ import { PermissionsPage } from '../pages/PermissionsPage.js';
 import { DataSourcesPage } from '../pages/DataSourcesPage.js';
 import { AuditLogPage } from '../pages/AuditLogPage.js';
 import { TrainingPage } from '../pages/TrainingPage.js';
+import { KnowledgeBasePage } from '../pages/KnowledgeBasePage.js';
+import { AdminChatPage } from '../pages/AdminChatPage.js';
 import { LLMConfigPage } from '../../config/pages/LLMConfigPage.js';
 import { RAGConfigPage } from '../../config/pages/RAGConfigPage.js';
 import { GraphDBConfigPage } from '../../config/pages/GraphDBConfigPage.js';
@@ -13,25 +15,32 @@ import { ThemingConfigPage } from '../../config/pages/ThemingConfigPage.js';
 import { GeneralConfigPage } from '../../config/pages/GeneralConfigPage.js';
 import { AgentSOCEAdminLoginPage } from './AgentSOCEAdminLoginPage.js';
 
+// Resolve the full Agent SOCE API base (handles both empty/relative and absolute URLs)
+function agentApiBase(apiBaseUrl: string): string {
+  return `${apiBaseUrl}/api/v1/agent-soce`;
+}
+
 // Wrapper components that pull apiBaseUrl/token from context and pass as props
-const LLMConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <LLMConfigPage baseUrl={apiBaseUrl} token={token ?? ''} />; };
-const RAGConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <RAGConfigPage baseUrl={apiBaseUrl} token={token ?? ''} />; };
-const GraphDBConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <GraphDBConfigPage baseUrl={apiBaseUrl} token={token ?? ''} />; };
-const ThemingConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <ThemingConfigPage baseUrl={apiBaseUrl} token={token ?? ''} />; };
+const LLMConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <LLMConfigPage baseUrl={agentApiBase(apiBaseUrl)} token={token ?? ''} />; };
+const RAGConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <RAGConfigPage baseUrl={agentApiBase(apiBaseUrl)} token={token ?? ''} />; };
+const GraphDBConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <GraphDBConfigPage baseUrl={agentApiBase(apiBaseUrl)} token={token ?? ''} />; };
+const ThemingConfigWrapper: React.FC = () => { const { apiBaseUrl, token } = useContext(AgentAdminContext); return <ThemingConfigPage baseUrl={agentApiBase(apiBaseUrl)} token={token ?? ''} />; };
 
 type View =
-  | 'roles' | 'users' | 'permissions' | 'data-sources' | 'audit' | 'training'
+  | 'chat-playground' | 'roles' | 'users' | 'permissions' | 'data-sources' | 'audit' | 'training' | 'knowledge'
   | 'llm' | 'rag' | 'graph' | 'theming' | 'general';
 
 interface NavItem { key: View; label: string; icon: string; section: 'admin' | 'config' }
 
 const NAV_ITEMS: NavItem[] = [
+  { key: 'chat-playground', label: 'Chat Playground', icon: '💬', section: 'admin' },
   { key: 'roles', label: 'Roles', icon: '🛡️', section: 'admin' },
   { key: 'users', label: 'Usuarios', icon: '👥', section: 'admin' },
   { key: 'permissions', label: 'Permisos', icon: '🔐', section: 'admin' },
   { key: 'data-sources', label: 'Data Sources', icon: '🗄️', section: 'admin' },
   { key: 'audit', label: 'Auditoría', icon: '📋', section: 'admin' },
   { key: 'training', label: 'Entrenamiento', icon: '🎓', section: 'admin' },
+  { key: 'knowledge', label: 'Base de Conocimiento', icon: '📚', section: 'admin' },
   { key: 'llm', label: 'Modelos LLM', icon: '🤖', section: 'config' },
   { key: 'rag', label: 'RAG Config', icon: '🔍', section: 'config' },
   { key: 'graph', label: 'Graph DB', icon: '🕸️', section: 'config' },
@@ -40,8 +49,10 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 const PAGE_COMPONENTS: Record<View, React.ComponentType> = {
+  'chat-playground': AdminChatPage,
   roles: RolesPage, users: UsersPage, permissions: PermissionsPage,
   'data-sources': DataSourcesPage, audit: AuditLogPage, training: TrainingPage,
+  knowledge: KnowledgeBasePage,
   llm: LLMConfigWrapper, rag: RAGConfigWrapper, graph: GraphDBConfigWrapper,
   theming: ThemingConfigWrapper, general: GeneralConfigPage,
 };
@@ -70,6 +81,8 @@ export const AgentSOCEAdminApp: React.FC<AgentSOCEAdminAppProps> = ({
     externalToken ?? getStoredToken(),
   );
   const [adminUser, setAdminUser] = useState<{ email: string; displayName: string } | null>(null);
+  // Must be declared before any early return to respect Rules of Hooks
+  const [active, setActive] = useState<View>(initialView);
 
   // Keep token in sessionStorage (survives page refresh, cleared on tab close)
   useEffect(() => {
@@ -98,15 +111,13 @@ export const AgentSOCEAdminApp: React.FC<AgentSOCEAdminAppProps> = ({
   }
 
   const token = adminToken;
-
-  const [active, setActive] = useState<View>(initialView);
   const ActivePage = PAGE_COMPONENTS[active];
 
   const adminItems = NAV_ITEMS.filter(i => i.section === 'admin');
   const configItems = NAV_ITEMS.filter(i => i.section === 'config');
 
   const S = {
-    shell: { display: 'flex', height: '100vh', fontFamily: 'var(--agent-soce-font, Inter, system-ui, sans-serif)', background: '#F7FAFC' } as React.CSSProperties,
+    shell: { display: 'flex', height: '100vh', fontFamily: 'var(--agent-soce-font, Inter, system-ui, sans-serif)', background: '#F7FAFC', color: '#1a202c', colorScheme: 'light' } as React.CSSProperties,
     sidebar: { width: 220, background: '#1A202C', color: '#E2E8F0', display: 'flex', flexDirection: 'column' as const, flexShrink: 0 },
     logo: { padding: '20px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)', fontSize: 16, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 } as React.CSSProperties,
     sectionLabel: { fontSize: 10, fontWeight: 700, color: '#718096', textTransform: 'uppercase' as const, letterSpacing: '1px', padding: '16px 16px 6px' },
@@ -128,7 +139,28 @@ export const AgentSOCEAdminApp: React.FC<AgentSOCEAdminAppProps> = ({
 
   return (
     <AgentAdminContext.Provider value={{ apiBaseUrl, token }}>
-      <div style={S.shell}>
+      <style>{`
+        .agentsoce-admin-shell { color-scheme: light; }
+        .agentsoce-admin-shell td,
+        .agentsoce-admin-shell th,
+        .agentsoce-admin-shell p,
+        .agentsoce-admin-shell span:not([style*="color"]),
+        .agentsoce-admin-shell strong,
+        .agentsoce-admin-shell label,
+        .agentsoce-admin-shell h1,
+        .agentsoce-admin-shell h2,
+        .agentsoce-admin-shell h3,
+        .agentsoce-admin-shell div:not([style*="color"]) { color: inherit; }
+        .agentsoce-admin-shell input,
+        .agentsoce-admin-shell select,
+        .agentsoce-admin-shell textarea {
+          color: #1a202c !important;
+          background-color: #fff !important;
+        }
+        .agentsoce-admin-shell code { color: #2d3748 !important; }
+        .agentsoce-admin-shell pre { color: #1a202c !important; }
+      `}</style>
+      <div style={S.shell} className="agentsoce-admin-shell">
         <div style={S.sidebar}>
           <div style={S.logo}>
             <span>⚙️</span>

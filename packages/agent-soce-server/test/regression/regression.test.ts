@@ -41,4 +41,86 @@ describe('Regression Tests', () => {
     assert.notEqual(hostPort, agentPort,
       `Host API (${hostPort}) and Agent SOCE API (${agentPort}) should be on different ports`);
   });
+
+  // REG-04: Chat with non-default LLM still returns valid response (RAG uses config, not chat provider)
+  it('REG-04: Chat with non-default LLM provider still processes without 5xx', async () => {
+    const TOKEN = process.env.AGENT_SOCE_TOKEN ?? 'test-token';
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 8000);
+
+    try {
+      const r = await fetch(`${AGENT_API}/api/v1/agent-soce/chat`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: 'qué es contratación directa?' }],
+          context: { route: '/cp/processes' },
+          providerId: 'some-other-provider',
+        }),
+        signal: controller.signal,
+      });
+      // Should respond (200 with SSE, or 401 for auth) — never 500
+      assert.ok(r.status < 500, `Chat should not 5xx even with different providerId, got ${r.status}`);
+    } catch (e: unknown) {
+      if (e instanceof Error && e.name !== 'AbortError') throw e;
+    }
+  });
+
+  // REG-05: Switching chat provider does not alter AgentRAGConfig
+  it('REG-05: AgentRAGConfig.embeddingProviderId is unchanged after chat with different provider', async () => {
+    const TOKEN = process.env.AGENT_SOCE_TOKEN ?? 'test-token';
+    const headers = { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' };
+
+    // Read current RAG config
+    const before = await fetch(`${AGENT_API}/api/v1/agent-soce/config/rag`, { headers });
+    if (before.status === 401 || before.status === 403) return;
+    const configBefore = (await before.json()) as { embeddingProviderId?: string | null };
+
+    // Make a chat request with a specific providerId
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 5000);
+    try {
+      await fetch(`${AGENT_API}/api/v1/agent-soce/chat`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: 'hola' }],
+          providerId: 'openai-test',
+        }),
+        signal: controller.signal,
+      });
+    } catch { /* abort is expected */ }
+
+    // Read RAG config again — should be unchanged
+    const after = await fetch(`${AGENT_API}/api/v1/agent-soce/config/rag`, { headers });
+    if (after.status !== 200) return;
+    const configAfter = (await after.json()) as { embeddingProviderId?: string | null };
+
+    assert.equal(
+      configAfter.embeddingProviderId,
+      configBefore.embeddingProviderId,
+      'Chat request should not change the RAG embedding provider config',
+    );
+  });
+
+  // ─── Admin Chat Playground Regression ──────────────────
+
+  it('AC-REG01: Existing /chat widget endpoint still works after admin-chat routes added', async () => {
+    const r = await fetch(`${AGENT_API}/api/v1/agent-soce/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: 'hello' }] }),
+    });
+    assert.ok([200, 401].includes(r.status), `Widget chat should respond, got ${r.status}`);
+  });
+
+  it('AC-REG02: Knowledge base page catalogs endpoint still works', async () => {
+    const r = await fetch(`${AGENT_API}/api/v1/agent-soce/admin/knowledge/catalogs`);
+    assert.ok([200, 401, 403].includes(r.status), `Knowledge catalogs should respond, got ${r.status}`);
+  });
+
+  it('AC-REG03: Deleting an LLM provider does not break admin chat list', async () => {
+    const r = await fetch(`${AGENT_API}/api/v1/agent-soce/admin/chat/conversations`);
+    assert.ok([200, 401, 403].includes(r.status), `Admin chat list should not 500, got ${r.status}`);
+  });
 });

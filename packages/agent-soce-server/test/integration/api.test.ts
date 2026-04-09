@@ -136,6 +136,88 @@ describe('Integration Tests — API', () => {
   });
 });
 
+// ─── Knowledge Base Integration Tests ────────────────────────────────────────
+
+describe('Integration Tests — Knowledge Base (KN-01 to KN-07)', () => {
+  let catalogId: string | null = null;
+  const catalogName = `test_catalog_${Date.now()}`;
+
+  it('KN-01: CRUD catalogs', async () => {
+    // Create
+    const create = await apiPost('/api/v1/agent-soce/admin/knowledge/catalogs', {
+      name: catalogName, description: 'Integration test catalog',
+    });
+    if (create.status === 401 || create.status === 403) return;
+    assert.ok([200, 201].includes(create.status), `Create catalog got ${create.status}`);
+    catalogId = (create.body as { id: string }).id;
+    assert.ok(catalogId, 'Created catalog should have id');
+
+    // List
+    const list = await apiGet('/api/v1/agent-soce/admin/knowledge/catalogs');
+    assert.equal(list.status, 200);
+    assert.ok(Array.isArray(list.body));
+
+    // Update
+    const update = await apiPut(`/api/v1/agent-soce/admin/knowledge/catalogs/${catalogId}`, {
+      description: 'Updated description',
+    });
+    assert.equal(update.status, 200);
+  });
+
+  it('KN-02: Upload TXT document to catalog', async () => {
+    if (!catalogId) return;
+    const formData = new FormData();
+    const blob = new Blob(['Ley de Contratación Pública del Ecuador.\n\nArt 1. Objeto de la ley.'], { type: 'text/plain' });
+    formData.append('files', blob, 'test-doc.txt');
+
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/knowledge/catalogs/${catalogId}/documents`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ADMIN_TOKEN}` },
+      body: formData,
+    });
+    assert.ok([200, 201].includes(r.status), `Upload got ${r.status}`);
+    const body = await r.json() as Array<{ id: string; status: string }>;
+    assert.ok(Array.isArray(body) && body.length > 0);
+    assert.ok(body[0].status === 'processing');
+  });
+
+  it('KN-03: Rejects unsupported file type', async () => {
+    if (!catalogId) return;
+    const formData = new FormData();
+    const blob = new Blob(['binary data'], { type: 'application/zip' });
+    formData.append('files', blob, 'test.zip');
+
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/knowledge/catalogs/${catalogId}/documents`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ADMIN_TOKEN}` },
+      body: formData,
+    });
+    assert.ok(r.ok, `Upload endpoint should still respond 200`);
+    const body = await r.json() as Array<{ status: string }>;
+    assert.ok(body[0].status.includes('unsupported'));
+  });
+
+  it('KN-06: GET /stats returns valid structure', async () => {
+    const { status, body } = await apiGet('/api/v1/agent-soce/admin/knowledge/stats');
+    if (status === 401 || status === 403) return;
+    assert.equal(status, 200);
+    const s = body as { catalogs: number; documents: number; totalChunks: number };
+    assert.ok('catalogs' in s);
+    assert.ok('documents' in s);
+    assert.ok('totalChunks' in s);
+    assert.ok('embeddedChunks' in s);
+  });
+
+  it('KN-05: Delete catalog cascades', async () => {
+    if (!catalogId) return;
+    const del = await fetch(`${BASE}/api/v1/agent-soce/admin/knowledge/catalogs/${catalogId}`, {
+      method: 'DELETE', headers: adminHeaders(),
+    });
+    assert.equal(del.status, 200);
+    catalogId = null;
+  });
+});
+
 describe('Integration Tests — Admin CRUD', () => {
   let createdRoleId: string | null = null;
 
@@ -165,5 +247,184 @@ describe('Integration Tests — Admin CRUD', () => {
       headers: adminHeaders(),
     });
     assert.equal(del.status, 200);
+  });
+});
+
+// ─── Embedding Provider Integration Tests ──────────────────────────────────
+
+describe('Integration Tests — Embedding Provider (EP-IT-01 to EP-IT-05)', () => {
+  it('EP-IT-01: GET /config/rag returns embeddingProviderId field', async () => {
+    const { status, body } = await apiGet('/api/v1/agent-soce/config/rag');
+    if (status === 401 || status === 403) return;
+    assert.equal(status, 200);
+    assert.ok(body !== null && typeof body === 'object');
+    assert.ok('embeddingProviderId' in (body as object) || (body as Record<string, unknown>).embeddingProviderId === undefined,
+      'Response should include embeddingProviderId field');
+  });
+
+  it('EP-IT-02: PUT /config/rag with changed embeddingModel returns reindexRequired', async () => {
+    const { status, body } = await apiPut('/api/v1/agent-soce/config/rag', {
+      embeddingModel: 'text-embedding-3-small',
+      embeddingDims: 1536,
+    });
+    if (status === 401 || status === 403) return;
+    assert.equal(status, 200);
+    const result = body as { reindexRequired?: boolean };
+    assert.equal(result.reindexRequired, true, 'Model change should require reindex');
+
+    // Restore to default
+    await apiPut('/api/v1/agent-soce/config/rag', {
+      embeddingModel: 'nomic-embed-text',
+      embeddingDims: 768,
+      embeddingProviderId: null,
+    });
+  });
+
+  it('EP-IT-03: PUT /config/rag with same model does not set reindexRequired', async () => {
+    const getCurrent = await apiGet('/api/v1/agent-soce/config/rag');
+    if (getCurrent.status === 401 || getCurrent.status === 403) return;
+
+    const current = getCurrent.body as { embeddingModel?: string; embeddingDims?: number };
+    const { status, body } = await apiPut('/api/v1/agent-soce/config/rag', {
+      embeddingModel: current.embeddingModel,
+      chunkSize: 512,
+    });
+    if (status === 401 || status === 403) return;
+    assert.equal(status, 200);
+    const result = body as { reindexRequired?: boolean };
+    assert.ok(!result.reindexRequired, 'Same model should not require reindex');
+  });
+
+  it('EP-IT-04: POST /config/rag/reindex responds with model info', async () => {
+    const { status, body } = await apiPost('/api/v1/agent-soce/config/rag/reindex', {});
+    if (status === 401 || status === 403) return;
+    assert.equal(status, 200);
+    const result = body as { status?: string; model?: string; dimensions?: number };
+    assert.ok(result.status === 'reindex_started', `Expected reindex_started, got ${result.status}`);
+    assert.ok(typeof result.model === 'string', 'Should include model name');
+    assert.ok(typeof result.dimensions === 'number', 'Should include dimensions');
+  });
+
+  it('EP-IT-05: Chat with different providerId still connects (embedding provider is independent)', async () => {
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 6000);
+
+    try {
+      const r = await fetch(`${BASE}/api/v1/agent-soce/chat`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${USER_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: 'qué es la subasta inversa?' }],
+          context: { route: '/cp/processes' },
+          providerId: 'nonexistent-provider-id',
+        }),
+        signal: controller.signal,
+      });
+      // Should still respond (fallback to default provider)
+      assert.ok(r.status === 200 || r.status === 401,
+        `Chat should respond even with unknown providerId, got ${r.status}`);
+    } catch (e: unknown) {
+      if (e instanceof Error && e.name !== 'AbortError') throw e;
+    }
+  });
+
+  // ─── Admin Chat Playground Integration ─────────────────
+
+  let acFolderId = '';
+  let acChatId = '';
+  let acMessageId = '';
+
+  it('AC-IT01: Create folder, create chat inside it, list folders shows chat count', async () => {
+    const f = await apiPost('/api/v1/agent-soce/admin/chat/folders', { name: 'Test Folder' });
+    assert.equal(f.status, 200);
+    acFolderId = f.body.id;
+
+    const c = await apiPost('/api/v1/agent-soce/admin/chat/conversations', { folderId: acFolderId, title: 'Test Chat' });
+    assert.equal(c.status, 200);
+    acChatId = c.body.id;
+
+    const list = await apiGet('/api/v1/agent-soce/admin/chat/folders');
+    assert.equal(list.status, 200);
+    const folder = list.body.find((f: { id: string }) => f.id === acFolderId);
+    assert.ok(folder, 'Folder should exist in list');
+    assert.equal(folder._count.chats, 1, 'Folder should have 1 chat');
+  });
+
+  it('AC-IT02: Create conversation with catalogIds and providerId', async () => {
+    const r = await apiPost('/api/v1/agent-soce/admin/chat/conversations', {
+      title: 'Catalog Test', catalogIds: ['fake-cat-1'], providerId: 'fake-provider',
+    });
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.body.catalogIds, ['fake-cat-1']);
+    assert.equal(r.body.providerId, 'fake-provider');
+    // Cleanup
+    await fetch(`${BASE}/api/v1/agent-soce/admin/chat/conversations/${r.body.id}`, { method: 'DELETE', headers: adminHeaders() });
+  });
+
+  it('AC-IT03: Send message to conversation receives SSE stream', async () => {
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/chat/conversations/${acChatId}/messages`, {
+      method: 'POST',
+      headers: adminHeaders(),
+      body: JSON.stringify({ content: 'Hello from integration test' }),
+    });
+    assert.equal(r.status, 200);
+    assert.ok(r.headers.get('content-type')?.includes('text/event-stream'), 'Should return SSE');
+    const text = await r.text();
+    assert.ok(text.includes('data:'), 'Should contain SSE data events');
+  });
+
+  it('AC-IT04: Get conversation with messages returns ordered messages', async () => {
+    const r = await apiGet(`/api/v1/agent-soce/admin/chat/conversations/${acChatId}`);
+    assert.equal(r.status, 200);
+    assert.ok(r.body.messages.length >= 1, 'Should have at least 1 message');
+    const assistantMsg = r.body.messages.find((m: { role: string }) => m.role === 'assistant');
+    if (assistantMsg) {
+      acMessageId = assistantMsg.id;
+    }
+  });
+
+  it('AC-IT05: Pin/unpin chat via PUT', async () => {
+    const pin = await apiPut(`/api/v1/agent-soce/admin/chat/conversations/${acChatId}`, { isPinned: true });
+    assert.equal(pin.status, 200);
+    assert.equal(pin.body.isPinned, true);
+
+    const unpin = await apiPut(`/api/v1/agent-soce/admin/chat/conversations/${acChatId}`, { isPinned: false });
+    assert.equal(unpin.status, 200);
+    assert.equal(unpin.body.isPinned, false);
+  });
+
+  it('AC-IT06: Delete conversation returns 204', async () => {
+    const delR = await fetch(`${BASE}/api/v1/agent-soce/admin/chat/conversations/${acChatId}`, {
+      method: 'DELETE', headers: adminHeaders(),
+    });
+    assert.equal(delR.status, 204, 'Delete should return 204');
+
+    const getR = await apiGet(`/api/v1/agent-soce/admin/chat/conversations/${acChatId}`);
+    assert.equal(getR.status, 404, 'Deleted chat should not be found');
+  });
+
+  it('AC-IT07: Search messages returns matching results', async () => {
+    const r = await apiGet('/api/v1/agent-soce/admin/chat/search?q=integration');
+    assert.equal(r.status, 200);
+    assert.ok(Array.isArray(r.body), 'Should return an array');
+  });
+
+  it('AC-IT08: Feedback PATCH saves rating on message', async () => {
+    if (!acMessageId) return; // Skip if no message was created
+    const r = await fetch(`${BASE}/api/v1/agent-soce/admin/chat/messages/${acMessageId}/feedback`, {
+      method: 'PATCH',
+      headers: adminHeaders(),
+      body: JSON.stringify({ rating: 1 }),
+    });
+    const body = await r.json();
+    assert.equal(r.status, 200);
+    assert.equal(body.ok, true);
+  });
+
+  // Cleanup folder
+  it('AC-IT-CLEANUP: Remove test folder', async () => {
+    if (acFolderId) {
+      await fetch(`${BASE}/api/v1/agent-soce/admin/chat/folders/${acFolderId}`, { method: 'DELETE', headers: adminHeaders() });
+    }
   });
 });

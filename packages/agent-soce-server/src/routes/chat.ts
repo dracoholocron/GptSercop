@@ -5,6 +5,7 @@ import { logInteraction, updateFeedback } from '../telemetry/audit.js';
 import type { ChatMessage, UIContext } from '../types/index.js';
 import { LLMRouter } from '../llm/router.js';
 import { orchestrate } from '../orchestrator/index.js';
+import { getEmbeddingProvider } from '../rag/embed-service.js';
 import { AGENT_TOOLS } from '../tools/definitions.js';
 import { SERCOP_FLOWS } from '../manifest/sercop-manifest.js';
 
@@ -64,14 +65,18 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
 
     try {
       const router = await getLLMRouter();
-      // Resolve the actual provider: use requested one or fallback to default
+      // Resolve the chat provider: use requested one or fallback to default
       const provider = providerId ? (() => {
         try { return router.getProvider(providerId); } catch { return router.getProvider(); }
       })() : router.getProvider();
-      // Thin adapter so orchestrate receives an llm-like object
+
+      // Resolve the embedding provider from RAG config (independent of chat provider)
+      const ragConfig = await prisma.agentRAGConfig.findFirst();
+      const embProvider = getEmbeddingProvider(router, ragConfig);
+
       const llm = {
         chat: provider.chat.bind(provider),
-        embed: provider.embed.bind(provider),
+        embed: (text: string) => embProvider.embedText(text),
         getProvider: () => provider,
       } as unknown as Parameters<typeof orchestrate>[0]['llm'];
 
@@ -79,7 +84,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
         {
           llm,
           prisma: prisma as unknown as Parameters<typeof orchestrate>[0]['prisma'],
-          embed: (text: string) => provider.embed(text),
+          embed: (text: string) => embProvider.embedText(text),
           tools: AGENT_TOOLS,
           flows: FLOW_MAP,
         },

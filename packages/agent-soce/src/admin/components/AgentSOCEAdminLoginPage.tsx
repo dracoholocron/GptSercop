@@ -53,6 +53,8 @@ export const AgentSOCEAdminLoginPage: React.FC<AgentSOCEAdminLoginPageProps> = (
       width: '100%',
       maxWidth: 420,
       boxShadow: '0 24px 64px rgba(0,0,0,0.4)',
+      colorScheme: 'light' as React.CSSProperties['colorScheme'],
+      color: '#1a202c',
     },
     logo: {
       textAlign: 'center',
@@ -90,6 +92,8 @@ export const AgentSOCEAdminLoginPage: React.FC<AgentSOCEAdminLoginPageProps> = (
       outline: 'none',
       boxSizing: 'border-box' as const,
       transition: 'border-color 0.15s',
+      color: '#1a202c',
+      background: '#fff',
     },
     fieldWrap: {
       marginBottom: 18,
