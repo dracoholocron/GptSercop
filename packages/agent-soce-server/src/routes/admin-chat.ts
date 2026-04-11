@@ -209,8 +209,9 @@ const adminChatRoutes: FastifyPluginAsync = async (fastify) => {
             ragContext = '\n\nContexto relevante (documentos):\n' +
               chunks.map((c) => `[${c.source}] ${c.title}: ${c.snippet}`).join('\n');
           }
-        } catch {
-          // RAG failure is non-fatal
+        } catch (ragErr) {
+          console.error('[admin-chat] RAG search failed:', ragErr instanceof Error ? ragErr.message : ragErr);
+          if (ragErr instanceof Error) console.error('[admin-chat] RAG stack:', ragErr.stack);
         }
 
         // Emit RAG sources before streaming text

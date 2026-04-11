@@ -3,22 +3,25 @@
  * Implementa los 20 patrones de riesgo definidos en el blueprint con fórmula ponderada.
  *
  * Dimensiones y pesos:
- *   competition  25% – concentración de mercado, mono-proveedor
- *   price        20% – sobreprecio, ofertas anómalas
- *   supplier     20% – empresa nueva, mono-cliente, dominancia
- *   process      15% – velocidad, modificaciones de pliego
- *   execution    20% – modificaciones contractuales, frecuencia emergencias
+ *   competition  20% – concentración de mercado, mono-proveedor
+ *   price        18% – sobreprecio, ofertas anómalas
+ *   supplier     18% – empresa nueva, mono-cliente, dominancia
+ *   process      12% – velocidad, modificaciones de pliego
+ *   execution    17% – modificaciones contractuales, frecuencia emergencias
+ *   network      15% – co-licitación, vecinos de alto riesgo, aislamiento
  *
  * Niveles: score ≤ 30 → low | score ≤ 60 → medium | score > 60 → high
  */
 import { prisma } from '../../db.js';
+import { computeNetworkRisk } from './network-risk.js';
 
 const WEIGHTS = {
-  competition: 0.25,
-  price: 0.20,
-  supplier: 0.20,
-  process: 0.15,
-  execution: 0.20,
+  competition: 0.20,
+  price: 0.18,
+  supplier: 0.18,
+  process: 0.12,
+  execution: 0.17,
+  network: 0.15,
 } as const;
 
 type RiskDimensions = {
@@ -27,6 +30,7 @@ type RiskDimensions = {
   supplierRisk: number;
   processRisk: number;
   executionRisk: number;
+  networkRisk: number;
 };
 
 function calcTotal(d: RiskDimensions): number {
@@ -35,7 +39,8 @@ function calcTotal(d: RiskDimensions): number {
     d.priceRisk * WEIGHTS.price +
     d.supplierRisk * WEIGHTS.supplier +
     d.processRisk * WEIGHTS.process +
-    d.executionRisk * WEIGHTS.execution
+    d.executionRisk * WEIGHTS.execution +
+    d.networkRisk * WEIGHTS.network
   );
 }
 
@@ -63,7 +68,14 @@ export async function computeRiskScore(tenderId: string) {
   if (!tender) throw Object.assign(new Error('Tender not found'), { statusCode: 404 });
 
   const flags: string[] = [];
-  const dims: RiskDimensions = { competitionRisk: 0, priceRisk: 0, supplierRisk: 0, processRisk: 0, executionRisk: 0 };
+  const dims: RiskDimensions = {
+    competitionRisk: 0,
+    priceRisk: 0,
+    supplierRisk: 0,
+    processRisk: 0,
+    executionRisk: 0,
+    networkRisk: 0,
+  };
 
   const bids = tender.bids;
   const contract = tender.contract;
@@ -73,7 +85,7 @@ export async function computeRiskScore(tenderId: string) {
   const refBudget = parseFloat(String(tender.referenceBudgetAmount ?? tender.estimatedAmount ?? 0));
   const contractAmount = contract ? parseFloat(String(contract.amount)) : 0;
 
-  // --- COMPETITION DIMENSION (25%) ---
+  // --- COMPETITION DIMENSION (20%) ---
 
   // Patrón 1: Pocas ofertas ≤ 2
   if (bids.length <= 2 && bids.length > 0) {
@@ -128,7 +140,7 @@ export async function computeRiskScore(tenderId: string) {
     }
   }
 
-  // --- PRICE DIMENSION (20%) ---
+  // --- PRICE DIMENSION (18%) ---
 
   // Patrón 9: Oferta anormalmente baja (< 50% promedio)
   const lowestBid = bidAmounts.length ? Math.min(...bidAmounts) : 0;
@@ -170,7 +182,7 @@ export async function computeRiskScore(tenderId: string) {
     }
   }
 
-  // --- SUPPLIER DIMENSION (20%) ---
+  // --- SUPPLIER DIMENSION (18%) ---
 
   // Patrón 2: Proveedor dominante (>40% contratos en una entidad)
   if (entity && contract) {
@@ -241,7 +253,7 @@ export async function computeRiskScore(tenderId: string) {
     }
   }
 
-  // --- PROCESS DIMENSION (15%) ---
+  // --- PROCESS DIMENSION (12%) ---
 
   // Patrón 11: Proceso muy rápido (adjudicado en < 15 días)
   if (tender.publishedAt && contract?.signedAt) {
@@ -321,7 +333,7 @@ export async function computeRiskScore(tenderId: string) {
     }
   }
 
-  // --- EXECUTION DIMENSION (20%) ---
+  // --- EXECUTION DIMENSION (17%) ---
 
   // Patrón 6: Incremento post-adjudicación (ContractAmendment MONTO)
   if (contract) {
@@ -343,6 +355,13 @@ export async function computeRiskScore(tenderId: string) {
       dims.executionRisk = Math.max(dims.executionRisk, 80);
       flags.push('FREQUENT_AMENDMENTS');
     }
+  }
+
+  // --- NETWORK DIMENSION (15%) ---
+  if (contract) {
+    const netResult = await computeNetworkRisk(contract.providerId);
+    dims.networkRisk = netResult.score;
+    flags.push(...netResult.flags);
   }
 
   // Calculate final score

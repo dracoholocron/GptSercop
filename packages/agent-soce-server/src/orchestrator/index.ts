@@ -84,8 +84,8 @@ export async function orchestrate(
         ragContext = '\n\nContexto relevante (documentos):\n' +
           chunks.map((c) => `[${c.source}] ${c.title}: ${c.snippet}`).join('\n');
       }
-    } catch {
-      // RAG failure is non-fatal
+    } catch (ragErr) {
+      console.error('[orchestrator] RAG search failed:', ragErr instanceof Error ? ragErr.message : ragErr);
     }
   }
 

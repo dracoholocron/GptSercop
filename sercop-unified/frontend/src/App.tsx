@@ -81,6 +81,16 @@ import SavingsAnalysisPage from './pages/analytics/SavingsAnalysisPage';
 import MipymeAnalyticsPage from './pages/analytics/MipymeAnalyticsPage';
 import EmergencyContractsPage from './pages/analytics/EmergencyContractsPage';
 
+const GraphAnalyticsPage = lazy(() => import('./pages/analytics/GraphAnalyticsPage'));
+const CollusionDetectionPage = lazy(() => import('./pages/analytics/CollusionDetectionPage'));
+const NetworkRiskPage = lazy(() => import('./pages/analytics/NetworkRiskPage'));
+
+const analyticsPageFallback = (
+  <Box p={8} textAlign="center">
+    <Spinner size="xl" />
+  </Box>
+);
+
 // Auth pages
 import { OAuth2Callback } from './pages/auth/OAuth2Callback';
 import { FeatureCertificationPage } from './pages/FeatureCertificationPage';
@@ -331,6 +341,9 @@ function AppRouter() {
       <Route path="/analytics/savings" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><SavingsAnalysisPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
       <Route path="/analytics/mipyme" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><MipymeAnalyticsPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
       <Route path="/analytics/emergency" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><EmergencyContractsPage /></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/graph" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><Suspense fallback={analyticsPageFallback}><GraphAnalyticsPage /></Suspense></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/collusion" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><Suspense fallback={analyticsPageFallback}><CollusionDetectionPage /></Suspense></Dashboard></PermissionRoute></ProtectedRoute>} />
+      <Route path="/analytics/network-risk" element={<ProtectedRoute><PermissionRoute anyOf={['ANALYTICS_VIEW', 'GPT_ADMIN_VIEW']}><Dashboard><Suspense fallback={analyticsPageFallback}><NetworkRiskPage /></Suspense></Dashboard></PermissionRoute></ProtectedRoute>} />
 
       {/* Client portal */}
       <Route path="/client" element={<ProtectedRoute><ClientDashboard /></ProtectedRoute>} />

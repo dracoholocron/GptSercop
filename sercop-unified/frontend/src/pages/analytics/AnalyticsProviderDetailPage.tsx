@@ -5,9 +5,18 @@ import {
   Table, Tabs, Progress,
 } from '@chakra-ui/react';
 import {
-  getProviderOverview, getAlerts, getProviderNeighbors,
-  type ProviderOverview, type AlertItem, type PaginatedResponse,
+  getProviderOverview, getAlerts, getProviderNeighbors, getProviderEgoNetwork,
+  type ProviderOverview, type AlertItem, type PaginatedResponse, type EgoNetwork,
 } from '../../services/analyticsService';
+
+function sharedTendersWithCenter(edges: EgoNetwork['edges'], centerId: string, nodeId: string): number {
+  const e = edges.find(
+    (x) =>
+      (x.from === centerId && x.to === nodeId) ||
+      (x.to === centerId && x.from === nodeId),
+  );
+  return e?.sharedTenders ?? 0;
+}
 
 const tierColor: Record<string, string> = { premium: 'green', standard: 'blue', watch: 'yellow', restricted: 'red' };
 const healthColor: Record<string, string> = { healthy: 'green', warning: 'yellow', critical: 'red' };
@@ -41,6 +50,7 @@ export default function AnalyticsProviderDetailPage() {
   const [activeTab, setActiveTab] = useState('contratos');
   const [alerts, setAlerts] = useState<PaginatedResponse<AlertItem> | null>(null);
   const [neighbors, setNeighbors] = useState<Array<{ providerId: string; name: string; sharedTenders: number }>>([]);
+  const [egoNetwork, setEgoNetwork] = useState<EgoNetwork | null>(null);
   const [tabLoading, setTabLoading] = useState(false);
 
   const loadOverview = useCallback(() => {
@@ -54,6 +64,10 @@ export default function AnalyticsProviderDetailPage() {
 
   useEffect(() => { loadOverview(); }, [loadOverview]);
 
+  useEffect(() => {
+    setEgoNetwork(null);
+  }, [providerId]);
+
   const loadTabData = useCallback(async (tab: string) => {
     if (!providerId) return;
     setTabLoading(true);
@@ -64,6 +78,9 @@ export default function AnalyticsProviderDetailPage() {
       } else if (tab === 'red') {
         const data = await getProviderNeighbors(providerId);
         setNeighbors(data.data);
+      } else if (tab === 'conexiones') {
+        const data = await getProviderEgoNetwork(providerId);
+        setEgoNetwork(data);
       }
     } finally {
       setTabLoading(false);
@@ -172,6 +189,7 @@ export default function AnalyticsProviderDetailPage() {
         <Tabs.List mb={4}>
           <Tabs.Trigger value="contratos">Contratos ({contracts.total})</Tabs.Trigger>
           <Tabs.Trigger value="red">Red ({neighborCount})</Tabs.Trigger>
+          <Tabs.Trigger value="conexiones">Red de Conexiones</Tabs.Trigger>
           <Tabs.Trigger value="alertas">Alertas</Tabs.Trigger>
         </Tabs.List>
 
@@ -259,6 +277,77 @@ export default function AnalyticsProviderDetailPage() {
                 </Table.Body>
               </Table.Root>
             </Box>
+          )}
+        </Tabs.Content>
+
+        {/* RED DE CONEXIONES (grafo) */}
+        <Tabs.Content value="conexiones">
+          {tabLoading && <Spinner size="md" />}
+          {!tabLoading && egoNetwork && (
+            <>
+              <Text fontSize="sm" color="fg.muted" mb={3}>
+                Red de egocentrado respecto a <strong>{egoNetwork.center.name}</strong>
+                {egoNetwork.center.riskScore != null && (
+                  <> — Riesgo centro: <strong>{egoNetwork.center.riskScore.toFixed(2)}</strong></>
+                )}
+              </Text>
+              <Text fontSize="sm" fontWeight="600" mb={2}>
+                Total conexiones:{' '}
+                {egoNetwork.nodes.filter((n) => n.id !== egoNetwork.center.id).length}
+              </Text>
+              <Box overflowX="auto">
+                <Table.Root size="sm">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.ColumnHeader>Proveedor conectado</Table.ColumnHeader>
+                      <Table.ColumnHeader>Licitaciones compartidas</Table.ColumnHeader>
+                      <Table.ColumnHeader>Grado</Table.ColumnHeader>
+                      <Table.ColumnHeader>Riesgo</Table.ColumnHeader>
+                      <Table.ColumnHeader />
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {egoNetwork.nodes
+                      .filter((n) => n.id !== egoNetwork.center.id)
+                      .map((n) => (
+                        <Table.Row key={n.id}>
+                          <Table.Cell fontWeight="medium">{n.name}</Table.Cell>
+                          <Table.Cell>
+                            <Badge>
+                              {sharedTendersWithCenter(egoNetwork.edges, egoNetwork.center.id, n.id)}
+                            </Badge>
+                          </Table.Cell>
+                          <Table.Cell>{n.degree}</Table.Cell>
+                          <Table.Cell>
+                            {n.riskLevel ? (
+                              <Badge colorPalette={severityColor[n.riskLevel] ?? 'gray'}>{n.riskLevel}</Badge>
+                            ) : (
+                              '—'
+                            )}
+                          </Table.Cell>
+                          <Table.Cell>
+                            <Button size="xs" variant="outline" onClick={() => navigate(`/analytics/providers/${n.id}`)}>
+                              Ver perfil
+                            </Button>
+                          </Table.Cell>
+                        </Table.Row>
+                      ))}
+                    {egoNetwork.nodes.filter((n) => n.id !== egoNetwork.center.id).length === 0 && (
+                      <Table.Row>
+                        <Table.Cell colSpan={5} textAlign="center" color="fg.muted">
+                          Sin nodos conectados en el grafo analítico.
+                        </Table.Cell>
+                      </Table.Row>
+                    )}
+                  </Table.Body>
+                </Table.Root>
+              </Box>
+            </>
+          )}
+          {!tabLoading && !egoNetwork && (
+            <Text color="fg.muted" textAlign="center" py={6}>
+              No se pudo cargar la red de conexiones.
+            </Text>
           )}
         </Tabs.Content>
 

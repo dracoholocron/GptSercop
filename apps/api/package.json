@@ -28,7 +28,8 @@
     "seed:analytics:data": "tsx prisma/seed-analytics.ts",
     "analytics:compute:all": "tsx scripts/compute-all-analytics.ts",
     "seed:provider-scores": "tsx prisma/seed-provider-scores.ts",
-    "seed:drilldown": "tsx prisma/seed-drilldown.ts"
+    "seed:drilldown": "tsx prisma/seed-drilldown.ts",
+    "seed:graph": "npx tsx prisma/seed-graph-analytics.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

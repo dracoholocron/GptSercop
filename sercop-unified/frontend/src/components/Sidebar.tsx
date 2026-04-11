@@ -43,6 +43,8 @@ import {
   FiKey,
   FiPercent,
   FiUserCheck,
+  FiGitBranch,
+  FiAlertTriangle,
 } from 'react-icons/fi';
 import {
   LuBot,
@@ -399,6 +401,9 @@ const getFallbackInternalMenu = (): MenuItem[] => [
       { id: -914, code: 'analytics.savings', label: 'Ahorros', icon: FiPercent, path: '/analytics/savings', isSection: false, children: [] },
       { id: -915, code: 'analytics.mipyme', label: 'Participación MIPYME', icon: FiUserCheck, path: '/analytics/mipyme', isSection: false, children: [] },
       { id: -916, code: 'analytics.emergency', label: 'Emergencias', icon: FiDroplet, path: '/analytics/emergency', isSection: false, children: [] },
+      { id: -917, code: 'analytics.graph', label: 'Grafo de Red', icon: FiGitBranch, path: '/analytics/graph', isSection: false, children: [] },
+      { id: -918, code: 'analytics.collusion', label: 'Detección Colusión', icon: FiSearch, path: '/analytics/collusion', isSection: false, children: [] },
+      { id: -919, code: 'analytics.networkRisk', label: 'Riesgo de Red', icon: FiAlertTriangle, path: '/analytics/network-risk', isSection: false, children: [] },
     ],
   },
   {

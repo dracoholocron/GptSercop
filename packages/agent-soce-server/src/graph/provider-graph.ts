@@ -57,7 +57,12 @@ export async function findMultiHopConnections(
     ORDER BY hops, connected.name
   `;
 
-  return cypherQuery<{ id: string; name: string; hops: number }>(prisma, graphName, cypher);
+  return cypherQuery<{ id: string; name: string; hops: number }>(
+    prisma,
+    graphName,
+    cypher,
+    ['id', 'name', 'hops'],
+  );
 }
 
 interface Community {
@@ -69,12 +74,13 @@ export async function getProviderCommunities(
   prisma: PrismaLike,
   graphName: string,
 ): Promise<Community[]> {
-  const edges = await cypherQuery<{ aId: string; bId: string }>(
+  const edges = await cypherQuery<{ a_id: string; b_id: string }>(
     prisma,
     graphName,
     `MATCH (a:Provider)-[:CO_BIDDER]-(b:Provider)
      WHERE a.id < b.id
-     RETURN a.id AS aId, b.id AS bId`,
+     RETURN a.id AS a_id, b.id AS b_id`,
+    ['a_id', 'b_id'],
   );
 
   // Union-Find for connected components
@@ -91,7 +97,7 @@ export async function getProviderCommunities(
   }
 
   for (const e of edges) {
-    union(e.aId, e.bId);
+    union(e.a_id, e.b_id);
   }
 
   const groups = new Map<string, string[]>();

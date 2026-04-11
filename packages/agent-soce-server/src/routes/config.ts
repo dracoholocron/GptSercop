@@ -177,7 +177,8 @@ const configRoutes: FastifyPluginAsync = async (fastify) => {
   );
 
   fastify.post('/graph/sync', async () => {
-    return { status: 'sync_queued', message: 'Graph sync will begin shortly' };
+    const { triggerSync } = await import('../graph/scheduler.js');
+    return triggerSync();
   });
 
   // ─── Theme Config ────────────────────────────────────────

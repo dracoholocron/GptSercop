@@ -23,6 +23,8 @@ PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # ── Puertos ──────────────────────────────────────────────────────────────────
 LOCAL_SERCOP_PORT=13080   # localhost:13080 → remote:3080  (gptsercop-api Fastify)
 REMOTE_SERCOP_PORT=3080
+LOCAL_AGENT_PORT=3090     # localhost:3090  → remote:3090  (Agent SOCE API)
+REMOTE_AGENT_PORT=3090
 FRONTEND_DEV_PORT=5177    # Puerto Vite dev server
 
 # ── Colores ──────────────────────────────────────────────────────────────────
@@ -108,11 +110,13 @@ else
 fi
 
 # [3/4] Abrir túnel SSH
-log "[3/4] Abriendo túnel SSH..."
+log "[3/4] Abriendo túneles SSH..."
 echo -e "     localhost:${LOCAL_SERCOP_PORT} → remote:${REMOTE_SERCOP_PORT} (Sercop API)"
+echo -e "     localhost:${LOCAL_AGENT_PORT}  → remote:${REMOTE_AGENT_PORT}  (Agent SOCE)"
 
 ssh -N \
   -L "${LOCAL_SERCOP_PORT}:localhost:${REMOTE_SERCOP_PORT}" \
+  -L "${LOCAL_AGENT_PORT}:localhost:${REMOTE_AGENT_PORT}" \
   "$REMOTE_HOST" &
 TUNNEL_PID=$!
 sleep 2
@@ -130,12 +134,17 @@ echo ""
 echo -e "${BOLD}  ┌─────────────────────────────────────────────┐${NC}"
 echo -e "${BOLD}  │  🚀  http://localhost:${FRONTEND_DEV_PORT}                 │${NC}"
 echo -e "${BOLD}  │                                             │${NC}"
-echo -e "${BOLD}  │  API proxy → http://localhost:${LOCAL_SERCOP_PORT}       │${NC}"
+echo -e "${BOLD}  │  Sercop API  → http://localhost:${LOCAL_SERCOP_PORT}    │${NC}"
+echo -e "${BOLD}  │  Agent SOCE  → http://localhost:${LOCAL_AGENT_PORT}      │${NC}"
 echo -e "${BOLD}  └─────────────────────────────────────────────┘${NC}"
 echo ""
-echo -e "${Y}  Credenciales:${NC}"
+echo -e "${Y}  Credenciales App:${NC}"
 echo -e "  Usuario:  ${G}cp.analista${NC} · ${G}cp.director${NC} · ${G}cp.supervisor${NC}"
 echo -e "  Password: ${G}Demo123!${NC}"
+echo ""
+echo -e "${Y}  Credenciales Agent SOCE Admin:${NC}"
+echo -e "  Email:    ${G}admin@sercop.gob.ec${NC}"
+echo -e "  Password: ${G}admin123${NC}"
 echo ""
 echo -e "${Y}  Modo Docker (siempre disponible):${NC}"
 echo -e "  bash start-dev.sh --docker    # ver estado"
@@ -146,6 +155,8 @@ echo -e "  Presiona ${R}Ctrl-C${NC} para parar.\n"
 cd "$FRONTEND_DIR"
 VITE_DEV_PROXY_TARGET="http://localhost:${LOCAL_SERCOP_PORT}" \
 VITE_GPTSERCOP_API_BASE_URL="http://localhost:${LOCAL_SERCOP_PORT}" \
+VITE_AGENT_SOCE_API_URL="" \
+VITE_AGENT_SOCE_PROXY_TARGET="http://localhost:${LOCAL_AGENT_PORT}" \
 VITE_ENABLE_CMX_CHAT=false \
   npm run dev -- --port "$FRONTEND_DEV_PORT" --strictPort &
 VITE_PID=$!

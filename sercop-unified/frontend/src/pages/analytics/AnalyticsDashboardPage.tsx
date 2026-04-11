@@ -5,8 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { getDashboard, type DashboardData } from '../../services/analyticsService';
 
 const KPICard = ({
-  label, value, color, onClick,
-}: { label: string; value: string | number; color?: string; onClick?: () => void }) => (
+  label, value, subtitle, color, onClick,
+}: {
+  label: string;
+  value?: string | number;
+  subtitle?: string;
+  color?: string;
+  onClick?: () => void;
+}) => (
   <Card.Root
     onClick={onClick}
     cursor={onClick ? 'pointer' : undefined}
@@ -15,7 +21,14 @@ const KPICard = ({
   >
     <Card.Body>
       <Text fontSize="sm" color="fg.muted">{label}</Text>
-      <Text fontSize="2xl" fontWeight="bold" color={color}>{value}</Text>
+      {subtitle && (
+        <Text fontSize="xs" color="fg.subtle" mt={0.5} mb={1}>
+          {subtitle}
+        </Text>
+      )}
+      {value !== undefined && (
+        <Text fontSize="2xl" fontWeight="bold" color={color}>{value}</Text>
+      )}
       {onClick && <Text fontSize="xs" color="fg.subtle" mt={1}>Ver detalle →</Text>}
     </Card.Body>
   </Card.Root>
@@ -65,6 +78,11 @@ export default function AnalyticsDashboardPage() {
         <KPICard label="Promedio Oferentes" value={data.avgBidders} onClick={() => navigate('/analytics/competition')} />
         <KPICard label="Alertas Abiertas" value={data.openAlerts} color={data.openAlerts > 0 ? 'red.500' : undefined} onClick={() => navigate('/analytics/alerts')} />
         <KPICard label="Riesgo Alto" value={data.riskDistribution.high} color="red.500" onClick={() => navigate('/analytics/risk-scores?level=high')} />
+        <KPICard
+          label="Red de Proveedores"
+          subtitle="Comunidades y riesgo de red"
+          onClick={() => navigate('/analytics/graph')}
+        />
       </SimpleGrid>
 
       <Heading size="md" mb={4}>Distribución de Riesgo</Heading>

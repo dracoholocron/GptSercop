@@ -3,6 +3,7 @@ import chatRoutes from './routes/chat.js';
 import adminRoutes from './routes/admin.js';
 import configRoutes from './routes/config.js';
 import streamRoutes from './routes/stream.js';
+import graphRoutes from './routes/graph.js';
 import loginRoutes from './routes/login.js';
 import knowledgeRoutes from './routes/knowledge.js';
 import adminChatRoutes from './routes/admin-chat.js';
@@ -34,6 +35,9 @@ async function validateEmbeddingDimensions(log: { warn: (...args: unknown[]) => 
 const agentSocePlugin: FastifyPluginAsync = async (fastify) => {
   // Validate embedding dimensions on startup
   await validateEmbeddingDimensions(fastify.log);
+  void import('./graph/scheduler.js')
+    .then((m) => m.startGraphScheduler())
+    .catch(() => {});
   // Public: authentication (no JWT required)
   await fastify.register(loginRoutes, { prefix: '/auth' });
 
@@ -54,6 +58,7 @@ const agentSocePlugin: FastifyPluginAsync = async (fastify) => {
   await fastify.register(adminChatRoutes, { prefix: '/admin/chat' });
   await fastify.register(configRoutes, { prefix: '/config' });
   await fastify.register(streamRoutes, { prefix: '/stream' });
+  await fastify.register(graphRoutes, { prefix: '/graph' });
 };
 
 export default agentSocePlugin;

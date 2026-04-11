@@ -455,3 +455,85 @@ export const getEmergencyContracts = (params?: { page?: number; limit?: number; 
 export const getPublicMarketOverview = () => fetchJson<unknown>(`${PUBLIC_BASE}/market-overview`);
 export const getPublicTopProviders = (limit = 10) => fetchJson<unknown>(`${PUBLIC_BASE}/top-providers?limit=${limit}`);
 export const getPublicRiskSummary = () => fetchJson<unknown>(`${PUBLIC_BASE}/risk-summary`);
+
+// --- Graph Analytics Types ---
+
+export type GraphOverview = {
+  totalProviders: number;
+  totalRelations: number;
+  totalCommunities: number;
+  avgDegree: number;
+  networkDensity: number;
+  topCommunities: Array<{
+    communityId: number;
+    memberCount: number;
+    totalSharedTenders: number;
+    members: Array<{ id: string; name: string; degree: number }>;
+  }>;
+  riskSummary: {
+    highRiskNodes: number;
+    collusionCandidates: number;
+    isolatedWinners: number;
+  };
+};
+
+export type CollusionCandidate = {
+  clusterId: number;
+  members: Array<{ id: string; name: string; province?: string | null }>;
+  evidence: {
+    sharedTenders: number;
+    rotationScore: number;
+    bidSimilarityScore: number;
+    sameAddress: boolean;
+  };
+  totalAmount: number;
+  riskLevel: 'CRITICAL' | 'WARNING' | 'INFO';
+};
+
+export type CentralityItem = {
+  providerId: string;
+  providerName: string;
+  province: string | null;
+  degree: number;
+  pageRank: number;
+  betweenness: number;
+  contractCount: number;
+  totalAmount: number;
+};
+
+export type EgoNetwork = {
+  center: { id: string; name: string; riskScore?: number };
+  nodes: Array<{ id: string; name: string; degree: number; riskLevel?: string }>;
+  edges: Array<{ from: string; to: string; sharedTenders: number }>;
+};
+
+export type RiskPropagationItem = {
+  providerId: string;
+  providerName: string;
+  ownRiskScore: number;
+  networkRiskScore: number;
+  connectedHighRisk: number;
+  riskIncrease: number;
+};
+
+// --- Graph Analytics Functions ---
+
+export async function getGraphOverview(): Promise<GraphOverview> {
+  return fetchJson<GraphOverview>(`${BASE}/graph-analytics/overview`);
+}
+
+export async function getCollusionCandidates(): Promise<{ data: CollusionCandidate[]; total: number }> {
+  return fetchJson<{ data: CollusionCandidate[]; total: number }>(`${BASE}/graph-analytics/collusion`);
+}
+
+export async function getCentralityRankings(limit = 50): Promise<{ data: CentralityItem[] }> {
+  return fetchJson<{ data: CentralityItem[] }>(`${BASE}/graph-analytics/centrality?limit=${limit}`);
+}
+
+export async function getProviderEgoNetwork(providerId: string, maxHops = 2): Promise<EgoNetwork> {
+  return fetchJson<EgoNetwork>(`${BASE}/graph-analytics/provider/${providerId}/network?maxHops=${maxHops}`);
+}
+
+export async function getRiskPropagation(limit = 50): Promise<{ data: RiskPropagationItem[] }> {
+  return fetchJson<{ data: RiskPropagationItem[] }>(`${BASE}/graph-analytics/risk-propagation?limit=${limit}`);
+}

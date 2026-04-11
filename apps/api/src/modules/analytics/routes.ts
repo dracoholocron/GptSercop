@@ -953,6 +953,71 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
     },
   );
 
+  // ─── Graph Analytics ─────────────────────────────────────────
+
+  app.get('/api/v1/analytics/graph-analytics/overview', async (_req, reply) => {
+    try {
+      const { getGraphOverview } = await import('./graph-analytics.js');
+      return getGraphOverview();
+    } catch (e) {
+      return reply.status(500).send({ error: 'Error al obtener resumen de red' });
+    }
+  });
+
+  app.get('/api/v1/analytics/graph-analytics/collusion', async (_req, reply) => {
+    try {
+      const { detectCollusion } = await import('./graph-analytics.js');
+      const data = await detectCollusion();
+      return { data, total: data.length };
+    } catch (e) {
+      return reply.status(500).send({ error: 'Error al detectar posible colusión' });
+    }
+  });
+
+  app.get<{ Querystring: { limit?: string } }>(
+    '/api/v1/analytics/graph-analytics/centrality',
+    async (req, reply) => {
+      try {
+        const { getCentralityRankings } = await import('./graph-analytics.js');
+        const limit = parseInt(req.query.limit ?? '50', 10);
+        const data = await getCentralityRankings(Number.isFinite(limit) ? limit : 50);
+        return { data };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener centralidad' });
+      }
+    },
+  );
+
+  app.get<{ Params: { id: string }; Querystring: { maxHops?: string } }>(
+    '/api/v1/analytics/graph-analytics/provider/:id/network',
+    async (req, reply) => {
+      try {
+        const { getEgoNetwork } = await import('./graph-analytics.js');
+        const maxHops = parseInt(req.query.maxHops ?? '2', 10);
+        return getEgoNetwork(req.params.id, Number.isFinite(maxHops) ? maxHops : 2);
+      } catch (e: unknown) {
+        if ((e as { statusCode?: number }).statusCode === 404) {
+          return reply.status(404).send({ error: 'Proveedor no encontrado' });
+        }
+        return reply.status(500).send({ error: 'Error al obtener red del proveedor' });
+      }
+    },
+  );
+
+  app.get<{ Querystring: { limit?: string } }>(
+    '/api/v1/analytics/graph-analytics/risk-propagation',
+    async (req, reply) => {
+      try {
+        const { getRiskPropagation } = await import('./graph-analytics.js');
+        const limit = parseInt(req.query.limit ?? '50', 10);
+        const data = await getRiskPropagation(Number.isFinite(limit) ? limit : 50);
+        return { data };
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener propagación de riesgo' });
+      }
+    },
+  );
+
   // ---- PUBLIC ENDPOINTS (no auth required) ----
 
   // GET /api/v1/public/analytics/market-overview
