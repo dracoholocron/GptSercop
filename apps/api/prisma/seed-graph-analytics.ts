@@ -1136,14 +1136,14 @@ async function main() {
     )) ?? 0;
 
   const [tendersGr, contractsGr, riskGr, relCount, fragCount, priceCount] = await Promise.all([
-    prisma.tender.count({ where: { code: { startsWith: 'GR-' } } } }),
-    prisma.contract.count({ where: { contractNo: { startsWith: 'GR-CON' } } } }),
+    prisma.tender.count({ where: { code: { startsWith: 'GR-' } } }),
+    prisma.contract.count({ where: { contractNo: { startsWith: 'GR-CON' } } }),
     prisma.riskScore.count({
-      where: { tender: { code: { startsWith: 'GR-' } } } },
+      where: { tender: { code: { startsWith: 'GR-' } } },
     }),
     prisma.providerRelation.count(),
-    prisma.fragmentationAlert.count({ where: { pattern: { startsWith: 'AMOUNT_CLUSTER' } } } }),
-    prisma.priceReference.count({ where: { description: { contains: 'Graph-' } } } }),
+    prisma.fragmentationAlert.count({ where: { pattern: { startsWith: 'AMOUNT_CLUSTER' } } }),
+    prisma.priceReference.count({ where: { description: { contains: 'Graph-' } } }),
   ]);
 
   console.log('\n=== Summary (this run + DB totals for GR-*) ===');
