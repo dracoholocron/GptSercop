@@ -1004,6 +1004,23 @@ export const analyticsRoutes: FastifyPluginAsync = async (app) => {
     },
   );
 
+  app.get<{ Querystring: { communityId?: string; limit?: string } }>(
+    '/api/v1/analytics/graph-analytics/visual-network',
+    async (req, reply) => {
+      try {
+        const { getVisualNetwork } = await import('./graph-analytics.js');
+        const communityId = req.query.communityId != null ? parseInt(req.query.communityId, 10) : undefined;
+        const limit = parseInt(req.query.limit ?? '200', 10);
+        return getVisualNetwork(
+          Number.isFinite(communityId) ? communityId : undefined,
+          Number.isFinite(limit) ? limit : 200,
+        );
+      } catch (e) {
+        return reply.status(500).send({ error: 'Error al obtener red visual' });
+      }
+    },
+  );
+
   app.get<{ Querystring: { limit?: string } }>(
     '/api/v1/analytics/graph-analytics/risk-propagation',
     async (req, reply) => {

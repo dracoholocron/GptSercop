@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
-  Box, Heading, Text, Select, Flex, Spinner, SimpleGrid, Card,
-  Table, Badge, Progress,
+  Box, Heading, Text, Flex, Spinner, SimpleGrid, Card,
+  Table, Badge, Progress, NativeSelect,
 } from '@chakra-ui/react';
 import { getMipymeAnalytics, type MipymeItem } from '../../services/analyticsService';
 
@@ -63,23 +63,17 @@ export default function MipymeAnalyticsPage() {
       </Text>
 
       <Flex gap={3} mb={6} wrap="wrap">
-        <Select.Root
-          value={year ? [String(year)] : ['']}
-          onValueChange={(v) => setYear(v.value[0] ? parseInt(v.value[0]) : undefined)}
-          size="sm"
-          width="150px"
-          collection={{ items: [] } as Parameters<typeof Select.Root>[0]['collection']}
-        >
-          <Select.Trigger>
-            <Select.ValueText placeholder="Año" />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item item={{ label: 'Todos los años', value: '' }}>Todos los años</Select.Item>
+        <NativeSelect.Root size="sm" width="180px">
+          <NativeSelect.Field
+            value={year ? String(year) : ''}
+            onChange={(e) => setYear(e.target.value ? parseInt(e.target.value) : undefined)}
+          >
+            <option value="">Todos los años</option>
             {[2022, 2023, 2024, 2025, 2026].map((y) => (
-              <Select.Item key={y} item={{ label: String(y), value: String(y) }}>{y}</Select.Item>
+              <option key={y} value={y}>{y}</option>
             ))}
-          </Select.Content>
-        </Select.Root>
+          </NativeSelect.Field>
+        </NativeSelect.Root>
       </Flex>
 
       {isLoading && <Flex justify="center" py={10}><Spinner /></Flex>}

@@ -516,6 +516,31 @@ export type RiskPropagationItem = {
   riskIncrease: number;
 };
 
+// --- Visual Network Types ---
+
+export type VisualNode = {
+  id: string;
+  name: string;
+  degree: number;
+  riskLevel: string | null;
+  pageRank: number;
+  totalAmount: number;
+  province: string | null;
+  communityId: number;
+};
+
+export type VisualLink = {
+  source: string;
+  target: string;
+  sharedTenders: number;
+};
+
+export type VisualNetworkData = {
+  nodes: VisualNode[];
+  links: VisualLink[];
+  stats: { totalNodes: number; totalLinks: number; communities: number };
+};
+
 // --- Graph Analytics Functions ---
 
 export async function getGraphOverview(): Promise<GraphOverview> {
@@ -536,4 +561,11 @@ export async function getProviderEgoNetwork(providerId: string, maxHops = 2): Pr
 
 export async function getRiskPropagation(limit = 50): Promise<{ data: RiskPropagationItem[] }> {
   return fetchJson<{ data: RiskPropagationItem[] }>(`${BASE}/graph-analytics/risk-propagation?limit=${limit}`);
+}
+
+export async function getVisualNetwork(communityId?: number, limit = 200): Promise<VisualNetworkData> {
+  const q = new URLSearchParams();
+  if (communityId != null) q.set('communityId', String(communityId));
+  q.set('limit', String(limit));
+  return fetchJson<VisualNetworkData>(`${BASE}/graph-analytics/visual-network?${q}`);
 }

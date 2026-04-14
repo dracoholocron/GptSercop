@@ -427,6 +427,190 @@ export async function getEgoNetwork(providerId: string, maxHops = 2): Promise<Eg
   };
 }
 
+// --- Visual Network (for force-graph rendering) ---
+
+export interface VisualNetworkData {
+  nodes: Array<{
+    id: string;
+    name: string;
+    degree: number;
+    riskLevel: string | null;
+    pageRank: number;
+    totalAmount: number;
+    province: string | null;
+    communityId: number;
+  }>;
+  links: Array<{
+    source: string;
+    target: string;
+    sharedTenders: number;
+  }>;
+  stats: {
+    totalNodes: number;
+    totalLinks: number;
+    communities: number;
+  };
+}
+
+export async function getVisualNetwork(communityId?: number, limit = 200): Promise<VisualNetworkData> {
+  const relations = await prisma.providerRelation.findMany({
+    select: { providerAId: true, providerBId: true, sharedTenders: true },
+  });
+
+  if (relations.length === 0) {
+    return { nodes: [], links: [], stats: { totalNodes: 0, totalLinks: 0, communities: 0 } };
+  }
+
+  // Build adjacency + degree
+  const adj = new Map<string, Set<string>>();
+  const degree = new Map<string, number>();
+  for (const r of relations) {
+    if (!adj.has(r.providerAId)) adj.set(r.providerAId, new Set());
+    if (!adj.has(r.providerBId)) adj.set(r.providerBId, new Set());
+    adj.get(r.providerAId)!.add(r.providerBId);
+    adj.get(r.providerBId)!.add(r.providerAId);
+    degree.set(r.providerAId, (degree.get(r.providerAId) ?? 0) + 1);
+    degree.set(r.providerBId, (degree.get(r.providerBId) ?? 0) + 1);
+  }
+
+  // Union-Find for community assignment
+  const parent = new Map<string, string>();
+  function find(x: string): string {
+    if (!parent.has(x)) parent.set(x, x);
+    if (parent.get(x) !== x) parent.set(x, find(parent.get(x)!));
+    return parent.get(x)!;
+  }
+  for (const r of relations) {
+    const ra = find(r.providerAId);
+    const rb = find(r.providerBId);
+    if (ra !== rb) parent.set(ra, rb);
+  }
+
+  const allNodeIds = [...adj.keys()];
+  const communityGroups = new Map<string, string[]>();
+  for (const id of allNodeIds) {
+    const root = find(id);
+    if (!communityGroups.has(root)) communityGroups.set(root, []);
+    communityGroups.get(root)!.push(id);
+  }
+
+  const sortedCommunities = [...communityGroups.values()]
+    .filter((m) => m.length >= 2)
+    .sort((a, b) => b.length - a.length);
+
+  const communityMap = new Map<string, number>();
+  sortedCommunities.forEach((members, idx) => {
+    for (const id of members) communityMap.set(id, idx);
+  });
+  for (const id of allNodeIds) {
+    if (!communityMap.has(id)) communityMap.set(id, -1);
+  }
+
+  // PageRank (simplified, 20 iterations)
+  const nodes = allNodeIds;
+  const n = nodes.length;
+  const damping = 0.85;
+  const rank = new Map<string, number>();
+  for (const node of nodes) rank.set(node, 1 / n);
+
+  const outDeg = new Map<string, number>();
+  const inEdges = new Map<string, Array<{ from: string; w: number }>>();
+  for (const r of relations) {
+    outDeg.set(r.providerAId, (outDeg.get(r.providerAId) ?? 0) + r.sharedTenders);
+    outDeg.set(r.providerBId, (outDeg.get(r.providerBId) ?? 0) + r.sharedTenders);
+    if (!inEdges.has(r.providerBId)) inEdges.set(r.providerBId, []);
+    inEdges.get(r.providerBId)!.push({ from: r.providerAId, w: r.sharedTenders });
+    if (!inEdges.has(r.providerAId)) inEdges.set(r.providerAId, []);
+    inEdges.get(r.providerAId)!.push({ from: r.providerBId, w: r.sharedTenders });
+  }
+
+  for (let i = 0; i < 20; i++) {
+    const nr = new Map<string, number>();
+    for (const node of nodes) {
+      let sum = 0;
+      for (const { from, w } of inEdges.get(node) ?? []) {
+        sum += (rank.get(from) ?? 0) * (w / (outDeg.get(from) ?? 1));
+      }
+      nr.set(node, (1 - damping) / n + damping * sum);
+    }
+    for (const [k, v] of nr) rank.set(k, v);
+  }
+
+  // Filter by community if requested
+  let candidateNodes = allNodeIds;
+  if (communityId != null && communityId >= 0 && communityId < sortedCommunities.length) {
+    candidateNodes = sortedCommunities[communityId];
+  }
+
+  // Select top nodes by PageRank, capped by limit
+  const cappedLimit = Math.max(1, Math.min(limit, 500));
+  const selectedIds = candidateNodes
+    .sort((a, b) => (rank.get(b) ?? 0) - (rank.get(a) ?? 0))
+    .slice(0, cappedLimit);
+  const selectedSet = new Set(selectedIds);
+
+  // Fetch provider metadata
+  const providers = selectedIds.length > 0
+    ? await prisma.provider.findMany({
+        where: { id: { in: selectedIds } },
+        select: { id: true, name: true, province: true },
+      })
+    : [];
+  const provMap = Object.fromEntries(providers.map((p) => [p.id, p]));
+
+  // Fetch risk levels
+  const riskScores = selectedIds.length > 0
+    ? await prisma.riskScore.findMany({
+        where: { tender: { contract: { providerId: { in: selectedIds } } } },
+        select: { riskLevel: true, totalScore: true, tender: { select: { contract: { select: { providerId: true } } } } },
+        orderBy: { totalScore: 'desc' },
+      })
+    : [];
+  const riskMap = new Map<string, string>();
+  for (const rs of riskScores) {
+    const pid = rs.tender?.contract?.providerId;
+    if (pid && !riskMap.has(pid)) riskMap.set(pid, rs.riskLevel);
+  }
+
+  // Fetch contract amounts
+  const contractTotals = selectedIds.length > 0
+    ? await prisma.contract.groupBy({
+        by: ['providerId'],
+        where: { providerId: { in: selectedIds } },
+        _sum: { amount: true },
+      })
+    : [];
+  const amountMap = Object.fromEntries(
+    contractTotals.map((c) => [c.providerId, parseFloat(String(c._sum.amount ?? 0))]),
+  );
+
+  // Build links (only between selected nodes)
+  const links = relations
+    .filter((r) => selectedSet.has(r.providerAId) && selectedSet.has(r.providerBId))
+    .map((r) => ({ source: r.providerAId, target: r.providerBId, sharedTenders: r.sharedTenders }));
+
+  const resultNodes = selectedIds.map((id) => ({
+    id,
+    name: provMap[id]?.name ?? id,
+    degree: degree.get(id) ?? 0,
+    riskLevel: riskMap.get(id) ?? null,
+    pageRank: Math.round((rank.get(id) ?? 0) * 10000) / 10000,
+    totalAmount: Math.round((amountMap[id] ?? 0) * 100) / 100,
+    province: provMap[id]?.province ?? null,
+    communityId: communityMap.get(id) ?? -1,
+  }));
+
+  return {
+    nodes: resultNodes,
+    links,
+    stats: {
+      totalNodes: allNodeIds.length,
+      totalLinks: relations.length,
+      communities: sortedCommunities.length,
+    },
+  };
+}
+
 // --- Risk Propagation ---
 
 export async function getRiskPropagation(limit = 50): Promise<RiskPropagationItem[]> {

@@ -188,4 +188,42 @@ test.describe('GRAPH-SEC: Graph Analytics Security', () => {
     });
     assert.notEqual(res.status, 500, `unexpected 500: ${await res.text()}`);
   });
+
+  // --- Visual Network Security ---
+
+  test.it('Visual-network: SQL injection in communityId → not 500', async (t: TestContext) => {
+    if (skipLive) { t.skip(skipLive); return; }
+    const res = await fetch(`${GA('/visual-network')}?communityId=1%3B%20DROP%20TABLE%20users`, {
+      headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
+    });
+    assert.notEqual(res.status, 500, `unexpected 500: ${await res.text()}`);
+  });
+
+  test.it('Visual-network: XSS attempt in limit → not 500', async (t: TestContext) => {
+    if (skipLive) { t.skip(skipLive); return; }
+    const res = await fetch(`${GA('/visual-network')}?limit=<script>alert(1)</script>`, {
+      headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
+    });
+    assert.notEqual(res.status, 500, `unexpected 500: ${await res.text()}`);
+  });
+
+  test.it('Visual-network: negative limit → not 500, sensible fallback', async (t: TestContext) => {
+    if (skipLive) { t.skip(skipLive); return; }
+    const res = await fetch(`${GA('/visual-network')}?limit=-999`, {
+      headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
+    });
+    assert.notEqual(res.status, 500, `unexpected 500: ${await res.text()}`);
+  });
+
+  test.it('Visual-network: huge limit → not 500, capped', async (t: TestContext) => {
+    if (skipLive) { t.skip(skipLive); return; }
+    const res = await fetch(`${GA('/visual-network')}?limit=99999999`, {
+      headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
+    });
+    assert.notEqual(res.status, 500, `unexpected 500: ${await res.text()}`);
+    if (res.ok) {
+      const body = (await res.json()) as { nodes: unknown[] };
+      assert.ok(body.nodes.length <= 500, 'should be capped at 500');
+    }
+  });
 });

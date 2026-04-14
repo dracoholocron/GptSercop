@@ -158,6 +158,7 @@ test.describe('GRAPH-SMOKE: Graph Analytics smoke', () => {
       GA('/collusion'),
       `${GA('/centrality')}?limit=10`,
       `${GA('/risk-propagation')}?limit=10`,
+      `${GA('/visual-network')}?limit=20`,
     ];
     for (const url of urls) {
       const t0 = performance.now();
@@ -169,5 +170,14 @@ test.describe('GRAPH-SMOKE: Graph Analytics smoke', () => {
       const parsed = JSON.parse(text) as unknown;
       assert.ok(parsed !== null && typeof parsed === 'object');
     }
+  });
+
+  test.it('Visual-network responds 200 with nodes', async (t) => {
+    if (!beginLive(t)) return;
+    const res = await fetch(`${GA('/visual-network')}?limit=10`, { headers: authHeaders() });
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as { nodes: unknown[]; links: unknown[] };
+    assert.ok(Array.isArray(body.nodes));
+    assert.ok(Array.isArray(body.links));
   });
 });

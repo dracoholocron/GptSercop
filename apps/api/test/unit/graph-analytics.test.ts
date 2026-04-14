@@ -363,3 +363,68 @@ test('Union-find: isolated node + one edge → one community', () => {
   const edges: Array<[string, string]> = [['p', 'q']];
   assert.strictEqual(countCommunitiesMinSize2(nodes, edges), 1);
 });
+
+// --- Visual Network helpers (getVisualNetwork shape) ---
+
+test('VisualNetwork: node radius scales with degree (min 4, max 20)', () => {
+  function nodeRadius(degree: number): number {
+    return Math.max(4, Math.min(20, 4 + Math.sqrt(degree) * 2));
+  }
+  assert.strictEqual(nodeRadius(0), 4);
+  assert.ok(nodeRadius(10) > 4 && nodeRadius(10) < 20);
+  assert.strictEqual(nodeRadius(1000), 20);
+});
+
+test('VisualNetwork: community assignment via Union-Find is deterministic', () => {
+  const nodes = ['A', 'B', 'C', 'D'];
+  const edges: Array<[string, string]> = [['A', 'B'], ['C', 'D']];
+  const count1 = countCommunitiesMinSize2(nodes, edges);
+  const count2 = countCommunitiesMinSize2(nodes, edges);
+  assert.strictEqual(count1, count2);
+  assert.strictEqual(count1, 2);
+});
+
+test('VisualNetwork: PageRank values used for node selection are valid', () => {
+  const edges = [
+    { from: 'A', to: 'B', weight: 3 },
+    { from: 'B', to: 'C', weight: 1 },
+  ];
+  const rank = computePageRank(edges, 0.85, 20);
+  for (const [, v] of rank) {
+    assert.ok(v >= 0, 'PageRank values must be non-negative');
+    assert.ok(v <= 1, 'PageRank values should be ≤ 1 for proper convergence');
+  }
+});
+
+test('VisualNetwork: link filtering keeps only edges between selected nodes', () => {
+  const allEdges = [
+    { source: 'A', target: 'B', shared: 5 },
+    { source: 'A', target: 'C', shared: 3 },
+    { source: 'B', target: 'D', shared: 2 },
+  ];
+  const selected = new Set(['A', 'B']);
+  const filtered = allEdges.filter((e) => selected.has(e.source) && selected.has(e.target));
+  assert.strictEqual(filtered.length, 1);
+  assert.strictEqual(filtered[0].source, 'A');
+  assert.strictEqual(filtered[0].target, 'B');
+});
+
+test('VisualNetwork: limit caps output correctly', () => {
+  const nodes = Array.from({ length: 50 }, (_, i) => `N${i}`);
+  const limit = 10;
+  const cappedLimit = Math.max(1, Math.min(limit, 500));
+  const selected = nodes.slice(0, cappedLimit);
+  assert.strictEqual(selected.length, 10);
+});
+
+test('VisualNetwork: risk color mapping returns expected colors', () => {
+  const riskColors: Record<string, string> = { high: '#E53E3E', medium: '#ED8936', low: '#48BB78' };
+  function riskColor(level: string | null): string {
+    return (level && riskColors[level]) ?? '#A0AEC0';
+  }
+  assert.strictEqual(riskColor('high'), '#E53E3E');
+  assert.strictEqual(riskColor('medium'), '#ED8936');
+  assert.strictEqual(riskColor('low'), '#48BB78');
+  assert.strictEqual(riskColor(null), '#A0AEC0');
+  assert.strictEqual(riskColor('unknown'), '#A0AEC0');
+});

@@ -331,3 +331,86 @@ testApi('Centrality items include providerId and providerName', async () => {
     assert.ok(typeof row.providerName === 'string');
   }
 });
+
+// ---- Visual Network (NEW) ----
+
+testApi('GET /graph-analytics/visual-network returns 200 with nodes, links, stats', async () => {
+  const token = await getToken();
+  const res = await authGet('/graph-analytics/visual-network', token);
+  assert.strictEqual(res.status, 200);
+  const body = (await res.json()) as {
+    nodes: unknown[]; links: unknown[]; stats: { totalNodes: number; totalLinks: number; communities: number };
+  };
+  assert.ok(Array.isArray(body.nodes));
+  assert.ok(Array.isArray(body.links));
+  assert.ok(typeof body.stats === 'object');
+  assert.ok(typeof body.stats.totalNodes === 'number');
+  assert.ok(typeof body.stats.totalLinks === 'number');
+  assert.ok(typeof body.stats.communities === 'number');
+});
+
+testApi('Visual network nodes have required fields', async () => {
+  const token = await getToken();
+  const body = (await authGet('/graph-analytics/visual-network?limit=5', token).then((r) => r.json())) as {
+    nodes: Array<{ id: string; name: string; degree: number; riskLevel: unknown; pageRank: number; communityId: number }>;
+  };
+  for (const n of body.nodes) {
+    assert.ok(typeof n.id === 'string', 'node.id must be string');
+    assert.ok(typeof n.name === 'string', 'node.name must be string');
+    assert.ok(typeof n.degree === 'number', 'node.degree must be number');
+    assert.ok(typeof n.pageRank === 'number', 'node.pageRank must be number');
+    assert.ok(typeof n.communityId === 'number', 'node.communityId must be number');
+  }
+});
+
+testApi('Visual network links have source, target, sharedTenders', async () => {
+  const token = await getToken();
+  const body = (await authGet('/graph-analytics/visual-network?limit=20', token).then((r) => r.json())) as {
+    links: Array<{ source: string; target: string; sharedTenders: number }>;
+  };
+  for (const l of body.links) {
+    assert.ok(typeof l.source === 'string', 'link.source must be string');
+    assert.ok(typeof l.target === 'string', 'link.target must be string');
+    assert.ok(typeof l.sharedTenders === 'number', 'link.sharedTenders must be number');
+  }
+});
+
+testApi('Visual network ?limit=5 caps nodes at ≤ 5', async () => {
+  const token = await getToken();
+  const body = (await authGet('/graph-analytics/visual-network?limit=5', token).then((r) => r.json())) as {
+    nodes: unknown[];
+  };
+  assert.ok(body.nodes.length <= 5, `expected ≤5 nodes, got ${body.nodes.length}`);
+});
+
+testApi('Visual network ?communityId=0 returns subset', async () => {
+  const token = await getToken();
+  const full = (await authGet('/graph-analytics/visual-network', token).then((r) => r.json())) as {
+    nodes: unknown[];
+  };
+  const filtered = (await authGet('/graph-analytics/visual-network?communityId=0', token).then((r) => r.json())) as {
+    nodes: Array<{ communityId: number }>;
+  };
+  if (full.nodes.length > 0 && filtered.nodes.length > 0) {
+    for (const n of filtered.nodes) {
+      assert.strictEqual(n.communityId, 0, 'all nodes should belong to community 0');
+    }
+  }
+});
+
+testApi('Visual network: links only reference nodes in the result set', async () => {
+  const token = await getToken();
+  const body = (await authGet('/graph-analytics/visual-network?limit=50', token).then((r) => r.json())) as {
+    nodes: Array<{ id: string }>; links: Array<{ source: string; target: string }>;
+  };
+  const nodeIds = new Set(body.nodes.map((n) => n.id));
+  for (const l of body.links) {
+    assert.ok(nodeIds.has(l.source), `link.source ${l.source} not in node set`);
+    assert.ok(nodeIds.has(l.target), `link.target ${l.target} not in node set`);
+  }
+});
+
+testApi('Visual network: no auth returns 200 or 401 (depending on config)', async () => {
+  const res = await authGet('/graph-analytics/visual-network');
+  assert.ok([200, 401].includes(res.status), `expected 200 or 401, got ${res.status}`);
+});

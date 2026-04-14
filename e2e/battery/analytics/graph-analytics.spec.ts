@@ -276,4 +276,121 @@ test.describe('GRAPH-E2E: Graph Analytics Pages', () => {
       { timeout: 25000 },
     );
   });
+
+  // --- Interactive Graph Visualization (GR-20 through GR-28) ---
+
+  test('GR-20: Graph canvas renders on GraphAnalyticsPage', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    await page.goto(`${BASE}/analytics/graph`, { waitUntil: 'domcontentloaded' });
+    const graph = page.locator('[data-testid="network-graph"]');
+    await expect(graph).toBeVisible({ timeout: 30000 });
+    const canvas = graph.locator('canvas');
+    await expect(canvas).toBeVisible({ timeout: 15000 });
+  });
+
+  test('GR-21: Graph stats text shows node count', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    await page.goto(`${BASE}/analytics/graph`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('body')).toContainText(/Mostrando \d+.*nodos/i, { timeout: 30000 });
+  });
+
+  test('GR-22: Community filter dropdown exists and changes content', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    await page.goto(`${BASE}/analytics/graph`, { waitUntil: 'domcontentloaded' });
+    const select = page.locator('select').filter({ hasText: /Todas las comunidades/ });
+    await expect(select).toBeVisible({ timeout: 20000 });
+  });
+
+  test('GR-23: Click on KPI card "Nodos Alto Riesgo" visible', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    await page.goto(`${BASE}/analytics/graph`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('body')).toContainText(/Nodos Alto Riesgo/i, { timeout: 20000 });
+  });
+
+  test('GR-24: Graph legend shows risk colors', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    await page.goto(`${BASE}/analytics/graph`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('body')).toContainText(/Alto riesgo/i, { timeout: 20000 });
+    await expect(page.locator('body')).toContainText(/Riesgo medio/i, { timeout: 5000 });
+    await expect(page.locator('body')).toContainText(/Bajo riesgo/i, { timeout: 5000 });
+    await expect(page.locator('body')).toContainText(/Sin evaluación/i, { timeout: 5000 });
+  });
+
+  test('GR-25: Provider detail "Red de Conexiones" tab has canvas graph', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    const apiUrl = process.env.PLAYWRIGHT_API_URL || 'http://localhost:3080';
+    const provRes = await page.request.get(`${apiUrl}/api/v1/providers`);
+    if (!provRes.ok()) return test.skip(true, 'no providers API');
+    const provBody = (await provRes.json()) as { data?: Array<{ id: string }> };
+    const pid = provBody.data?.[0]?.id;
+    if (!pid) return test.skip(true, 'no providers');
+
+    await page.goto(`${BASE}/analytics/providers/${pid}`, { waitUntil: 'domcontentloaded' });
+    const tab = page.locator('text=Red de Conexiones');
+    if (await tab.isVisible({ timeout: 15000 })) {
+      await tab.click();
+      // Canvas should appear if provider has connections
+      await page.waitForTimeout(3000);
+      const canvas = page.locator('[data-testid="network-graph"] canvas');
+      const graph = page.locator('[data-testid="network-graph"]');
+      const hasGraph = await graph.isVisible().catch(() => false);
+      // Either shows graph or shows "Sin nodos conectados"
+      if (!hasGraph) {
+        await expect(page.locator('body')).toContainText(/Sin nodos conectados|Total conexiones/i);
+      }
+    }
+  });
+
+  test('GR-26: Collusion page expanded cluster shows mini graph', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    await page.goto(`${BASE}/analytics/collusion`, { waitUntil: 'domcontentloaded' });
+    const expandBtn = page.locator('button').filter({ hasText: '+' }).first();
+    if (await expandBtn.isVisible({ timeout: 20000 })) {
+      await expandBtn.click();
+      const clusterGraph = page.locator('[data-testid="network-graph"]');
+      await expect(clusterGraph).toBeVisible({ timeout: 15000 });
+    }
+  });
+
+  test('GR-27: Graph visualization section has header text', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    await page.goto(`${BASE}/analytics/graph`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('body')).toContainText(
+      /Visualización de la Red de Proveedores/i,
+      { timeout: 20000 },
+    );
+  });
+
+  test('GR-28: No console errors on graph pages with visualization', async ({ page }) => {
+    const ok = await loginAdmin(page);
+    test.skip(!ok, 'API unavailable');
+
+    const errors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && !msg.text().includes('favicon') && !msg.text().includes('Route GET:/api/menu')) {
+        errors.push(msg.text());
+      }
+    });
+
+    await page.goto(`${BASE}/analytics/graph`, { waitUntil: 'networkidle', timeout: 40000 });
+    await page.waitForTimeout(3000);
+    const jsErrors = errors.filter((e) => !e.includes('net::') && !e.includes('404'));
+    expect(jsErrors).toHaveLength(0);
+  });
 });

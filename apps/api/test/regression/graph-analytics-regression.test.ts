@@ -161,4 +161,52 @@ test.describe('GRAPH-REG: Analytics regression (post graph extension)', () => {
       assert.ok(typeof body.graphOverview === 'object' || typeof body.graph === 'object');
     }
   });
+
+  // --- Visual network does NOT break existing overview/collusion/centrality/provider-network ---
+
+  test.it('Regression: /overview still has topCommunities after visual-network addition', async (t) => {
+    if (!beginLive(t)) return;
+    const res = await fetch(A('/graph-analytics/overview'), { headers: authHeaders() });
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as { topCommunities: unknown[]; riskSummary: unknown };
+    assert.ok(Array.isArray(body.topCommunities));
+    assert.ok(body.riskSummary != null);
+  });
+
+  test.it('Regression: /collusion response shape unchanged', async (t) => {
+    if (!beginLive(t)) return;
+    const res = await fetch(A('/graph-analytics/collusion'), { headers: authHeaders() });
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as { data: unknown[]; total: number };
+    assert.ok(Array.isArray(body.data));
+    assert.ok(typeof body.total === 'number');
+  });
+
+  test.it('Regression: /centrality response shape unchanged', async (t) => {
+    if (!beginLive(t)) return;
+    const res = await fetch(A('/graph-analytics/centrality?limit=3'), { headers: authHeaders() });
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as { data: Array<{ providerId: string; degree: number; pageRank: number }> };
+    assert.ok(Array.isArray(body.data));
+    if (body.data.length > 0) {
+      assert.ok(typeof body.data[0].providerId === 'string');
+      assert.ok(typeof body.data[0].degree === 'number');
+      assert.ok(typeof body.data[0].pageRank === 'number');
+    }
+  });
+
+  test.it('Regression: /provider/:id/network response shape unchanged', async (t) => {
+    if (!beginLive(t)) return;
+    const provRes = await fetch(`${BASE}/api/v1/providers`, { headers: authHeaders() });
+    if (!provRes.ok) { t.skip('cannot list providers'); return; }
+    const provBody = (await provRes.json()) as { data?: Array<{ id: string }> };
+    const pid = provBody.data?.[0]?.id;
+    if (!pid) { t.skip('no providers'); return; }
+    const res = await fetch(A(`/graph-analytics/provider/${pid}/network`), { headers: authHeaders() });
+    assert.equal(res.status, 200);
+    const body = (await res.json()) as { center: unknown; nodes: unknown[]; edges: unknown[] };
+    assert.ok(body.center != null);
+    assert.ok(Array.isArray(body.nodes));
+    assert.ok(Array.isArray(body.edges));
+  });
 });

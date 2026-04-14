@@ -8,6 +8,8 @@ import {
   getProviderOverview, getAlerts, getProviderNeighbors, getProviderEgoNetwork,
   type ProviderOverview, type AlertItem, type PaginatedResponse, type EgoNetwork,
 } from '../../services/analyticsService';
+import { NetworkGraph, GraphLegend } from '../../components/analytics/NetworkGraph';
+import type { VisualNode, VisualLink } from '../../components/analytics/NetworkGraph';
 
 function sharedTendersWithCenter(edges: EgoNetwork['edges'], centerId: string, nodeId: string): number {
   const e = edges.find(
@@ -291,6 +293,38 @@ export default function AnalyticsProviderDetailPage() {
                   <> — Riesgo centro: <strong>{egoNetwork.center.riskScore.toFixed(2)}</strong></>
                 )}
               </Text>
+
+              {/* Interactive ego-network graph */}
+              {egoNetwork.nodes.length > 1 && (
+                <Card.Root mb={4}>
+                  <Card.Body p={0}>
+                    <NetworkGraph
+                      nodes={egoNetwork.nodes.map((n): VisualNode => ({
+                        id: n.id,
+                        name: n.name,
+                        degree: n.degree,
+                        riskLevel: n.riskLevel ?? null,
+                        pageRank: 0,
+                        totalAmount: 0,
+                        province: null,
+                        communityId: 0,
+                      }))}
+                      links={egoNetwork.edges.map((e): VisualLink => ({
+                        source: e.from,
+                        target: e.to,
+                        sharedTenders: e.sharedTenders,
+                      }))}
+                      height={380}
+                      onNodeClick={(node) => {
+                        if (node.id !== providerId) navigate(`/analytics/providers/${node.id}`);
+                      }}
+                      highlightNodeId={egoNetwork.center.id}
+                    />
+                  </Card.Body>
+                  <Card.Footer><GraphLegend /></Card.Footer>
+                </Card.Root>
+              )}
+
               <Text fontSize="sm" fontWeight="600" mb={2}>
                 Total conexiones:{' '}
                 {egoNetwork.nodes.filter((n) => n.id !== egoNetwork.center.id).length}
