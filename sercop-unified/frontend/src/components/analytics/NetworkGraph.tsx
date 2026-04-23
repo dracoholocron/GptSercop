@@ -1,5 +1,7 @@
-import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
-import ForceGraph2D, { type ForceGraphMethods, type NodeObject, type LinkObject } from 'react-force-graph-2d';
+import { useRef, useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
+import type { ForceGraphMethods, NodeObject, LinkObject } from 'react-force-graph-2d';
+
+const ForceGraph2D = lazy(() => import('react-force-graph-2d'));
 
 // ── Public types (match API shape) ──────────────────────────────
 
@@ -185,30 +187,32 @@ export function NetworkGraph({
 
   return (
     <div ref={containerRef} style={{ width: '100%', height }} data-testid="network-graph">
-      <ForceGraph2D
-        ref={graphRef}
-        graphData={graphData}
-        width={containerWidth}
-        height={height}
-        nodeCanvasObject={paintNode}
-        nodePointerAreaPaint={paintNodeArea}
-        linkWidth={(link: GraphLink) => Math.max(0.5, Math.sqrt(link.sharedTenders ?? 1))}
-        linkColor={(link: GraphLink) => {
-          if (!neighborSet) return 'rgba(160,174,192,0.25)';
-          const sid = typeof link.source === 'object' ? (link.source as VisualNode).id : link.source;
-          const tid = typeof link.target === 'object' ? (link.target as VisualNode).id : link.target;
-          return neighborSet.has(sid) && neighborSet.has(tid)
-            ? 'rgba(45,55,72,0.6)'
-            : 'rgba(160,174,192,0.08)';
-        }}
-        onNodeClick={handleNodeClick}
-        onNodeHover={handleNodeHover}
-        cooldownTicks={150}
-        d3AlphaDecay={0.02}
-        d3VelocityDecay={0.3}
-        enableZoomInteraction
-        enablePanInteraction
-      />
+      <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>Cargando grafo…</div>}>
+        <ForceGraph2D
+          ref={graphRef}
+          graphData={graphData}
+          width={containerWidth}
+          height={height}
+          nodeCanvasObject={paintNode}
+          nodePointerAreaPaint={paintNodeArea}
+          linkWidth={(link: GraphLink) => Math.max(0.5, Math.sqrt(link.sharedTenders ?? 1))}
+          linkColor={(link: GraphLink) => {
+            if (!neighborSet) return 'rgba(160,174,192,0.25)';
+            const sid = typeof link.source === 'object' ? (link.source as VisualNode).id : link.source;
+            const tid = typeof link.target === 'object' ? (link.target as VisualNode).id : link.target;
+            return neighborSet.has(sid) && neighborSet.has(tid)
+              ? 'rgba(45,55,72,0.6)'
+              : 'rgba(160,174,192,0.08)';
+          }}
+          onNodeClick={handleNodeClick}
+          onNodeHover={handleNodeHover}
+          cooldownTicks={150}
+          d3AlphaDecay={0.02}
+          d3VelocityDecay={0.3}
+          enableZoomInteraction
+          enablePanInteraction
+        />
+      </Suspense>
     </div>
   );
 }
